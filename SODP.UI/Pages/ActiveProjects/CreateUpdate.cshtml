@@ -1,0 +1,65 @@
+﻿@page
+@model SODP.UI.Pages.ActiveProjects.CreateUpdateModel
+
+<br />
+<div class="container row p-0 m-0">
+    <div class="col-8">
+        <h2 class="text-info">@(Model.Project.Id.Equals(0) ? "Nowy projekt" : "Edycja projektu")</h2>
+    </div>
+</div>
+<div class="container border" style="padding:30px;">
+    <form method="post">
+        <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+        <input type="hidden" asp-for="Project.Id" />
+
+        <div class="form-group row">
+            <div class="col-12 col-md-7">
+                <input asp-for="Project.Number" class="form-control" readonly="@(Model.Project.Id.Equals(0) ? false : true)" placeholder="Numer" />
+                <span asp-validation-for="Project.Number" style="font-size:14px" class="text-danger"></span>
+            </div>
+            <div class="row">
+            </div>
+        </div>
+
+        @if (Model.Project.Id.Equals(0))
+        {
+            <div class="form-group row">
+                <div class="col-12 col-md-7">
+                    @Html.DropDownListFor(model => model.Project.StageId, @Model.Stages, "-- Stadium --", new { @class = "form-control" })
+                    <span asp-validation-for="@Model.Project.StageId" style="font-size:14px" class="text-danger"></span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <input type="hidden" asp-for="Project.StageId" />
+            <div class="form-group row">
+                <div class="col-12 col-md-7">
+                    <input asp-for="Project.StageTitle" class="form-control" readonly="@(true)" />
+                </div>
+            </div>
+        }
+
+        <div class="form-group row">
+            <div class="col-12 col-md-7">
+                <input asp-for="Project.Title" class="form-control" placeholder="Tytuł" />
+                <span asp-validation-for="Project.Title" style="font-size:14px" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-12 col-md-7">
+                <textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)"></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-12 col-md-7">
+                <partial name="_SubmitAndBackButtonPartial" />
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <partial name="/Pages/Shared/_ValidationScriptsPartial.cshtml" />
+}
