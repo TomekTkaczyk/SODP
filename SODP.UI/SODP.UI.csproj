@@ -16,6 +16,12 @@
     <None Include="stages.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="wwwroot\lib\fontawesome\webfonts\fa-brands-400.svg" />
+    <None Include="wwwroot\lib\fontawesome\webfonts\fa-brands-400.woff2" />
+    <None Include="wwwroot\lib\fontawesome\webfonts\fa-regular-400.svg" />
+    <None Include="wwwroot\lib\fontawesome\webfonts\fa-regular-400.woff2" />
+    <None Include="wwwroot\lib\fontawesome\webfonts\fa-solid-900.svg" />
+    <None Include="wwwroot\lib\fontawesome\webfonts\fa-solid-900.woff2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,10 +44,6 @@
     <ProjectReference Include="..\SODP.Application\SODP.Application.csproj" />
     <ProjectReference Include="..\SODP.DataAccess\SODP.DataAccess.csproj" />
     <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
 </Project>
