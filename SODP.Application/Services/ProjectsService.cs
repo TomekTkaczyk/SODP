@@ -183,7 +183,7 @@ namespace WebSODP.Application.Services
                 }
 
                 project.Normalize();
-                var (Success, Message) = await _folderManager.RenameFolderAsync(project);
+                var (Success, Message) = await _folderManager.RenameFolderAsync(project, ProjectsFolder.Active);
                 if (!Success)
                 {
                     serviceResponse.SetError($"Błąd: {Message}");

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SODP.Domain.Managers;
-using SODP.Model;
 using SODP.Model.Enums;
 using System;
 
@@ -17,35 +16,35 @@ namespace SODP.Application.Managers
             _folderConfigurator = folderConfigurator;
         }
 
-        public string GetCommandCreateFolder(Project project)
+        public string GetCommandCreateFolder(string folder)
         {
-            return $"{GetCommand(FolderCommands.Create)} {_folderConfigurator.ActiveFolder} {project}";
+            return $"{GetCommand(FolderCommands.Create)} {_folderConfigurator.ActiveFolder} {folder}";
         }
 
-        public string GetCommandRenameFolder(Project project, string oldName)
+        public string GetCommandRenameFolder(string folder, string oldName)
         {
-            return GetCommandRenameFolder(project, oldName, ProjectsFolder.Active);
+            return GetCommandRenameFolder(folder, oldName, ProjectsFolder.Active);
         }
 
-        public string GetCommandRenameFolder(Project project, string oldName, ProjectsFolder source)
+        public string GetCommandRenameFolder(string folder, string oldName, ProjectsFolder source)
         {
 
-            return $"{GetCommand(FolderCommands.Rename)} {_folderConfigurator.GetProjectFolder(source)} {oldName} {project}";
+            return $"{GetCommand(FolderCommands.Rename)} {_folderConfigurator.GetProjectFolder(source)} {oldName} {folder}";
         }
 
-        public string GetCommandArchiveFolder(Project project)
+        public string GetCommandArchiveFolder(string folder)
         {
-            return $"{GetCommand(FolderCommands.Archive)} {_folderConfigurator.ActiveFolder} {_folderConfigurator.ArchiveFolder} {project}"; 
+            return $"{GetCommand(FolderCommands.Archive)} {_folderConfigurator.ActiveFolder} {_folderConfigurator.ArchiveFolder} {folder}"; 
         }
 
-        public string GetCommandRestoreFolder(Project project)
+        public string GetCommandRestoreFolder(string folder)
         {
-            return $"{GetCommand(FolderCommands.Restore)} {_folderConfigurator.ArchiveFolder} {_folderConfigurator.ActiveFolder} {project}";
+            return $"{GetCommand(FolderCommands.Restore)} {_folderConfigurator.ArchiveFolder} {_folderConfigurator.ActiveFolder} {folder}";
         }
 
-        public string GetCommandDeleteFolder(Project project)
+        public string GetCommandDeleteFolder(string folder)
         {
-            return $"{GetCommand(FolderCommands.Delete)} {_folderConfigurator.ActiveFolder} {project}";
+            return $"{GetCommand(FolderCommands.Delete)} {_folderConfigurator.ActiveFolder} {folder}";
         }
 
         private string GetCommand(FolderCommands command)
