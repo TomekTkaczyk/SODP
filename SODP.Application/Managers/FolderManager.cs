@@ -21,50 +21,48 @@ namespace SODP.Application.Managers
             _folderConfigurator = folderConfigurator;
         }
 
-        public async Task<(bool Success, string Message)> CreateFolderAsync(Project project)
+        public async Task<(bool Success, string Message)> CreateFolderAsync(Project project, ProjectsFolder source = ProjectsFolder.Active)
         {
-            (bool Success, string Message) result;
             string command;
-            var catalog = GetMatchingFolders(_folderConfigurator.ActiveFolder, project);
+            string message;
+            var catalog = GetMatchingFolders(_folderConfigurator.GetProjectFolder(source), project);
             switch (catalog.Count())
             {
                 case 0:
                     command = _folderCommandCreator.GetCommandCreateFolder(project);
-                    result = await FolderOperationTask(command, project.ToString(), true);
-                    return (result.Success, $"{command} {result.Message}");
+                    message = await Task.Run(() => command.RunShell());
+
+                    return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + project.ToString()), $"{command} {message}");
                 case 1:
                     command = _folderCommandCreator.GetCommandRenameFolder(project, catalog[0]);
-                    result = await FolderOperationTask(command, project.ToString(), true);
-                    return (result.Success, $"{command} {result.Message}");
+                    message = await Task.Run(() => command.RunShell());
+
+                    return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + project.ToString()), $"{command} {message}");
                 default:
                     return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
             }
         }
 
-        public async Task<(bool Success, string Message)> RenameFolderAsync(Project project)
-        {
-            return await RenameFolderAsync(project, ProjectsFolder.Active);
-        }
-
-        public async Task<(bool Success, string Message)> RenameFolderAsync(Project project, ProjectsFolder source)
+        public async Task<(bool Success, string Message)> RenameFolderAsync(Project project, ProjectsFolder source = ProjectsFolder.Active)
         {
             var catalog = GetMatchingFolders(_folderConfigurator.GetProjectFolder(source), project);
             switch (catalog.Count())
             {
                 case 0:
-                    return await CreateFolderAsync(project);
+                    return await CreateFolderAsync(project, source);
                 case 1:
-                    var command = _folderCommandCreator.GetCommandRenameFolder(project, catalog[0]);
-                    var (Success, Message) = await FolderOperationTask(command, project.ToString(), true);
-                    return (Success, $"{command} {Message}");
+                    var command = _folderCommandCreator.GetCommandRenameFolder(project, catalog[0], source);
+                    var message = await Task.Run(() => command.RunShell());
+
+                    return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + project.ToString()), $"{command} {message}");
                 default:
                     return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
             }
         }
 
-        public async Task<(bool Success, string Message)> DeleteFolderAsync(Project project)
+        public async Task<(bool Success, string Message)> DeleteFolderAsync(Project project, ProjectsFolder source = ProjectsFolder.Active)
         {
-            var catalog = GetMatchingFolders(_folderConfigurator.ActiveFolder, project);
+            var catalog = GetMatchingFolders(_folderConfigurator.GetProjectFolder(source), project);
             switch(catalog.Count())
             {
                 case 0:
@@ -75,8 +73,9 @@ namespace SODP.Application.Managers
                         return (false,$"Folder projektu {project.Symbol} nie jest pusty.");
                     }
                     var command = _folderCommandCreator.GetCommandDeleteFolder(project);
-                    var (Success, Message) = await FolderOperationTask(command, catalog[0], false);
-                    return (Success, $"{command} {Message}");
+                    var message = await Task.Run(() => command.RunShell());
+
+                    return (!Directory.Exists(_folderConfigurator.GetProjectFolder(source) + project.ToString()), $"{command} {message}");
                 default:
                     return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
             }
@@ -104,8 +103,9 @@ namespace SODP.Application.Managers
                         }
                     }
                     var command = _folderCommandCreator.GetCommandArchiveFolder(project);
-                    result = await FolderOperationTask(command, project.ToString(), false);
-                    return (result.Success, $"{command} {result.Message}");
+                    var message = await Task.Run(() => command.RunShell());
+
+                    return (Directory.Exists(_folderConfigurator.ArchiveFolder + project.ToString()), $"{command} {message}");
                 default:
                     return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
             }
@@ -122,27 +122,19 @@ namespace SODP.Application.Managers
                 case 1:
                     if (!catalog[0].Equals(project.ToString()))
                     {
-                        result = await RenameFolderAsync(project);
+                        result = await RenameFolderAsync(project, ProjectsFolder.Archive);
                         if (!result.Success)
                         {
                             return result;
                         }
                     }
                     var command = _folderCommandCreator.GetCommandRestoreFolder(project);
-                    result = await FolderOperationTask(command, catalog[0], true);
-                    return (result.Success, $"{command} {result.Message}");
+                    var message = await Task.Run(() => command.RunShell());
+
+                    return (Directory.Exists(_folderConfigurator.ActiveFolder + project.ToString()), $"{command} {message}");
                 default:
                     return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
             }
-        }
-
-        private Task<(bool Success, string Message)> FolderOperationTask(string command, string folder, bool exist = true)
-        {
-            return Task.Run(() =>
-            {
-                var message = command.RunShell();
-                return (Directory.Exists(_folderConfigurator.ActiveFolder + folder) == exist, message);
-            });
         }
 
         private bool FolderIsEmpty(string folder)
