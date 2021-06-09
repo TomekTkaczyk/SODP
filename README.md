@@ -15,5 +15,5 @@ Część serwerwerowa z dostępem przez REST API oraz aplikacja WEB UI
 * REST API
 * RAZORPAGE UI
 
-###STATUS
-Projek szkoleniowy w trakcie budowy. Testowany ochotniczo w jednym biurze.
+### STATUS
+Projekt szkoleniowy w trakcie budowy. Testowany ochotniczo w jednym biurze.
