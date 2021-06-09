@@ -7,6 +7,30 @@ namespace SODP.Model
 {
     public class Project
     {
+        public Project() { }
+
+        public Project(string number, string stageSign, string title)
+        {
+            Number = number;
+            Stage = new Stage() { Sign = stageSign };
+            Title = title;
+        }
+
+        public Project(string foldername)
+        {
+            var sign = foldername.GetUntilOrEmpty("_");
+            Number = sign.Substring(0, 4);
+            Stage = new Stage() { Sign = sign[4..] };
+            Title = foldername[(sign.Length + 1)..];
+            if (string.IsNullOrEmpty(Stage.Sign))
+            {
+                sign = foldername.GetLastUntilOrEmpty("_");
+                Stage.Sign = sign;
+                var titleLength = Title.Length - Stage.Sign.Length - 1;
+                Title = Title[0..titleLength];
+            }
+        }
+
         public int Id { get; set; }
         public string Number { get; set; }
         public int StageId { get; set; }

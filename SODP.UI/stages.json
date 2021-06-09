@@ -12,6 +12,10 @@
     "Title": "PROJEKT BUDOWLANY ZAMIENNY"
   },
   {
+    "Sign": "PBZIII",
+    "Title": "PROJEKT BUDOWLANY ZAMIENNY"
+  },
+  {
     "Sign": "PAB",
     "Title": "PROJEKT ARCHITEKTONICZNO-BUDOWLANY"
   },
@@ -50,6 +54,22 @@
   {
     "Sign": "RE",
     "Title": "PROJEKT REMONTU"
+  },
+  {
+    "Sign": "IO",
+    "Title": "INSTRUKCJA ODŒNIE¯ANIA"
+  },
+  {
+    "Sign": "PP",
+    "Title": "PROJEKT PRZETARGOWY"
+  },
+  {
+    "Sign": "PBW",
+    "Title": "PROJEKT BUDOWLANO-WYKONAWCZY"
+  },
+  {
+    "Sign": "WZII",
+    "Title": "WARUNKI ZABUDOWY"
   },
   {
     "Sign": "WZ",

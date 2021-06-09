@@ -19,6 +19,21 @@ namespace SODP.Model.Extensions
             return String.Empty;
         }
 
+        public static string GetLastUntilOrEmpty(this string text, string stopAt = "_")
+        {
+            if (!String.IsNullOrWhiteSpace(text))
+            {
+                int charLocation = text.LastIndexOf(stopAt, StringComparison.Ordinal);
+
+                if (charLocation > 0)
+                {
+                    return text.Substring(charLocation + 1);
+                }
+            }
+
+            return String.Empty;
+        }
+
         public static string CapitalizeFirstLetter(this string str)
         {
             if (str.Length == 1)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using SODP.Domain.Managers;
 using SODP.Model;
 using SODP.Model.Enums;
 using SODP.Model.Extensions;
@@ -7,24 +8,35 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace SODP.DataAccess
 {
-    public class DataInitializer : IDisposable
+    public class DataInitializer
     {
         private readonly IConfiguration _configuration;
         private readonly SODPDBContext _context;
+        private readonly IFolderCommandCreator _folderCommandCreator;
+        private readonly IFolderManager _folderManager;
 
-        public DataInitializer(IConfiguration configuration, SODPDBContext context)
+        public DataInitializer(IConfiguration configuration, SODPDBContext context, IFolderCommandCreator folderCommandCreator, IFolderManager folderManager)
         {
             _configuration = configuration;
             _context = context;
+            _folderCommandCreator = folderCommandCreator;
+            _folderManager = folderManager;
         }
 
         public void LoadData()
         {
-            LoadStagesFromJSON();
-            ImportProjectsFromStore();
+            if (_context.Stages.Count() == 0)
+            {
+                LoadStagesFromJSON();
+            }
+            if(_context.Projects.Count() == 0)
+            {
+                ImportProjectsFromStore();
+            }
         }
 
         private void LoadStagesFromJSON()
@@ -43,8 +55,21 @@ namespace SODP.DataAccess
         private void ImportProjectsFromStore()
         {
             var _settingsPrefix = $"{Environment.OSVersion.Platform}Settings:";
+            CreateFolders(@"./aktualne.lst", _configuration.GetSection($"{_settingsPrefix}ActiveFolder").Value);
+            CreateFolders(@"./zakonczone.lst", _configuration.GetSection($"{_settingsPrefix}ArchiveFolder").Value);
             ImportProjectsFromStore(_configuration.GetSection($"{_settingsPrefix}ActiveFolder").Value, ProjectStatus.Active);
             ImportProjectsFromStore(_configuration.GetSection($"{_settingsPrefix}ArchiveFolder").Value, ProjectStatus.Archived);
+        }
+
+        private void CreateFolders(string folderlist, string destination)
+        {
+            var stream = new StreamReader($@"./{folderlist}");
+            string line;
+            while ((line = stream.ReadLine()) != null)
+            {
+                Directory.CreateDirectory(destination + line);
+            }
+            stream.Close();
         }
 
         private void ImportProjectsFromStore(string projectsFolder, ProjectStatus status)
@@ -53,37 +78,43 @@ namespace SODP.DataAccess
             var validator = new ProjectNameValidator();
             foreach (var item in directory)
             {
-                if (!validator.Validate(item))
+                try
                 {
-                    continue;
-                }
-                var localization = Path.GetFileName(item);
-                var sign = localization.GetUntilOrEmpty("_");
-                var currentProject = new Project()
-                {
-                    Number = sign.Substring(0, 4),
-                    Stage = new Stage() { Sign = sign[4..] },
-                    Title = localization[(sign.Length + 1)..],
-                    Status = status
-                };
-                var stage = _context.Stages.FirstOrDefault(x => x.Sign == currentProject.Stage.Sign);
-                if (stage == null)
-                {
-                    stage = new Stage() { Sign = currentProject.Stage.Sign, Title = "" };
-                }
-                currentProject.Stage = stage;
+                    if (!validator.Validate(item))
+                    {
+                        continue;
+                    }
+                    var currentFolder = Path.GetFileName(item);
+                    var currentProject = new Project(currentFolder)
+                    {
+                        Status = status
+                    };
 
-                var project = _context.Projects.FirstOrDefault(x => x.Number == currentProject.Number && x.Stage.Sign == currentProject.Stage.Sign);
-                if (project == null)
+                    if (!currentProject.ToString().ToUpper().Equals(currentFolder.ToUpper()))
+                    {
+                        var command = _folderCommandCreator.GetCommandRenameFolder(currentProject.ToString(), currentFolder, (ProjectsFolder)status);
+                        var message = _folderCommandCreator.RunCommand(command).Result;
+                    }
+
+                    var stage = _context.Stages.FirstOrDefault(x => x.Sign == currentProject.Stage.Sign);
+                    if (stage == null)
+                    {
+                        stage = new Stage() { Sign = currentProject.Stage.Sign, Title = "" };
+                    }
+                    currentProject.Stage = stage;
+
+                    var project = _context.Projects.FirstOrDefault(x => x.Number == currentProject.Number && x.Stage.Sign == currentProject.Stage.Sign);
+                    if (project == null)
+                    {
+                        _context.Projects.Add(currentProject);
+                        _context.SaveChanges();
+                    }
+                }
+                catch (Exception ex)
                 {
-                    _context.Projects.Add(currentProject);
-                    _context.SaveChanges();
+                    var message = ex.Message;
                 }
             }
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

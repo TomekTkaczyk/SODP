@@ -1,4 +1,5 @@
 ﻿using SODP.Model.Enums;
+using System.Threading.Tasks;
 
 namespace SODP.Domain.Managers
 {
@@ -11,5 +12,7 @@ namespace SODP.Domain.Managers
         string GetCommandRestoreFolder(string folder);
         string GetCommandDeleteFolder(string folder);
         string GetCommandArchiveFolder(string folder);
+
+        Task<string> RunCommand(string command);
     }
 }

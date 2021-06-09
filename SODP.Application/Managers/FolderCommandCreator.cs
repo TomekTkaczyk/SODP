@@ -2,6 +2,7 @@
 using SODP.Domain.Managers;
 using SODP.Model.Enums;
 using System;
+using System.Threading.Tasks;
 
 namespace SODP.Application.Managers
 {
@@ -53,6 +54,9 @@ namespace SODP.Application.Managers
             return _configuration.GetSection($"{OSPrefix}{command}Command").Value;
         }
 
-
+        public async Task<string> RunCommand(string command)
+        {
+            return await Task.Run(() => command.RunShell());
+        }
     }
 }
