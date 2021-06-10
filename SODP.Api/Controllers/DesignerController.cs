@@ -26,7 +26,7 @@ namespace SODP.Api.Controllers
             return Ok(await _service.GetAllAsync());
         }
 
-        [HttpGet]
+        [HttpGet("{Id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
             return Ok(await _service.GetAsync(id));
