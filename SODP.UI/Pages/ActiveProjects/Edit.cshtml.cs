@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.ActiveProjects
 {
     [Authorize(Roles = "Administrator,ProjectManager")]
-    public class CreateUpdateModel : SODPPageModel
+    public class EditModel : SODPPageModel
     {
         private readonly IStagesService _stagesService;
         private readonly IProjectsService _projectsService;
 
-        public CreateUpdateModel(IProjectsService projectsService, IStagesService stagesService)
+        public EditModel(IProjectsService projectsService, IStagesService stagesService)
         {
             _projectsService = projectsService;
             _stagesService = stagesService;

@@ -16,7 +16,7 @@
 
         <div class="form-group row">
             <div class="col-12 col-md-7">
-                <input asp-for="CurrentUser.UserName" class="form-control" readonly="@(true)" />
+                <input asp-for="CurrentUser.Username" class="form-control" readonly="@(true)" />
             </div>
         </div>
 
@@ -38,7 +38,7 @@
         {
             <div class="form-group row">
                 <div class="col-12">
-                    @if (Model.CurrentUser.UserName == "Administrator" && role.Key == "Administrator")
+                    @if (Model.CurrentUser.Username == "Administrator" && role.Key == "Administrator")
                     {
                         <input asp-for="AllRoles[role.Key]" type="checkbox" checked="@Model.CurrentUser.Roles.Contains(role.Key)" disabled="disabled" />
                     }

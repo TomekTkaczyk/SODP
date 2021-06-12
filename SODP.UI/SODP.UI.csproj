@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Pages\ActiveProjects\_ProjectPartialView.cshtml" />
+    <None Include="Pages\ActiveProjects\_NewProjectPartialView.cshtml" />
     <None Include="stages.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

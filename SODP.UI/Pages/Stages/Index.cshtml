@@ -44,14 +44,14 @@
                         {
                             <tr>
                                 <td>
-                                    <a onclick='OpenStageEdit(@stage.Id)' 
+                                    <a onclick='NewStage(@stage.Id)' 
                                        data-toggle="tooltip"
                                        data-placement="top"
                                        title="Edycja stadium">
                                     @stage.Sign</a>
                                 </td>
                                 <td>
-                                    <a onclick='OpenStageEdit(@stage.Id)'
+                                    <a onclick='NewStage(@stage.Id)'
                                        data-toggle="tooltip"
                                        data-placement="top"
                                        title="Edycja stadium">
@@ -101,7 +101,7 @@
     </script>
 
     <script>
-        function OpenStageEdit(currentId) {
+        function NewStage(currentId) {
             $.ajax({
                 type: "Get",
                 url: '@Url.Page("Index","StageDetails")&Id=' + currentId,

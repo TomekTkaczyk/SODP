@@ -20,22 +20,22 @@ function InitProjectDataTable() {
             {
                 data: "number",
                 render: function (data, type, row) {
-                    return `<a onclick="OpenProjectEdit(${row.id})" data-toggle="tooltip" data-placement="top" title="Edycja nazwy">${row.number}</a>`;
+                    return `<a href="/ActiveProjects/Edit?Id=${row.id}" data-toggle="tooltip" title="Edycja" data-placement="top">${row.number}</a >`;
                 }
             },
             {
                 data: "stageSign",
                 render: function (data, type, row) {
-                    return `<a onclick="OpenProjectEdit(${row.id})" data-toggle="tooltip" title="Edycja nazwy">${row.stageSign}</a>`;
+                    return `<a href="/ActiveProjects/Edit?Id=${row.id}" data-toggle="tooltip" title="Edycja nazwy">${row.stageSign}</a>`;
                 }
             },
             {
                 data: "title",
                 render: function (data, type, row) {
-                    return `<a onclick="OpenProjectEdit(${row.id})" data-toggle="tooltip" title="Edycja nazwy">${row.title}</a>`;
+                    return `<a href="/ActiveProjects/Edit?Id=${row.id}" data-toggle="tooltip" title="Edycja" data-placement="top">${row.title}</a>`;
                 }
             },
-            {
+            {                                      
                 data: "id",
                 render: function (data) {
                     var renderTags = `<div class="row group justify-content-center">`;
@@ -61,14 +61,12 @@ function InitModalPlaceHolder() {
         var actionUrl = form.attr('action');
         var dataToSend = form.serialize();
         $.post(actionUrl, dataToSend).done(function (data) {
-            console.log(data);
             var newBody = $('.modal-body', data);
-            console.log(newBody);
             placeholderElement.find('.modal-body').replaceWith(newBody);
             var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
             if (isValid) {
                 placeholderElement.find('.modal').modal('hide');
-                window.location.reload();
+                window.location.href = '/ActiveProjects/Edit?Id=' + document.getElementById('id').value;
             }
         });
     });

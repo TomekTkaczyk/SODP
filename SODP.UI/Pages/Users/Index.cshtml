@@ -1,8 +1,6 @@
 ﻿@page
 @model SODP.UI.Pages.Users.IndexModel
-@{
-    ViewData["Title"] = "Użytkownicy";
-}
+@{ ViewData["Title"] = "Użytkownicy"; }
 
 
 <br />
@@ -32,26 +30,26 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(m => user.UserName)
+                                    <a href="/Users/Edit?Id=@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
+                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(m => user.Firstname) @Html.DisplayFor(m => user.Lastname)
+                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Lastname</a>
                                 </td>
                                 <td>
                                     <div class="row group justify-content-end mr-0">
                                         <div>
-                                            <a role="button" class="btn btn-sm btn-info text-white mb-0 mt-0 ml-1 mr-1 p-1" asp-page="Edit"
-                                               asp-route-Id="@user.Id">
+                                            <a role="button" class="btn btn-sm btn-info text-white mb-0 mt-0 ml-1 mr-1 p-1" asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">
                                                 <i class="far fa-edit"></i>
                                             </a>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-                        }
+                         }
                     </tbody>
-                </table>
-            }
+                </table> 
+             }
             else
             {
                 <p> Lista użytkowników jest pusta</p>

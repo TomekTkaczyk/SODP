@@ -1,10 +1,10 @@
 ﻿@page
-@model SODP.UI.Pages.ActiveProjects.CreateUpdateModel
+@model SODP.UI.Pages.ActiveProjects.EditModel
 
 <br />
 <div class="container row p-0 m-0">
     <div class="col-8">
-        <h2 class="text-info">@(Model.Project.Id.Equals(0) ? "Nowy projekt" : "Edycja projektu")</h2>
+        <h2 class="text-info">Edycja projektu</h2>
     </div>
 </div>
 <div class="container border" style="padding:30px;">
@@ -14,31 +14,19 @@
 
         <div class="form-group row">
             <div class="col-12 col-md-7">
-                <input asp-for="Project.Number" class="form-control" readonly="@(Model.Project.Id.Equals(0) ? false : true)" placeholder="Numer" />
+                <input asp-for="Project.Number" class="form-control" placeholder="Numer" readonly />
                 <span asp-validation-for="Project.Number" style="font-size:14px" class="text-danger"></span>
             </div>
             <div class="row">
             </div>
         </div>
 
-        @if (Model.Project.Id.Equals(0))
-        {
-            <div class="form-group row">
-                <div class="col-12 col-md-7">
-                    @Html.DropDownListFor(model => model.Project.StageId, @Model.Stages, "-- Stadium --", new { @class = "form-control" })
-                    <span asp-validation-for="@Model.Project.StageId" style="font-size:14px" class="text-danger"></span>
-                </div>
+        <input type="hidden" asp-for="Project.StageId" />
+        <div class="form-group row">
+            <div class="col-12 col-md-7">
+                <input asp-for="Project.StageTitle" class="form-control" readonly />
             </div>
-        }
-        else
-        {
-            <input type="hidden" asp-for="Project.StageId" />
-            <div class="form-group row">
-                <div class="col-12 col-md-7">
-                    <input asp-for="Project.StageTitle" class="form-control" readonly="@(true)" />
-                </div>
-            </div>
-        }
+        </div>
 
         <div class="form-group row">
             <div class="col-12 col-md-7">

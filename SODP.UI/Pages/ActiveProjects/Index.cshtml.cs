@@ -19,7 +19,7 @@ namespace SODP.UI.Pages.ActiveProjects
     {
         private readonly IProjectsService _projectsService;
         private readonly IStagesService _stagesService;
-        const string partialViewName = "_ProjectPartialView";
+        const string partialViewName = "_NewProjectPartialView";
 
         public IndexModel(IProjectsService projectsService, IStagesService stagesService)
         {
@@ -49,28 +49,39 @@ namespace SODP.UI.Pages.ActiveProjects
             return RedirectToPage("Index");
         }
 
-        public async Task<IActionResult> OnGetProjectDetailsAsync(int? id)
+        public async Task<IActionResult> OnGetNewProjectAsync()
         {
-            var project = (id == null) ? new ProjectDTO() : (await _projectsService.GetAsync((int)id)).Data;
+            //var project = (id == null) ? new ProjectDTO() : (await _projectsService.GetAsync((int)id)).Data;
             
-            return await GetPartialViewAsync(project);
+            return await GetPartialViewAsync(new ProjectDTO());
         }
 
-        public async Task<PartialViewResult> OnPostProjectDetails(ProjectDTO project)
+        public async Task<PartialViewResult> OnPostNewProject(ProjectDTO project)
         {
             if (ModelState.IsValid)
             {
-                var response = (project.Id == 0) ? await _projectsService.CreateAsync(project) : await _projectsService.UpdateAsync(project);
-                if (!response.Success)
+                var response = await _projectsService.CreateAsync(project);
+                if (response.Success)
                 {
+                    var result1 = await GetPartialViewAsync(response.Data);
+                    return result1;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(response.Message))
+                    {
+                        ModelState.AddModelError("", response.Message);
+                    }
                     foreach (var error in response.ValidationErrors)
                     {
                         ModelState.AddModelError(error.Key, error.Value);
                     }
                 }
+                
             }
+            var result = await GetPartialViewAsync(project);
 
-            return await GetPartialViewAsync(project);
+            return result;
         }
 
         private async Task<PartialViewResult> GetPartialViewAsync(ProjectDTO project)
