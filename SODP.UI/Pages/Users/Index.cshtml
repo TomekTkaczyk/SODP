@@ -2,6 +2,11 @@
 @model SODP.UI.Pages.Users.IndexModel
 @{ ViewData["Title"] = "Użytkownicy"; }
 
+<link rel="stylesheet " href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/css/bootstrap4-toggle.min.css">
+
+<script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
+
 
 <br />
 <div class="container row p-0 m-0">
@@ -17,43 +22,54 @@
         <form method="post">
             @if (Model.Users.Count() > 0)
             {
-                <table class="table table-sm table-hover">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Login</th>
-                            <th>Imię i nazwisko</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var user in Model.Users.AsEnumerable())
-                        {
-                            <tr>
-                                <td>
-                                    <a href="/Users/Edit?Id=@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
-                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
-                                </td>
-                                <td>
-                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Lastname</a>
-                                </td>
-                                <td>
-                                    <div class="row group justify-content-end mr-0">
-                                        <div>
-                                            <a role="button" class="btn btn-sm btn-info text-white mb-0 mt-0 ml-1 mr-1 p-1" asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">
-                                                <i class="far fa-edit"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                         }
-                    </tbody>
-                </table> 
-             }
-            else
-            {
-                <p> Lista użytkowników jest pusta</p>
-            }
+<table class="table table-sm table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th>Login</th>
+            <th>Imię i nazwisko</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users.AsEnumerable())
+        {
+<tr>
+    <td>
+        <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
+    </td>
+    <td>
+        <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Lastname</a>
+    </td>
+    <td>
+        <div class="row group justify-content-end mr-0">
+            <div>
+                <a onclick='Delete("/api/Users/@user.Id")'
+                   class="btn btn-lg mb-0 mt-0 ml-1 mr-1 p-1 text-danger"
+                   data-toggle="tooltip"
+                   data-placement="top"
+                   title="Zablokuj">
+                    <i class="fas fa-user-lock"></i>
+                </a>
+                <style>
+                    .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+                        border-radius: 5rem;
+                    }
+
+                        .toggle.ios .toggle-handle {
+                            border-radius: 5rem;
+                        }
+                </style>
+                <input type="checkbox" checked data-toggle="toggle" data-style="ios">
+            </div>
+        </div>
+    </td>
+</tr>
+}
+    </tbody>
+</table> }
+else
+{
+<p> Lista użytkowników jest pusta</p>}
         </form>
     </div>
 </div>
@@ -61,5 +77,6 @@
 
 @section Scripts{
     <script src="~/js/usersList.js"></script>
+    <script src="~/js/delete.js"></script>
 }
 

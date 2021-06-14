@@ -10,5 +10,6 @@ namespace SODP.Domain.DTO
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public IList<string> Roles { get; set; }
+        public bool LockoutEnabled { get; set; }
     }
 }

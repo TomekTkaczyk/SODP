@@ -20,5 +20,11 @@ namespace SODP.Api.Controllers
         {
             return Ok(await _usersService.GetAsync(id));
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            return Ok(await _usersService.DeleteAsync(id));
+        }
     }
 }
