@@ -1,4 +1,0 @@
-#!/bin/bash
-OLDDIR=$1
-NEWDIR=$2
-mv $OLDDIR $NEWDIR
