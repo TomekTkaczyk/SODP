@@ -1,1 +1,0 @@
-dotnet-ef migrations remove --startup-project SODP.UI --project SODP.DataAccess --context SODPDBContext -v
