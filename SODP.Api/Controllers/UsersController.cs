@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SODP.Domain.DTO;
 using SODP.Domain.Services;
 using System.Threading.Tasks;
 
@@ -26,5 +27,12 @@ namespace SODP.Api.Controllers
         {
             return Ok(await _usersService.DeleteAsync(id));
         }
+
+        [HttpPut("{id}/{enabled}")]
+        public async Task<IActionResult> SetEnable(int id, [FromBody]int enabled)
+        {
+            return Ok(await _usersService.SetEnable(id, enabled==1));
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SODP.DataAccess;
+using SODP.Domain.DTO;
 using SODP.Domain.Services;
 using System.Threading.Tasks;
 
@@ -27,8 +28,8 @@ namespace SODP.Api.Controllers
         public async Task<IActionResult> GetAsync(int id)
         {
             return Ok(await _stagesService.GetAsync(id));
-        }       
-        
+        }
+
         //[AllowAnonymous]
         //[HttpGet]
         //public async Task<ActionResult<PageResponse<Stage>>> GetStages()
@@ -60,21 +61,21 @@ namespace SODP.Api.Controllers
 
         //[AllowAnonymous]
         //[ValidationFilter]
-        //[HttpPut("{sign}")]
-        //public async Task<ActionResult<Stage>> Update(string sign, [FromBody] StageDTO stage)
-        //{
-        //    if (sign != stage.Sign)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    var response = await _stagesService.Update(sign, stage);
-        //    if (!response.Success)
-        //    {
-        //        return BadRequest(response);
-        //    }
+        [HttpPut("{sign}")]
+        public async Task<ActionResult<StageDTO>> Update(string sign, [FromBody] StageDTO stage)
+        {
+            if (sign != stage.Sign)
+            {
+                return BadRequest();
+            }
+            var response = await _stagesService.UpdateAsync(stage);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
 
-        //    return Ok(response);
-        //}
+            return Ok(response);
+        }
 
         //[AllowAnonymous]
         [HttpDelete("{id}")]

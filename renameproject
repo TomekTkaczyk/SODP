@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ $# -lt 3 ]
+then
+    echo "Brak parametrow"
+else
+    ACTDIR=$1
+    if [ ${ACTDIR: -1} != "/" ]
+    then
+	ACTDIR=$1/
+    fi
+
+    OLDNAME=$2
+    NEWNAME=$3
+
+    mv ${ACTDIR}${OLDNAME} ${ACTDIR}${NEWNAME}
+fi
+

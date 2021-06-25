@@ -126,15 +126,15 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-        public async Task<ServicePageResponse<RoleDTO>> GetRolesAsync(int userId)
+        public async Task<ServicePageResponse<RoleDTO>> GetRolesAsync(int id)
         {
             var serviceResponse = new ServicePageResponse<RoleDTO>();
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
                 if (user == null)
                 {
-                    serviceResponse.SetError($"Użytkownik Id:{userId} nie odnaleziony.", 404);
+                    serviceResponse.SetError($"Użytkownik Id:{id} nie odnaleziony.", 404);
                     return serviceResponse;
                 }
                 var roles = await _userManager.GetRolesAsync(user);
@@ -156,6 +156,33 @@ namespace SODP.Application.Services
         public Task<ServiceResponse<UserDTO>> CreateAsync(UserDTO entity)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResponse> SetEnable(int id, bool status)
+        {
+            var serviceResponse = new ServiceResponse();
+            try
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                if (user == null)
+                {
+                    serviceResponse.SetError($"Użytkownik Id:{id} nie odnaleziony.", 404);
+                    return serviceResponse;
+                }
+                user.LockoutEnabled = status;
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    serviceResponse.IdentityResultErrorProcess(result);
+                    return serviceResponse;
+                }
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
+
+            return serviceResponse;
         }
     }
 }

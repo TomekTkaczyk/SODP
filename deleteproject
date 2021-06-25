@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ $# -lt 2 ]
+then
+    echo "Brak parametrow"
+else
+    ACTDIR=$1
+    if [ ${ACTDIR: -1} != "/" ]
+    then
+        ACTDIR=$1/
+    fi
+
+    PROJ=$2
+
+    rm -rf ${ACTDIR}${PROJ}
+fi
+

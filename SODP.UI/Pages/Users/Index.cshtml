@@ -22,54 +22,48 @@
         <form method="post">
             @if (Model.Users.Count() > 0)
             {
-<table class="table table-sm table-hover">
-    <thead class="thead-light">
-        <tr>
-            <th>Login</th>
-            <th>Imię i nazwisko</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model.Users.AsEnumerable())
-        {
-<tr>
-    <td>
-        <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
-    </td>
-    <td>
-        <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Lastname</a>
-    </td>
-    <td>
-        <div class="row group justify-content-end mr-0">
-            <div>
-                <a onclick='Delete("/api/Users/@user.Id")'
-                   class="btn btn-lg mb-0 mt-0 ml-1 mr-1 p-1 text-danger"
-                   data-toggle="tooltip"
-                   data-placement="top"
-                   title="Zablokuj">
-                    <i class="fas fa-user-lock"></i>
-                </a>
-                <style>
-                    .toggle.ios, .toggle-on.ios, .toggle-off.ios {
-                        border-radius: 5rem;
-                    }
+                <table class="table table-sm table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Login</th>
+                            <th>Imię i nazwisko</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users.AsEnumerable())
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
+                                </td>
+                                <td>
+                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Lastname</a>
+                                </td>
+                                <td>
+                                    <div class="row group justify-content-end mr-0">
+                                        <div>
+                                            <style>
+                                                .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+                                                    border-radius: 20px;
+                                                }
+                                                .toggle.ios .toggle-handle {
+                                                    border-radius: 20px;
+                                                }
+                                            </style>
+                                            <input type="checkbox" asp-for="@user.LockoutEnabled" onchange="handleChange(@user.Id,this)" data-toggle="toggle" data-style="ios">
 
-                        .toggle.ios .toggle-handle {
-                            border-radius: 5rem;
-                        }
-                </style>
-                <input type="checkbox" checked data-toggle="toggle" data-style="ios">
-            </div>
-        </div>
-    </td>
-</tr>
-}
-    </tbody>
-</table> }
-else
-{
-<p> Lista użytkowników jest pusta</p>}
+                                        </div>
+
+                                    </div>
+
+                                </td>
+                            </tr>}
+                    </tbody>
+                </table> }
+             else
+             {
+                <p> Lista użytkowników jest pusta</p>}
         </form>
     </div>
 </div>
@@ -78,5 +72,29 @@ else
 @section Scripts{
     <script src="~/js/usersList.js"></script>
     <script src="~/js/delete.js"></script>
+    <script>
+        function handleChange(user, checkboxStatus) {
+            console.log(user);
+            console.log(checkboxStatus.checked);
+            $.put('api/Users/${user.Id}/${checkboxStatus.checked}', dataToSend).done(function (data) {
+                var newBody = $('.modal-body', data);
+                placeholderElement.find('.modal-body').replaceWith(newBody);
+                var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
+                if (isValid) {
+                    placeholderElement.find('.modal').modal('hide');
+                    window.location.href = '/ActiveProjects/Edit?Id=' + document.getElementById('id').value;
+                }
+            });
+            $.ajax({
+                type: "Put",
+                url: '@Url.Page("Index","NewProject")&Id=' + currentId,
+                success: function (data) {
+                    $('#modal-placeholder').html(data);
+                    $('#editproject').modal('show');
+                }
+            })
+        }
+
+    </script>
 }
 

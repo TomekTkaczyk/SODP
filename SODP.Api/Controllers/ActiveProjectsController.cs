@@ -8,8 +8,8 @@ namespace SODP.Api.Controllers
     [Route("api/[controller]")]
     public class ActiveProjectsController : ProjectsController
     {
-        public ActiveProjectsController(IProjectsService projectsService) : base(projectsService) {}
-    
+        public ActiveProjectsController(IProjectsService projectsService) : base(projectsService) { }
+
         [HttpPost("{id}")]
         public async Task<IActionResult> Archive(int id)
         {
@@ -21,5 +21,6 @@ namespace SODP.Api.Controllers
         {
             return Ok(await _projectsService.DeleteAsync(id));
         }
+
     }
 }

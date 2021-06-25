@@ -1,0 +1,87 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]
+then
+    echo "Brak parametrow."
+else
+    PROJ=$1
+    find /working/aktualne/${PROJ} -type d -exec chmod 2775 {} +
+    find /working/aktualne/${PROJ} -type f -exec chmod 664 {} +
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 01_architektura`
+    for PLIK in $FILES
+    do
+        chown pmanager:architekci ${PLIK}
+        find ${PLIK} -exec chgrp -R architekci {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 02_konstrukcja`
+    for PLIK in $FILES
+    do
+        chown pmanager:konstruktorzy ${PLIK}
+        find ${PLIK} -exec chgrp -R konstruktorzy {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 03_instalacje_sanitarne`
+    for PLIK in $FILES
+    do
+        chown pmanager:instalatorzy ${PLIK}
+        find ${PLIK} -exec chgrp -R instalatorzy {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 04_instalacje_elektryczne`
+    for PLIK in $FILES
+    do
+        chown pmanager:elektrycy ${PLIK}
+        find ${PLIK} -exec chgrp -R elektrycy {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 05_drogi`
+    for PLIK in $FILES
+    do
+        chown pmanager:drogowcy ${PLIK}
+        find ${PLIK} -exec chgrp -R drogowcy {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 06_pzt`
+    for PLIK in $FILES
+    do
+        chown pmanager:pzt ${PLIK}
+        find ${PLIK} -exec chgrp -R pzt {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 07_technologia`
+    for PLIK in $FILES
+    do
+        chown pmanager:technolodzy ${PLIK}
+        find ${PLIK} -exec chgrp -R technolodzy {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 08_korespondencja`
+    for PLIK in $FILES
+    do
+        chown pmanager:biuro ${PLIK}
+        find ${PLIK} -exec chgrp -R biuro {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 09_dfp`
+    for PLIK in $FILES
+    do
+        chown pmanager:biuro ${PLIK}
+        find ${PLIK} -exec chgrp -R biuro {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 10_przedmiary`
+    for PLIK in $FILES
+    do
+        chown pmanager:przedmiary ${PLIK}
+        find ${PLIK} -exec chgrp -R przedmiary {} +
+    done
+
+    FILES=`find /working/aktualne/${PROJ} -type d -name 99_hydepark`
+    for PLIK in $FILES
+    do
+        chown -R nobody:nogroup ${PLIK}
+        chmod -R 0777 ${PLIK}
+    done
+fi
