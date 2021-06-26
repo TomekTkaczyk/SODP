@@ -42,6 +42,10 @@
                     {
                         <input asp-for="AllRoles[role.Key]" type="checkbox" checked="@Model.CurrentUser.Roles.Contains(role.Key)" disabled="disabled" />
                     }
+                    else if (Model.CurrentUser.Username == "PManager" && role.Key == "ProjectManager")
+                    {
+                        <input asp-for="AllRoles[role.Key]" type="checkbox" checked="@Model.CurrentUser.Roles.Contains(role.Key)" disabled="disabled" />
+                    }
                     else
                     {
                         <input asp-for="AllRoles[role.Key]" type="checkbox" checked="@Model.CurrentUser.Roles.Contains(role.Key)" />

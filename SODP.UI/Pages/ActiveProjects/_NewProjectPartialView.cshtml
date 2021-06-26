@@ -1,5 +1,5 @@
 ﻿@using SODP.UI.ViewModels
-@model NewProjectViewModel
+@model NewProjectVM
 <!-- Modal -->
 <div class="modal fade" id="editproject" tabindex="-1" role="dialog" aria-labelledby="editProjectLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -47,16 +47,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                @*<partial name="_SubmitAndBackButtonModalPartial" />*@
-
-                <div class="row">
-                    <div class="col-6">
-                        <button type="button" class="btn btn-primary" data-save="modal">Zapisz</button>
-                    </div>
-                    <div class="col-6">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Wróć</button>
-                    </div>
-                </div></div>
+                <partial name="_SubmitAndBackButtonModalPartial" />
+            </div>
         </div>
     </div>
 </div>

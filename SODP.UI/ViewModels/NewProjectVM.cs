@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.ViewModels
 {
-    public class NewProjectViewModel
+    public class NewProjectVM
     {
         public ProjectDTO Project { get; set; }
         public IEnumerable<SelectListItem> Stages { get; set; }
