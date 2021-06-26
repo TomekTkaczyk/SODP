@@ -53,10 +53,10 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             //var project = (id == null) ? new ProjectDTO() : (await _projectsService.GetAsync((int)id)).Data;
             
-            return await GetPartialViewAsync(new ProjectDTO());
+            return await GetPartialViewAsync(new NewProjectViewModel());
         }
 
-        public async Task<PartialViewResult> OnPostNewProject(ProjectDTO project)
+        public async Task<PartialViewResult> OnPostNewProjectAsync(ProjectDTO project)
         {
             if (ModelState.IsValid)
             {
