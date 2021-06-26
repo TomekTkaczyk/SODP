@@ -5,16 +5,12 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SODP.Domain.DTO;
 using SODP.Domain.Models;
 using SODP.Domain.Services;
+using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Net;
-using System.Net.Http.Headers;
-using SODP.UI.Infrastructure;
 
 namespace SODP.UI.Pages.ActiveProjects
 {
@@ -63,19 +59,29 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             //var project = (id == null) ? new ProjectDTO() : (await _projectsService.GetAsync((int)id)).Data;
             
-            return await GetPartialViewAsync(new NewProjectViewModel());
+            return await GetPartialViewAsync(new NewProjectVM());
         }
 
-        public async Task<PartialViewResult> OnPostNewProjectAsync(ProjectDTO project)
+        public async Task<PartialViewResult> OnPostNewProjectAsync(NewProjectVM project)
         {
             if (ModelState.IsValid)
             {
                 // var response = await new HttpClient().PostAsync(_apiUrl + "/api/ActiveProjects",new HttpContent().ReadAsFormDataAsync();
-                var response = await _projectsService.CreateAsync(project);
+                
+                var response = await _projectsService.CreateAsync(new ProjectDTO() { 
+                    Number = project.Number,
+                    StageId = project.StageId,
+                    Title=project.Title
+                });
+
                 if (response.Success)
                 {
-                    var result1 = await GetPartialViewAsync(response.Data);
-                    return result1;
+                    return await GetPartialViewAsync(new NewProjectVM { 
+                        Id = response.Data.Id,
+                        Number = response.Data.Number,
+                        StageId = response.Data.StageId,
+                        Title = response.Data.Title
+                    });
                 }
                 else
                 {
@@ -95,7 +101,7 @@ namespace SODP.UI.Pages.ActiveProjects
             return result;
         }
 
-        private async Task<PartialViewResult> GetPartialViewAsync(ProjectDTO project)
+        private async Task<PartialViewResult> GetPartialViewAsync(NewProjectVM project)
         {
             var stages = (await _stagesService.GetAllAsync(1, 0)).Data.Collection;
             var stagesItems = stages.Select(x => new SelectListItem()
@@ -104,6 +110,8 @@ namespace SODP.UI.Pages.ActiveProjects
                 Text = $"({x.Sign.Trim()}) {x.Title.Trim()}"
             }).ToList();
 
+            project.Stages = stagesItems;
+            
             if(project.StageId != 0)
             {
                 var currentStage = stages.FirstOrDefault(x => x.Id == project.StageId);
@@ -111,7 +119,8 @@ namespace SODP.UI.Pages.ActiveProjects
                 project.StageTitle = currentStage.Title;
             }
 
-            var viewModel = new NewProjectVM { Project = project, Stages = stagesItems };
+            //var viewModel = new NewProjectVM { Project = project.Project, Stages = stagesItems };
+            var viewModel = project;
 
             return new PartialViewResult
             {
