@@ -16,6 +16,7 @@ using SODP.Domain.Managers;
 using SODP.Domain.Services;
 using SODP.Model;
 using SODP.UI.Areas.Identity;
+using SODP.UI.Infrastructure;
 using System;
 using System.IO;
 using System.Linq;
@@ -96,6 +97,8 @@ namespace SODP.UI
             services.AddScoped<DataInitializer>();
 
             services.AddScoped<FolderConfigurator>();
+
+            services.AddScoped<IWebAPIProvider, WebAPIProvider>();
 
             services.AddScoped<IFolderCommandCreator, FolderCommandCreator>();
 

@@ -26,7 +26,7 @@ namespace SODP.UI.Pages.Stages
         }
 
         [BindProperty]
-        public StagesViewModel StagesViewModel { get; set; }
+        public StagesListVM StagesViewModel { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 15)
         {
@@ -34,7 +34,7 @@ namespace SODP.UI.Pages.Stages
             url.Append("/Stages?currentPage=:&pageSize=");
             url.Append(pageSize.ToString());
 
-            StagesViewModel = new StagesViewModel
+            StagesViewModel = new StagesListVM
             {
                 PageInfo = new PageInfo
                 {

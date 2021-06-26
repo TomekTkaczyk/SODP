@@ -1,15 +1,12 @@
 ﻿using SODP.Domain.DTO;
 using SODP.Domain.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.UI.ViewModels
 {
-    public class ProjectsViewModel
+    public class StagesListVM
     {
-        public IList<ProjectDTO> Projects { get; set; }
+        public IList<StageDTO> Stages { get; set; }
         public PageInfo PageInfo { get; set; }
     }
 }

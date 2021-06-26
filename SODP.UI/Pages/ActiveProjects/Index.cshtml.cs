@@ -10,7 +10,11 @@ using SODP.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http.Headers;
+using SODP.UI.Infrastructure;
 
 namespace SODP.UI.Pages.ActiveProjects
 {
@@ -20,19 +24,25 @@ namespace SODP.UI.Pages.ActiveProjects
         private readonly IProjectsService _projectsService;
         private readonly IStagesService _stagesService;
         const string partialViewName = "_NewProjectPartialView";
+        private readonly string _apiUrl;
 
-        public IndexModel(IProjectsService projectsService, IStagesService stagesService)
+        public IndexModel(IProjectsService projectsService, IStagesService stagesService, IWebAPIProvider apiProvider)
         {
             _projectsService = projectsService;
             _stagesService = stagesService;
             ReturnUrl = "/ActiveProjects";
+            _apiUrl = apiProvider.apiUrl;
         }
 
         public ServicePageResponse<ProjectDTO> Projects { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Projects = await _projectsService.GetAllAsync(0,0);
+            var response = await new HttpClient().GetAsync(_apiUrl + "/api/ActiveProjects");
+            if (response.IsSuccessStatusCode)
+            {
+                Projects = await response.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();
+            }
 
             return Page();
         }
@@ -60,6 +70,7 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             if (ModelState.IsValid)
             {
+                // var response = await new HttpClient().PostAsync(_apiUrl + "/api/ActiveProjects",new HttpContent().ReadAsFormDataAsync();
                 var response = await _projectsService.CreateAsync(project);
                 if (response.Success)
                 {
@@ -100,12 +111,12 @@ namespace SODP.UI.Pages.ActiveProjects
                 project.StageTitle = currentStage.Title;
             }
 
-            var viewModel = new NewProjectViewModel { Project = project, Stages = stagesItems };
+            var viewModel = new NewProjectVM { Project = project, Stages = stagesItems };
 
             return new PartialViewResult
             {
                 ViewName = partialViewName,
-                ViewData = new ViewDataDictionary<NewProjectViewModel>(ViewData, viewModel)
+                ViewData = new ViewDataDictionary<NewProjectVM>(ViewData, viewModel)
             };
         }
     }
