@@ -1,9 +1,5 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
-using SODP.Domain.DTO;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SODP.Shared.DTO;
 
 namespace SODP.Domain.Validators
 {

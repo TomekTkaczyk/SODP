@@ -1,9 +1,6 @@
-﻿using SODP.Domain.DTO;
-using SODP.Domain.Models;
-using System;
+﻿using SODP.Domain.Models;
+using SODP.Shared.DTO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.UI.ViewModels
 {

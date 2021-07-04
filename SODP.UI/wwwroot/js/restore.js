@@ -9,7 +9,7 @@
         console.log(url);
         if (willRestore) {
             $.ajax({
-                type: "POST",
+                type: "GET",
                 url: url,
                 success: function (data) {
                     if (data.success) {

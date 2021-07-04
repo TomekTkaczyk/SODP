@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SODP.Domain.DTO
+namespace SODP.Shared.DTO
 {
     public class DesignerDTO : BaseDTO
     {

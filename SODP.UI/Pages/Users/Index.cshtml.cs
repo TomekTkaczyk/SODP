@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SODP.Domain.DTO;
 using SODP.Domain.Services;
+using SODP.Shared.DTO;
 using SODP.UI.Pages.Shared;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using SODP.Domain.DTO;
+//using SODP.Domain.DTO;
 using SODP.Model;
+using SODP.Shared.DTO;
 using System.Collections.Generic;
 
 namespace SODP.Domain

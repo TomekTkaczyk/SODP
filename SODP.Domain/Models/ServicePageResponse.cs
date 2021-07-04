@@ -1,4 +1,4 @@
-﻿using SODP.Domain.DTO;
+﻿using SODP.Shared.DTO;
 using System.Collections.Generic;
 
 namespace SODP.Domain.Models

@@ -16,7 +16,7 @@ function InitProjectDataTable() {
                 data: "id",
                 render: function (data) {
                     var renderTags = `<div class="row group justify-content-center">`;
-                    renderTags += `<a onclick = 'Restore("/api/ArchiveProjects/${data}")' class='btn btn-lg text-success mb-0 mt-0 ml-1 mr-1 p-1' style = "cursor:pointer; width=70px;" data-toggle="tooltip" data-placement="top" title="Przywróć projekt do aktywnych"> <i class="fas fa-archive"></i></a >`;
+                    renderTags += `<a onclick = 'Restore("/api/v0_01/archive-projects/${data}/restore")' class='btn btn-lg text-success mb-0 mt-0 ml-1 mr-1 p-1' style = "cursor:pointer; width=70px;" data-toggle="tooltip" data-placement="top" title="Przywróć projekt do aktywnych"> <i class="fas fa-archive"></i></a >`;
                     renderTags += `</div >`;
 
                     return renderTags;

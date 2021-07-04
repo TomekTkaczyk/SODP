@@ -2,11 +2,11 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess;
-using SODP.Domain.DTO;
 using SODP.Domain.Helpers;
 using SODP.Domain.Models;
 using SODP.Domain.Services;
 using SODP.Model;
+using SODP.Shared.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

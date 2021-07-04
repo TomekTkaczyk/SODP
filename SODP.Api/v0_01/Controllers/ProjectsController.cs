@@ -5,11 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SODP.Api.Controllers
+namespace SODP.Api.v0_01.Controllers
 {
-    // [Authorize]
-    [Route("api/[controller]")]
-    [ApiController]
     public class ProjectsController : ControllerBase
     {
         public readonly IProjectsService _projectsService;

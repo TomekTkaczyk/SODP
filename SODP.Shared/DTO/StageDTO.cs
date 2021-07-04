@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SODP.Domain.DTO
+namespace SODP.Shared.DTO
 {
     public class StageDTO  : BaseDTO
     {

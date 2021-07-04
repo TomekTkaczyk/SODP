@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace SODP.Domain.DTO
+namespace SODP.Shared.DTO
 {
     public class ProjectDTO : BaseDTO
     {

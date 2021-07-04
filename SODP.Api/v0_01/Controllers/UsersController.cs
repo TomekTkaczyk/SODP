@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SODP.Domain.DTO;
 using SODP.Domain.Services;
 using System.Threading.Tasks;
 
-namespace SODP.Api.Controllers
+namespace SODP.Api.v0_01.Controllers
 {
     // [Authorize]
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v0_01/users")]
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;

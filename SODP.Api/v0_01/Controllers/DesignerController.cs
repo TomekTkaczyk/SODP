@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SODP.Domain.DTO;
 using SODP.Domain.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace SODP.Api.Controllers
+namespace SODP.Api.v0_01.Controllers
 {
     // [Authorize]
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v0_01/designers")]
     public class DesignerController : ApiControllerBase
     {
         private readonly IDesignersService _service;

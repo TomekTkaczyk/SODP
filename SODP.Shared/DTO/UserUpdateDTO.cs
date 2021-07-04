@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace SODP.Domain.DTO
+namespace SODP.Shared.DTO
 {
     public class UserUpdateDTO
     {

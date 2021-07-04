@@ -6,10 +6,9 @@
         buttons: true,
         danegerMode: true
     }).then((willArchive) => {
-        console.log(willArchive);
         if (willArchive) {
             $.ajax({
-                type: "POST",
+                type: "GET",
                 url: url,
                 success: function (data) {
                     if (data.success) {

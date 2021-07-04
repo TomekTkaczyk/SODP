@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SODP.Domain.DTO;
 using SODP.Domain.Models;
-using SODP.Domain.Services;
+using SODP.Shared.DTO;
+using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
-using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ArchiveProjects
@@ -12,30 +12,24 @@ namespace SODP.UI.Pages.ArchiveProjects
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : SODPPageModel
     {
-        private readonly IProjectsService _projectsService;
+        private readonly string _apiUrl;
 
-        public IndexModel(IProjectsService projectsService)
+        public IndexModel(IWebAPIProvider apiProvider)
         {
-            _projectsService = projectsService;
-            _projectsService.SetArchiveMode();
             ReturnUrl = "/ArchiveProjects";
+            _apiUrl = apiProvider.apiUrl;
         }
         public ServicePageResponse<ProjectDTO> Projects { get; set; }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            Projects = await _projectsService.GetAllAsync(0,0); 
-        }
-
-        public async Task<IActionResult> OnPostDelete(int id)
-        {
-            var response = await _projectsService.DeleteAsync(id);
-            if (!response.Success)
+            var response = await new HttpClient().GetAsync(_apiUrl + "/v0_01/archive-projects");
+            if (response.IsSuccessStatusCode)
             {
-                Projects = await _projectsService.GetAllAsync();
-                return Page();
+                Projects = await response.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();
             }
-            return RedirectToPage("Index");
+
+            return Page();
         }
     }
 }

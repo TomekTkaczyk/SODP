@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SODP.Domain.DTO;
 using SODP.Domain.Models;
 using SODP.Domain.Services;
+using SODP.Shared.DTO;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
 using System.Collections.Generic;

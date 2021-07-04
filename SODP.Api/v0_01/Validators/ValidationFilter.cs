@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SODP.Api.Validators
+namespace SODP.Api.v0_01.Validators
 {
     public class ValidationFilter : ActionFilterAttribute
     {

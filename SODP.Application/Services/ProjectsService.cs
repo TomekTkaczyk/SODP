@@ -2,7 +2,7 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess;
-using SODP.Domain.DTO;
+using SODP.Shared.DTO;
 using SODP.Domain.Helpers;
 using SODP.Domain.Managers;
 using SODP.Domain.Models;
@@ -22,7 +22,7 @@ namespace WebSODP.Application.Services
         private readonly IFolderManager _folderManager;
         private readonly IValidator<Project> _validator;
         private readonly SODPDBContext _context;
-        private ProjectServiceMode _mode = ProjectServiceMode.Active;
+        private ProjectStatus _mode = ProjectStatus.Active;
 
         public ProjectsService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context)
         {
@@ -32,54 +32,42 @@ namespace WebSODP.Application.Services
             _context = context;
         }
 
+        public IProjectsService SetActiveMode()
+        {
+            _mode = ProjectStatus.Active;
+
+            return this;
+        }
+
         public IProjectsService SetArchiveMode()
         {
-            _mode = ProjectServiceMode.Archive;
+            _mode = ProjectStatus.Archived;
+
             return this;
         }
 
         public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 0, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<ProjectDTO>();
+            IList<Project> projects = new List<Project>();
+
+            serviceResponse.Data.TotalCount = await _context.Projects.Where(x => x.Status == _mode).CountAsync();
+            if (pageSize == 0)
+            {
+                pageSize = serviceResponse.Data.TotalCount;
+            }
+
             try
             {
-                if (pageSize == 0)
-                {
-                    pageSize = serviceResponse.Data.TotalCount;
-                }
-                IList<Project> projects = new List<Project>();
                 var query = _context.Projects.Include(s => s.Stage);
-                switch(_mode)
-                {
-                    case ProjectServiceMode.Active:                
-                        serviceResponse.Data.TotalCount = await _context.Projects.Where(x => x.Status == ProjectStatus.Active).CountAsync();
-                        if (pageSize == 0)
-                        {
-                            pageSize = serviceResponse.Data.TotalCount;
-                        }
-                        projects = await _context.Projects.Include(s => s.Stage)
-                            .OrderBy(x => x.Number)
-                            .ThenBy(y => y.Stage.Sign)
-                            .Where(x => x.Status == ProjectStatus.Active)
-                            .Skip(currentPage * pageSize)
-                            .Take(pageSize)
-                            .ToListAsync();
-                        break;
-                    case ProjectServiceMode.Archive:
-                        serviceResponse.Data.TotalCount = await _context.Projects.Where(x => x.Status == ProjectStatus.Archived).CountAsync();
-                        if (pageSize == 0)
-                        {
-                            pageSize = serviceResponse.Data.TotalCount;
-                        }
-                        projects = await _context.Projects.Include(s => s.Stage)
-                            .OrderBy(x => x.Number)
-                            .ThenBy(y => y.Stage.Sign)
-                            .Where(x => x.Status == ProjectStatus.Archived)
-                            .Skip(currentPage * pageSize)
-                            .Take(pageSize)
-                            .ToListAsync();
-                        break;
-                }
+                projects = await _context.Projects.Include(s => s.Stage)
+                    .OrderBy(x => x.Number)
+                    .ThenBy(y => y.Stage.Sign)
+                    .Where(x => x.Status == _mode)
+                    .Skip(currentPage * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
                 serviceResponse.Data.PageNumber = currentPage;
                 serviceResponse.Data.PageSize = pageSize;
                 serviceResponse.SetData(_mapper.Map<IList<ProjectDTO>>(projects));
@@ -99,6 +87,7 @@ namespace WebSODP.Application.Services
             {
                 var project = await _context.Projects
                     .Include(s => s.Stage)
+                    .Where(t => t.Status == _mode)
                     .FirstOrDefaultAsync(x => x.Id == id);
                 if (project == null)
                 {

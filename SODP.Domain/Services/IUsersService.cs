@@ -1,5 +1,5 @@
-﻿using SODP.Domain.DTO;
-using SODP.Domain.Models;
+﻿using SODP.Domain.Models;
+using SODP.Shared.DTO;
 using System.Threading.Tasks;
 
 namespace SODP.Domain.Services

@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using SODP.Domain.Services;
 using SODP.Model.Enums;
 
-namespace SODP.Api.Controllers
+namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v0_01/archive-projects")]
     public class ArchiveProjectsController : ProjectsController
     {
         public ArchiveProjectsController(IProjectsService projectsService) : base(projectsService)
@@ -14,7 +14,7 @@ namespace SODP.Api.Controllers
             _projectsService.SetArchiveMode();
         }
 
-        [HttpPost("{id}")]
+        [HttpGet("{id}/restore")]
         public async Task<IActionResult> Restore(int id)
         {
             return Ok(await _projectsService.RestoreAsync(id));

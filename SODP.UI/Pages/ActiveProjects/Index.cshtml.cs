@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SODP.Domain.DTO;
 using SODP.Domain.Models;
 using SODP.Domain.Services;
+using SODP.Shared.DTO;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
@@ -34,7 +34,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var response = await new HttpClient().GetAsync(_apiUrl + "/api/ActiveProjects");
+            var response = await new HttpClient().GetAsync(_apiUrl + "/v0_01/active-projects");
             if (response.IsSuccessStatusCode)
             {
                 Projects = await response.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();

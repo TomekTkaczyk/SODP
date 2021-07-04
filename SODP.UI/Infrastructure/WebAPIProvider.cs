@@ -10,7 +10,7 @@ namespace SODP.UI.Infrastructure
     {
         public WebAPIProvider(IConfiguration configuration)
         {
-            apiUrl = "https://localhost:44303";
+            apiUrl = "https://localhost:44303/api";
         }
         public string apiUrl { get; private set; }
     }
