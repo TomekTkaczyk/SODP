@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SODP.Domain.Services;
+using SODP.Shared.DTO;
 
 namespace SODP.Api.v0_01.Controllers
 {
@@ -14,6 +15,12 @@ namespace SODP.Api.v0_01.Controllers
         public async Task<IActionResult> Archive(int id)
         {
             return Ok(await _projectsService.ArchiveAsync(id));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] ProjectDTO project)
+        {
+            return Ok(await _projectsService.CreateAsync(project));
         }
 
         [HttpDelete("{id}")]

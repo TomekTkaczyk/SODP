@@ -1,5 +1,4 @@
-﻿using SODP.Domain.Models;
-using SODP.Shared.DTO;
+﻿using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Collections.Generic;
 

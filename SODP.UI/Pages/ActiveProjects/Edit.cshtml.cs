@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SODP.Domain.Models;
 using SODP.Domain.Services;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
 using SODP.UI.Pages.Shared;
 using System.Collections.Generic;
 using System.Linq;

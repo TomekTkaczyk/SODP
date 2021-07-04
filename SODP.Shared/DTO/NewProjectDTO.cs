@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SODP.UI.ViewModels
+namespace SODP.Shared.DTO
 {
-    public class NewProjectDTO
+    public class NewProjectDTO : BaseDTO
     {
-        public int Id { get; set; }
-
         [Required(ErrorMessage = "Numer projektu jest wymagany.")]
         [RegularExpression(@"^([1-9]{1})([0-9]{3})$", ErrorMessage = "Numer projektu powinien zawierać 4 cyfry.")]
         public string Number { get; set; }

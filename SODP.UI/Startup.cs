@@ -1,6 +1,5 @@
 using AutoMapper;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -8,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SODP.Application.Managers;
 using SODP.DataAccess;
 using SODP.Domain.Managers;
 using SODP.Domain.Services;
+using SODP.Infrastructure.Extensions;
 using SODP.Model;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
@@ -46,30 +45,9 @@ namespace SODP.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SODP.API", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Description = "Please insert JWT with Bearer into field",
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-            });
+            services.AddSwagger();
+
+            services.AddDbContext(Configuration);
 
             var app = AppDomain.CurrentDomain
                     .GetAssemblies()
@@ -92,9 +70,7 @@ namespace SODP.UI
                     .WithTransientLifetime();
             });
 
-            services.AddScoped<UserInitializer>();
-
-            services.AddScoped<DataInitializer>();
+            services.AddScopedServices();
 
             services.AddScoped<FolderConfigurator>();
 
@@ -104,14 +80,8 @@ namespace SODP.UI
 
             services.AddScoped<IFolderManager, FolderManager>();
 
-            services.AddTransient<IdentityErrorDescriber, CustomIdentityErrorDescriber>();
 
-            services.AddDbContext<SODPDBContext>(options =>
-            {
-                options.UseMySql(
-                    Configuration.GetConnectionString("DefaultDbConnection"),
-                    b => b.CharSetBehavior(CharSetBehavior.NeverAppend));
-            });
+            services.AddTransient<IdentityErrorDescriber, CustomIdentityErrorDescriber>();
 
             services.AddIdentity<User, Role>(options =>   
             {
@@ -136,9 +106,11 @@ namespace SODP.UI
             services.AddAutoMapper(app);
 
             services.AddMemoryCache();
+
             services.AddDistributedMemoryCache();
 
             services.AddControllers();
+
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
         }
@@ -148,8 +120,7 @@ namespace SODP.UI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SODP.API v1"));
+                app.ConfigureSwagger();
             }
             else
             {

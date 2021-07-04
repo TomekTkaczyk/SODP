@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using SODP.Domain.Models;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
 
 namespace SODP.Domain.Services
 {

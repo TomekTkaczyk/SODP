@@ -2,14 +2,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SODP.Domain.Models;
 using SODP.Domain.Services;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
@@ -57,31 +59,26 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnGetNewProjectAsync()
         {
-            //var project = (id == null) ? new ProjectDTO() : (await _projectsService.GetAsync((int)id)).Data;
-            
-            return await GetPartialViewAsync(new NewProjectVM());
+            return await GetPartialViewAsync(new ProjectDTO());
         }
 
-        public async Task<PartialViewResult> OnPostNewProjectAsync(NewProjectVM project)
+        public async Task<PartialViewResult> OnPostNewProjectAsync(ProjectDTO project)
         {
             if (ModelState.IsValid)
             {
-                // var response = await new HttpClient().PostAsync(_apiUrl + "/api/ActiveProjects",new HttpContent().ReadAsFormDataAsync();
-                
-                var response = await _projectsService.CreateAsync(new ProjectDTO() { 
-                    Number = project.Number,
-                    StageId = project.StageId,
-                    Title=project.Title
-                });
+                var apiResponse = await new HttpClient()
+                    .PostAsync(_apiUrl + "/v0_01/active-projects", 
+                                new StringContent(           
+                                    JsonSerializer.Serialize(project), 
+                                    Encoding.UTF8, 
+                                    "application/json"
+                                ));
 
-                if (response.Success)
+                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectDTO>>();
+
+                if (apiResponse.IsSuccessStatusCode)
                 {
-                    return await GetPartialViewAsync(new NewProjectVM { 
-                        Id = response.Data.Id,
-                        Number = response.Data.Number,
-                        StageId = response.Data.StageId,
-                        Title = response.Data.Title
-                    });
+                    return await GetPartialViewAsync(response.Data);
                 }
                 else
                 {
@@ -94,14 +91,13 @@ namespace SODP.UI.Pages.ActiveProjects
                         ModelState.AddModelError(error.Key, error.Value);
                     }
                 }
-                
             }
             var result = await GetPartialViewAsync(project);
 
             return result;
         }
 
-        private async Task<PartialViewResult> GetPartialViewAsync(NewProjectVM project)
+        private async Task<PartialViewResult> GetPartialViewAsync(ProjectDTO project)
         {
             var stages = (await _stagesService.GetAllAsync(1, 0)).Data.Collection;
             var stagesItems = stages.Select(x => new SelectListItem()
@@ -110,8 +106,6 @@ namespace SODP.UI.Pages.ActiveProjects
                 Text = $"({x.Sign.Trim()}) {x.Title.Trim()}"
             }).ToList();
 
-            project.Stages = stagesItems;
-            
             if(project.StageId != 0)
             {
                 var currentStage = stages.FirstOrDefault(x => x.Id == project.StageId);
@@ -119,8 +113,11 @@ namespace SODP.UI.Pages.ActiveProjects
                 project.StageTitle = currentStage.Title;
             }
 
-            //var viewModel = new NewProjectVM { Project = project.Project, Stages = stagesItems };
-            var viewModel = project;
+            var viewModel = new NewProjectVM()
+            { 
+                Project = project,
+                Stages = stagesItems
+            };
 
             return new PartialViewResult
             {

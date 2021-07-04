@@ -5,7 +5,6 @@ using SODP.DataAccess;
 using SODP.Shared.DTO;
 using SODP.Domain.Helpers;
 using SODP.Domain.Managers;
-using SODP.Domain.Models;
 using SODP.Domain.Services;
 using SODP.Model;
 using SODP.Model.Enums;
@@ -13,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SODP.Shared.Response;
 
 namespace WebSODP.Application.Services
 {
