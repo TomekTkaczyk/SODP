@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SODP.Domain.Models
+namespace SODP.Shared.Response
 {
     public class PageInfo
     {
