@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public class DesignersService : IDesignersService
+    public class DesignerService : IDesignerService
     {
         private readonly IMapper _mapper;
         private readonly IValidator<Designer> _validator;
         private readonly SODPDBContext _context;
 
-        public DesignersService(IMapper mapper, IValidator<Designer> validator, SODPDBContext context)
+        public DesignerService(IMapper mapper, IValidator<Designer> validator, SODPDBContext context)
         {
             _mapper = mapper;
             _validator = validator;

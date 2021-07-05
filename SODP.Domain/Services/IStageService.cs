@@ -4,7 +4,7 @@ using SODP.Shared.Response;
 
 namespace SODP.Domain.Services
 {
-    public interface IStagesService : IEntityService<StageDTO>
+    public interface IStageService : IEntityService<StageDTO>
     {
         Task<ServiceResponse<StageDTO>> GetAsync(string sign);
         Task<ServiceResponse> DeleteAsync(string sign);

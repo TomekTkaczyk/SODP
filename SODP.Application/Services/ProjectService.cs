@@ -16,7 +16,7 @@ using SODP.Shared.Response;
 
 namespace WebSODP.Application.Services
 {
-    public class ProjectsService : IProjectsService
+    public class ProjectService : IProjectService
     {
         private readonly IMapper _mapper;
         private readonly IFolderManager _folderManager;
@@ -24,7 +24,7 @@ namespace WebSODP.Application.Services
         private readonly SODPDBContext _context;
         private ProjectStatus _mode = ProjectStatus.Active;
 
-        public ProjectsService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context)
+        public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context)
         {
             _mapper = mapper;
             _folderManager = folderManager;
@@ -32,14 +32,14 @@ namespace WebSODP.Application.Services
             _context = context;
         }
 
-        public IProjectsService SetActiveMode()
+        public IProjectService SetActiveMode()
         {
             _mode = ProjectStatus.Active;
 
             return this;
         }
 
-        public IProjectsService SetArchiveMode()
+        public IProjectService SetArchiveMode()
         {
             _mode = ProjectStatus.Archived;
 

@@ -1,17 +1,19 @@
-﻿$(function () {
-
-    var placeholderElement = $('#modal-placeholder');
-
-    $('[data-toggle="tooltip"]').tooltip()
-
+﻿$(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
     $('button[data-toggle="ajax-modal"]').click(function (event) {
         var url = $(this).data('url');
         $.get(url).done(function (data) {
-            console.log(data);
+            var placeholderElement = $('#modal-placeholder');
             placeholderElement.html(data);
             placeholderElement.find('.modal').modal('show');
         });
     });
+
+    InitModalPlaceHolder();
+});
+
+function InitModalPlaceHolder() {
+    var placeholderElement = $('#modal-placeholder');
 
     placeholderElement.on('click', '[data-save="modal"]', function (event) {
         event.preventDefault();
@@ -21,14 +23,14 @@
         $.post(actionUrl, dataToSend).done(function (data) {
             var newBody = $('.modal-body', data);
             placeholderElement.find('.modal-body').replaceWith(newBody);
-            console.log(newBody.find('[name="IsValidate"]'));
             var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
             if (isValid) {
-                var stage = document.getElementById("sign").value;
                 placeholderElement.find('.modal').modal('hide');
-                window.location = 'Stages?tostage='+stage;
+                window.location = '/Stages';
             }
         });
     });
-});
+}
+
+
 

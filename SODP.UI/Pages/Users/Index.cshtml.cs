@@ -11,9 +11,9 @@ namespace SODP.UI.Pages.Users
     [Authorize(Roles = "Administrator")]
     public class IndexModel : SODPPageModel
     {
-        private readonly IUsersService _usersService;
+        private readonly IUserService _usersService;
 
-        public IndexModel(IUsersService usersService)
+        public IndexModel(IUserService usersService)
         {
             _usersService = usersService;
             ReturnUrl = "/Users";

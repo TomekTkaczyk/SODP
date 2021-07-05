@@ -11,9 +11,9 @@ namespace SODP.UI.Pages.ActiveProjects
     [Authorize(Roles = "Administrator,ProjectManager")]
     public class InfoModel : SODPPageModel
     {
-        private readonly IProjectsService _projectsService;
+        private readonly IProjectService _projectsService;
 
-        public InfoModel(IProjectsService projectsService)
+        public InfoModel(IProjectService projectsService)
         {
             _projectsService = projectsService;
         }

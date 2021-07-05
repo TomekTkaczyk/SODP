@@ -9,9 +9,9 @@ namespace SODP.Api.v0_01.Controllers
     [Route("api/v0_01/designers")]
     public class DesignerController : ApiControllerBase
     {
-        private readonly IDesignersService _service;
+        private readonly IDesignerService _service;
 
-        public DesignerController(IDesignersService service)
+        public DesignerController(IDesignerService service)
         {
             _service = service;
         }

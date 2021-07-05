@@ -8,17 +8,17 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/stages")]
-    public class StagesController : ControllerBase
+    public class StageController : ControllerBase
     {
-        private readonly IStagesService _stagesService;
+        private readonly IStageService _stagesService;
 
-        public StagesController(IStagesService stagesService)
+        public StageController(IStageService stagesService)
         {
             _stagesService = stagesService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 15)
         {
             // sample code with id from token
             //var claim = User.Claims.FirstOrDefault(x => x.Type == "id");
@@ -26,7 +26,7 @@ namespace SODP.Api.v0_01.Controllers
             //{
             //    return BadRequest();
             //}
-            return Ok(await _stagesService.GetAllAsync(1, 15));
+            return Ok(await _stagesService.GetAllAsync(currentPage, pageSize));
         }
 
         [HttpGet("{id}")]

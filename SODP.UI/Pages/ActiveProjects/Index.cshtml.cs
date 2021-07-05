@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SODP.Domain.Services;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -19,24 +19,22 @@ namespace SODP.UI.Pages.ActiveProjects
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : SODPPageModel
     {
-        private readonly IProjectsService _projectsService;
-        private readonly IStagesService _stagesService;
         const string partialViewName = "_NewProjectPartialView";
         private readonly string _apiUrl;
+        private readonly string _apiVersion;
 
-        public IndexModel(IProjectsService projectsService, IStagesService stagesService, IWebAPIProvider apiProvider)
+        public IndexModel(IWebAPIProvider apiProvider)
         {
-            _projectsService = projectsService;
-            _stagesService = stagesService;
             ReturnUrl = "/ActiveProjects";
             _apiUrl = apiProvider.apiUrl;
+            _apiVersion = apiProvider.apiVersion;
         }
 
         public ServicePageResponse<ProjectDTO> Projects { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var response = await new HttpClient().GetAsync(_apiUrl + "/v0_01/active-projects");
+            var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/active-projects");
             if (response.IsSuccessStatusCode)
             {
                 Projects = await response.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();
@@ -47,10 +45,10 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            var response = await _projectsService.DeleteAsync(id);
-            if (!response.Success)
+            var response = await new HttpClient().DeleteAsync($"{_apiUrl}{_apiVersion}/active-projects/{id}");
+
+            if (!response.IsSuccessStatusCode)
             {
-                Projects = await _projectsService.GetAllAsync();
                 return Page();
             }
 
@@ -67,7 +65,7 @@ namespace SODP.UI.Pages.ActiveProjects
             if (ModelState.IsValid)
             {
                 var apiResponse = await new HttpClient()
-                    .PostAsync(_apiUrl + "/v0_01/active-projects", 
+                    .PostAsync($"{_apiUrl}{_apiVersion}/active-projects", 
                                 new StringContent(           
                                     JsonSerializer.Serialize(project), 
                                     Encoding.UTF8, 
@@ -92,25 +90,29 @@ namespace SODP.UI.Pages.ActiveProjects
                     }
                 }
             }
-            var result = await GetPartialViewAsync(project);
 
-            return result;
+            return await GetPartialViewAsync(project);
         }
 
         private async Task<PartialViewResult> GetPartialViewAsync(ProjectDTO project)
         {
-            var stages = (await _stagesService.GetAllAsync(1, 0)).Data.Collection;
-            var stagesItems = stages.Select(x => new SelectListItem()
+            var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages");
+            List<SelectListItem> stagesItems = new List<SelectListItem>();
+            if (response.IsSuccessStatusCode)
             {
-                Value = x.Id.ToString(),
-                Text = $"({x.Sign.Trim()}) {x.Title.Trim()}"
-            }).ToList();
+                var stages = await response.Content.ReadAsAsync<ServicePageResponse<StageDTO>>();
+                stagesItems = stages.Data.Collection.Select(x => new SelectListItem()
+                {
+                    Value = x.Id.ToString(),
+                    Text = $"({x.Sign.Trim()}) {x.Title.Trim()}"
+                }).ToList();
 
-            if(project.StageId != 0)
-            {
-                var currentStage = stages.FirstOrDefault(x => x.Id == project.StageId);
-                project.StageSign = currentStage.Sign;
-                project.StageTitle = currentStage.Title;
+                if (project.StageId != 0)
+                {
+                    var currentStage = stages.Data.Collection.FirstOrDefault(x => x.Id == project.StageId);
+                    project.StageSign = currentStage.Sign;
+                    project.StageTitle = currentStage.Title;
+                }
             }
 
             var viewModel = new NewProjectVM()

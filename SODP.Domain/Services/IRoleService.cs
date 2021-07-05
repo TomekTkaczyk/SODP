@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Domain.Services
 {
-    public interface IRolesService : IAppService
+    public interface IRoleService : IAppService
     {
         Task<IList<string>> GetAllAsync();
     }

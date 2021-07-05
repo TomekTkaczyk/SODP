@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Domain.Services
 {
-    public interface IDesignersService : IEntityService<DesignerDTO>
+    public interface IDesignerService : IEntityService<DesignerDTO>
     {
         Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool active = false);
     }

@@ -7,9 +7,9 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("api/v0_01/active-projects")]
-    public class ActiveProjectsController : ProjectsController
+    public class ActiveProjectController : ProjectController
     {
-        public ActiveProjectsController(IProjectsService projectsService) : base(projectsService) { }
+        public ActiveProjectController(IProjectService projectsService) : base(projectsService) { }
 
         [HttpGet("{id}/archive")]
         public async Task<IActionResult> Archive(int id)

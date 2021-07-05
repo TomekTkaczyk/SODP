@@ -14,10 +14,10 @@ namespace SODP.UI.Pages.ActiveProjects
     [Authorize(Roles = "Administrator,ProjectManager")]
     public class EditModel : SODPPageModel
     {
-        private readonly IStagesService _stagesService;
-        private readonly IProjectsService _projectsService;
+        private readonly IStageService _stagesService;
+        private readonly IProjectService _projectsService;
 
-        public EditModel(IProjectsService projectsService, IStagesService stagesService)
+        public EditModel(IProjectService projectsService, IStageService stagesService)
         {
             _projectsService = projectsService;
             _stagesService = stagesService;

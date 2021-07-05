@@ -8,5 +8,6 @@ namespace SODP.UI.Infrastructure
     public interface IWebAPIProvider
     {
           public string apiUrl { get; }
+          public string apiVersion { get; }
     }
 }

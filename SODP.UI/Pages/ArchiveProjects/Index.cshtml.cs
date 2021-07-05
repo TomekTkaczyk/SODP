@@ -13,17 +13,19 @@ namespace SODP.UI.Pages.ArchiveProjects
     public class IndexModel : SODPPageModel
     {
         private readonly string _apiUrl;
+        private readonly string _apiVersion;
 
         public IndexModel(IWebAPIProvider apiProvider)
         {
             ReturnUrl = "/ArchiveProjects";
             _apiUrl = apiProvider.apiUrl;
+            _apiVersion = apiProvider.apiVersion;
         }
         public ServicePageResponse<ProjectDTO> Projects { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var response = await new HttpClient().GetAsync(_apiUrl + "/v0_01/archive-projects");
+            var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/archive-projects");
             if (response.IsSuccessStatusCode)
             {
                 Projects = await response.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();

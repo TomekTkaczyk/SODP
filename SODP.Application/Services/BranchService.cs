@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public class BranchesService : IBranchService
+    public class BranchService : IBranchService
     {
         private readonly IMapper _mapper;
         private readonly IValidator<Branch> _validator;
         private readonly SODPDBContext _context;
 
-        public BranchesService(IMapper mapper, IValidator<Branch> validator, SODPDBContext context)
+        public BranchService(IMapper mapper, IValidator<Branch> validator, SODPDBContext context)
         {
             _mapper = mapper;
             _validator = validator;

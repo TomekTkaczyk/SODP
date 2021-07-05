@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public class UsersService : IUsersService
+    public class UserService : IUserService
     {
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly SODPDBContext _context;
 
-        public UsersService(IMapper mapper, UserManager<User> userManager, SODPDBContext context)
+        public UserService(IMapper mapper, UserManager<User> userManager, SODPDBContext context)
         {
             _mapper = mapper;
             _userManager = userManager;

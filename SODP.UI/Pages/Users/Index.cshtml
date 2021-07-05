@@ -87,10 +87,10 @@
             });
             $.ajax({
                 type: "Put",
-                url: '@Url.Page("Index","NewProject")&Id=' + currentId,
+                url: '@Url.Page("Index","NewUser")&Id=' + currentId,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
-                    $('#editproject').modal('show');
+                    $('#edituser').modal('show');
                 }
             })
         }

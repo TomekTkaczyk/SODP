@@ -1,8 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.UI.Infrastructure
 {
@@ -11,7 +7,10 @@ namespace SODP.UI.Infrastructure
         public WebAPIProvider(IConfiguration configuration)
         {
             apiUrl = "https://localhost:44303/api";
+            apiVersion = "/v0_01";
         }
         public string apiUrl { get; private set; }
+
+        public string apiVersion { get; private set; }
     }
 }

@@ -8,8 +8,8 @@ namespace SODP.Application.Validators
 {
     public class ProjectValidator : AbstractValidator<Project>
     {
-        private readonly IStagesService _stagesService; 
-        public ProjectValidator(IStagesService stageService)
+        private readonly IStageService _stagesService; 
+        public ProjectValidator(IStageService stageService)
         {
             _stagesService = stageService;
 

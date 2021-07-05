@@ -1,11 +1,12 @@
 ﻿@page
 @model IndexModel
-
 @{
     ViewData["Title"] = "Stadia";
 }
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
+@using SODP.UI.ViewModels;
+
 @inject SignInManager<User> SignInManager
 
 <br />
@@ -17,11 +18,11 @@
     {
         <div id="modal-placeholder"></div>
         <div class="col-4 justify-content-end">
-            <button type="button" 
+            <button type="button"
                     class="btn btn-info form-control text-white float-right"
                     title="Nowe stadium"
                     data-toggle="ajax-modal"
-                    data-url="@Url.Page("Index","StageDetails")">
+                    data-url="@Url.Page("Index","NewStage")">
                 <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowe stadium
             </button>
         </div>
@@ -44,23 +45,25 @@
                         {
                             <tr>
                                 <td>
-                                    <a onclick='NewStage(@stage.Id)' 
+                                    <a onclick='NewStage(@stage.Id)'
                                        data-toggle="tooltip"
                                        data-placement="top"
                                        title="Edycja stadium">
-                                    @stage.Sign</a>
+                                        @stage.Sign
+                                    </a>
                                 </td>
                                 <td>
                                     <a onclick='NewStage(@stage.Id)'
                                        data-toggle="tooltip"
                                        data-placement="top"
                                        title="Edycja stadium">
-                                    @stage.Title</a>
+                                        @stage.Title
+                                    </a>
                                 </td>
                                 <td>
                                     <div class="row group justify-content-end mr-0">
                                         <div>
-                                            <a onclick='Delete("/api/Stages/@stage.Id")'
+                                            <a onclick='Delete("/api/v0_01/stages/@stage.Id")'
                                                class="btn btn-lg mb-0 mt-0 ml-1 mr-1 p-1 text-danger"
                                                data-toggle="tooltip"
                                                data-placement="top"
@@ -104,7 +107,7 @@
         function NewStage(currentId) {
             $.ajax({
                 type: "Get",
-                url: '@Url.Page("Index","StageDetails")&Id=' + currentId,
+                url: '@Url.Page("Index","NewStage")&Id=' + currentId,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
                     $('#editstage').modal('show');

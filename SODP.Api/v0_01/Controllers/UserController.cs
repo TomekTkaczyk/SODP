@@ -7,10 +7,10 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/users")]
-    public class UsersController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IUsersService _usersService;
-        public UsersController(IUsersService usersService)
+        private readonly IUserService _usersService;
+        public UserController(IUserService usersService)
         {
             _usersService = usersService;
         }

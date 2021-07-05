@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public class RolesService : IRolesService
+    public class RoleService : IRoleService
     {
         private readonly RoleManager<Role> _rolesManager;
 
-        public RolesService(RoleManager<Role> rolesManager)
+        public RoleService(RoleManager<Role> rolesManager)
         {
             _rolesManager = rolesManager;
         }

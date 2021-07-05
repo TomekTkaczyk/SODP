@@ -7,9 +7,9 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("api/v0_01/archive-projects")]
-    public class ArchiveProjectsController : ProjectsController
+    public class ArchiveProjectController : ProjectController
     {
-        public ArchiveProjectsController(IProjectsService projectsService) : base(projectsService)
+        public ArchiveProjectController(IProjectService projectsService) : base(projectsService)
         {
             _projectsService.SetArchiveMode();
         }

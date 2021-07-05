@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace WebSODP.Application.Services
 {
-    public class StagesService : IStagesService
+    public class StageService : IStageService
     {
         private readonly IMapper _mapper;
         private readonly IValidator<Stage> _validator;
         private readonly SODPDBContext _context;
 
-        public StagesService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context)
+        public StageService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context)
         {
             _mapper = mapper;
             _validator = validator;

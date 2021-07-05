@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace SODP.Domain.Services
 {
-    public interface IProjectsService : IEntityService<ProjectDTO>
+    public interface IProjectService : IEntityService<ProjectDTO>
     {
-        IProjectsService SetArchiveMode();
-        IProjectsService SetActiveMode();
+        IProjectService SetArchiveMode();
+        IProjectService SetActiveMode();
         Task<ServiceResponse> RestoreAsync(int id);
         Task<ServiceResponse> ArchiveAsync(int id);
         Task<ServicePageResponse<BranchDTO>> GetBranchesAsync(int id);

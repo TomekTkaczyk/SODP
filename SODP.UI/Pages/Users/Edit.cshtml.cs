@@ -14,10 +14,10 @@ namespace SODP.UI.Pages.Users
     public class EditModel : PageModel
     {
         private readonly IMapper _mapper;
-        private readonly IUsersService _usersService;
-        private readonly IRolesService _rolesService;
+        private readonly IUserService _usersService;
+        private readonly IRoleService _rolesService;
 
-        public EditModel(IMapper mapper, IUsersService usersService, IRolesService rolesService)
+        public EditModel(IMapper mapper, IUserService usersService, IRoleService rolesService)
         {
             _mapper = mapper;
             _usersService = usersService;

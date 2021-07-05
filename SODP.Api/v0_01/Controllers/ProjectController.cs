@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace SODP.Api.v0_01.Controllers
 {
-    public class ProjectsController : ControllerBase
+    public class ProjectController : ApiControllerBase
     {
-        public readonly IProjectsService _projectsService;
+        public readonly IProjectService _projectsService;
 
-        public ProjectsController(IProjectsService projectsService)
+        public ProjectController(IProjectService projectsService)
         {
             _projectsService = projectsService;
         }
