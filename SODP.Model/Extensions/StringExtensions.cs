@@ -12,7 +12,8 @@ namespace SODP.Model.Extensions
 
                 if (charLocation > 0)
                 {
-                    return text.Substring(0, charLocation);
+                    return text[0..charLocation];
+                    //return text.Substring(0, charLocation);
                 }
             }
 
@@ -27,7 +28,7 @@ namespace SODP.Model.Extensions
 
                 if (charLocation > 0)
                 {
-                    return text.Substring(charLocation + 1);
+                    return text[(charLocation + 1)..];
                 }
             }
 

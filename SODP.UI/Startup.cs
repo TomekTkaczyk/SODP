@@ -3,14 +3,10 @@ using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using SODP.Application.Managers;
 using SODP.DataAccess;
-using SODP.Domain.Managers;
 using SODP.Domain.Services;
 using SODP.Infrastructure.Extensions;
 using SODP.Model;
@@ -72,14 +68,7 @@ namespace SODP.UI
 
             services.AddScopedServices();
 
-            services.AddScoped<FolderConfigurator>();
-
             services.AddScoped<IWebAPIProvider, WebAPIProvider>();
-
-            services.AddScoped<IFolderCommandCreator, FolderCommandCreator>();
-
-            services.AddScoped<IFolderManager, FolderManager>();
-
 
             services.AddTransient<IdentityErrorDescriber, CustomIdentityErrorDescriber>();
 

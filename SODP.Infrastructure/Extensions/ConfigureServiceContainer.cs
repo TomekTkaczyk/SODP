@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SODP.DataAccess;
+using SODP.Domain.Managers;
+using SODP.Infrastructure.Managers;
 using System;
 
 namespace SODP.Infrastructure.Extensions
@@ -52,13 +53,18 @@ namespace SODP.Infrastructure.Extensions
         public static void AddTransientServices(this IServiceCollection services)
         {
         }
+
         public static void AddScopedServices(this IServiceCollection services)
         {
             services.AddScoped<UserInitializer>();
 
             services.AddScoped<DataInitializer>();
 
+            services.AddScoped<FolderConfigurator>();
 
+            services.AddScoped<IFolderCommandCreator, FolderCommandCreator>();
+
+            services.AddScoped<IFolderManager, FolderManager>();
 
         }
     }

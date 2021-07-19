@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SODP.Domain.Services;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
+using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
-using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Users
@@ -11,31 +12,26 @@ namespace SODP.UI.Pages.Users
     [Authorize(Roles = "Administrator")]
     public class IndexModel : SODPPageModel
     {
-        private readonly IUserService _usersService;
+        private readonly string _apiUrl;
+        private readonly string _apiVersion;
 
-        public IndexModel(IUserService usersService)
+        public IndexModel(IWebAPIProvider apiProvider)
         {
-            _usersService = usersService;
             ReturnUrl = "/Users";
+            _apiUrl = apiProvider.apiUrl;
+            _apiVersion = apiProvider.apiVersion;
         }
-        public IEnumerable<UserDTO> Users { get; set; }
+        public ServicePageResponse<UserDTO> Users { get; set; }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            var serviceResponse = await _usersService.GetAllAsync();
-            Users = serviceResponse.Data.Collection;
-        }
-
-        public async Task<IActionResult> OnPostDelete(int id)
-        {
-            var response = await _usersService.DeleteAsync(id);
-            if (!response.Success)
+            var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/users");
+            if (response.IsSuccessStatusCode)
             {
-                var serviceResponse = await _usersService.GetAllAsync();
-                Users = serviceResponse.Data.Collection;
-                return Page();
+                Users = await response.Content.ReadAsAsync<ServicePageResponse<UserDTO>>();
             }
-            return RedirectToPage("Index");
+
+            return Page();
         }
     }
 }

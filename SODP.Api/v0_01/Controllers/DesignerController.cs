@@ -17,9 +17,9 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 15, bool? active = null)
         {
-            return Ok(await _service.GetAllAsync());
+            return Ok(await _service.GetAllAsync(currentPage, pageSize, active));
         }
 
         [HttpGet("{Id}")]

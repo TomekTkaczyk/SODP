@@ -59,7 +59,6 @@ namespace WebSODP.Application.Services
 
             try
             {
-                var query = _context.Projects.Include(s => s.Stage);
                 projects = await _context.Projects.Include(s => s.Stage)
                     .OrderBy(x => x.Number)
                     .ThenBy(y => y.Stage.Sign)

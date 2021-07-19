@@ -15,14 +15,26 @@ namespace SODP.Api.v0_01.Controllers
             _usersService = usersService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var req = HttpContext.Request.Query;
+            int.TryParse(req["page_number"], out int page_number);
+            int.TryParse(req["page_size"], out int page_size);
+
+            var aaa = await _usersService.GetAllAsync(currentPage: page_number, pageSize: page_size);
+
+            return Ok(aaa);
+        }
+
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAllAsync(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
             return Ok(await _usersService.GetAsync(id));
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             return Ok(await _usersService.DeleteAsync(id));
         }

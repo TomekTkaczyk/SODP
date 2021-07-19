@@ -26,13 +26,26 @@ namespace SODP.Application.Services
             _userManager = userManager;
             _context = context;
         }
-        public async Task<ServicePageResponse<UserDTO>> GetAllAsync()
+
+        public async Task<ServicePageResponse<UserDTO>> GetAllAsync(int currentPage = 0, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<UserDTO>();
+
             try
             {
-                var users = await _context.Users.OrderBy(x => x.UserName).ToListAsync();
-                serviceResponse.Data.Collection = _mapper.Map<IList<UserDTO>>(users);
+                var users = _context.Users.OrderBy(x => x.UserName);
+
+                serviceResponse.Data.TotalCount = await _context.Users.CountAsync();
+
+                if (pageSize == 0)
+                {
+                    pageSize = serviceResponse.Data.TotalCount;
+                }
+
+                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageSize = pageSize;
+
+                serviceResponse.Data.Collection = _mapper.Map<IList<UserDTO>>(await users.ToListAsync());
                 serviceResponse.StatusCode = 200;
             }
             catch (Exception ex)
@@ -66,21 +79,6 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse> DeleteAsync(int id)
-        {
-            var serviceResponse = new ServiceResponse();
-            try
-            {
-                var user = await _userManager.FindByIdAsync(id.ToString());
-                var result = await _userManager.SetLockoutEnabledAsync(user, false);
-            }
-            catch(Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
 
         public async Task<ServiceResponse> UpdateAsync(UserDTO user)
         {
@@ -148,10 +146,6 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-        public Task<ServicePageResponse<UserDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<ServiceResponse<UserDTO>> CreateAsync(UserDTO entity)
         {
@@ -163,17 +157,20 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                var user = await _userManager.FindByIdAsync(id.ToString());
+
                 if (user == null)
                 {
                     serviceResponse.SetError($"Użytkownik Id:{id} nie odnaleziony.", 404);
+
                     return serviceResponse;
                 }
-                user.LockoutEnabled = status;
-                var result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.SetLockoutEnabledAsync(user, status);
+
                 if (!result.Succeeded)
                 {
                     serviceResponse.IdentityResultErrorProcess(result);
+
                     return serviceResponse;
                 }
             }
@@ -181,6 +178,15 @@ namespace SODP.Application.Services
             {
                 serviceResponse.SetError(ex.Message);
             }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse> DeleteAsync(int id)
+        {
+            var serviceResponse = new ServiceResponse();
+
+            await Task.Run(() => serviceResponse.SetError("Operacja kasowania nie jest dostępna dla użytkownika", 405));
 
             return serviceResponse;
         }

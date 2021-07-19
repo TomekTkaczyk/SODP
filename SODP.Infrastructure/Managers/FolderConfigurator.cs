@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SODP.Model.Enums;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SODP.Application.Managers
+namespace SODP.Infrastructure.Managers
 {
     public class FolderConfigurator
     {

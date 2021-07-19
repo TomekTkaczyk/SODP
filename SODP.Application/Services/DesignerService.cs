@@ -29,10 +29,10 @@ namespace SODP.Application.Services
 
         public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
         {
-            return await GetAllAsync(currentPage, pageSize, false);
+            return await GetAllAsync(currentPage, pageSize, null);
         }
 
-        public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool active = true)
+        public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
         {
             var serviceResponse = new ServicePageResponse<DesignerDTO>();
             try
@@ -42,14 +42,14 @@ namespace SODP.Application.Services
                     pageSize = serviceResponse.Data.TotalCount;
                 }
                 IList<Designer> designers = new List<Designer>();
-                serviceResponse.Data.TotalCount = await _context.Designers.Where(x => !active || x.Active == true).CountAsync();
+                serviceResponse.Data.TotalCount = await _context.Designers.Where(x => active == null || (x.Active == active)).CountAsync();
                 if(pageSize == 0)                                                
                 {
                     pageSize = serviceResponse.Data.TotalCount;
                 }
                 designers = await _context.Designers.OrderBy(x => x.Lastname)
                     .ThenBy(y => y.Firstname)
-                    .Where(z => !active || z.Active)
+                    .Where(x => active == null || (x.Active == active))
                     .Skip(currentPage * pageSize)
                     .Take(pageSize)
                     .ToListAsync();

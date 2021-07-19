@@ -4,7 +4,7 @@ using SODP.Model.Enums;
 using System;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Managers
+namespace SODP.Infrastructure.Managers
 {
     public class FolderCommandCreator : IFolderCommandCreator
     {

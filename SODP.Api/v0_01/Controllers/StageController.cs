@@ -8,7 +8,7 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/stages")]
-    public class StageController : ControllerBase
+    public class StageController : ApiControllerBase
     {
         private readonly IStageService _stagesService;
 

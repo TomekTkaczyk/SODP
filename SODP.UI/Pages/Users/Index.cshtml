@@ -20,7 +20,7 @@
 
     <div id="StageTable" class="col-12 p-3 mt-3">
         <form method="post">
-            @if (Model.Users.Count() > 0)
+            @if (Model.Users.Data.Collection.Count() > 0)
             {
                 <table class="table table-sm table-hover">
                     <thead class="thead-light">
@@ -31,14 +31,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var user in Model.Users.AsEnumerable())
+                        @foreach (var user in Model.Users.Data.Collection)
                         {
                             <tr>
                                 <td>
                                     <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
                                 </td>
                                 <td>
-                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Lastname</a>
+                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Firstname @user.Lastname</a>
                                 </td>
                                 <td>
                                     <div class="row group justify-content-end mr-0">
@@ -74,8 +74,6 @@
     <script src="~/js/delete.js"></script>
     <script>
         function handleChange(user, checkboxStatus) {
-            console.log(user);
-            console.log(checkboxStatus.checked);
             $.put('api/Users/${user.Id}/${checkboxStatus.checked}', dataToSend).done(function (data) {
                 var newBody = $('.modal-body', data);
                 placeholderElement.find('.modal-body').replaceWith(newBody);

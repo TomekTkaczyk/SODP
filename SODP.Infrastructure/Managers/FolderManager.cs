@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Managers
+namespace SODP.Infrastructure.Managers
 {
     public class FolderManager : IFolderManager
     {
