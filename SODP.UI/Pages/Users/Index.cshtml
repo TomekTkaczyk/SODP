@@ -51,7 +51,7 @@
                                                     border-radius: 20px;
                                                 }
                                             </style>
-                                            <input type="checkbox" asp-for="@user.LockoutEnabled" onchange="handleChange(@user.Id,this)" data-toggle="toggle" data-style="ios">
+                                            <input type="checkbox" asp-for="@user.LockoutEnabled" onchange="handleChange(@user.Id,this.checked)" id="checkbox_@user.Id" name="checkbox_@user.Id" data-toggle="toggle" data-style="ios">
 
                                         </div>
 
@@ -73,26 +73,26 @@
     <script src="~/js/usersList.js"></script>
     <script src="~/js/delete.js"></script>
     <script>
-        function handleChange(user, checkboxStatus) {
-            $.put('api/Users/${user.Id}/${checkboxStatus.checked}', dataToSend).done(function (data) {
-                var newBody = $('.modal-body', data);
-                placeholderElement.find('.modal-body').replaceWith(newBody);
-                var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
-                if (isValid) {
-                    placeholderElement.find('.modal').modal('hide');
-                    window.location.href = '/ActiveProjects/Edit?Id=' + document.getElementById('id').value;
+        function handleChange(id, checked) {
+
+            let c = checked ? 1 : 0;
+            let url = `/api/v0_01/users/${id}/${c}`;
+
+            $.ajax({
+                type: "PUT",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify(c),
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (jqXHR, exception) {
+                    console.log(jqXHR);
+                    console.log(exception);
                 }
             });
-            $.ajax({
-                type: "Put",
-                url: '@Url.Page("Index","NewUser")&Id=' + currentId,
-                success: function (data) {
-                    $('#modal-placeholder').html(data);
-                    $('#edituser').modal('show');
-                }
-            })
         }
-
     </script>
 }
 
