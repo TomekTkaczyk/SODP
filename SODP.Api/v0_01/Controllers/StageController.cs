@@ -35,6 +35,22 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _stagesService.GetAsync(id));
         }
 
+        [HttpPost("{sign}")]
+        public async Task<ActionResult<StageDTO>> Create(string sign, [FromBody] StageDTO stage)
+        {
+            if (sign != stage.Sign)
+            {
+                return BadRequest();
+            }
+            var response = await _stagesService.CreateAsync(stage);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+
         [HttpPut("{sign}")]
         public async Task<ActionResult<StageDTO>> Update(string sign, [FromBody] StageDTO stage)
         {

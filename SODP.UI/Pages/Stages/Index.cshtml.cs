@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace SODP.UI.Pages.Stages
 {
@@ -33,7 +35,6 @@ namespace SODP.UI.Pages.Stages
             _apiVersion = apiProvider.apiVersion;
         }
 
-        public ServicePageResponse<StageDTO> Stages { get; set; }
         public StagesListVM StagesViewModel { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 15)
@@ -59,43 +60,84 @@ namespace SODP.UI.Pages.Stages
 
         public async Task<PartialViewResult> OnGetNewStageAsync(int? id)
         {
-            var stage = (id == null) ? new StageDTO() : (await _stagesService.GetAsync((int)id)).Data;
-
-            var viewModel = new NewStageVM()
+            StageDTO stage = new StageDTO();
+            if (id != null)
             {
-                Stage = stage
-            };
+                var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages/{id}");
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
+                    stage = result.Data;
+                }
+            }
 
-            var partialViewResult = new PartialViewResult
-            {
-                ViewName = partialViewName,
-                ViewData = new ViewDataDictionary<NewStageVM>(ViewData, viewModel)
-            };
-
-            return await Task.FromResult(partialViewResult);
+            return await Task.FromResult(GetPartialViewAsync(stage));
         }
 
         public async Task<PartialViewResult> OnPostNewStageAsync(StageDTO stage)
         {
             if (ModelState.IsValid)
             {
-                var response = (stage.Id == 0) ? await _stagesService.CreateAsync(stage) : await _stagesService.UpdateAsync(stage);
-                if (!response.Success)
+                var body = new StringContent(JsonSerializer.Serialize(stage), Encoding.UTF8, "application/json");
+                if(stage.Id == 0)
                 {
-                    foreach(var error in response.ValidationErrors)
+                    var apiResponse = await new HttpClient().PostAsync($"{_apiUrl}{_apiVersion}/stages/{stage.Sign}", body);
+                    var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
+                    if (response.Success)
                     {
-                        ModelState.AddModelError(error.Key, error.Value);
+                        stage = response.Data;
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(response.Message))
+                        {
+                            ModelState.AddModelError("", response.Message);
+                        }
+                        foreach (var error in response.ValidationErrors)
+                        {
+                            ModelState.AddModelError(error.Key, error.Value);
+                        }
+                    }
+                }
+                else
+                {
+                    var apiResponse = await new HttpClient().PutAsync($"{_apiUrl}{_apiVersion}/stages/{stage.Sign}", body);
+                    var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
+                    if (response.Success)
+                    {
+                        apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages/{stage.Id}");
+                        response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
+                        if (response.Success)
+                        {
+                            stage = response.Data;
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(response.Message))
+                            {
+                                ModelState.AddModelError("", response.Message);
+                            }
+                            foreach (var error in response.ValidationErrors)
+                            {
+                                ModelState.AddModelError(error.Key, error.Value);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(response.Message))
+                        {
+                            ModelState.AddModelError("", response.Message);
+                        }
+                        foreach (var error in response.ValidationErrors)
+                        {
+                            ModelState.AddModelError(error.Key, error.Value);
+                        }
                     }
                 }
             }
 
-            var partialViewResult = new PartialViewResult
-            {
-                ViewName = partialViewName,
-                ViewData = new ViewDataDictionary<StageDTO>(ViewData, stage)
-            };
-
-            return partialViewResult;
+            return GetPartialViewAsync(stage);
         }
 
         private async Task<IList<StageDTO>> GetStagesAsync(PageInfo pageInfo)
@@ -103,7 +145,7 @@ namespace SODP.UI.Pages.Stages
             var stages = new List<StageDTO>();
 
             var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
-            
+
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsAsync<ServicePageResponse<StageDTO>>();
@@ -114,6 +156,20 @@ namespace SODP.UI.Pages.Stages
             }
 
             return stages;
+        }
+
+        private PartialViewResult GetPartialViewAsync(StageDTO stage)
+        {
+            var viewModel = new NewStageVM()
+            {
+                Stage = stage
+            };
+
+            return new PartialViewResult()
+            {
+                ViewName = partialViewName,
+                ViewData = new ViewDataDictionary<NewStageVM>(ViewData, viewModel)
+            };
         }
     }
 }

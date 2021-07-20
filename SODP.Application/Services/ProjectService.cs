@@ -14,7 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SODP.Shared.Response;
 
-namespace WebSODP.Application.Services
+namespace SODP.Application.Services
 {
     public class ProjectService : IProjectService
     {
