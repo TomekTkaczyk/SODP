@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
+using SODP.UI.ViewModels;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -12,27 +16,66 @@ namespace SODP.UI.Pages.Branches
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : SODPPageModel
     {
+        const string partialViewName = "_NewBranchPartialView";
         private readonly string _apiUrl;
         private readonly string _apiVersion;
         
         public IndexModel(IWebAPIProvider apiProvider)
         {
-            ReturnUrl = "/Branches";
+            ReturnUrl = "/branches";
             _apiUrl = apiProvider.apiUrl;
             _apiVersion = apiProvider.apiVersion;
         }
 
-        public ServicePageResponse<BranchDTO> Branches { get; set; }
+        public BranchesListVM BranchesViewModel { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/branches");
-            if (response.IsSuccessStatusCode)
+            BranchesViewModel = new BranchesListVM
             {
-                Branches = await response.Content.ReadAsAsync<ServicePageResponse<BranchDTO>>();
-            }
+                Branches = await GetBranchesAsync()
+            };
 
             return Page();
         }
+
+        public PartialViewResult OnGetNewBranch()
+        {
+            return GetPartialView(new BranchDTO());
+        }
+
+        public void OnPostNewDesignerAsync()
+        {
+
+        }
+
+        private PartialViewResult GetPartialView(BranchDTO branch)
+        {
+            var viewModel = new NewBranchVM()
+            {
+                Brtanch = branch
+            };
+
+            return new PartialViewResult()
+            {
+                ViewName = partialViewName,
+                ViewData = new ViewDataDictionary<NewBranchVM>(ViewData, viewModel)
+            };
+        }
+
+        private async Task<IList<BranchDTO>> GetBranchesAsync()
+        {
+            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/branches");
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<BranchDTO>>();
+                return result.Data.Collection.ToList();
+            }
+
+            return new List<BranchDTO>();
+        }
+
+
     }
 }

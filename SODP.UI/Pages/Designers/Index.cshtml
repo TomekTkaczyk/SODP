@@ -1,19 +1,18 @@
 ﻿@page
-@model SODP.UI.Pages.Designers.IndexModel
+@model IndexModel
 
 @{
     ViewData["Title"] = "Projektanci";
 }
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
-@using SODP.Shared.DTO
 
 @inject SignInManager<User> SignInManager
 
 <br />
 <div class="container row p-0 m-0">
     <div class="col-8">
-        <h2 class="text-info">Projektanci</h2>
+        <h2 class="text-info">@ViewData["Title"]</h2>
     </div>
     @if (SignInManager.IsSignedIn(User))
     {
@@ -21,11 +20,48 @@
         <div class="col-4 justify-content-end">
             <button type="button" class="btn btn-info form-control text-white float-right"
                     data-toggle="ajax-modal"
-                    title="Nowe stadium"
+                    title="Nowy projektant"
                     data-target="editdesigner"
-                    data-url="@Url.Page("Index", "DesignerDetails")">
+                    data-url="@Url.Page("Index", "NewDesigner")">
                 <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
             </button>
         </div>
     }
+    <div id="DesignersTable" class="col-12 p-3 mt-3">
+        <form method="post">
+            @if (Model.DesignersViewModel.Designers.Count() > 0)
+            {
+
+            }
+            else
+            {
+                <p> Lista projektantów jest pusta</p>
+            }
+        </form>
+    </div>
 </div>
+
+@section Scripts{
+    <script src="~/js/delete.js"></script>
+    <script src="~/js/initModalPlaceholder.js"></script>
+    <script src="~/js/designersList.js"></script>
+
+    <script>
+        function DeleteDesigner(url) {
+            Delete(url);
+        }
+    </script>
+
+    <script>
+        function NewDesigner(currentId) {
+            $.ajax({
+                type: "Get",
+                url: '@Url.Page("Index","NewDesigner")',
+                success: function (data) {
+                    $('#modal-placeholder').html(data);
+                    $('#editdesigner').modal('show');
+                }
+            })
+        }
+    </script>
+}

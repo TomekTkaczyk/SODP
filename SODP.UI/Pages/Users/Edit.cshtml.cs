@@ -1,10 +1,13 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SODP.Domain.Services;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
+using SODP.UI.Infrastructure;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Users
@@ -13,15 +16,13 @@ namespace SODP.UI.Pages.Users
     [ValidateAntiForgeryToken()]
     public class EditModel : PageModel
     {
-        private readonly IMapper _mapper;
-        private readonly IUserService _usersService;
-        private readonly IRoleService _rolesService;
+        private readonly string _apiUrl;
+        private readonly string _apiVersion;
 
-        public EditModel(IMapper mapper, IUserService usersService, IRoleService rolesService)
+        public EditModel(IWebAPIProvider apiProvider)
         {
-            _mapper = mapper;
-            _usersService = usersService;
-            _rolesService = rolesService;
+            _apiUrl = apiProvider.apiUrl;
+            _apiVersion = apiProvider.apiVersion;
         }
 
         [BindProperty]
@@ -34,16 +35,38 @@ namespace SODP.UI.Pages.Users
 
         public async Task<IActionResult> OnGet(int id)
         {
-            var responseUsers = await _usersService.GetAsync(id);
-            if (!responseUsers.Success)
-            {
-                return NotFound(responseUsers.Message);
-            }
-            CurrentUser = responseUsers.Data;
-
-            AllRoles = (await _rolesService.GetAllAsync()).ToDictionary(x => x, x => false);
+            var roles = await GetRoles();
+            AllRoles = roles.Data.Collection.ToDictionary(x => x.Role, x => false);
+            CurrentUser = await GetUser(id);
 
             return Page();
+        }
+
+        private async Task<UserDTO> GetUser(int id)
+        {
+            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/users/{id}");
+            if (apiResponse.IsSuccessStatusCode) 
+            { 
+                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<UserDTO>>();
+                if (response.Success)
+                {
+                    return response.Data;
+                }
+            }
+
+            return null;
+        }
+
+        private async Task<ServicePageResponse<RoleDTO>> GetRoles()
+        {
+            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/roles");
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<RoleDTO>>();
+                return result;
+            }
+
+            return null;
         }
 
         public async Task<IActionResult> OnPost()
@@ -51,18 +74,15 @@ namespace SODP.UI.Pages.Users
             if (ModelState.IsValid)
             {
                 CurrentUser.Roles = AllRoles.Where(x => x.Value).Select(x => x.Key).ToList();
-                var response = await _usersService.UpdateAsync(_mapper.Map<UserDTO>(CurrentUser));
-
-                if (!response.Success)
+                var body = new StringContent(JsonSerializer.Serialize(CurrentUser), Encoding.UTF8, "application/json");
+                var apiResponse = await new HttpClient().PutAsync($"{_apiUrl}{_apiVersion}/users/{CurrentUser.Id}",body);
+                if (apiResponse.IsSuccessStatusCode)
                 {
-                    return Page();
+                    return RedirectToPage("Index");
                 }
-                return RedirectToPage("Index");
             }
-            else
-            {
-                return Page();
-            }
+
+            return Page();
         }
     }
 }

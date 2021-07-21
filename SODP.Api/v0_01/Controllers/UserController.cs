@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SODP.Domain.Services;
+using SODP.Shared.DTO;
 using System.Threading.Tasks;
 
 namespace SODP.Api.v0_01.Controllers
@@ -22,9 +23,7 @@ namespace SODP.Api.v0_01.Controllers
             int.TryParse(req["page_number"], out int page_number);
             int.TryParse(req["page_size"], out int page_size);
 
-            var aaa = await _usersService.GetAllAsync(currentPage: page_number, pageSize: page_size);
-
-            return Ok(aaa);
+            return Ok(await _usersService.GetAllAsync(currentPage: page_number, pageSize: page_size));
         }
 
         [HttpGet("{id}")]
@@ -39,11 +38,21 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _usersService.DeleteAsync(id));
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> SetEnable(int id, [FromBody] UserDTO user)
+        {
+            if(id != user.Id)
+            {
+                return BadRequest();
+            }
+
+            return Ok(await _usersService.UpdateAsync(user));
+        }
+
         [HttpPut("{id}/{enabled}")]
         public async Task<IActionResult> SetEnable(int id, [FromBody]int enabled)
         {
-            return Ok(await _usersService.SetEnable(id, enabled==1));
+            return Ok(await _usersService.SetActiveStatusAsync(id, enabled==1));
         }
-
     }
 }

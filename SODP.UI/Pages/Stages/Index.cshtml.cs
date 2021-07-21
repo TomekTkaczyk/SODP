@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using SODP.Domain.Services;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
@@ -12,24 +11,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Stages
 {
     [Authorize(Roles = "Administrator, ProjectManager")]
     public class IndexModel : SODPPageModel
     {
-        private readonly IStageService _stagesService;
 
         const string partialViewName = "_NewStagePartialView";
         private readonly string _apiUrl;
         private readonly string _apiVersion;
 
-        public IndexModel(IStageService stagesService, IWebAPIProvider apiProvider)
+        public IndexModel(IWebAPIProvider apiProvider)
         {
-            _stagesService = stagesService;
-
             ReturnUrl = "/Stages";
             _apiUrl = apiProvider.apiUrl;
             _apiVersion = apiProvider.apiVersion;
@@ -71,7 +67,7 @@ namespace SODP.UI.Pages.Stages
                 }
             }
 
-            return await Task.FromResult(GetPartialViewAsync(stage));
+            return GetPartialView(stage);
         }
 
         public async Task<PartialViewResult> OnPostNewStageAsync(StageDTO stage)
@@ -89,14 +85,7 @@ namespace SODP.UI.Pages.Stages
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(response.Message))
-                        {
-                            ModelState.AddModelError("", response.Message);
-                        }
-                        foreach (var error in response.ValidationErrors)
-                        {
-                            ModelState.AddModelError(error.Key, error.Value);
-                        }
+                        SetModelErrors(response);
                     }
                 }
                 else
@@ -113,52 +102,48 @@ namespace SODP.UI.Pages.Stages
                         }
                         else
                         {
-                            if (!string.IsNullOrEmpty(response.Message))
-                            {
-                                ModelState.AddModelError("", response.Message);
-                            }
-                            foreach (var error in response.ValidationErrors)
-                            {
-                                ModelState.AddModelError(error.Key, error.Value);
-                            }
+                            SetModelErrors(response);
                         }
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(response.Message))
-                        {
-                            ModelState.AddModelError("", response.Message);
-                        }
-                        foreach (var error in response.ValidationErrors)
-                        {
-                            ModelState.AddModelError(error.Key, error.Value);
-                        }
+                        SetModelErrors(response);
                     }
                 }
             }
 
-            return GetPartialViewAsync(stage);
+            return GetPartialView(stage);
+        }
+
+        private void SetModelErrors(ServiceResponse response)
+        {
+            if (!string.IsNullOrEmpty(response.Message))
+            {
+                ModelState.AddModelError("", response.Message);
+            }
+            foreach (var error in response.ValidationErrors)
+            {
+                ModelState.AddModelError(error.Key, error.Value);
+            }
         }
 
         private async Task<IList<StageDTO>> GetStagesAsync(PageInfo pageInfo)
         {
-            var stages = new List<StageDTO>();
+            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
 
-            var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
-
-            if (response.IsSuccessStatusCode)
+            if (apiResponse.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadAsAsync<ServicePageResponse<StageDTO>>();
+                var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<StageDTO>>();
                 pageInfo.TotalItems = result.Data.TotalCount;
                 pageInfo.CurrentPage = result.Data.PageNumber;
 
-                stages = result.Data.Collection.ToList();
+                return result.Data.Collection.ToList();
             }
 
-            return stages;
+            return new List<StageDTO>();
         }
 
-        private PartialViewResult GetPartialViewAsync(StageDTO stage)
+        private PartialViewResult GetPartialView(StageDTO stage)
         {
             var viewModel = new NewStageVM()
             {

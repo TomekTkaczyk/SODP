@@ -1,18 +1,17 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Stadia";
+    ViewData["Title"] = "Stadia projektowe";
 }
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
-@using SODP.UI.ViewModels;
 
 @inject SignInManager<User> SignInManager
 
 <br />
 <div class="container row p-0 m-0">
     <div class="col-8">
-        <h2 class="text-info">Stadia projektowe</h2>
+        <h2 class="text-info">@ViewData["Title"]</h2>
     </div>
     @if (SignInManager.IsSignedIn(User))
     {
@@ -28,7 +27,7 @@
         </div>
     }
 
-    <div id="StageTable" class="col-12 p-3 mt-3">
+    <div id="StagesTable" class="col-12 p-3 mt-3">
         <form method="post">
             @if (Model.StagesViewModel.Stages.Count() > 0)
             {
@@ -95,7 +94,8 @@
 
 @section Scripts{
     <script src="~/js/delete.js"></script>
-    <script src="~/js/stageList.js"></script>
+    <script src="~/js/initModalPlaceholder.js"></script>
+    <script src="~/js/stagesList.js"></script>
 
     <script>
         function DeleteStage(url) {

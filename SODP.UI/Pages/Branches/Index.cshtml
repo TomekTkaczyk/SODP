@@ -1,19 +1,63 @@
 ﻿@page
-@model SODP.UI.Pages.Branches.IndexModel
-@{
-}
+@model IndexModel
 
-@{
-    ViewData["Title"] = "Branże";
-}
+@{ ViewData["Title"] = "Branże"; }
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
-@using SODP.UI.TagHelpers
+
 @inject SignInManager<User> SignInManager
 
 <br />
 <div class="container row p-0 m-0">
     <div class="col-8">
-        <h2 class="text-info">Branże</h2>
+        <h2 class="text-info">@ViewData["Title"]</h2>
+    </div>
+    @if (SignInManager.IsSignedIn(User))
+    {
+<div id="modal-placeholder"></div>
+                <div class="col-4 justify-content-end">
+                    <button type="button" class="btn btn-info form-control text-white float-right"
+                            data-toggle="ajax-modal"
+                            title="Nowa branża"
+                            data-target="editdesigner"
+                            data-url="@Url.Page("Index", "NewBranch")">
+                        <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa branża
+                    </button>
+                </div>}
+    <div id="DesignersTable" class="col-12 p-3 mt-3">
+        <form method="post">
+            @if (Model.BranchesViewModel.Branches.Count() > 0)
+            {
+
+            }
+            else
+            {
+<p> Lista branż jest pusta</p>            }
+        </form>
     </div>
 </div>
+
+@section Scripts{
+    <script src="~/js/delete.js"></script>
+    <script src="~/js/initModalPlaceholder.js"></script>
+    <script src="~/js/branchesList.js"></script>
+
+    <script>
+        function DeleteBranch(url) {
+            Delete(url);
+        }
+    </script>
+
+    <script>
+        function NewBranch(currentId) {
+            $.ajax({
+                type: "Get",
+                url: '@Url.Page("Index","NewBranch")',
+                success: function (data) {
+                    $('#modal-placeholder').html(data);
+                    $('#editdesigner').modal('show');
+                }
+            })
+        }
+    </script>
+}

@@ -7,6 +7,6 @@ namespace SODP.Domain.Services
     public interface IUserService : IEntityService<UserDTO>
     {
         Task<ServicePageResponse<RoleDTO>> GetRolesAsync(int id);
-        Task<ServiceResponse> SetEnable(int id, bool status);
+        Task<ServiceResponse> SetActiveStatusAsync(int id, bool status);
     }
 }

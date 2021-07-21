@@ -1,18 +1,4 @@
-﻿$(document).ready(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-    $('button[data-toggle="ajax-modal"]').click(function (event) {
-        var url = $(this).data('url');
-        $.get(url).done(function (data) {
-            var placeholderElement = $('#modal-placeholder');
-            placeholderElement.html(data);
-            placeholderElement.find('.modal').modal('show');
-        });
-    });
-
-    InitModalPlaceHolder();
-});
-
-function InitModalPlaceHolder() {
+﻿function InitModalPlaceHolder(returnUrl) {
     var placeholderElement = $('#modal-placeholder');
 
     placeholderElement.on('click', '[data-save="modal"]', function (event) {
@@ -26,11 +12,8 @@ function InitModalPlaceHolder() {
             var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
             if (isValid) {
                 placeholderElement.find('.modal').modal('hide');
-                window.location = '/Stages';
+                window.location = returnUrl;
             }
         });
     });
 }
-
-
-

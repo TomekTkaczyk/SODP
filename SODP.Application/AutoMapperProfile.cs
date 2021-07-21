@@ -13,6 +13,8 @@ namespace SODP.Domain
             CreateMap<User, UserDTO>();
             CreateMap<UserDTO, UserUpdateDTO>();
 
+            CreateMap<Role, RoleDTO>().ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Name));
+
             CreateMap<Stage, StageDTO>().ReverseMap();
 
             CreateMap<Project, ProjectDTO>();

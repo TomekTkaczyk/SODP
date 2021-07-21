@@ -152,7 +152,7 @@ namespace SODP.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ServiceResponse> SetEnable(int id, bool status)
+        public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
         {
             var serviceResponse = new ServiceResponse();
             try
@@ -165,6 +165,7 @@ namespace SODP.Application.Services
 
                     return serviceResponse;
                 }
+
                 var result = await _userManager.SetLockoutEnabledAsync(user, status);
 
                 if (!result.Succeeded)
@@ -185,10 +186,9 @@ namespace SODP.Application.Services
         public async Task<ServiceResponse> DeleteAsync(int id)
         {
             var serviceResponse = new ServiceResponse();
+            serviceResponse.SetError("Operacja kasowania nie jest dostępna dla użytkownika", 405);
 
-            await Task.Run(() => serviceResponse.SetError("Operacja kasowania nie jest dostępna dla użytkownika", 405));
-
-            return serviceResponse;
+            return await Task.FromResult(serviceResponse);
         }
     }
 }
