@@ -9,6 +9,8 @@ using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Designers
@@ -43,9 +45,24 @@ namespace SODP.UI.Pages.Designers
             return GetPartialView(new DesignerDTO());
         }
 
-        public void OnPostNewDesignerAsync()
+        public async Task<PartialViewResult> OnPostNewDesignerAsync(DesignerDTO designer)
         {
+            if (ModelState.IsValid)
+            {
+                var body = new StringContent(JsonSerializer.Serialize(designer), Encoding.UTF8, "application/json");
+                var apiResponse = await new HttpClient().PostAsync($"{_apiUrl}{_apiVersion}/designers", body);
+                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
+                if (response.Success)
+                {
+                    designer = response.Data;
+                }
+                else
+                {
+                    SetModelErrors(response);
+                }
+            }
 
+            return GetPartialView(designer);
         }
 
         private PartialViewResult GetPartialView(DesignerDTO designer)

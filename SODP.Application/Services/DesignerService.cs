@@ -42,14 +42,14 @@ namespace SODP.Application.Services
                     pageSize = serviceResponse.Data.TotalCount;
                 }
                 IList<Designer> designers = new List<Designer>();
-                serviceResponse.Data.TotalCount = await _context.Designers.Where(x => active == null || (x.Active == active)).CountAsync();
+                serviceResponse.Data.TotalCount = await _context.Designers.Where(x => active == null || (x.ActiveStatus == active)).CountAsync();
                 if(pageSize == 0)                                                
                 {
                     pageSize = serviceResponse.Data.TotalCount;
                 }
                 designers = await _context.Designers.OrderBy(x => x.Lastname)
                     .ThenBy(y => y.Firstname)
-                    .Where(x => active == null || (x.Active == active))
+                    .Where(x => active == null || (x.ActiveStatus == active))
                     .Skip(currentPage * pageSize)
                     .Take(pageSize)
                     .ToListAsync();

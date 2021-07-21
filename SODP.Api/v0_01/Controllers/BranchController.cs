@@ -31,6 +31,18 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.GetAsync(id));
         }
 
+        [HttpPost]
+        public async Task<ActionResult<BranchDTO>> Create([FromBody] BranchDTO branch)
+        {
+            var response = await _service.CreateAsync(branch);
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
+
         [HttpPut("{sign}")]
         public async Task<ActionResult<BranchDTO>> Update(string sign, [FromBody] BranchDTO branch)
         {

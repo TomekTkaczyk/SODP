@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SODP.Model
 {
-    public class Token
+    public class Token : BaseEntity
     {
         public int Id { get; set; }
         public int UserId { get; set; }

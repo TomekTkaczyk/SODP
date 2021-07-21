@@ -5,7 +5,7 @@ using SODP.Model.Extensions;
 
 namespace SODP.Model
 {
-    public class Project
+    public class Project : BaseEntity
     {
         public Project() { }
 
@@ -31,7 +31,6 @@ namespace SODP.Model
             }
         }
 
-        public int Id { get; set; }
         public string Number { get; set; }
         public int StageId { get; set; }
         public virtual Stage Stage { get; set; }

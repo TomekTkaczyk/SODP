@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SODP.Model
 {
-    public class Stage
+    public class Stage : BaseEntity
     {
         public Stage(): this("","") { }
 
@@ -15,7 +15,6 @@ namespace SODP.Model
             Title = title;
         }
 
-        public int Id { get; set; }
         public string Sign { get; set; }
         public string Title { get; set; }
 

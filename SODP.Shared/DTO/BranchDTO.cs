@@ -6,7 +6,7 @@ namespace SODP.Shared.DTO
     public class BranchDTO  : BaseDTO
     {
         [Required]
-        [MinLength(2)]
+        [MinLength(1)]
         public string Sign { get; set; }
 
         [Required]

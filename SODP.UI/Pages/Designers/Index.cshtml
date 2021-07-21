@@ -31,7 +31,40 @@
         <form method="post">
             @if (Model.DesignersViewModel.Designers.Count() > 0)
             {
+                <table class="table table-sm table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Imię i nazwisko</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var designer in Model.DesignersViewModel.Designers)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-page="Edit" asp-route-Id="@designer.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@designer.ToString()</a>
+                                </td>
+                                <td>
+                                    <div class="row fa-group justify-content-end mr-0">
+                                        <div>
+                                            <style>
+                                                .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+                                                    border-radius: 20px;
+                                                }
 
+                                                    .toggle.ios .toggle-handle {
+                                                        border-radius: 20px;
+                                                    }
+                                            </style>
+                                            <input type="checkbox" asp-for="@designer.ActiveStatus" onchange="handleChange(@designer.Id,this.checked)" id="checkbox_@designer.Id" name="checkbox_@designer.Id" data-toggle="toggle" data-style="ios">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
             else
             {
@@ -44,7 +77,7 @@
 @section Scripts{
     <script src="~/js/delete.js"></script>
     <script src="~/js/initModalPlaceholder.js"></script>
-    <script src="~/js/designersList.js"></script>
+    <script type="module" src="~/js/designersList.js"></script>
 
     <script>
         function DeleteDesigner(url) {

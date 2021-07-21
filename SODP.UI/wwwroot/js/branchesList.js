@@ -9,7 +9,7 @@
         });
     });
 
-    InitModalPlaceHolder('/branches');
+    initModalPlaceHolder('/branches');
 });
 
 

@@ -1,4 +1,4 @@
-﻿function InitModalPlaceHolder(returnUrl) {
+﻿function initModalPlaceHolder(returnUrl) {
     var placeholderElement = $('#modal-placeholder');
 
     placeholderElement.on('click', '[data-save="modal"]', function (event) {

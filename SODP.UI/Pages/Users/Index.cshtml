@@ -38,7 +38,7 @@
                                     <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
                                 </td>
                                 <td>
-                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Firstname @user.Lastname</a>
+                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.ToString()</a>
                                 </td>
                                 <td>
                                     <div class="row group justify-content-end mr-0">
@@ -51,12 +51,9 @@
                                                     border-radius: 20px;
                                                 }
                                             </style>
-                                            <input type="checkbox" asp-for="@user.LockoutEnabled" onchange="handleChange(@user.Id,this.checked)" id="checkbox_@user.Id" name="checkbox_@user.Id" data-toggle="toggle" data-style="ios">
-
+                                            <input type="checkbox" asp-for="@user.ActiveStatus" onchange="handleChange(@user.Id,this.checked)" id="checkbox_@user.Id" name="checkbox_@user.Id" data-toggle="toggle" data-style="ios">
                                         </div>
-
                                     </div>
-
                                 </td>
                             </tr>}
                     </tbody>

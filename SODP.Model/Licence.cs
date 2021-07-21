@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SODP.Model
 {
-    public class Licence
+    public class Licence : BaseEntity
     {
         public int Id { get; set; }
         public int DesignerId { get; set; }

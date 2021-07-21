@@ -4,6 +4,6 @@ namespace SODP.UI.ViewModels
 {
     public class NewBranchVM
     {
-        public BranchDTO Brtanch { get; set; }
+        public BranchDTO Branch { get; set; }
     }
 }

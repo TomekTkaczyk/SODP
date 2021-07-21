@@ -9,6 +9,8 @@ using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Branches
@@ -44,16 +46,31 @@ namespace SODP.UI.Pages.Branches
             return GetPartialView(new BranchDTO());
         }
 
-        public void OnPostNewDesignerAsync()
+        public async Task<PartialViewResult> OnPostNewBranchAsync(BranchDTO branch)
         {
+            if (ModelState.IsValid)
+            {
+                var body = new StringContent(JsonSerializer.Serialize(branch), Encoding.UTF8, "application/json");
+                var apiResponse = await new HttpClient().PostAsync($"{_apiUrl}{_apiVersion}/branches", body);
+                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
+                if (response.Success)
+                {
+                    branch = response.Data;
+                }
+                else
+                {
+                    SetModelErrors(response);
+                }
+            }
 
+            return GetPartialView(branch);
         }
 
         private PartialViewResult GetPartialView(BranchDTO branch)
         {
             var viewModel = new NewBranchVM()
             {
-                Brtanch = branch
+                Branch = branch
             };
 
             return new PartialViewResult()

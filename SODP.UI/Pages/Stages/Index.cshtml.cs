@@ -56,18 +56,18 @@ namespace SODP.UI.Pages.Stages
 
         public async Task<PartialViewResult> OnGetNewStageAsync(int? id)
         {
-            StageDTO stage = new StageDTO();
             if (id != null)
             {
                 var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages/{id}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
-                    stage = result.Data;
+
+                    return GetPartialView(result.Data);
                 }
             }
 
-            return GetPartialView(stage);
+            return GetPartialView(new StageDTO());
         }
 
         public async Task<PartialViewResult> OnPostNewStageAsync(StageDTO stage)
@@ -113,18 +113,6 @@ namespace SODP.UI.Pages.Stages
             }
 
             return GetPartialView(stage);
-        }
-
-        private void SetModelErrors(ServiceResponse response)
-        {
-            if (!string.IsNullOrEmpty(response.Message))
-            {
-                ModelState.AddModelError("", response.Message);
-            }
-            foreach (var error in response.ValidationErrors)
-            {
-                ModelState.AddModelError(error.Key, error.Value);
-            }
         }
 
         private async Task<IList<StageDTO>> GetStagesAsync(PageInfo pageInfo)

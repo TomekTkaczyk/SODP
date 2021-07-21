@@ -14,17 +14,18 @@
     </div>
     @if (SignInManager.IsSignedIn(User))
     {
-<div id="modal-placeholder"></div>
-                <div class="col-4 justify-content-end">
-                    <button type="button" class="btn btn-info form-control text-white float-right"
-                            data-toggle="ajax-modal"
-                            title="Nowa branża"
-                            data-target="editdesigner"
-                            data-url="@Url.Page("Index", "NewBranch")">
-                        <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa branża
-                    </button>
-                </div>}
-    <div id="DesignersTable" class="col-12 p-3 mt-3">
+        <div id="modal-placeholder"></div>
+        <div class="col-4 justify-content-end">
+            <button type="button" class="btn btn-info form-control text-white float-right"
+                    data-toggle="ajax-modal"
+                    title="Nowa branża"
+                    data-target="editdesigner"
+                    data-url="@Url.Page("Index", "NewBranch")">
+                <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa branża
+            </button>
+        </div>
+    }
+    <div id="BranchesTable" class="col-12 p-3 mt-3">
         <form method="post">
             @if (Model.BranchesViewModel.Branches.Count() > 0)
             {
@@ -32,7 +33,8 @@
             }
             else
             {
-<p> Lista branż jest pusta</p>            }
+                <p> Lista branż jest pusta</p>            
+            }
         </form>
     </div>
 </div>

@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-//using SODP.Domain.DTO;
 using SODP.Model;
 using SODP.Shared.DTO;
-using System.Collections.Generic;
 
 namespace SODP.Domain
 {
@@ -10,15 +8,22 @@ namespace SODP.Domain
     {
         public AutoMapperProfile()
         {
-            CreateMap<User, UserDTO>();
+            CreateMap<User, UserDTO>()
+                .ForMember(dest => dest.ActiveStatus, opt => opt.MapFrom(src => src.LockoutEnabled))
+                .ReverseMap();
+
             CreateMap<UserDTO, UserUpdateDTO>();
 
-            CreateMap<Role, RoleDTO>().ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Name));
+            CreateMap<Role, RoleDTO>()
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Name));
 
-            CreateMap<Stage, StageDTO>().ReverseMap();
+            CreateMap<Stage, StageDTO>()
+                .ReverseMap();
 
             CreateMap<Project, ProjectDTO>();
-            CreateMap<ProjectDTO, Project>().ForMember(dest => dest.Stage, act => act.Ignore());
+
+            CreateMap<ProjectDTO, Project>()
+                .ForMember(dest => dest.Stage, act => act.Ignore());
 
         }
     }

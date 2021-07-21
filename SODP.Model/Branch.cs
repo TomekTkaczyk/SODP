@@ -5,9 +5,8 @@ using System.Text;
 
 namespace SODP.Model
 {
-    public class Branch
+    public class Branch : BaseEntity
     {
-        public int Id { get; set; }
         public string Sign { get; set; }
         public string Title { get; set; }
 

@@ -9,5 +9,5 @@
         });
     });
 
-    InitModalPlaceHolder('/stages');
+    initModalPlaceHolder('/stages');
 });

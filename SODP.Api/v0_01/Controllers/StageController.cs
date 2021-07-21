@@ -42,13 +42,8 @@ namespace SODP.Api.v0_01.Controllers
             {
                 return BadRequest();
             }
-            var response = await _stagesService.CreateAsync(stage);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
 
-            return Ok(response);
+            return Ok(await _stagesService.CreateAsync(stage));
         }
 
         [HttpPut("{sign}")]

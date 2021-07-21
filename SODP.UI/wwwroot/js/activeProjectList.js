@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿  $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     $('button[data-toggle="ajax-modal"]').click(function (event) {
         var url = $(this).data('url');
@@ -9,11 +9,11 @@
         });
     });
 
-    InitProjectDataTable();
-    InitModalPlaceHolder();
+    initProjectDataTable();
+    initModalPlaceHolder();
 });
 
-function InitProjectDataTable() {
+function initProjectDataTable() {
     $('#ProjectDataTable').DataTable({
         data: ProjectsArray,
         columns: [
@@ -52,7 +52,7 @@ function InitProjectDataTable() {
     });
 }
 
-function InitModalPlaceHolder() {
+function initModalPlaceHolder() {
     var placeholderElement = $('#modal-placeholder');
 
     placeholderElement.on('click', '[data-save="modal"]', function (event) {
