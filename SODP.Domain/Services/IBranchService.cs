@@ -6,8 +6,9 @@ namespace SODP.Domain.Services
 {
     public interface IBranchService : IEntityService<BranchDTO>
     {
-        Task<ServicePageResponse<BranchDTO>> GetAllAsync();
+        Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null);
         Task<ServiceResponse<BranchDTO>> GetAsync(string sign);
+
 
     }
 }

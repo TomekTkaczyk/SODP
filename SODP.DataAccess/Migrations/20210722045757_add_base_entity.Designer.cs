@@ -9,7 +9,7 @@ using SODP.DataAccess;
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    [Migration("20210721213406_add_base_entity")]
+    [Migration("20210722045757_add_base_entity")]
     partial class add_base_entity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

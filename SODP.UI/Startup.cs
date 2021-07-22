@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -104,8 +105,15 @@ namespace SODP.UI
                 .AddRazorRuntimeCompilation();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
+
+            //var db = serviceProvider.GetRequiredService<SODPDBContext>();
+            //db.Database.Migrate();
+            //db.Database.EnsureCreated();
+            //serviceProvider.GetRequiredService<UserInitializer>().UserInit();
+            //serviceProvider.GetRequiredService<DataInitializer>().LoadData();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -132,7 +140,6 @@ namespace SODP.UI
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
-
         }
     }
 }

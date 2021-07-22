@@ -27,7 +27,12 @@ namespace SODP.Application.Services
             _context = context;
         }
 
-        public async Task<ServicePageResponse<StageDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<StageDTO>> GetAllAsync()
+        {
+            return await GetAllAsync(1, 0, null);
+        }
+
+        public async Task<ServicePageResponse<StageDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
         {
             var serviceResponse = new ServicePageResponse<StageDTO>();
             try

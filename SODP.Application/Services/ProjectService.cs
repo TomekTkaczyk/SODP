@@ -46,7 +46,12 @@ namespace SODP.Application.Services
             return this;
         }
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 0, int pageSize = 0)
+        public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync()
+        {
+            return await GetAllAsync(1, 0);
+        }   
+
+        public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<ProjectDTO>();
             IList<Project> projects = new List<Project>();

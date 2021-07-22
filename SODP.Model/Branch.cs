@@ -9,6 +9,7 @@ namespace SODP.Model
     {
         public string Sign { get; set; }
         public string Title { get; set; }
+        public bool ActiveStatus { get; set; }
 
         public void Normalize()
         {

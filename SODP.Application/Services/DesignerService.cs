@@ -27,9 +27,9 @@ namespace SODP.Application.Services
             _context = context;
         }
 
-        public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync()
         {
-            return await GetAllAsync(currentPage, pageSize, null);
+            return await GetAllAsync(1, 0, null);
         }
 
         public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
@@ -37,17 +37,13 @@ namespace SODP.Application.Services
             var serviceResponse = new ServicePageResponse<DesignerDTO>();
             try
             {
-                if(pageSize == 0)
-                {
-                    pageSize = serviceResponse.Data.TotalCount;
-                }
-                IList<Designer> designers = new List<Designer>();
                 serviceResponse.Data.TotalCount = await _context.Designers.Where(x => active == null || (x.ActiveStatus == active)).CountAsync();
                 if(pageSize == 0)                                                
                 {
                     pageSize = serviceResponse.Data.TotalCount;
                 }
-                designers = await _context.Designers.OrderBy(x => x.Lastname)
+                var designers = await _context.Designers
+                    .OrderBy(x => x.Lastname)
                     .ThenBy(y => y.Firstname)
                     .Where(x => active == null || (x.ActiveStatus == active))
                     .Skip(currentPage * pageSize)
@@ -109,6 +105,7 @@ namespace SODP.Application.Services
                 designer.Normalize();
                 var entity = await _context.AddAsync(designer);
                 await _context.SaveChangesAsync();
+                serviceResponse.SetData(_mapper.Map<DesignerDTO>(entity.Entity));
 
             }
             catch (Exception ex)

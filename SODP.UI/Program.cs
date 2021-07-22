@@ -37,6 +37,7 @@ namespace SODP.UI
             {
                 var db = scope.ServiceProvider.GetRequiredService<SODPDBContext>();
                 db.Database.Migrate();
+                db.Database.EnsureCreated();
                 scope.ServiceProvider.GetRequiredService<UserInitializer>().UserInit();
                 scope.ServiceProvider.GetRequiredService<DataInitializer>().LoadData();
             }

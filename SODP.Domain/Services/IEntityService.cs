@@ -6,7 +6,7 @@ namespace SODP.Domain.Services
 {
     public interface IEntityService<T> : IAppService where T : BaseDTO
     {
-        Task<ServicePageResponse<T>> GetAllAsync(int currentPage = 1, int pageSize = 0);
+        Task<ServicePageResponse<T>> GetAllAsync();
         Task<ServiceResponse<T>> GetAsync(int id);
         Task<ServiceResponse<T>> CreateAsync(T entity);
         Task<ServiceResponse> DeleteAsync(int id);

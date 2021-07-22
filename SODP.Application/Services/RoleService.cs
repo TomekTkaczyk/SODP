@@ -23,6 +23,10 @@ namespace SODP.Application.Services
             _roleManager = roleManager;
         }
 
+        public async Task<ServicePageResponse<RoleDTO>> GetAllAsync()
+        {
+            return await GetAllAsync(1, 0);
+        }
 
         public async Task<ServicePageResponse<RoleDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
         {

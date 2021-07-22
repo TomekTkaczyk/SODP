@@ -32,7 +32,7 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             if (id == null)
             {
-                var stagesResponse = await _stagesService.GetAllAsync(1,0);
+                var stagesResponse = await _stagesService.GetAllAsync();
                 Stages = stagesResponse.Data.Collection.Select(x => new SelectListItem()
                 {
                     Value = x.Id.ToString(),
@@ -56,7 +56,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var stagesResponse = await _stagesService.GetAllAsync(1, 0);
+            var stagesResponse = await _stagesService.GetAllAsync();
             Stages = stagesResponse.Data.Collection.Select(x => new SelectListItem()
             {
                 Value = x.Id.ToString(),

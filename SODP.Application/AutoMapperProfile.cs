@@ -25,6 +25,12 @@ namespace SODP.Domain
             CreateMap<ProjectDTO, Project>()
                 .ForMember(dest => dest.Stage, act => act.Ignore());
 
+            CreateMap<BranchDTO, Branch>()
+                .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+                .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
+
+            CreateMap<Branch, BranchDTO>();
+
         }
     }
 }

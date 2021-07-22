@@ -27,20 +27,39 @@ namespace SODP.Application.Services
             _context = context;
         }
 
-        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync()
         {
-            return await GetAllAsync();
+            return await GetAllAsync(1, 0, null);
         }
 
-        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync()
+        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        {
+            return await GetAllAsync(currentPage, pageSize, null);
+        }
+
+        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
         {
             var serviceResponse = new ServicePageResponse<BranchDTO>();
 
             try
             {
-                var stages = await _context.Branches.OrderBy(x => x.Sign)
+                serviceResponse.Data.TotalCount = await _context.Branches.Where(x => active == null || (x.ActiveStatus == active)).CountAsync();
+                if (pageSize == 0)
+                {
+                    pageSize = serviceResponse.Data.TotalCount;
+                }
+                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageSize = pageSize;
+
+                var branches = await _context.Branches
+                    .OrderBy(x => x.Sign)
+                    .Where(x => active == null || (x.ActiveStatus == active))
+                    .Skip(currentPage * pageSize)
+                    .Take(pageSize)
                     .ToListAsync();
-                serviceResponse.SetData(_mapper.Map<IList<BranchDTO>>(stages));
+
+                serviceResponse.SetData(_mapper.Map<IList<BranchDTO>>(branches));
+
             }
             catch (Exception ex)
             {
@@ -115,7 +134,7 @@ namespace SODP.Application.Services
                 branch.Normalize();
                 var entity = await _context.Branches.AddAsync(branch);
                 await _context.SaveChangesAsync();
-                serviceResponse.SetData(_mapper.Map<BranchDTO>(entity));
+                serviceResponse.SetData(_mapper.Map<BranchDTO>(entity.Entity));
             }
             catch (Exception ex)
             {
