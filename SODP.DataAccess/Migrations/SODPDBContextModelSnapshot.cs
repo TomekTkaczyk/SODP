@@ -122,6 +122,9 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<bool>("ActiveStatus")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");
 
@@ -356,6 +359,9 @@ namespace SODP.DataAccess.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<bool>("ActiveStatus")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");

@@ -43,21 +43,29 @@ namespace SODP.Application.Services
 
             try
             {
-                serviceResponse.Data.TotalCount = await _context.Branches.Where(x => active == null || (x.ActiveStatus == active)).CountAsync();
+                var branches = _context.Branches
+                    .Where(x => active == null || (x.ActiveStatus == active))
+                    .OrderBy(x => x.Sign);
+
+                serviceResponse.Data.TotalCount = await branches.CountAsync();
+
                 if (pageSize == 0)
                 {
+                    currentPage = 1;
                     pageSize = serviceResponse.Data.TotalCount;
                 }
-                serviceResponse.Data.PageNumber = currentPage;
-                serviceResponse.Data.PageSize = pageSize;
+                else
+                {
+                    currentPage = Math.Min(currentPage, (int)Math.Ceiling(decimal.Divide(serviceResponse.Data.TotalCount, pageSize)));
+                }
 
-                var branches = await _context.Branches
-                    .OrderBy(x => x.Sign)
-                    .Where(x => active == null || (x.ActiveStatus == active))
-                    .Skip(currentPage * pageSize)
+                var br = await branches
+                    .Skip((currentPage-1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
 
+                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageSize = pageSize;
                 serviceResponse.SetData(_mapper.Map<IList<BranchDTO>>(branches));
 
             }
@@ -132,6 +140,7 @@ namespace SODP.Application.Services
                 }
 
                 branch.Normalize();
+                branch.ActiveStatus = true;
                 var entity = await _context.Branches.AddAsync(branch);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<BranchDTO>(entity.Entity));

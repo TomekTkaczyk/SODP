@@ -30,6 +30,52 @@
             @if (Model.BranchesViewModel.Branches.Count() > 0)
             {
 
+
+<table class="table table-sm table-hover">
+                     <thead class="thead-light">
+                         <tr>
+                             <th>Symbol</th>
+                             <th>Opis</th>
+                             <th></th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         @foreach (var branch in Model.BranchesViewModel.Branches) 
+                         { 
+                         <tr>
+                             <td>
+                                 <a onclick='NewBranch(@branch.Id)'
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="Edycja branży">
+                                     @branch.Sign
+                                 </a>
+                             </td>
+                             <td>
+                                 <a onclick='NewBranch(@branch.Id)'
+                                    data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="Edycja branży">
+                                     @branch.Title
+                                 </a>
+                             </td>
+                             <td>
+                                 <div class="row group justify-content-end mr-0">
+                                     <div>
+                                         <a onclick='Delete("/api/v0_01/branches/@branch.Id")'
+                                            class="btn btn-lg mb-0 mt-0 ml-1 mr-1 p-1 text-danger"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Usuń branżę">
+                                             <i class="fas fa-trash-alt"></i>
+                                         </a>
+                                     </div>
+                                 </div>
+                             </td>
+                         </tr>
+                         }
+                     </tbody>
+                 </table>
             }
             else
             {

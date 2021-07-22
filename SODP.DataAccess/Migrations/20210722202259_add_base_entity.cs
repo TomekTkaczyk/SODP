@@ -24,6 +24,12 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            migrationBuilder.AddColumn<bool>(
+                name: "ActiveStatus",
+                table: "Stages",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreateTimeStamp",
                 table: "Stages",
@@ -90,6 +96,12 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            migrationBuilder.AddColumn<bool>(
+                name: "ActiveStatus",
+                table: "Branches",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreateTimeStamp",
                 table: "Branches",
@@ -112,6 +124,10 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.DropColumn(
                 name: "ModifyTimeStamp",
                 table: "Tokens");
+
+            migrationBuilder.DropColumn(
+                name: "ActiveStatus",
+                table: "Stages");
 
             migrationBuilder.DropColumn(
                 name: "CreateTimeStamp",
@@ -156,6 +172,10 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.DropColumn(
                 name: "ModifyTimeStamp",
                 table: "Certificates");
+
+            migrationBuilder.DropColumn(
+                name: "ActiveStatus",
+                table: "Branches");
 
             migrationBuilder.DropColumn(
                 name: "CreateTimeStamp",

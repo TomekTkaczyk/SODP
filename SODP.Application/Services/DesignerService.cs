@@ -103,6 +103,7 @@ namespace SODP.Application.Services
                 }
 
                 designer.Normalize();
+                designer.ActiveStatus = true;
                 var entity = await _context.AddAsync(designer);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<DesignerDTO>(entity.Entity));

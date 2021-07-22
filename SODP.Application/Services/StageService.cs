@@ -35,6 +35,7 @@ namespace SODP.Application.Services
         public async Task<ServicePageResponse<StageDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
         {
             var serviceResponse = new ServicePageResponse<StageDTO>();
+            
             try
             {
                 var stages = _context.Stages
@@ -133,6 +134,7 @@ namespace SODP.Application.Services
                 }
 
                 stage.Normalize();
+                stage.ActiveStatus = true;
                 var entity = await _context.AddAsync(stage);
                 await _context.SaveChangesAsync();
 
