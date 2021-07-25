@@ -4,12 +4,14 @@ using SODP.Model;
 
 namespace SODP.DataAccess.Configurations
 {
-    public class LicenceEntityConfiguration : IEntityTypeConfiguration<Licence>
+    public class BranchDesignerEntityConfiguration : IEntityTypeConfiguration<BranchDesigner>
     {
-        public void Configure(EntityTypeBuilder<Licence> builder)
+        public void Configure(EntityTypeBuilder<BranchDesigner> builder)
         {
-            builder.Property(x => x.Contents)
-                .HasColumnType("nvarchar(250)")
+            builder.Property(x => x.BranchId)
+                .IsRequired();
+
+            builder.Property(x => x.DesignerId)
                 .IsRequired();
 
             builder.HasIndex(x => x.BranchId)
@@ -18,7 +20,7 @@ namespace SODP.DataAccess.Configurations
             builder.HasIndex(x => x.DesignerId)
                 .HasName("IX_Designer");
 
-            builder.ToTable("Licences");
+            builder.ToTable("BranchDesigners");
         }
     }
 }

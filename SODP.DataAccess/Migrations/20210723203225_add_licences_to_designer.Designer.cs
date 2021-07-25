@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SODP.DataAccess;
 
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    partial class SODPDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210723203225_add_licences_to_designer")]
+    partial class add_licences_to_designer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -569,7 +571,7 @@ namespace SODP.DataAccess.Migrations
             modelBuilder.Entity("SODP.Model.BranchDesigners", b =>
                 {
                     b.HasOne("SODP.Model.Branch", "Branch")
-                        .WithMany()
+                        .WithMany("Designers")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -593,10 +595,9 @@ namespace SODP.DataAccess.Migrations
             modelBuilder.Entity("SODP.Model.Licence", b =>
                 {
                     b.HasOne("SODP.Model.Branch", "Branch")
-                        .WithMany("Licenses")
+                        .WithMany()
                         .HasForeignKey("BranchId")
-                        .HasConstraintName("FK_Branch_Licence")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SODP.Model.Designer", "Designer")

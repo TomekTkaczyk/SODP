@@ -65,31 +65,34 @@ namespace SODP.UI.Pages.ActiveProjects
 
             if (ModelState.IsValid)
             {
-                ServiceResponse response;
+                ServiceResponse response = await _projectsService.UpdateAsync(Project);
 
-                if (Project.Id.Equals(0))
-                {
-                    var project = new ProjectDTO
-                    {
-                        Number = Project.Number,
-                        StageId = Project.StageId,
-                        Title = Project.Title,
-                        Description = Project.Description
-                    };
-                    response = await _projectsService.CreateAsync(project);
-                }
-                else
-                {
-                    var project = new ProjectDTO
-                    {
-                        Id = Project.Id,
-                        Number = Project.Number,
-                        StageId = Project.StageId,
-                        Title = Project.Title,
-                        Description = Project.Description
-                    };
-                    response = await _projectsService.UpdateAsync(project);
-                }
+                //if (Project.Id.Equals(0))
+                //{
+                //    var project = new ProjectDTO
+                //    {
+                //        Number = Project.Number,
+                //        Title = Project.Title,
+                //        Description = Project.Description,
+                //        Stage = new StageDTO
+                //        {
+
+                //        }
+                //    };
+                //    response = await _projectsService.CreateAsync(project);
+                //}
+                //else
+                //{
+                //    var project = new ProjectDTO
+                //    {
+                //        Id = Project.Id,
+                //        Number = Project.Number,
+                //        StageId = Project.StageId,
+                //        Title = Project.Title,
+                //        Description = Project.Description
+                //    };
+                //    response = await _projectsService.UpdateAsync(project);
+                //}
 
                 if (!response.Success)
                 {

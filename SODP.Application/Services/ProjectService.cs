@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SODP.Shared.Response;
+using SODP.Application.Mappers;
 
 namespace SODP.Application.Services
 {
@@ -107,12 +108,38 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id)
+        {
+            var serviceResponse = new ServiceResponse<ProjectDTO>();
+            try
+            {
+                var project = await _context.Projects
+                    .Include(s => s.Stage)
+                    .Include(s => s.Branches)
+                    .ThenInclude(s => s.Branch)
+                    .Where(t => t.Status == _mode)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+                if (project == null)
+                {
+                    serviceResponse.SetError($"Błąd: Projekt Id:{id} nie odnaleziony.", 404);
+                }
+                serviceResponse.SetData(project.ToDTO());
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
+
+            return serviceResponse;
+        }
+
+
         public async Task<ServiceResponse<ProjectDTO>> CreateAsync(ProjectDTO newProject)
         {
             var serviceResponse = new ServiceResponse<ProjectDTO>();
             try
             {
-                var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
+                var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.Stage.Id);
                 if(exist != null)
                 {
                     serviceResponse.SetError($"Błąd: Projekt {exist.Symbol} już istnieje.", 400);

@@ -10,10 +10,15 @@ namespace SODP.Model
         public int ProjectId { get; set; }
         public virtual Project Project { get; set; }
         public int BranchId { get; set; }
-        public Branch Branch { get; set; }
+        public virtual Branch Branch { get; set; }
         public int? DesignerLicenceId { get; set; }
         public virtual Licence DesignerLicence { get; set; }
         public int? CheckingLicenceId { get; set; }
         public virtual Licence CheckingLicence { get; set; }
+
+        public override string ToString()
+        {
+            return Branch.ToString();
+        }
     }
 }

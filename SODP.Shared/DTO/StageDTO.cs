@@ -10,5 +10,10 @@ namespace SODP.Shared.DTO
 
         [Required]
         public string Title { get; set; }
+
+        public override string ToString()
+        {
+            return $"({Sign.Trim()}) {Title.Trim()}";
+        }
     }
 }

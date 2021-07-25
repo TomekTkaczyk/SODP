@@ -11,5 +11,8 @@ namespace SODP.Shared.DTO
 
         [Required]
         public string Title { get; set; }
+        
+        public bool ActiveStatus { get; set; }
+
     }
 }

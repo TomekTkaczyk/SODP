@@ -1,5 +1,5 @@
 ﻿@page
-@model SODP.UI.Pages.Users.IndexModel
+@model IndexModel
 @{ ViewData["Title"] = "Użytkownicy"; }
 
 <link rel="stylesheet " href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/css/bootstrap4-toggle.min.css">
@@ -51,7 +51,11 @@
                                                     border-radius: 20px;
                                                 }
                                             </style>
-                                            <input type="checkbox" asp-for="@user.ActiveStatus" onchange="handleChange(@user.Id,this.checked)" id="checkbox_@user.Id" name="checkbox_@user.Id" data-toggle="toggle" data-style="ios">
+                                            <input type="checkbox" asp-for="@user.ActiveStatus" name="checkbox_@user.Id"
+                                                   onchange="handleChange(@user.Id,this.checked)" 
+                                                   id="checkbox_@user.Id"  
+                                                   data-toggle="toggle" 
+                                                   data-style="ios">
                                         </div>
                                     </div>
                                 </td>

@@ -23,7 +23,7 @@ namespace SODP.UI.Pages.Users
         }
         public ServicePageResponse<UserDTO> Users { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/users");
             if (response.IsSuccessStatusCode)

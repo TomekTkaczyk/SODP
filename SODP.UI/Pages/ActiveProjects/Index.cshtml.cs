@@ -32,6 +32,8 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public ServicePageResponse<ProjectDTO> Projects { get; set; }
 
+        //public ProjectsListVM Projects { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
             var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/active-projects");
@@ -57,10 +59,10 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnGetNewProjectAsync()
         {
-            return await GetPartialViewAsync(new ProjectDTO());
+            return await GetPartialViewAsync(new NewProjectVM());
         }
 
-        public async Task<PartialViewResult> OnPostNewProjectAsync(ProjectDTO project)
+        public async Task<PartialViewResult> OnPostNewProjectAsync(NewProjectVM project)
         {
             if (ModelState.IsValid)
             {
@@ -74,9 +76,17 @@ namespace SODP.UI.Pages.ActiveProjects
 
                 var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectDTO>>();
 
-                if (apiResponse.IsSuccessStatusCode)
+                if (apiResponse.IsSuccessStatusCode && response.Success)
                 {
-                    return await GetPartialViewAsync(response.Data);
+                    //return await GetPartialViewAsync(response.Data);
+                    return await GetPartialViewAsync(new NewProjectVM
+                    {
+                        Id = response.Data.Id,
+                        Number = response.Data.Number,
+                        Title = response.Data.Title,
+                        Description = response.Data.Description,
+                        StageId = response.Data.Stage.Id
+                    });
                 }
                 else
                 {
@@ -94,7 +104,7 @@ namespace SODP.UI.Pages.ActiveProjects
             return await GetPartialViewAsync(project);
         }
 
-        private async Task<PartialViewResult> GetPartialViewAsync(ProjectDTO project)
+        private async Task<PartialViewResult> GetPartialViewAsync(NewProjectVM project)
         {
             var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages");
             List<SelectListItem> stagesItems = new List<SelectListItem>();
@@ -104,27 +114,20 @@ namespace SODP.UI.Pages.ActiveProjects
                 stagesItems = stages.Data.Collection.Select(x => new SelectListItem()
                 {
                     Value = x.Id.ToString(),
-                    Text = $"({x.Sign.Trim()}) {x.Title.Trim()}"
+                    Text = x.ToString()
                 }).ToList();
 
                 if (project.StageId != 0)
                 {
                     var currentStage = stages.Data.Collection.FirstOrDefault(x => x.Id == project.StageId);
-                    project.StageSign = currentStage.Sign;
-                    project.StageTitle = currentStage.Title;
                 }
             }
-
-            var viewModel = new NewProjectVM()
-            { 
-                Project = project,
-                Stages = stagesItems
-            };
+            project.Stages = stagesItems;
 
             return new PartialViewResult
             {
                 ViewName = partialViewName,
-                ViewData = new ViewDataDictionary<NewProjectVM>(ViewData, viewModel)
+                ViewData = new ViewDataDictionary<NewProjectVM>(ViewData, project)
             };
         }
     }

@@ -1,13 +1,19 @@
 ﻿@page
 @model IndexModel
-
 @{ ViewData["Title"] = "Branże"; }
+
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
 
 @inject SignInManager<User> SignInManager
 
+<link rel="stylesheet " href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/css/bootstrap4-toggle.min.css">
+
+<script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
+
 <br />
+
 <div class="container row p-0 m-0">
     <div class="col-8">
         <h2 class="text-info">@ViewData["Title"]</h2>
@@ -24,66 +30,64 @@
                 <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa branża
             </button>
         </div>
-    }
-    <div id="BranchesTable" class="col-12 p-3 mt-3">
-        <form method="post">
-            @if (Model.BranchesViewModel.Branches.Count() > 0)
-            {
-
-
-<table class="table table-sm table-hover">
-                     <thead class="thead-light">
-                         <tr>
-                             <th>Symbol</th>
-                             <th>Opis</th>
-                             <th></th>
-                         </tr>
-                     </thead>
-                     <tbody>
-                         @foreach (var branch in Model.BranchesViewModel.Branches) 
-                         { 
-                         <tr>
-                             <td>
-                                 <a onclick='NewBranch(@branch.Id)'
-                                    data-toggle="tooltip"
-                                    data-placement="top"
-                                    title="Edycja branży">
-                                     @branch.Sign
-                                 </a>
-                             </td>
-                             <td>
-                                 <a onclick='NewBranch(@branch.Id)'
-                                    data-toggle="tooltip"
-                                    data-placement="top"
-                                    title="Edycja branży">
-                                     @branch.Title
-                                 </a>
-                             </td>
-                             <td>
-                                 <div class="row group justify-content-end mr-0">
-                                     <div>
-                                         <a onclick='Delete("/api/v0_01/branches/@branch.Id")'
-                                            class="btn btn-lg mb-0 mt-0 ml-1 mr-1 p-1 text-danger"
-                                            data-toggle="tooltip"
-                                            data-placement="top"
-                                            title="Usuń branżę">
-                                             <i class="fas fa-trash-alt"></i>
-                                         </a>
-                                     </div>
-                                 </div>
-                             </td>
-                         </tr>
-                         }
-                     </tbody>
-                 </table>
-            }
-            else
-            {
-                <p> Lista branż jest pusta</p>            
-            }
-        </form>
-    </div>
+     }
 </div>
+
+<br />
+<br />
+
+@if (Model.BranchesViewModel.Branches.Count() > 0)
+{
+    <div class="accordion" id="branchAccordion">
+        @foreach (var branch in Model.BranchesViewModel.Branches)
+        {
+            <div class="card">
+                <div class="card-header" id="branch_@branch.Id">
+                    <div class="row ">
+                        <div class="col">
+                            <h3>
+                                <a data-toggle="collapse" data-target="#collapse_@branch.Id" aria-expanded="false" aria-controls="collapseOne">@branch.Title</a>
+                            </h3>
+                        </div>
+                        <div class="colgroup justify-content-end mr-0">
+                            <style>
+                                .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+                                    border-radius: 20px;
+                                }
+
+                                    .toggle.ios .toggle-handle {
+                                        border-radius: 20px;
+                                    }
+                            </style>
+                            <input type="checkbox" asp-for="@branch.ActiveStatus" name="checkbox_@branch.Id"
+                                   onchange="handleChange(@branch.Id,this.checked)"
+                                   id="checkbox_@branch.Id"
+                                   title="Aktywność"
+                                   data-toggle="toggle"
+                                   data-style="ios">
+                            <a onclick='Delete("/api/v0_01/branches/@branch.Id")'
+                               class="btn btn-lg mb-0 mt-0 ml-1 mr-1 p-1 text-danger"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="Usuń branżę">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="collapse_@branch.Id" class="collapse hide" aria-labelledby="branch_@branch.Id" data-parent="#branchAccordion">
+                <div class="card-body">
+                    Anim pariatur cliche reprehenderit...
+                </div>
+            </div>
+        }
+    </div> 
+}
+else
+{
+    <p> Lista branż jest pusta</p>
+}
 
 @section Scripts{
     <script src="~/js/delete.js"></script>

@@ -28,5 +28,11 @@ namespace SODP.Api.v0_01.Controllers
         {
             return Ok(await _projectsService.GetAsync(Id));
         }
+
+        [HttpGet("{Id}/branches")]
+        public async Task<IActionResult> GetWithBranchesAsync(int Id)
+        {
+            return Ok(await _projectsService.GetWithBranchesAsync(Id));
+        }
     }
 }

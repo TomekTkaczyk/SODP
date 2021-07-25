@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SODP.DataAccess.Configurations
 {
@@ -21,11 +18,11 @@ namespace SODP.DataAccess.Configurations
 
             builder.ToTable("Branches");
 
-            //builder.HasMany(x => x.Licences)
-            //    .WithOne(x => x.Branch)
-            //    .HasForeignKey(x => x.BranchId)
-            //    .HasConstraintName("FK_Branch_Licence")
-            //    .OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Licenses)
+                .WithOne(x => x.Branch)
+                .HasForeignKey(x => x.BranchId)
+                .HasConstraintName("FK_Branch_Licence")
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

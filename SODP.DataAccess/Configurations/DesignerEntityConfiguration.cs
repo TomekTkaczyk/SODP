@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SODP.DataAccess.Configurations
 {
@@ -31,11 +28,11 @@ namespace SODP.DataAccess.Configurations
             //    .HasConstraintName("FK_Designer_Certificate")
             //    .OnDelete(DeleteBehavior.Restrict);
 
-            //builder.HasMany(x => x.Licences)
-            //    .WithOne(x => x.Designer)
-            //    .HasForeignKey(x => x.DesignerId)
-            //    .HasConstraintName("FK_Designer_Licence")
-            //    .OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Licenses)
+                .WithOne(x => x.Designer)
+                .HasForeignKey(x => x.DesignerId)
+                .HasConstraintName("FK_Designer_Licence")
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }
