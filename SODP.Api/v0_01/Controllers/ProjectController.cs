@@ -19,18 +19,18 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _projectsService.GetAllAsync(currentPage, pageSize));
         }
 
-        [HttpGet("{Id}")]
-        public async Task<IActionResult> GetAsync(int Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync(int id)
         {
-            var response = await _projectsService.GetAsync(Id);
+            var response = await _projectsService.GetAsync(id);
 
             return StatusCode(response.StatusCode, response); ;
         }
 
-        [HttpGet("{Id}/branches")]
-        public async Task<IActionResult> GetWithBranchesAsync(int Id)
+        [HttpGet("{id}/branches")]
+        public async Task<IActionResult> GetWithBranchesAsync(int id)
         {
-            return Ok(await _projectsService.GetWithBranchesAsync(Id));
+            return Ok(await _projectsService.GetWithBranchesAsync(id));
         }
     }
 }

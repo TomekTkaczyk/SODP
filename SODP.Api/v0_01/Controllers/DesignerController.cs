@@ -23,7 +23,7 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.GetAllAsync(currentPage, pageSize, active));
         }
 
-        [HttpGet("{Id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
             return Ok(await _service.GetAsync(id));
@@ -35,7 +35,7 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.CreateAsync(designer));
         }
 
-        [HttpPut("{Id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] DesignerDTO designer)
         {
             if (id != designer.Id)
@@ -45,5 +45,18 @@ namespace SODP.Api.v0_01.Controllers
 
             return Ok(await _service.UpdateAsync(designer));
         }
+
+        [HttpPut("{id}/{status}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] int status)
+        {
+            return Ok(await _service.SetActiveStatusAsync(id, status == 1));
+        }
+
+        [HttpGet("{id}/licences")]
+        public async Task<IActionResult> GetLicencesAsync(int id)
+        {
+            return Ok(await _service.GetLicencesAsync(id));
+        }
+
     }
 }

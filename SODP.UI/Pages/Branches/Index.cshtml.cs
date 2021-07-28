@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
+using SODP.UI.Mappers;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
 using System.Collections.Generic;
@@ -41,23 +42,24 @@ namespace SODP.UI.Pages.Branches
 
         public PartialViewResult OnGetNewBranch()
         {
-            return GetPartialView(new BranchDTO());
+            return GetPartialView(new NewBranchVM());
         }
 
-        public async Task<PartialViewResult> OnPostNewBranchAsync(BranchDTO branch)
+        public async Task<PartialViewResult> OnPostNewBranchAsync(NewBranchVM branch)
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PostAsync($"/branches", 
-                    new StringContent(
-                        JsonSerializer.Serialize(branch), 
-                        Encoding.UTF8, 
-                        "application/json"
-                        ));
-                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
-                if (response.Success)
+                var apiResponse = await _apiProvider.PostAsync($"/branches", branch.ToHttpContent()); 
+                
+                var response = await _apiProvider.GetContent<ServiceResponse<BranchDTO>>(apiResponse);
+                
+                if (apiResponse.IsSuccessStatusCode && response.Success)
                 {
-                    branch = response.Data;
+                    return GetPartialView(new NewBranchVM 
+                    {
+                        Sign = branch.Sign,
+                        Title = branch.Title
+                    });
                 }
                 else
                 {
@@ -68,17 +70,12 @@ namespace SODP.UI.Pages.Branches
             return GetPartialView(branch);
         }
 
-        private PartialViewResult GetPartialView(BranchDTO branch)
+        private PartialViewResult GetPartialView(NewBranchVM branch)
         {
-            var viewModel = new NewBranchVM()
-            {
-                Branch = branch
-            };
-
             return new PartialViewResult()
             {
                 ViewName = partialViewName,
-                ViewData = new ViewDataDictionary<NewBranchVM>(ViewData, viewModel)
+                ViewData = new ViewDataDictionary<NewBranchVM>(ViewData, branch)
             };
         }
 

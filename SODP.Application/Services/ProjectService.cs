@@ -193,12 +193,8 @@ namespace SODP.Application.Services
                 var validationResult = await _validator.ValidateAsync(project);
                 if(!validationResult.IsValid)
                 {
-                    var error = "";
-                    foreach(var item in validationResult.Errors)
-                    {
-                        error += $"{item.PropertyName}: {item.ErrorMessage}";
-                    }
-                    serviceResponse.SetError(error, 400);
+                    serviceResponse.ValidationErrorProcess(validationResult);
+
                     return serviceResponse;
                 }
 

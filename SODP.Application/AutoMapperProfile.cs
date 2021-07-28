@@ -37,6 +37,10 @@ namespace SODP.Domain
 
             CreateMap<Branch, BranchDTO>();
 
+            CreateMap<Designer, DesignerDTO>().ReverseMap();
+
+            CreateMap<Licence, LicenceDTO>();
+
         }
     }
 }

@@ -208,5 +208,30 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
+        {
+            var serviceResponse = new ServiceResponse();
+            try
+            {
+                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (branch == null)
+                {
+                    serviceResponse.SetError($"Branża Id:{id} nie odnaleziona.", 404);
+
+                    return serviceResponse;
+                }
+
+                branch.ActiveStatus = status;
+                _context.Branches.Update(branch);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
+
+            return serviceResponse;
+        }
     }
 }

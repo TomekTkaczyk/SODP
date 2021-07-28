@@ -46,7 +46,7 @@ namespace SODP.Application.Services
                     .OrderBy(x => x.Lastname)
                     .ThenBy(y => y.Firstname)
                     .Where(x => active == null || (x.ActiveStatus == active))
-                    .Skip(currentPage * pageSize)
+                    .Skip((currentPage-1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
                 serviceResponse.Data.PageNumber = currentPage;
@@ -55,7 +55,7 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -75,7 +75,7 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -111,7 +111,7 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -134,10 +134,12 @@ namespace SODP.Application.Services
                 if (!validationResult.IsValid)
                 {
                     serviceResponse.ValidationErrorProcess(validationResult);
+                    
                     return serviceResponse;
                 }
 
                 designer.Normalize();
+
                 oldDesigner.Title = designer.Title;
                 oldDesigner.Firstname = designer.Firstname;
                 oldDesigner.Lastname = designer.Lastname;
@@ -146,8 +148,7 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
-                throw;
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -170,7 +171,54 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
+        {
+            var serviceResponse = new ServiceResponse();
+            try
+            {
+                var designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (designer == null)
+                {
+                    serviceResponse.SetError($"Projektant Id:{id} nie odnaleziony.", 404);
+
+                    return serviceResponse;
+                }
+
+                designer.ActiveStatus = status;
+                _context.Designers.Update(designer);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServicePageResponse<LicenceDTO>> GetLicencesAsync(int id)
+        {
+            var serviceResponse = new ServicePageResponse<LicenceDTO>();
+
+            try
+            {
+                var licences = await _context.Licences
+                    .Include(x => x.Branch)
+                    .Where(x => x.DesignerId == id)
+                    .ToListAsync();
+                
+                serviceResponse.SetData(_mapper.Map<IList<LicenceDTO>>(licences));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;

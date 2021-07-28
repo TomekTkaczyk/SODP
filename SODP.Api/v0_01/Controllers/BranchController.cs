@@ -64,5 +64,14 @@ namespace SODP.Api.v0_01.Controllers
         {
             return Ok(await _service.DeleteAsync(id));
         }
+
+        [HttpPut("{Id}/{status}")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromBody] int status)
+        {
+            return Ok(await _service.SetActiveStatusAsync(id, status == 1));
+        }
+
+
+
     }
 }

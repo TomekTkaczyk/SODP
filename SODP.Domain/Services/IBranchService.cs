@@ -8,7 +8,6 @@ namespace SODP.Domain.Services
     {
         Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null);
         Task<ServiceResponse<BranchDTO>> GetAsync(string sign);
-
-
+        Task<ServiceResponse> SetActiveStatusAsync(int id, bool status);
     }
 }

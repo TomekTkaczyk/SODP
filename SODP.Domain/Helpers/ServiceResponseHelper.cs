@@ -13,6 +13,7 @@ namespace SODP.Domain.Helpers
             {
                 response.ValidationErrors.Add(new KeyValuePair<string, string>(item.PropertyName, item.ErrorMessage));
             }
+            response.StatusCode = 400;
         }
 
         public static void IdentityResultErrorProcess(this ServiceResponse response, IdentityResult identityResult)

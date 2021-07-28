@@ -52,7 +52,6 @@ namespace SODP.UI.Pages.ActiveProjects
             return Page();
         }
 
-
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             var response = await _apiProvider.DeleteAsync($"/active-projects/{id}");
@@ -76,7 +75,7 @@ namespace SODP.UI.Pages.ActiveProjects
             {
                 var apiResponse = await _apiProvider.PostAsync("/active-projects", project.ToHttpContent());
                     
-                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectDTO>>();
+                var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
                 if (apiResponse.IsSuccessStatusCode && response.Success)
                 {
@@ -91,14 +90,7 @@ namespace SODP.UI.Pages.ActiveProjects
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(response.Message))
-                    {
-                        ModelState.AddModelError("", response.Message);
-                    }
-                    foreach (var error in response.ValidationErrors)
-                    {
-                        ModelState.AddModelError(error.Key, error.Value);
-                    }
+                    SetModelErrors(response);
                 }
             }
 
