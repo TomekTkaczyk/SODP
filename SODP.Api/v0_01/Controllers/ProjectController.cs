@@ -16,17 +16,15 @@ namespace SODP.Api.v0_01.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 15)
         {
-            //var req = HttpContext.Request.Query;
-            //int.TryParse(req["page_number"], out int page_number);
-            //int.TryParse(req["page_size"], out int page_size);
-
             return Ok(await _projectsService.GetAllAsync(currentPage, pageSize));
         }
 
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetAsync(int Id)
         {
-            return Ok(await _projectsService.GetAsync(Id));
+            var response = await _projectsService.GetAsync(Id);
+
+            return StatusCode(response.StatusCode, response); ;
         }
 
         [HttpGet("{Id}/branches")]

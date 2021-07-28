@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SODP.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace SODP.UI.ViewModels
         public string Title { get; set; }
 
         public string Description { get; set; }
+
+        public ProjectStatus Status { get; set; }
 
         public string Stage { get { return $"({StageSign}) {StageTitle}"; } }
 

@@ -34,12 +34,7 @@ namespace SODP.Api.v0_01.Controllers
             var response = await _projectsService.UpdateAsync(project);
             if (!response.Success)
             {
-                return response.StatusCode switch
-                {
-                    400 => BadRequest(response),
-                    404 => NotFound(response),
-                    _ => BadRequest(response),
-                };
+                return StatusCode(response.StatusCode, response);
             }
 
             return NoContent();

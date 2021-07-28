@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SODP.Shared.Response;
 using SODP.Application.Mappers;
+using SODP.Shared.Enums;
 
 namespace SODP.Application.Services
 {
@@ -92,13 +93,14 @@ namespace SODP.Application.Services
             {
                 var project = await _context.Projects
                     .Include(s => s.Stage)
-                    .Where(t => t.Status == _mode)
                     .FirstOrDefaultAsync(x => x.Id == id);
                 if (project == null)
                 {
                     serviceResponse.SetError($"Błąd: Projekt Id:{id} nie odnaleziony.", 404);
+                } else
+                {
+                    serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
                 }
-                serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
             }
             catch (Exception ex)
             {

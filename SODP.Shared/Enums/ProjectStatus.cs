@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SODP.Model.Enums
+namespace SODP.Shared.Enums
 {
     public enum ProjectStatus
     {

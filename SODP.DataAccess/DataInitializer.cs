@@ -3,6 +3,7 @@ using SODP.Domain.Managers;
 using SODP.Model;
 using SODP.Model.Enums;
 using SODP.Model.Extensions;
+using SODP.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
