@@ -1,15 +1,18 @@
 ﻿@page
+@using Microsoft.AspNetCore.Identity
+@using SODP.Model
+
 @model IndexModel
 
 @{
     ViewData["Title"] = "Stadia projektowe";
 }
-@using Microsoft.AspNetCore.Identity
-@using SODP.Model
+
 
 @inject SignInManager<User> SignInManager
 
 <br />
+
 <div class="container row p-0 m-0">
     <div class="col-8">
         <h2 class="text-info">@ViewData["Title"]</h2>
@@ -29,7 +32,6 @@
     }
 
     <div id="StagesTable" class="col-12 p-3 mt-3">
-        <form method="post">
             @if (Model.StagesViewModel.Stages.Count() > 0)
             {
                 <table class="table table-sm table-hover">
@@ -89,7 +91,7 @@
             {
                 <p> Lista stadiów jest pusta</p>
             }
-        </form>
+        
     </div>
 </div>
 

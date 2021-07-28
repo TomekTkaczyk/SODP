@@ -26,5 +26,10 @@ namespace SODP.Shared.DTO
         // public string Stage { get { return $"({StageSign}) {StageTitle}"; } }
 
         public ICollection<ProjectBranchDTO> Branches { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Number.Trim()}{Stage.Sign} {Title.Trim()}";
+        }
     }
 }

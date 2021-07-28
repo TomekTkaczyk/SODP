@@ -69,7 +69,7 @@ namespace SODP.Application.Services
                     .OrderBy(x => x.Number)
                     .ThenBy(y => y.Stage.Sign)
                     .Where(x => x.Status == _mode)
-                    .Skip(currentPage * pageSize)
+                    .Skip((currentPage-1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
 
@@ -79,7 +79,7 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -102,7 +102,7 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -127,19 +127,19 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
         }
 
 
-        public async Task<ServiceResponse<ProjectDTO>> CreateAsync(ProjectDTO newProject)
+        public async Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO newProject)
         {
             var serviceResponse = new ServiceResponse<ProjectDTO>();
             try
             {
-                var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.Stage.Id);
+                var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
                 if(exist != null)
                 {
                     serviceResponse.SetError($"Błąd: Projekt {exist.Symbol} już istnieje.", 400);
@@ -159,9 +159,7 @@ namespace SODP.Application.Services
                 var (Success, Message) = await _folderManager.CreateFolderAsync(project);
                 if (!Success)
                 {
-                    serviceResponse.SetError($"Błąd: {Message}", 500);
-                    
-                    return serviceResponse;
+                    throw new ApplicationException($"Błąd: {Message}");
                 }
 
                 project.Location = newProject.ToString();
@@ -171,7 +169,7 @@ namespace SODP.Application.Services
             }
             catch(Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
         
             return serviceResponse;
@@ -179,13 +177,13 @@ namespace SODP.Application.Services
 
         public async Task<ServiceResponse> UpdateAsync(ProjectDTO updateProject)
         {
-            var serviceResponse = new ServiceResponse<ProjectDTO>();
+            var serviceResponse = new ServiceResponse();
             try
             {
                 var oldProject = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Id == updateProject.Id);
                 if(oldProject == null)
                 {
-                    serviceResponse.SetError($"Błąd: Project Id:{updateProject.Id} nie odnaleziony.", 401);
+                    serviceResponse.SetError($"Błąd: Project Id:{updateProject.Id} nie odnaleziony.", 404);
                     return serviceResponse;
                 }
                 var project = _mapper.Map<Project>(updateProject);
@@ -203,11 +201,11 @@ namespace SODP.Application.Services
                 }
 
                 project.Normalize();
+
                 var (Success, Message) = await _folderManager.RenameFolderAsync(project, ProjectsFolder.Active);
                 if (!Success)
                 {
-                    serviceResponse.SetError($"Błąd: {Message}");
-                    return serviceResponse;
+                    throw new ApplicationException($"Błąd: {Message}");
                 }
 
                 oldProject.Title = project.Title;
@@ -215,11 +213,10 @@ namespace SODP.Application.Services
                 oldProject.Location = project.ToString();
                 _context.Projects.Update(oldProject);
                 await _context.SaveChangesAsync();
-                serviceResponse.SetData( _mapper.Map<ProjectDTO>(oldProject) );
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -243,10 +240,9 @@ namespace SODP.Application.Services
                 var (Success, Message) = await _folderManager.ArchiveFolderAsync(project);
                 if (!Success)
                 {
-                    serviceResponse.SetError($"Błąd: {Message}");
                     project.Status = ProjectStatus.Active;
                     _context.SaveChanges();
-                    return serviceResponse;
+                    throw new ApplicationException($"Błąd: {Message}");
                 }
                 
                 project.Status = ProjectStatus.Archived;
@@ -254,7 +250,7 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -274,15 +270,14 @@ namespace SODP.Application.Services
                 var (Success, Message) = await _folderManager.DeleteFolderAsync(project);
                 if (!Success)
                 {
-                    serviceResponse.SetError($"Błąd: {Message}");
-                    return serviceResponse;
+                    throw new ApplicationException($"Błąd: {Message}");
                 }
                 _context.Entry(project).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -305,8 +300,7 @@ namespace SODP.Application.Services
                 var (Success, Message) = await _folderManager.RestoreFolderAsync(project);
                 if (!Success)
                 {
-                    serviceResponse.SetError($"Błąd: {Message}");
-                    return serviceResponse;
+                    throw new ApplicationException($"Błąd: {Message}");
                 }
                 project.Status = ProjectStatus.Active;
                 _context.Entry(project).State = EntityState.Modified;
@@ -314,7 +308,7 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;
@@ -345,7 +339,7 @@ namespace SODP.Application.Services
             }
             catch (Exception ex)
             {
-                serviceResponse.SetError(ex.Message);
+                serviceResponse.SetError(ex.Message, 500);
             }
 
             return serviceResponse;

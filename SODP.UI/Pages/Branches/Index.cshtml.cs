@@ -19,14 +19,12 @@ namespace SODP.UI.Pages.Branches
     public class IndexModel : SODPPageModel
     {
         const string partialViewName = "_NewBranchPartialView";
-        private readonly string _apiUrl;
-        private readonly string _apiVersion;
-        
+        private readonly IWebAPIProvider _apiProvider;
+
         public IndexModel(IWebAPIProvider apiProvider)
         {
             ReturnUrl = "/branches";
-            _apiUrl = apiProvider.apiUrl;
-            _apiVersion = apiProvider.apiVersion;
+            _apiProvider = apiProvider;
         }
 
         public BranchesListVM BranchesViewModel { get; set; }
@@ -50,8 +48,12 @@ namespace SODP.UI.Pages.Branches
         {
             if (ModelState.IsValid)
             {
-                var body = new StringContent(JsonSerializer.Serialize(branch), Encoding.UTF8, "application/json");
-                var apiResponse = await new HttpClient().PostAsync($"{_apiUrl}{_apiVersion}/branches", body);
+                var apiResponse = await _apiProvider.PostAsync($"/branches", 
+                    new StringContent(
+                        JsonSerializer.Serialize(branch), 
+                        Encoding.UTF8, 
+                        "application/json"
+                        ));
                 var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
                 if (response.Success)
                 {
@@ -82,7 +84,7 @@ namespace SODP.UI.Pages.Branches
 
         private async Task<IList<BranchDTO>> GetBranchesAsync()
         {
-            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/branches");
+            var apiResponse = await _apiProvider.GetAsync($"/branches");
 
             if (apiResponse.IsSuccessStatusCode)
             {

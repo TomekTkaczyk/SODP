@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
+using SODP.UI.Mappers;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
@@ -20,34 +20,42 @@ namespace SODP.UI.Pages.ActiveProjects
     public class IndexModel : SODPPageModel
     {
         const string partialViewName = "_NewProjectPartialView";
-        private readonly string _apiUrl;
-        private readonly string _apiVersion;
+        private readonly IWebAPIProvider _apiProvider;
 
         public IndexModel(IWebAPIProvider apiProvider)
         {
             ReturnUrl = "/ActiveProjects";
-            _apiUrl = apiProvider.apiUrl;
-            _apiVersion = apiProvider.apiVersion;
+            _apiProvider = apiProvider;
         }
 
-        public ServicePageResponse<ProjectDTO> Projects { get; set; }
+        public ProjectsListVM ProjectsViewModel { get; set; }
 
-        //public ProjectsListVM Projects { get; set; }
-
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 15)
         {
-            var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/active-projects");
-            if (response.IsSuccessStatusCode)
+            var url = new StringBuilder();
+            url.Append(ReturnUrl);
+            url.Append("?currentPage=:&pageSize=");
+            url.Append(pageSize.ToString());
+
+            ProjectsViewModel = new ProjectsListVM
             {
-                Projects = await response.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();
-            }
+                PageInfo = new PageInfo
+                {
+                    CurrentPage = currentPage,
+                    ItemsPerPage = pageSize,
+                    Url = url.ToString()
+                },
+            };
+
+            ProjectsViewModel.Projects = await GetProjectsAsync(ProjectsViewModel.PageInfo);
 
             return Page();
         }
 
+
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            var response = await new HttpClient().DeleteAsync($"{_apiUrl}{_apiVersion}/active-projects/{id}");
+            var response = await _apiProvider.DeleteAsync($"/active-projects/{id}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -66,19 +74,12 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await new HttpClient()
-                    .PostAsync($"{_apiUrl}{_apiVersion}/active-projects", 
-                                new StringContent(           
-                                    JsonSerializer.Serialize(project), 
-                                    Encoding.UTF8, 
-                                    "application/json"
-                                ));
-
+                var apiResponse = await _apiProvider.PostAsync("/active-projects", project.ToHttpContent());
+                    
                 var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectDTO>>();
 
                 if (apiResponse.IsSuccessStatusCode && response.Success)
                 {
-                    //return await GetPartialViewAsync(response.Data);
                     return await GetPartialViewAsync(new NewProjectVM
                     {
                         Id = response.Data.Id,
@@ -104,9 +105,24 @@ namespace SODP.UI.Pages.ActiveProjects
             return await GetPartialViewAsync(project);
         }
 
+        private async Task<IList<ProjectDTO>> GetProjectsAsync(PageInfo pageInfo)
+        {
+            var apiResponse = await _apiProvider.GetAsync($"/active-projects?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();
+                pageInfo.TotalItems = response.Data.TotalCount;
+                pageInfo.CurrentPage = response.Data.PageNumber;
+
+                return response.Data.Collection.ToList();
+            }
+
+            return new List<ProjectDTO>();
+        }
+
         private async Task<PartialViewResult> GetPartialViewAsync(NewProjectVM project)
         {
-            var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages");
+            var response = await _apiProvider.GetAsync("/stages");
             List<SelectListItem> stagesItems = new List<SelectListItem>();
             if (response.IsSuccessStatusCode)
             {

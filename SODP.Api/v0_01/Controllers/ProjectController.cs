@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Api.v0_01.Controllers
 {
-    public class ProjectController : ApiControllerBase
+    public abstract class ProjectController : ApiControllerBase
     {
         public readonly IProjectService _projectsService;
 
@@ -14,13 +14,13 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 15)
         {
-            var req = HttpContext.Request.Query;
-            int.TryParse(req["page_number"], out int page_number);
-            int.TryParse(req["page_size"], out int page_size);
+            //var req = HttpContext.Request.Query;
+            //int.TryParse(req["page_number"], out int page_number);
+            //int.TryParse(req["page_size"], out int page_size);
 
-            return Ok(await _projectsService.GetAllAsync(currentPage: page_number, pageSize: page_size));
+            return Ok(await _projectsService.GetAllAsync(currentPage, pageSize));
         }
 
         [HttpGet("{Id}")]

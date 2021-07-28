@@ -21,10 +21,12 @@
             </div>
         </div>
 
-        <input type="hidden" asp-for="Project.Stage.Id" />
+        <input type="hidden" asp-for="Project.StageId" />
+        <input type="hidden" asp-for="Project.StageSign" />
+        <input type="hidden" asp-for="Project.StageTitle" />
         <div class="form-group row">
             <div class="col-12 col-md-7">
-                <input asp-for="Project.Stage.Title" class="form-control" readonly />
+                <input asp-for="Project.Stage" class="form-control" readonly />
             </div>
         </div>
 

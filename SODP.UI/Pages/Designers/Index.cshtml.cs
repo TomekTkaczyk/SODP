@@ -19,14 +19,12 @@ namespace SODP.UI.Pages.Designers
     public class IndexModel : SODPPageModel
     {
         const string partialViewName = "_NewDesignerPartialView";
-        private readonly string _apiUrl;
-        private readonly string _apiVersion;
+        private readonly IWebAPIProvider _apiProvider;
 
         public IndexModel(IWebAPIProvider apiProvider)
         {
             ReturnUrl = "/designers";
-            _apiUrl = apiProvider.apiUrl;
-            _apiVersion = apiProvider.apiVersion;
+            _apiProvider = apiProvider;
         }
         public DesignersListVM DesignersViewModel { get; set; }
 
@@ -50,7 +48,7 @@ namespace SODP.UI.Pages.Designers
             if (ModelState.IsValid)
             {
                 var body = new StringContent(JsonSerializer.Serialize(designer), Encoding.UTF8, "application/json");
-                var apiResponse = await new HttpClient().PostAsync($"{_apiUrl}{_apiVersion}/designers", body);
+                var apiResponse = await _apiProvider.PostAsync($"/designers", body);
                 var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
                 if (response.Success)
                 {
@@ -81,7 +79,7 @@ namespace SODP.UI.Pages.Designers
 
         private async Task<IList<DesignerDTO>> GetDesignersAsync()
         {
-            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/designers");
+            var apiResponse = await _apiProvider.GetAsync($"/designers");
             
             if (apiResponse.IsSuccessStatusCode)
             {

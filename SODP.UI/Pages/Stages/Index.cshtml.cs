@@ -21,14 +21,12 @@ namespace SODP.UI.Pages.Stages
     {
 
         const string partialViewName = "_NewStagePartialView";
-        private readonly string _apiUrl;
-        private readonly string _apiVersion;
+        private readonly IWebAPIProvider _apiProvider;
 
         public IndexModel(IWebAPIProvider apiProvider)
         {
             ReturnUrl = "/Stages";
-            _apiUrl = apiProvider.apiUrl;
-            _apiVersion = apiProvider.apiVersion;
+            _apiProvider = apiProvider;
         }
 
         public StagesListVM StagesViewModel { get; set; }
@@ -58,7 +56,7 @@ namespace SODP.UI.Pages.Stages
         {
             if (id != null)
             {
-                var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages/{id}");
+                var apiResponse = await _apiProvider.GetAsync($"/stages/{id}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
@@ -77,7 +75,7 @@ namespace SODP.UI.Pages.Stages
                 var body = new StringContent(JsonSerializer.Serialize(stage), Encoding.UTF8, "application/json");
                 if(stage.Id == 0)
                 {
-                    var apiResponse = await new HttpClient().PostAsync($"{_apiUrl}{_apiVersion}/stages/{stage.Sign}", body);
+                    var apiResponse = await _apiProvider.PostAsync($"/stages/{stage.Sign}", body);
                     var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
                     if (response.Success)
                     {
@@ -90,11 +88,11 @@ namespace SODP.UI.Pages.Stages
                 }
                 else
                 {
-                    var apiResponse = await new HttpClient().PutAsync($"{_apiUrl}{_apiVersion}/stages/{stage.Sign}", body);
+                    var apiResponse = await _apiProvider.PutAsync($"/stages/{stage.Sign}", body);
                     var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
                     if (response.Success)
                     {
-                        apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages/{stage.Id}");
+                        apiResponse = await _apiProvider.GetAsync($"/stages/{stage.Id}");
                         response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
                         if (response.Success)
                         {
@@ -117,7 +115,7 @@ namespace SODP.UI.Pages.Stages
 
         private async Task<IList<StageDTO>> GetStagesAsync(PageInfo pageInfo)
         {
-            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/stages?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
+            var apiResponse = await _apiProvider.GetAsync($"/stages?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
 
             if (apiResponse.IsSuccessStatusCode)
             {

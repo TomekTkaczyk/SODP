@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SODP.Domain.Services;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using SODP.UI.Infrastructure;
+using SODP.UI.Mappers;
 using SODP.UI.Pages.Shared;
+using SODP.UI.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
@@ -14,92 +15,70 @@ namespace SODP.UI.Pages.ActiveProjects
     [Authorize(Roles = "Administrator,ProjectManager")]
     public class EditModel : SODPPageModel
     {
-        private readonly IStageService _stagesService;
-        private readonly IProjectService _projectsService;
+        private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IProjectService projectsService, IStageService stagesService)
+        public EditModel(IWebAPIProvider apiProvider)
         {
-            _projectsService = projectsService;
-            _stagesService = stagesService;
+            _apiProvider = apiProvider;
         }
 
         [BindProperty]
-        public ProjectDTO Project { get; set; }
+        public ProjectVM Project { get; set; }
 
         public IEnumerable<SelectListItem> Stages { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null)
+            var apiResponse = await _apiProvider.GetAsync($"/active-projects/{id}");
+            var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
+
+            if (apiResponse.IsSuccessStatusCode && response.Success)
             {
-                var stagesResponse = await _stagesService.GetAllAsync();
-                Stages = stagesResponse.Data.Collection.Select(x => new SelectListItem()
+                Project = new ProjectVM
                 {
-                    Value = x.Id.ToString(),
-                    Text = $"({x.Sign.Trim()}) {x.Title.Trim()}"
-                }).ToList();
-
-                Project = new ProjectDTO();
-
-                return Page();
+                  Id = response.Data.Id,
+                  Number = response.Data.Number,
+                  StageId = response.Data.Stage.Id,
+                  StageSign = response.Data.Stage.Sign,
+                  StageTitle = response.Data.Stage.Title,
+                  Title = response.Data.Title,
+                  Description = response.Data.Description
+                };
             }
-
-            var response = await _projectsService.GetAsync((int)id);
-            if (response == null)
+            else
             {
-                return NotFound();
+                if (!string.IsNullOrEmpty(response.Message))
+                {
+                    ModelState.AddModelError("", response.Message);
+                }
+                foreach (var error in response.ValidationErrors)
+                {
+                    ModelState.AddModelError(error.Key, error.Value);
+                }
             }
-            Project = response.Data;
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(ProjectVM project)
         {
-            var stagesResponse = await _stagesService.GetAllAsync();
-            Stages = stagesResponse.Data.Collection.Select(x => new SelectListItem()
-            {
-                Value = x.Id.ToString(),
-                Text = $"({x.Sign.Trim()}) {x.Title.Trim()}"
-            }).ToList();
-
             if (ModelState.IsValid)
             {
-                ServiceResponse response = await _projectsService.UpdateAsync(Project);
-
-                //if (Project.Id.Equals(0))
-                //{
-                //    var project = new ProjectDTO
-                //    {
-                //        Number = Project.Number,
-                //        Title = Project.Title,
-                //        Description = Project.Description,
-                //        Stage = new StageDTO
-                //        {
-
-                //        }
-                //    };
-                //    response = await _projectsService.CreateAsync(project);
-                //}
-                //else
-                //{
-                //    var project = new ProjectDTO
-                //    {
-                //        Id = Project.Id,
-                //        Number = Project.Number,
-                //        StageId = Project.StageId,
-                //        Title = Project.Title,
-                //        Description = Project.Description
-                //    };
-                //    response = await _projectsService.UpdateAsync(project);
-                //}
-
-                if (!response.Success)
+                var apiResponse = await _apiProvider.PutAsync($"/active-projects/{Project.Id}", project.ToHttpContent());
+                if (apiResponse.IsSuccessStatusCode)
                 {
-                    return Page();
+                    return RedirectToPage("Index");
                 }
 
-                return RedirectToPage("Index");
+                var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
+                if (!string.IsNullOrEmpty(response.Message))
+                {
+                    ModelState.AddModelError("", response.Message);
+                }
+                foreach (var error in response.ValidationErrors)
+                {
+                    ModelState.AddModelError(error.Key, error.Value);
+                }
             }
           
             return Page();

@@ -1,19 +1,25 @@
 ﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Projekty aktywne";
-}
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
 @using SODP.UI.ViewModels;
+
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Projekty aktywne";
+}
+
 
 @inject SignInManager<User> SignInManager
 
 <link rel="stylesheet" href="~/lib/DataTables/DataTables-1.10.24/css/jquery.dataTables.min.css" />
 <link rel="stylesheet" href="~/lib/DataTables/DataTables-1.10.24/css/dataTables.bootstrap4.min.css" />
 <link rel="stylesheet" href="~/lib/DataTables/Buttons-1.7.0/css/buttons.bootstrap4.min.css" />
- 
+
 <br />
+<br />
+<br />
+
 <div class="container row p-0 m-0">
     <div class="col-9">
         <h2 class="text-info">@ViewData["Title"]</h2>
@@ -23,7 +29,7 @@
         <div id="modal-placeholder"></div>
         <div class="col-3 justify-content-end">
             <button type="button"
-                    class="btn btn-info form-control text-white float-right"
+                    class="btn btn-info btn-lg form-control text-white float-right"
                     title="Nowy projekt"
                     data-toggle="ajax-modal"
                     data-url="@Url.Page("Index","NewProject")">
@@ -32,27 +38,67 @@
         </div>
     }
 
-    <div class="col-12">
-        <table id="ProjectDataTable" class="table table-sm table-hover" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Numer</th>
-                    <th>Stadium</th>
-                    <th>Tytuł</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <th>Numer</th>
-                    <th>Stadium</th>
-                    <th>Tytuł</th>
-                    <th></th>
-                </tr>
-            </tfoot>
-        </table>
+    <div id="ProjectTable" class="col-12 p-3 mt-3">
+        @if (Model.ProjectsViewModel.Projects.Count() > 0)
+        {
+            <table class="table table-sm table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Numer</th>
+                        <th>Stadium</th>
+                        <th>Tytuł</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ProjectsViewModel.Projects)
+                    {
+                        <tr>
+                            <td>
+                                <a href="/ActiveProjects/Edit?Id=@item.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@item.Number</a>
+                            </td>
+                            <td>
+                                <a href="/ActiveProjects/Edit?Id=@item.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@item.Stage.Sign</a>
+                            </td>
+                            <td>
+                                <a href="/ActiveProjects/Edit?Id=@item.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@item.Title</a>
+                            </td>
+                            <td>
+                                <div class="row group justify-content-end mr-0">
+                                    <div>
+                                        <a onclick='Delete("/api/v0_01/active-projects/@item.Id")' class='btn btn-lg text-danger mb-0 mt-0 ml-1 mr-1 p-1' style="cursor:pointer; width:70px;" data-toggle="tooltip" data-placement="top" title="Usuń projekt"> <i class="far fa-trash-alt"></i></a>
+                                        <a onclick='Archive("/api/v0_01/active-projects/@item.Id/archive")' class='btn btn-lg text-success mb-0 mt-0 ml-1 mr-1 p-1' style="cursor:pointer; width:70px;" data-toggle="tooltip" data-placement="top" title="Przenieś projekt do archiwum"> <i class="fas fa-archive"></i></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="col-12 text-right">
+                <div class="btn-group" asp-action="Index" 
+                        page-model="@Model.ProjectsViewModel.PageInfo"
+                        page-class="btn border"
+                        page-class-normal="btn btn-light" 
+                        page-class-selected="btn btn-info">
+                </div>
+            </div>
+        }
+        else
+        {
+            <p> Lista projektów jest pusta</p>
+        }
     </div>
 </div>
+
 
 @section Scripts{
     <script src="~/js/delete.js"></script>
@@ -62,10 +108,10 @@
     <script src="~/lib/DataTables/DataTables-1.10.24/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/DataTables/Buttons-1.7.0/js/dataTables.buttons.min.js"></script>
 
-    <script>
-        var RoleCheck = @(User.IsInRole("ProjectManager") ? "true" : "false");
-        var ProjectsArray = @Json.Serialize(Model.Projects.Data.Collection);
-    </script>
+    @*<script>
+            var RoleCheck = @(User.IsInRole("ProjectManager") ? "true" : "false");
+            var ProjectsArray = @Json.Serialize(Model.Projects.Data.Collection);
+        </script>*@
 
     <script>
         function NewProject(currentId) {

@@ -18,9 +18,31 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ProjectDTO project)
+        public async Task<IActionResult> Create([FromBody] NewProjectDTO project)
         {
             return Ok(await _projectsService.CreateAsync(project));
+        }
+                                     
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] ProjectDTO project)
+        {
+            if(id != project.Id)
+            {
+                return BadRequest();
+            }
+
+            var response = await _projectsService.UpdateAsync(project);
+            if (!response.Success)
+            {
+                return response.StatusCode switch
+                {
+                    400 => BadRequest(response),
+                    404 => NotFound(response),
+                    _ => BadRequest(response),
+                };
+            }
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

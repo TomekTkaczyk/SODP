@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Infrastructure
 {
     public interface IWebAPIProvider
     {
-          public string apiUrl { get; }
-          public string apiVersion { get; }
+        Task<HttpResponseMessage> GetAsync(string endPoint);
+        Task<HttpResponseMessage> PostAsync(string endPoint, StringContent content);
+        Task<HttpResponseMessage> PutAsync(string endPoint, StringContent content);
+        Task<HttpResponseMessage> DeleteAsync(string endPoint);
+
+        Task<T> GetContent<T>(HttpResponseMessage message);
     }
 }

@@ -12,20 +12,18 @@ namespace SODP.UI.Pages.Users
     [Authorize(Roles = "Administrator")]
     public class IndexModel : SODPPageModel
     {
-        private readonly string _apiUrl;
-        private readonly string _apiVersion;
+        private readonly IWebAPIProvider _apiProvider;
 
         public IndexModel(IWebAPIProvider apiProvider)
         {
             ReturnUrl = "/Users";
-            _apiUrl = apiProvider.apiUrl;
-            _apiVersion = apiProvider.apiVersion;
+            _apiProvider = apiProvider;
         }
         public ServicePageResponse<UserDTO> Users { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var response = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/users");
+            var response = await _apiProvider.GetAsync($"/users");
             if (response.IsSuccessStatusCode)
             {
                 Users = await response.Content.ReadAsAsync<ServicePageResponse<UserDTO>>();

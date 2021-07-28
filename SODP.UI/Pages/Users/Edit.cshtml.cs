@@ -16,13 +16,11 @@ namespace SODP.UI.Pages.Users
     [ValidateAntiForgeryToken()]
     public class EditModel : PageModel
     {
-        private readonly string _apiUrl;
-        private readonly string _apiVersion;
+        private readonly IWebAPIProvider _apiProvider;
 
         public EditModel(IWebAPIProvider apiProvider)
         {
-            _apiUrl = apiProvider.apiUrl;
-            _apiVersion = apiProvider.apiVersion;
+            _apiProvider = apiProvider;
         }
 
         [BindProperty]
@@ -44,7 +42,7 @@ namespace SODP.UI.Pages.Users
 
         private async Task<UserDTO> GetUser(int id)
         {
-            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/users/{id}");
+            var apiResponse = await _apiProvider.GetAsync($"/users/{id}");
             if (apiResponse.IsSuccessStatusCode) 
             { 
                 var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<UserDTO>>();
@@ -59,7 +57,7 @@ namespace SODP.UI.Pages.Users
 
         private async Task<ServicePageResponse<RoleDTO>> GetRoles()
         {
-            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}/roles");
+            var apiResponse = await _apiProvider.GetAsync($"/roles");
             if (apiResponse.IsSuccessStatusCode)
             {
                 var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<RoleDTO>>();
@@ -74,8 +72,12 @@ namespace SODP.UI.Pages.Users
             if (ModelState.IsValid)
             {
                 CurrentUser.Roles = AllRoles.Where(x => x.Value).Select(x => x.Key).ToList();
-                var body = new StringContent(JsonSerializer.Serialize(CurrentUser), Encoding.UTF8, "application/json");
-                var apiResponse = await new HttpClient().PutAsync($"{_apiUrl}{_apiVersion}/users/{CurrentUser.Id}",body);
+                var apiResponse = await _apiProvider.PutAsync($"/users/{CurrentUser.Id}", 
+                    new StringContent(
+                        JsonSerializer.Serialize(CurrentUser), 
+                        Encoding.UTF8, 
+                        "application/json"
+                        ));
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     return RedirectToPage("Index");
