@@ -44,20 +44,26 @@
         @foreach (var item in Model.DesignersViewModel.Designers)
         {
             <div class="card">
-                <div class="card-header">
+                <div class="card-header" id="card-header-@item.Id">
                     <div class="row ">
                         <div class="col">
-                            <a onclick="accordionCollapse(@item.Id)" data-toggle="collapse" data-target="#collapse_@item.Id" aria-expanded="false" aria-controls="collapseOne">@item.Title @item.Firstname @item.Lastname</a>
+                            <a onclick="accordionCollapse(@item.Id)"
+                               id="card-head-@item.Id"
+                               data-toggle="collapse"
+                               data-target="#collapse-@item.Id"
+                               aria-expanded="false"
+                               aria-controls="collapse-@item.Id">
+                                @item.Title @item.Firstname @item.Lastname
+                            </a>
                         </div>
                         <div class="colgroup justify-content-end mr-0">
                             <style>
                                 .toggle.ios, .toggle-on.ios, .toggle-off.ios {
                                     border-radius: 30px;
                                 }
-
-                                    .toggle.ios .toggle-handle {
-                                        border-radius: 30px;
-                                    }
+                                .toggle.ios .toggle-handle {
+                                    border-radius: 30px;
+                                }
                             </style>
                             <input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
                                    onchange="handleChange(@item.Id,this.checked)"
@@ -76,8 +82,13 @@
                     </div>
                 </div>
             </div>
-            <div id="collapse_@item.Id" class="collapse hide" aria-labelledby="designer_@item.Id" data-parent="#designerAccordion">
-                <div class="card-body" id="lic_@item.Id">
+            <div id="collapse-@item.Id" 
+                 class="collapse hide" 
+                 aria-labelledby="heading-@item.Id" 
+                 data-parent="#designerAccordion">
+
+                <div class="card-body" id="licence-@item.Id">
+
                 </div>
             </div>
         }
@@ -120,7 +131,6 @@ else
                 dataType: 'json',
                 data: JSON.stringify(c),
                 success: function (response) {
-                    console.log(response);
                 },
                 error: function (jqXHR, exception) {
                     console.log(jqXHR);
@@ -132,9 +142,8 @@ else
 
     <script>
         function accordionCollapse(id) {
-            let el = document.getElementById(`a_${id}`);
-            if (el.ariaExpanded !== "true") {
-                $(`#lic_${id}`).load(`/Designers/index?handler=PartialLicences&id=${id}`);
+            if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
+                $(`#licence-${id}`).load(`/Designers/index?handler=PartialLicences&id=${id}`);
             }
         }
     </script>

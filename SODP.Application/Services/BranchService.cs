@@ -233,5 +233,26 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
+        public async Task<ServicePageResponse<LicenceDTO>> GetLicencesAsync(int id)
+        {
+            var serviceResponse = new ServicePageResponse<LicenceDTO>();
+
+            try
+            {
+                var licences = await _context.Licences
+                    .Include(x => x.Designer)
+                    .Where(x => x.BranchId == id)
+                    .ToListAsync();
+
+                serviceResponse.SetData(_mapper.Map<IList<LicenceDTO>>(licences));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
     }
 }

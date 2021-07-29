@@ -3,6 +3,19 @@
 @model LicencesListVM
 
 <div>
-    <p>Licences partial view</p>
-    <p>@Model.Licences.Count</p>
+    @if (Model.Licences.Count > 0)
+    {
+        @foreach (var lic in Model.Licences)
+        {
+            <div class="row">
+                <div class="col">
+                    (@lic.Branch.Sign) @lic.Branch.Title - @lic.Contents
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Brak uprawnień</p>
+    }
 </div>
