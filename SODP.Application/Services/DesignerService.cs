@@ -209,12 +209,15 @@ namespace SODP.Application.Services
 
             try
             {
-                var licences = await _context.Licences
-                    .Include(x => x.Branches)
-                    .Where(x => x.DesignerId == id)
-                    .ToListAsync();
-                
-                serviceResponse.SetData(_mapper.Map<IList<LicenceDTO>>(licences));
+                var designer = await _context.Designers
+                    .Include(x => x.Licenses)
+                    .ThenInclude(x => x.Branches)
+                    .ThenInclude(x => x.Branch)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                var licences = new List<LicenceDTO>();
+
+                serviceResponse.SetData(_mapper.Map<IList<LicenceDTO>>(designer.Licenses));
             }
             catch (Exception ex)
             {

@@ -8,10 +8,19 @@
         @foreach (var lic in Model.Licences)
         {
             <div class="row">
-                <div class="col">
-                    (@lic.Branch.Sign) @lic.Branch.Title - @lic.Contents
+                <div class="col font-weight-bold">
+                    @lic.Contents
                 </div>
             </div>
+            @foreach (var branch in lic.Branches)
+            {
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col">
+                        (@branch.Sign) @branch.Title
+                    </div>
+                </div>
+            }
         }
     }
     else

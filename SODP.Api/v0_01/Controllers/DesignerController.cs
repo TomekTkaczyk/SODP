@@ -55,7 +55,9 @@ namespace SODP.Api.v0_01.Controllers
         [HttpGet("{id}/licences")]
         public async Task<IActionResult> GetLicencesAsync(int id)
         {
-            return Ok(await _service.GetLicencesAsync(id));
+            var response = await _service.GetLicencesAsync(id);
+
+            return Ok(response);
         }
 
     }

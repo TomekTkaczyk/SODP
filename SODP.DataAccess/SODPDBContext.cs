@@ -17,7 +17,7 @@ namespace SODP.DataAccess
         public DbSet<Designer> Designers { get; set; }
         public DbSet<Licence> Licences { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
-        public DbSet<BranchDesigner> BranchDesigners { get; set; }
+        public DbSet<BranchLicence> BranchLicences { get; set; }
 
 
 
@@ -38,7 +38,6 @@ namespace SODP.DataAccess
             new DesignerEntityConfiguration().Configure(modelBuilder.Entity<Designer>());
             new LicenceEntityConfiguration().Configure(modelBuilder.Entity<Licence>());
             new CertificateEntityConfiguration().Configure(modelBuilder.Entity<Certificate>());
-            new BranchDesignerEntityConfiguration().Configure(modelBuilder.Entity<BranchDesigner>());
             new BranchLicenceEntityConfiguration().Configure(modelBuilder.Entity<BranchLicence>());
         }
 
