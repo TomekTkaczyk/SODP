@@ -28,11 +28,11 @@ namespace SODP.DataAccess.Configurations
             //    .HasConstraintName("FK_Designer_Certificate")
             //    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(x => x.Licenses)
-                .WithOne(x => x.Designer)
-                .HasForeignKey(x => x.DesignerId)
-                .HasConstraintName("FK_Designer_Licence")
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasMany(x => x.Licenses)
+            //    .WithOne(x => x.Designer)
+            //    .HasForeignKey(x => x.DesignerId)
+            //    .HasConstraintName("FK_Designer_Licence")
+            //    .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

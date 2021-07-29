@@ -39,7 +39,7 @@ namespace SODP.DataAccess
             new LicenceEntityConfiguration().Configure(modelBuilder.Entity<Licence>());
             new CertificateEntityConfiguration().Configure(modelBuilder.Entity<Certificate>());
             new BranchDesignerEntityConfiguration().Configure(modelBuilder.Entity<BranchDesigner>());
-
+            new BranchLicenceEntityConfiguration().Configure(modelBuilder.Entity<BranchLicence>());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

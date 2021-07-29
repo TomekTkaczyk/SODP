@@ -8,8 +8,7 @@ namespace SODP.Model
     {
         public int DesignerId { get; set; }
         public virtual Designer Designer { get; set; }
-        public int BranchId { get; set; }
-        public virtual Branch Branch { get; set; }
+        public virtual ICollection<BranchLicence> Branches { get; set; }
         public string Contents { get; set; }
     }
 }

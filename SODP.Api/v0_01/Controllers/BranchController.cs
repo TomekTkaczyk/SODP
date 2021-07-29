@@ -77,7 +77,5 @@ namespace SODP.Api.v0_01.Controllers
         {
             return Ok(await _service.GetLicencesAsync(id));
         }
-
-
     }
 }

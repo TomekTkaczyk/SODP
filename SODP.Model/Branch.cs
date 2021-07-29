@@ -8,7 +8,7 @@ namespace SODP.Model
         public string Sign { get; set; }
         public string Title { get; set; }
         public bool ActiveStatus { get; set; }
-        public virtual ICollection<Licence> Licenses { get; set; }
+        public virtual ICollection<BranchLicence> Licenses { get; set; }
 
         public void Normalize()
         {

@@ -12,9 +12,6 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("nvarchar(250)")
                 .IsRequired();
 
-            builder.HasIndex(x => x.BranchId)
-                .HasName("IX_Branch");
-
             builder.HasIndex(x => x.DesignerId)
                 .HasName("IX_Designer");
 
