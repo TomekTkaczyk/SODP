@@ -112,10 +112,10 @@
     <script src="~/js/activeProjectList.js"></script>
 
     <script>
-        function NewProject(currentId) {
+        function NewProject(id) {
             $.ajax({
                 type: "Get",
-                url: '@Url.Page("Index","NewProject")&Id=' + currentId,
+                url: '@Url.Page("Index","NewProject")&Id=' + id,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
                     $('#editproject').modal('show');

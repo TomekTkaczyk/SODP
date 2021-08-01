@@ -1,0 +1,40 @@
+﻿@using SODP.UI.Pages.Branches.ViewModels
+
+@model DesignersVM
+
+@*<div>
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+    <div id="error-placeholder"></div>
+    <form asp-page-handler="NewBranch">
+        <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+        <div class="form-group">
+            <input asp-for="Sign" onkeyup="this.value = this.value.toUpperCase();" id="sign" class="form-control" value="@Model.Sign" placeholder="Znak branży" />
+            <span asp-validation-for="Sign" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Title" onkeyup="this.value = this.value.toUpperCase();" id="title" class="form-control" value="@Model.Title" placeholder="Opis branży" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+    </form>
+</div>*@
+
+<div>
+    @if (Model.Licences.Count > 0)
+    {
+        @foreach (var item in Model.Licences)
+        {
+            <div class="row">
+                <div class="col col-md-4">
+                    @item.Designer.Title @item.Designer.Firstname @item.Designer.Lastname
+                </div>
+                <div class="col col-md-1">
+                    @item.Contents
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Brak projektantów</p>
+    }
+</div>

@@ -203,21 +203,19 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-        public async Task<ServicePageResponse<LicenceDTO>> GetLicencesAsync(int id)
+        public async Task<ServicePageResponse<LicenceWithBranchesDTO>> GetLicencesAsync(int id)
         {
-            var serviceResponse = new ServicePageResponse<LicenceDTO>();
+            var serviceResponse = new ServicePageResponse<LicenceWithBranchesDTO>();
 
             try
             {
-                var designer = await _context.Designers
-                    .Include(x => x.Licenses)
-                    .ThenInclude(x => x.Branches)
-                    .ThenInclude(x => x.Branch)
-                    .FirstOrDefaultAsync(x => x.Id == id);
+                var licences = await _context.Licences
+                    .Include(x => x.Branches)
+                    .ThenInclude(y => y.Branch)
+                    .Where(z => z.DesignerId == id)
+                    .ToListAsync();
 
-                var licences = new List<LicenceDTO>();
-
-                serviceResponse.SetData(_mapper.Map<IList<LicenceDTO>>(designer.Licenses));
+                serviceResponse.SetData(_mapper.Map<IList<LicenceWithBranchesDTO>>(licences));
             }
             catch (Exception ex)
             {

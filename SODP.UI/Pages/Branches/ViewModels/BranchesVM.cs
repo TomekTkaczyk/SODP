@@ -1,9 +1,9 @@
 ﻿using SODP.Shared.DTO;
 using System.Collections.Generic;
 
-namespace SODP.UI.ViewModels
+namespace SODP.UI.Pages.Branches.ViewModels
 {
-    public class BranchesListVM
+    public class BranchesVM
     {
         public IList<BranchDTO> Branches { get; set; }
     }

@@ -43,20 +43,31 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{sign}")]
-        public async Task<ActionResult<BranchDTO>> Update(string sign, [FromBody] BranchDTO branch)
+        //[HttpPut("{sign}")]
+        //public async Task<ActionResult<BranchDTO>> Update(string sign, [FromBody] BranchDTO branch)
+        //{
+        //    if (sign != branch.Sign)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    var response = await _service.UpdateAsync(branch);
+        //    if (!response.Success)
+        //    {
+        //        return BadRequest(response);
+        //    }
+
+        //    return Ok(response);
+        //}
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<BranchDTO>> Update(int id, [FromBody] BranchDTO branch)
         {
-            if (sign != branch.Sign)
+            if (id != branch.Id)
             {
                 return BadRequest();
             }
-            var response = await _service.UpdateAsync(branch);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
 
-            return Ok(response);
+            return Ok(await _service.UpdateAsync(branch));
         }
 
         [HttpDelete("{id}")]

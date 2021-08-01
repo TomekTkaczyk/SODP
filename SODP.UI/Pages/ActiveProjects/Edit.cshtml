@@ -6,7 +6,7 @@
 <br />
 
 <div class="container row p-0 m-0">
-    <div class="col-8">
+    <div class="col">
         <h2 class="text-info">Edycja projektu</h2>
     </div>
 </div>
@@ -14,7 +14,7 @@
 <br />
 
 <div class="container">
-    <div class="border justify-content-end col-12 col-md-7" style="padding:30px">
+    <div class="border justify-content-end col-md-7" style="padding:30px">
         <form method="post">
             <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
             <input type="hidden" asp-for="Project.Id" />
@@ -39,7 +39,7 @@
 
             <div class="form-group row">
                 <div class="col-12">
-                    <input asp-for="Project.Title" class="form-control" placeholder="Tytuł" readonly="@(Model.Project.Status.Equals(ProjectStatus.Active) ? false : true)"/>
+                    <input asp-for="Project.Title" class="form-control" placeholder="Tytuł" readonly="@(Model.Project.Status.Equals(ProjectStatus.Active) ? false : true)" />
                     <span asp-validation-for="Project.Title" style="font-size:14px" class="text-danger"></span>
                 </div>
             </div>
@@ -57,6 +57,7 @@
         </form>
     </div>
 </div>
+
 
 @section Scripts{
     <partial name="/Pages/Shared/_ValidationScriptsPartial.cshtml" />

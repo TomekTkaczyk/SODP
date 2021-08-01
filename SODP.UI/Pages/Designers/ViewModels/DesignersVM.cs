@@ -2,13 +2,11 @@
 using SODP.Shared.Response;
 using System.Collections.Generic;
 
-namespace SODP.UI.ViewModels
+namespace SODP.UI.Pages.Designers.ViewModels
 {
-    public class DesignersListVM
+    public class DesignersVM
     {
         public IList<DesignerDTO> Designers { get; set; }
-
         public PageInfo PageInfo { get; set; }
-
     }
 }

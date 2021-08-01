@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SODP.UI.ViewModels
 {
-    public class LicencesListVM
+    public class LicencesVM
     {
         public int DesignerId { get; set; }
-        public IList<LicenceDTO> Licences { get; set; }
+        public IList<LicenceWithBranchesDTO> Licences { get; set; }
     }
 }

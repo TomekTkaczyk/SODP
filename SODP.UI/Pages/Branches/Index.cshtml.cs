@@ -1,16 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
-using SODP.UI.Mappers;
+using SODP.UI.Pages.Branches.ViewModels;
 using SODP.UI.Pages.Shared;
-using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -28,70 +26,102 @@ namespace SODP.UI.Pages.Branches
             _apiProvider = apiProvider;
         }
 
-        public BranchesListVM BranchesViewModel { get; set; }
+        public BranchesVM Branches { get; set; }
+
+        public DesignersVM Designers { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            BranchesViewModel = new BranchesListVM
-            {
-                Branches = await GetBranchesAsync()
-            };
-
+            Branches = await GetBranchesAsync();
             return Page();
         }
 
-        public PartialViewResult OnGetNewBranch()
+        public async Task<PartialViewResult> OnGetNewBranchAsync(int? id)
         {
-            return GetPartialView(new NewBranchVM());
-        }
-
-        public async Task<PartialViewResult> OnPostNewBranchAsync(NewBranchVM branch)
-        {
-            if (ModelState.IsValid)
+            if (id != null)
             {
-                var apiResponse = await _apiProvider.PostAsync($"/branches", branch.ToHttpContent()); 
-                
-                var response = await _apiProvider.GetContent<ServiceResponse<BranchDTO>>(apiResponse);
-                
-                if (apiResponse.IsSuccessStatusCode && response.Success)
+                var apiResponse = await _apiProvider.GetAsync($"/branches/{id}");
+                if (apiResponse.IsSuccessStatusCode)
                 {
-                    return GetPartialView(new NewBranchVM 
+                    var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
+
+                    return GetPartialView<BranchVM>(new BranchVM
                     {
-                        Sign = branch.Sign,
-                        Title = branch.Title
-                    });
-                }
-                else
-                {
-                    SetModelErrors(response);
+                        Id = result.Data.Id,
+                        Sign = result.Data.Sign,
+                        Title = result.Data.Title
+                    }, "_NewBranchPartialView");
                 }
             }
 
-            return GetPartialView(branch);
+            return GetPartialView<BranchVM>(new BranchVM(), "_NewBranchPartialView");
         }
 
-        private PartialViewResult GetPartialView(NewBranchVM branch)
+        public async Task<PartialViewResult> OnPostNewBranchAsync(BranchVM branch)
         {
-            return new PartialViewResult()
+            if (ModelState.IsValid)
             {
-                ViewName = partialViewName,
-                ViewData = new ViewDataDictionary<NewBranchVM>(ViewData, branch)
-            };
+                var apiResponse = branch.Id == 0 
+                    ? await _apiProvider.PostAsync($"/branches", branch.ToHttpContent())
+                    : await _apiProvider.PutAsync($"/branches/{branch.Id}", branch.ToHttpContent());
+
+                switch (apiResponse.StatusCode)
+                {
+                    case HttpStatusCode.OK:
+                        var response = await _apiProvider.GetContent<ServiceResponse<BranchDTO>>(apiResponse);
+                        if (!response.Success)
+                        {
+                            SetModelErrors(response);
+                        }
+                        break;
+                    default:
+                        // redirect to ErrorPage
+                        break;
+                }
+            }
+
+            return GetPartialView<BranchVM>(branch, "_NewBranchPartialView");
         }
 
-        private async Task<IList<BranchDTO>> GetBranchesAsync()
+        public async Task<PartialViewResult> OnGetPartialDesigners(int id)
         {
+            var apiResponse = await _apiProvider.GetAsync($"/branches/{id}/designers");
+            switch (apiResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    var response = await _apiProvider.GetContent<ServicePageResponse<LicenceDTO>>(apiResponse);
+                    if (response.Success)
+                    {
+                        Designers = new DesignersVM
+                        {
+                            Licences = response.Data.Collection.ToList()
+                        };
+                    }
+                    break;
+                default:
+                    // redirect to ErrorPage
+                    break;
+            }
+
+            return GetPartialView<DesignersVM>(Designers, "_DesignersPartialView");
+        } 
+
+        private async Task<BranchesVM> GetBranchesAsync()
+        {
+            var result = new BranchesVM
+            {
+                Branches = new List<BranchDTO>()
+            };
+
             var apiResponse = await _apiProvider.GetAsync($"/branches");
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<BranchDTO>>();
-                return result.Data.Collection.ToList();
+                var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<BranchDTO>>();
+                result.Branches = response.Data.Collection.ToList();
             }
 
-            return new List<BranchDTO>();
+            return result;
         }
-
-
     }
 }

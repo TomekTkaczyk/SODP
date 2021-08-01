@@ -33,23 +33,30 @@
                 <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa branża
             </button>
         </div>
-     }
+    }
 </div>
 
 <br />
 
-@if (Model.BranchesViewModel.Branches.Count() > 0)
+@if (Model.Branches.Branches.Count() > 0)
 {
-    <div class="accordion" id="branchAccordion">
-        @foreach (var item in Model.BranchesViewModel.Branches)
+    <div class="accordion" id="branchesAccordion">
+        @foreach (var item in Model.Branches.Branches)
         {
-            <div class="card">
-                <div class="card-header" id="branch_@item.Id">
+            <div class="button card">
+                <div class="card-header" id="card-header-@item.Id">
                     <div class="row ">
-                        <div class="col">
-                            <a data-toggle="collapse" data-target="#collapse_@item.Id" aria-expanded="false" aria-controls="collapseOne">(@item.Sign) @item.Title</a>
+                        <div class="col font-weight-bold">
+                            <a onclick="accordionCollapse(@item.Id)"
+                               id="card-head-@item.Id"
+                               data-toggle="collapse"
+                               data-target="#collapse_@item.Id"
+                               aria-expanded="false"
+                               aria-controls="collapse-@item.Id">
+                                (@item.Sign) @item.Title
+                            </a>
                         </div>
-                        <div class="colgroup justify-content-end mr-0">
+                        <div class="colgroup justify-content-end mr-2">
                             <style>
                                 .toggle.ios, .toggle-on.ios, .toggle-off.ios {
                                     border-radius: 30px;
@@ -60,13 +67,23 @@
                                     }
                             </style>
                             <input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
-                                   onchange="handleChange(@item.Id, '/branches', this.checked)"
+                                   onchange="handleChange(@item.Id, this.checked)"
                                    id="checkbox_@item.Id"
-                                   title="Aktywność"
                                    data-toggle="toggle"
+                                   title="Aktywność"
                                    data-style="ios">
+
+
+                            <a onclick='NewBranch(@item.Id)'
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="Edycja stadium">
+                                <i class="fas fa-edit"></i>
+                            </a>
+
                             <a onclick='Delete("/api/v0_01/branches/@item.Id")'
-                               class="btn btn-lg mb-0 mt-0 ml-1 mr-1 p-1 text-danger"
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-danger"
                                data-toggle="tooltip"
                                data-placement="top"
                                title="Usuń branżę">
@@ -76,13 +93,17 @@
                     </div>
                 </div>
             </div>
-            <div id="collapse_@item.Id" class="collapse hide" aria-labelledby="branch_@item.Id" data-parent="#branchAccordion">
-                <div class="card-body">
-                    Anim pariatur cliche reprehenderit...
+            <div id="collapse_@item.Id"
+                 class="collapse hide"
+                 aria-labelledby="heading-@item.Id"
+                 data-parent="#branchesAccordion">
+
+                <div class="card-body" id="designer-@item.Id">
+                    Lorem ipsum
                 </div>
             </div>
-         }
-    </div> 
+        }
+    </div>
 }
 else
 {
@@ -95,20 +116,21 @@ else
     <script src="~/js/branchesList.js"></script>
 
     <script>
-        function NewBranch(currentId) {
+        function NewBranch(id) {
+            console.log(id);
             $.ajax({
                 type: "Get",
-                url: '@Url.Page("Index","NewBranch")',
+                url: `@Url.Page("Index","NewBranch")&Id=` + id,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
-                    $('#editdesigner').modal('show');
+                    $('#editbranch').modal('show');
                 }
             })
         }
     </script>
 
     <script>
-        function handleChange(id, endpoint, checked) {
+        function handleChange(id, checked) {
 
             let c = checked ? 1 : 0;
             let url = `/api/v0_01/branches/${id}/${c}`;
@@ -120,13 +142,20 @@ else
                 dataType: 'json',
                 data: JSON.stringify(c),
                 success: function (response) {
-                    console.log(response);
                 },
                 error: function (jqXHR, exception) {
                     console.log(jqXHR);
                     console.log(exception);
                 }
             });
+        }
+    </script>
+
+    <script>
+        function accordionCollapse(id) {
+            if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
+                $(`#designer-${id}`).load(`/Branches/index?handler=PartialDesigners&id=${id}`);
+            }
         }
     </script>
 }

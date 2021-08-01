@@ -158,13 +158,21 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == updateBranch.Id);
-                if (branch == null)
+                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id != updateBranch.Id && x.Sign.Equals(updateBranch.Sign));
+                if(branch != null)
                 {
-                    serviceResponse.SetError($"Stadium {updateBranch.Id} nie odnalezione.", 404);
-                    serviceResponse.ValidationErrors.Add("Sign", "Stadium nie odnalezione.");
+                    serviceResponse.SetError("Branża już istnieje", 409);
                     return serviceResponse;
                 }
+
+                branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == updateBranch.Id);
+                if (branch == null)
+                {
+                    serviceResponse.SetError($"Branża {updateBranch.Id} nie odnaleziona.", 404);
+                    serviceResponse.ValidationErrors.Add("Sign", "Branża nie odnaleziona.");
+                    return serviceResponse;
+                }
+                branch.Sign = updateBranch.Sign;
                 branch.Title = updateBranch.Title;
                 branch.Normalize();
                 _context.Branches.Update(branch);
@@ -240,13 +248,13 @@ namespace SODP.Application.Services
 
             try
             {
-                var branch = await _context.Branches
-                    .Include(x => x.Licenses)
-                    .ThenInclude(x => x.Licence)
+                var branch = await _context.BranchLicences
+                    .Include(x => x.Licence)
                     .ThenInclude(x => x.Designer)
-                    .FirstOrDefaultAsync(k => k.Id == id);
+                    .Where(k => k.BranchId == id)
+                    .ToListAsync();
 
-                serviceResponse.SetData(_mapper.Map<IList<LicenceDTO>>(branch.Licenses.Select(x => x.Licence)));
+                serviceResponse.SetData(_mapper.Map<IList<LicenceDTO>>(branch.Select(x => x.Licence)));
             }
             catch (Exception ex)
             {

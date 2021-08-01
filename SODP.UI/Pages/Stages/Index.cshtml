@@ -48,26 +48,26 @@
                         <tr class="m-0 p-0">
                             <td class="m-0 p-0">
                                 <a onclick='NewStage(@stage.Id)'
-                                    data-toggle="tooltip"
-                                    data-placement="top"
-                                    title="Edycja stadium">
+                                   data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="Edycja stadium">
                                     @stage.Sign
                                 </a>
                             </td>
                             <td class="m-0 p-0">
                                 <a onclick='NewStage(@stage.Id)'
-                                    data-toggle="tooltip"
-                                    data-placement="top"
-                                    title="Edycja stadium">
+                                   data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="Edycja stadium">
                                     @stage.Title
                                 </a>
                             </td>
                             <td class="m-0 p-0 text-right">
                                 <a onclick='Delete("/api/v0_01/stages/@stage.Id")'
-                                    class="btn btn-md m-0 p-0 text-danger"
-                                    data-toggle="tooltip"
-                                    data-placement="top"
-                                    title="Usuń stadium">
+                                   class="btn btn-md m-0 p-0 text-danger"
+                                   data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="Usuń stadium">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </td>
@@ -84,10 +84,10 @@
             </table>
             <div class="col-12 text-right">
                 <div class="btn-group" asp-action="Index"
-                        page-model="@Model.StagesViewModel.PageInfo"
-                        page-class="btn border"
-                        page-class-normal="btn btn-light"
-                        page-class-selected="btn btn-info">
+                     page-model="@Model.StagesViewModel.PageInfo"
+                     page-class="btn border"
+                     page-class-normal="btn btn-light"
+                     page-class-selected="btn btn-info">
                 </div>
             </div>
         </div>
@@ -99,21 +99,22 @@
 
 </div>
 
-    @section Scripts{
-        <script src="~/js/delete.js"></script>
-        <script src="~/js/initModalPlaceholder.js"></script>
-        <script src="~/js/stagesList.js"></script>
+@section Scripts{
+    <script src="~/js/delete.js"></script>
+    <script src="~/js/initModalPlaceholder.js"></script>
+    <script src="~/js/stagesList.js"></script>
 
-        <script>
-        function NewStage(currentId) {
+    <script>
+        function NewStage(id) {
             $.ajax({
                 type: "Get",
-                url: '@Url.Page("Index","NewStage")&Id=' + currentId,
+                url: `@Url.Page("Index","NewStage")&id=${id}`,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
                     $('#editstage').modal('show');
                 }
             })
         }
-        </script>
-    }
+    </script>
+
+}

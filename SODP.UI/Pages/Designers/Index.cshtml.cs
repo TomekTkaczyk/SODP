@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
-using SODP.UI.Mappers;
+using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Shared;
-using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,23 +24,18 @@ namespace SODP.UI.Pages.Designers
             _apiProvider = apiProvider;
         }
 
-        public DesignersListVM DesignersViewModel { get; set; }
+        public DesignersVM Designers { get; set; }
 
-        public LicencesListVM LicencesViewModel { get; set; }
+        public LicencesVM Licences { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 15)
+        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
         {
             var url = new StringBuilder();
             url.Append(ReturnUrl);
             url.Append("?currentPage=:&pageSize=");
             url.Append(pageSize.ToString());
 
-            LicencesViewModel = new LicencesListVM
-            {
-                Licences = new List<LicenceDTO>()
-            };
-
-            DesignersViewModel = new DesignersListVM
+            Designers = new DesignersVM
             {
                 PageInfo = new PageInfo
                 {
@@ -52,7 +45,7 @@ namespace SODP.UI.Pages.Designers
                 },
             };
 
-            DesignersViewModel.Designers = await GetDesignersAsync(DesignersViewModel.PageInfo);
+            Designers.Designers = await GetDesignersAsync(Designers.PageInfo);
 
             return Page();
         }
@@ -66,12 +59,12 @@ namespace SODP.UI.Pages.Designers
                 return Page();
             }
 
-            return RedirectToPage($"Index?currentPage={DesignersViewModel.PageInfo.CurrentPage}:&pageSize={DesignersViewModel.PageInfo.ItemsPerPage}");
+            return RedirectToPage($"Index?currentPage={Designers.PageInfo.CurrentPage}:&pageSize={Designers.PageInfo.ItemsPerPage}");
         }
 
         public PartialViewResult OnGetNewDesigner()
         {
-            return GetPartialView(new NewDesignerVM());
+            return GetPartialView<NewDesignerVM>(new NewDesignerVM(), "_NewDesignerPartialView");
         }
 
         public async Task<PartialViewResult> OnPostNewDesignerAsync(NewDesignerVM designer)
@@ -84,12 +77,13 @@ namespace SODP.UI.Pages.Designers
                 
                 if (apiResponse.IsSuccessStatusCode && response.Success)
                 {
-                    return GetPartialView(new NewDesignerVM
+
+                    return GetPartialView<NewDesignerVM>(new NewDesignerVM
                     {
                         Title = designer.Title,
                         Firstname = designer.Firstname,
                         Lastname = designer.Lastname
-                    });
+                    }, "_NewDesignerPartialView");
                 }
                 else
                 {
@@ -97,7 +91,22 @@ namespace SODP.UI.Pages.Designers
                 }
             }
 
-            return GetPartialView(designer);
+            return GetPartialView<NewDesignerVM>(designer, "_NewDesignerPartialView");
+        }
+
+        public async Task<PartialViewResult> OnGetPartialLicences(int id)
+        {
+            var apiResponse = await _apiProvider.GetAsync($"/designers/{id}/licences");
+            var response = await _apiProvider.GetContent<ServicePageResponse<LicenceWithBranchesDTO>>(apiResponse);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                Licences = new LicencesVM
+                {
+                    Licences = response.Data.Collection.ToList()
+                };
+            }
+
+            return GetPartialView<LicencesVM>(Licences, "_LicencesPartialView");
         }
 
         private async Task<IList<DesignerDTO>> GetDesignersAsync(PageInfo pageInfo)
@@ -113,35 +122,6 @@ namespace SODP.UI.Pages.Designers
             }
 
             return new List<DesignerDTO>();
-        }
-
-        private PartialViewResult GetPartialView(NewDesignerVM designer)
-        {
-            return new PartialViewResult
-            {
-                ViewName = partialViewName,
-                ViewData = new ViewDataDictionary<NewDesignerVM>(ViewData, designer)
-            };
-        }
-
-        public async Task<PartialViewResult> OnGetPartialLicences(int id)
-        {
-            var apiResponse = await _apiProvider.GetAsync($"/designers/{id}/licences");
-            var response = await _apiProvider.GetContent<ServicePageResponse<LicenceDTO>>(apiResponse);
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                LicencesViewModel = new LicencesListVM
-                {
-                    DesignerId = 1,
-                    Licences = response.Data.Collection.ToList()
-                };
-            }
-
-            return new PartialViewResult
-            {
-                ViewName = "_LicencesPartialView",
-                ViewData = new ViewDataDictionary<LicencesListVM>(ViewData, LicencesViewModel)
-            };
         }
     }
 }

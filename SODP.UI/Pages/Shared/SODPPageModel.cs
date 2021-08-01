@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SODP.Shared.Response;
 
 namespace SODP.UI.Pages.Shared
@@ -19,6 +21,15 @@ namespace SODP.UI.Pages.Shared
             {
                 ModelState.AddModelError(error.Key, error.Value);
             }
+        }
+
+        public virtual PartialViewResult GetPartialView<T>(T model, string partialViewName)
+        {
+            return new PartialViewResult()
+            {
+                ViewName = partialViewName,
+                ViewData = new ViewDataDictionary<T>(ViewData, model)
+            };
         }
     }
 }

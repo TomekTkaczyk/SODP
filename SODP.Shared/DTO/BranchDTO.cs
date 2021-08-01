@@ -1,15 +1,12 @@
 ﻿
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace SODP.Shared.DTO
 {
     public class BranchDTO  : BaseDTO
     {
-        [Required]
-        [MinLength(1)]
         public string Sign { get; set; }
 
-        [Required]
         public string Title { get; set; }
         
         public bool ActiveStatus { get; set; }

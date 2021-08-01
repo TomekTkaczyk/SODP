@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SODP.Shared", "SODP.Shared\SODP.Shared.csproj", "{F2185F5F-0587-4EF4-A2FC-B8A56709F26A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODP.Infrastructure", "SODP.Infrastructure\SODP.Infrastructure.csproj", "{F1082453-0A77-474E-BEBF-0907A5149873}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SODP.Infrastructure", "SODP.Infrastructure\SODP.Infrastructure.csproj", "{F1082453-0A77-474E-BEBF-0907A5149873}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

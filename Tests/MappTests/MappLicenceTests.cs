@@ -39,8 +39,27 @@ namespace Tests.MappTests
             var mapper = config.CreateMapper();
             var licenceDTO = mapper.Map<Licence, LicenceDTO>(entity);
 
-            Assert.NotEmpty(licenceDTO.Branches);
-            Assert.True(licenceDTO.Branches.Count > 0);
+            Assert.NotNull(licenceDTO.Designer);
+        }
+
+        [Fact]
+        public void AutoMapper_ConvertFromLicence_ToLicenceWithBranch_IsValid()
+        {
+            var fixture = new Fixture();
+            fixture.Behaviors
+                .OfType<ThrowingRecursionBehavior>()
+                .ToList()
+                .ForEach(b => fixture.Behaviors.Remove(b));
+
+            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            LicenceDTO dto = fixture.Create<LicenceDTO>();
+            Licence entity = fixture.Create<Licence>();
+
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
+            var mapper = config.CreateMapper();
+            var licenceDTO = mapper.Map<Licence, LicenceDTO>(entity);
+
+            Assert.NotNull(licenceDTO.Designer);
         }
     }
 }
