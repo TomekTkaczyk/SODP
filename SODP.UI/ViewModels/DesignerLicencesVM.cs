@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.ViewModels
 {
-    public class DesignerLicencesVM
+    public class DesignerLicensesVM
     {
         public int DesignerId { get; set; }
 
-        public IList<LicenceDTO> Licence { get; set; }
+        public IList<LicenseDTO> License { get; set; }
     }
 }

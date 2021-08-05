@@ -41,30 +41,29 @@
 @if (Model.Branches.Branches.Count() > 0)
 {
     <div class="accordion" id="branchesAccordion">
-        @foreach (var item in Model.Branches.Branches)
+        @foreach (var item in Model.Branches.Branches.OrderBy(x => x.Symbol))
         {
             <div class="button card">
-                <div class="card-header" id="card-header-@item.Id">
+                <div class="card-header" 
+                     id="card-header-@item.Id">
                     <div class="row ">
-                        <div class="col font-weight-bold">
-                            <a onclick="accordionCollapse(@item.Id)"
-                               id="card-head-@item.Id"
-                               data-toggle="collapse"
-                               data-target="#collapse_@item.Id"
-                               aria-expanded="false"
-                               aria-controls="collapse-@item.Id">
-                                (@item.Sign) @item.Title
-                            </a>
+                        <div class="col font-weight-bold clickable"
+                             onclick="accordionCollapse(@item.Id)"
+                             id="card-head-@item.Id"
+                             data-toggle="collapse"
+                             data-target="#collapse_@item.Id"
+                             aria-expanded="false"
+                             aria-controls="collapse-@item.Id">
+                             @item.Symbol:@item.Sign @item.Title
                         </div>
                         <div class="colgroup justify-content-end mr-2">
                             <style>
                                 .toggle.ios, .toggle-on.ios, .toggle-off.ios {
                                     border-radius: 30px;
                                 }
-
-                                    .toggle.ios .toggle-handle {
-                                        border-radius: 30px;
-                                    }
+                                .toggle.ios .toggle-handle {
+                                    border-radius: 30px;
+                                }
                             </style>
                             <input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
                                    onchange="handleChange(@item.Id, this.checked)"
@@ -73,8 +72,7 @@
                                    title="Aktywność"
                                    data-style="ios">
 
-
-                            <a onclick='NewBranch(@item.Id)'
+                            <a onclick='EditBranch(@item.Id)'
                                class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
                                data-toggle="tooltip"
                                data-placement="top"
@@ -116,8 +114,7 @@ else
     <script src="~/js/branchesList.js"></script>
 
     <script>
-        function NewBranch(id) {
-            console.log(id);
+        function EditBranch(id) {
             $.ajax({
                 type: "Get",
                 url: `@Url.Page("Index","NewBranch")&Id=` + id,

@@ -8,6 +8,6 @@ namespace SODP.UI.Pages.Branches.ViewModels
 {
     public class DesignersVM
     {
-        public IList<LicenceDTO> Licences { get; set; }
+        public IList<LicenseDTO> Licenses { get; set; }
     }
 }

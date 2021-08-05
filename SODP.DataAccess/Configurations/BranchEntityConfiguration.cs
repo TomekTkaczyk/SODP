@@ -8,20 +8,32 @@ namespace SODP.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Branch> builder)
         {
+            builder.Property(x => x.Symbol)
+               .HasColumnType("varchar(2)")
+               .HasDefaultValue("00")
+               .IsRequired();
+
             builder.Property(x => x.Sign)
                 .HasColumnType("varchar(10)")
                 .IsRequired();
 
             builder.Property(x => x.Title)
-                .HasColumnType("nvarchar(50)")
+                .HasColumnType("nvarchar(50)");
+
+            builder.Property(x => x.ActiveStatus)
+                .HasDefaultValue(1)
                 .IsRequired();
+
+            builder.HasIndex(x => new { x.Symbol })
+                .HasName("IX_SYMBOL")
+                .IsUnique();
 
             builder.ToTable("Branches");
 
             //builder.HasMany(x => x.Licenses)
             //    .WithOne(x => x.Branch)
             //    .HasForeignKey(x => x.BranchId)
-            //    .HasConstraintName("FK_Branch_Licence")
+            //    .HasConstraintName("FK_Branch_License")
             //    .OnDelete(DeleteBehavior.Restrict);
         }
     }

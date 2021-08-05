@@ -2,8 +2,8 @@
 
 namespace SODP.Shared.DTO
 {
-    public class BranchWithLicencesDTO : BranchDTO
+    public class BranchWithLicensesDTO : BranchDTO
     {
-        public IList<LicenceDTO> Licences { get; set; }
+        public IList<LicenseDTO> Licenses { get; set; }
     }
 }

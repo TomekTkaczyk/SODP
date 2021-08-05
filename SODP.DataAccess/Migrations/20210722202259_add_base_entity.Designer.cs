@@ -211,7 +211,7 @@ namespace SODP.DataAccess.Migrations
                     b.ToTable("Designers");
                 });
 
-            modelBuilder.Entity("SODP.Model.Licence", b =>
+            modelBuilder.Entity("SODP.Model.License", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -241,7 +241,7 @@ namespace SODP.DataAccess.Migrations
                     b.HasIndex("DesignerId")
                         .HasName("IX_Designer");
 
-                    b.ToTable("Licences");
+                    b.ToTable("Licenses");
                 });
 
             modelBuilder.Entity("SODP.Model.Project", b =>
@@ -297,10 +297,10 @@ namespace SODP.DataAccess.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CheckingLicenceId")
+                    b.Property<int?>("CheckingLicenseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DesignerLicenceId")
+                    b.Property<int?>("DesignerLicenseId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProjectId")
@@ -311,10 +311,10 @@ namespace SODP.DataAccess.Migrations
                     b.HasIndex("BranchId")
                         .HasName("IX_Branch");
 
-                    b.HasIndex("CheckingLicenceId")
+                    b.HasIndex("CheckingLicenseId")
                         .HasName("IX_Checking");
 
-                    b.HasIndex("DesignerLicenceId")
+                    b.HasIndex("DesignerLicenseId")
                         .HasName("IX_Designer");
 
                     b.HasIndex("ProjectId")
@@ -554,7 +554,7 @@ namespace SODP.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SODP.Model.Licence", b =>
+            modelBuilder.Entity("SODP.Model.License", b =>
                 {
                     b.HasOne("SODP.Model.Branch", "Branch")
                         .WithMany()
@@ -586,13 +586,13 @@ namespace SODP.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SODP.Model.Licence", "CheckingLicence")
+                    b.HasOne("SODP.Model.License", "CheckingLicense")
                         .WithMany()
-                        .HasForeignKey("CheckingLicenceId");
+                        .HasForeignKey("CheckingLicenseId");
 
-                    b.HasOne("SODP.Model.Licence", "DesignerLicence")
+                    b.HasOne("SODP.Model.License", "DesignerLicense")
                         .WithMany()
-                        .HasForeignKey("DesignerLicenceId");
+                        .HasForeignKey("DesignerLicenseId");
 
                     b.HasOne("SODP.Model.Project", "Project")
                         .WithMany("Branches")

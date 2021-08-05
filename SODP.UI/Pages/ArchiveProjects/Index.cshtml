@@ -4,8 +4,8 @@
 
 @model IndexModel
 
-@{ 
-    ViewData["Title"] = "Projekty zakończone"; 
+@{
+    ViewData["Title"] = "Projekty zakończone";
 }
 
 @inject SignInManager<User> SignInManager
@@ -23,37 +23,47 @@
             <table class="table table-sm table-hover">
                 <thead class="thead-light">
                     <tr>
-                        <th>Numer</th>
-                        <th>Stadium</th>
-                        <th>Tytuł</th>
+                        <th class="m-0 p-0 pl-1 pr-1">Numer</th>
+                        <th class="m-0 p-0 pl-1 pr-1">Stadium</th>
+                        <th class="m-0 p-0 pl-1 pr-1">Tytuł</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.ProjectsViewModel.Projects)
                     {
-                        <tr class="m-0 p-0">
-                            <td class="m-0 p-0">
-                                <a href="/ArchiveProjects/Edit?Id=@item.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@item.Number</a>
-                            </td>
-                            <td class="m-0 p-0">
-                                <a href="/ArchiveProjects/Edit?Id=@item.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@item.Stage.Sign</a>
-                            </td>
-                            <td class="m-0 p-0">
-                                <a href="/ArchiveProjects/Edit?Id=@item.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@item.Title</a>
-                            </td>
-                            <td class="m-0 p-0 text-right">
-                                <div>
-                                    <a onclick='Restore("/api/v0_01/archive-projects/@item.Id/restore")'
-                                       class='btn btn-md m-0 p-0 text-success'
-                                       data-toggle="tooltip"
-                                       data-placement="top"
-                                       title="Przywróć projekt">
-                                        <i class="fas fa-archive"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                    <tr class="m-0 p-0">
+                        <td onclick='Edit("/ArchiveProjects/Edit?Id=@item.Id")'
+                            class="cell clickable"
+                            data-toggle="tooltip"
+                            title="Edycja"
+                            data-placement="top">
+                            @item.Number
+                        </td>
+                        <td onclick='Edit("/ArchiveProjects/Edit?Id=@item.Id")'
+                            class="cell clickable"
+                            data-toggle="tooltip"
+                            title="Edycja"
+                            data-placement="top">
+                            @item.Stage.Sign
+                        </td>
+                        <td onclick='Edit("/ArchiveProjects/Edit?Id=@item.Id")'
+                            class="cell clickable"
+                            data-toggle="tooltip"
+                            title="Edycja"
+                            data-placement="top">
+                            @item.Title
+                        </td>
+                        <td class="m-0 p-0 pl-1 pr-1 text-center">
+                            <a onclick='Restore("/api/v0_01/archive-projects/@item.Id/restore")'
+                                class='btn btn-md m-0 py-0 text-success'
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                title="Przywróć projekt">
+                                <i class="fas fa-archive"></i>
+                            </a>
+                        </td>
+                    </tr>
                     }
                 </tbody>
                 <tfoot>
@@ -82,7 +92,7 @@
 </div>
 
 @section Scripts{
+    <script src="~/js/edit.js"></script>
     <script src="~/js/restore.js"></script>
     <script src="~/js/archiveProjectList.js"></script>
-
 }

@@ -5,10 +5,11 @@ namespace SODP.Model
 {
     public class Branch : BaseEntity
     {
+        public string Symbol { get; set; }
         public string Sign { get; set; }
         public string Title { get; set; }
         public bool ActiveStatus { get; set; }
-        public virtual ICollection<BranchLicence> Licenses { get; set; }
+        public virtual ICollection<BranchLicense> Licenses { get; set; }
 
         public void Normalize()
         {
@@ -18,7 +19,7 @@ namespace SODP.Model
 
         public override string ToString()
         {
-            return $"({ Sign.Trim()}) { Title.Trim()}";
+            return $"{Symbol.Trim()}:{ Sign.Trim()} {Title.Trim()}";
         }
     }
 }

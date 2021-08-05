@@ -31,7 +31,7 @@ namespace SODP.DataAccess.Configurations
             //builder.HasMany(x => x.Licenses)
             //    .WithOne(x => x.Designer)
             //    .HasForeignKey(x => x.DesignerId)
-            //    .HasConstraintName("FK_Designer_Licence")
+            //    .HasConstraintName("FK_Designer_License")
             //    .OnDelete(DeleteBehavior.Restrict);
 
         }

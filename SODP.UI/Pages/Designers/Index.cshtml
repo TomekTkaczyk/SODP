@@ -44,17 +44,17 @@
         @foreach (var item in Model.Designers.Designers)
         {
             <div class="button card">
-                <div class="card-header" id="card-header-@item.Id">
-                    <div class="row ">
-                        <div class="col font-weight-bold">
-                            <a onclick="accordionCollapse(@item.Id)"
-                               id="card-head-@item.Id"
-                               data-toggle="collapse"
-                               data-target="#collapse-@item.Id"
-                               aria-expanded="false"
-                               aria-controls="collapse-@item.Id">
-                                @item.Title @item.Firstname @item.Lastname
-                            </a>
+                <div class="card-header" 
+                     id="card-header-@item.Id">
+                    <div class="row" >
+                        <div class="col font-weight-bold clickable"
+                             onclick="accordionCollapse(@item.Id)"
+                             id="card-head-@item.Id"
+                             data-toggle="collapse"
+                             data-target="#collapse-@item.Id"
+                             aria-expanded="false"
+                             aria-controls="collapse-@item.Id">
+                             @item.Title @item.Firstname @item.Lastname
                         </div>
                         <div class="colgroup justify-content-end mr-2">
                             <style>
@@ -72,6 +72,15 @@
                                    data-toggle="toggle"
                                    title="Aktywność"
                                    data-style="ios">
+
+                            <a onclick='EditDesigner(@item.Id)'
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="Edycja stadium">
+                                <i class="fas fa-edit"></i>
+                            </a>
+
                             <a onclick='Delete("/api/v0_01/designers/@item.Id")'
                                class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-danger"
                                data-toggle="tooltip"
@@ -88,7 +97,7 @@
                  aria-labelledby="heading-@item.Id"
                  data-parent="#designersAccordion">
 
-                <div class="card-body" id="licence-@item.Id"></div>
+                <div class="card-body" id="license-@item.Id"></div>
             </div>
         }
     </div>
@@ -102,13 +111,13 @@ else
 @section Scripts{
     <script src="~/js/delete.js"></script>
     <script src="~/js/initModalPlaceholder.js"></script>
-    <script type="module" src="~/js/designersList.js"></script>
+    <script src="~/js/designersList.js"></script>
 
     <script>
-        function NewDesigner(currentId) {
+        function EditDesigner(id) {
             $.ajax({
                 type: "Get",
-                url: '@Url.Page("Index","NewDesigner")',
+                url: '@Url.Page("Index","NewDesigner")&Id=' + id,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
                     $('#editdesigner').modal('show');
@@ -142,7 +151,7 @@ else
     <script>
         function accordionCollapse(id) {
             if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
-                $(`#licence-${id}`).load(`/Designers/index?handler=PartialLicences&id=${id}`);
+                $(`#license-${id}`).load(`/Designers/index?handler=PartialLicenses&id=${id}`);
             }
         }
     </script>

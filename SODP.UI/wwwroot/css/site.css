@@ -1,27 +1,21 @@
-﻿:root{
+﻿:root {
     --dark: #1b1b1b1b;
+    box-sizing: border-box;
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
 }
 
-a {
-    color: inherit;
+.cell {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
 }
 
-a:hover {
-    color: inherit;
+.clickable {
     cursor: pointer;
-    text-decoration: inherit;
 }
-
-/**/
-/*a:link {
-    color: green;
-    background-color: transparent;
-    text-decoration: none;
-}*/
-
-/*div.admin {
-    display: none;
-}*/
 
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */

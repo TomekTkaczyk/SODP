@@ -11,7 +11,7 @@ namespace SODP.Model
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public bool ActiveStatus { get; set; }
-        public virtual ICollection<Licence> Licenses { get; set; }
+        public virtual ICollection<License> Licenses { get; set; }
 
         public override string ToString()
         {
@@ -20,6 +20,7 @@ namespace SODP.Model
 
         public void Normalize()
         {
+            Title = (Title == null) ? "" : Title;
             Firstname = Firstname.CapitalizeFirstLetter();
             Lastname = Lastname.CapitalizeFirstLetter();
         }

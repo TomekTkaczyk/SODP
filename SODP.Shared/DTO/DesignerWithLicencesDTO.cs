@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SODP.Shared.DTO
 {
-    public class DesignerWithLicencesDTO : DesignerDTO
+    public class DesignerWithLicensesDTO : DesignerDTO
     {
-        public IList<LicenceDTO> Licences { get; set; }
+        public IList<LicenseDTO> Licenses { get; set; }
     }
 }

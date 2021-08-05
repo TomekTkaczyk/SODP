@@ -38,44 +38,56 @@
                 <table class="table table-sm table-hover">
                     <thead class="thead-light">
                         <tr>
-                            <th>Numer</th>
-                            <th>Stadium</th>
-                            <th>Tytuł</th>
+                            <th class="m-0 p-0 pl-1 pr-1">Numer</th>
+                            <th class="m-0 p-0 pl-1 pr-1">Stadium</th>
+                            <th class="m-0 p-0 pl-1 pr-1">Tytuł</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.ProjectsViewModel.Projects)
                         {
-                            <tr class="m-0 p-0">
-                                <td class="m-0 p-0">
-                                    <a href="/ActiveProjects/Edit?Id=@item.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@item.Number</a>
-                                </td>
-                                <td class="m-0 p-0">
-                                    <a href="/ActiveProjects/Edit?Id=@item.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@item.Stage.Sign</a>
-                                </td>
-                                <td class="m-0 p-0">
-                                    <a href="/ActiveProjects/Edit?Id=@item.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@item.Title</a>
-                                </td>
-                                <td class="m-0 p-0 text-right">
-                                    <div>
-                                        <a onclick='Delete("/api/v0_01/active-projects/@item.Id")'
-                                           class='btn btn-md m-0 p-0 text-danger'
-                                           data-toggle="tooltip"
-                                           data-placement="top"
-                                           title="Usuń projekt">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </a>
-                                        <a onclick='Archive("/api/v0_01/active-projects/@item.Id/archive")'
-                                           class='btn btn-md m-0 p-0 text-success'
-                                           data-toggle="tooltip"
-                                           data-placement="top"
-                                           title="Przenieś projekt do archiwum">
-                                            <i class="fas fa-archive"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tr class="m-0 p-0">
+                            <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
+                                class="cell clickable"
+                                data-toggle="tooltip"
+                                title="Edycja"
+                                data-placement="top">
+                                @item.Number
+                            </td>
+                            <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
+                                class="cell clickable"
+                                data-toggle="tooltip"
+                                title="Edycja"
+                                data-placement="top">
+                                @item.Stage.Sign
+                            </td>
+                            <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
+                                class="cell clickable"
+                                data-toggle="tooltip"
+                                title="Edycja"
+                                data-placement="top">
+                                @item.Title
+                            </td>
+                            <td class="cell text-right">
+                                <div class="row">
+                                    <a onclick='Delete("/api/v0_01/active-projects/@item.Id")'
+                                        class='btn btn-md m-0 py-0 text-danger'
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Usuń projekt">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                    <a onclick='Archive("/api/v0_01/active-projects/@item.Id/archive")'
+                                        class='btn btn-md m-0 py-0 text-success'
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Przenieś projekt do archiwum">
+                                        <i class="fas fa-archive"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                     <tfoot>
@@ -107,6 +119,7 @@
 
 
 @section Scripts{
+    <script src="~/js/edit.js"></script>
     <script src="~/js/delete.js"></script>
     <script src="~/js/archive.js"></script>
     <script src="~/js/activeProjectList.js"></script>

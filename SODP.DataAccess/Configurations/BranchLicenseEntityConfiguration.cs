@@ -1,0 +1,26 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SODP.Model;
+
+namespace SODP.DataAccess.Configurations
+{
+    public class BranchLicenseEntityConfiguration : IEntityTypeConfiguration<BranchLicense>
+    {
+        public void Configure(EntityTypeBuilder<BranchLicense> builder)
+        {
+            builder.Property(x => x.BranchId)
+                .IsRequired();
+
+            builder.Property(x => x.LicenseId)
+                .IsRequired();
+
+            builder.HasIndex(x => x.BranchId)
+                .HasName("IX_Branch");
+
+            builder.HasIndex(x => x.LicenseId)
+                .HasName("IX_License");
+
+            builder.ToTable("BranchLicense");
+        }
+    }
+}

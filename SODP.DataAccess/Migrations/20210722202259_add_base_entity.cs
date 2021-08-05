@@ -7,6 +7,10 @@ namespace SODP.DataAccess.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.RenameTable(
+                name: "licences",
+                newName: "licenses");
+
             migrationBuilder.RenameColumn(
                 name: "Name",
                 table: "Branches",
@@ -56,13 +60,13 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreateTimeStamp",
-                table: "Licences",
+                table: "Licenses",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "ModifyTimeStamp",
-                table: "Licences",
+                table: "Licenses",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
@@ -117,6 +121,10 @@ namespace SODP.DataAccess.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.RenameTable(
+            name: "branchlicense",
+            newName: "branchlicence");
+
             migrationBuilder.DropColumn(
                 name: "CreateTimeStamp",
                 table: "Tokens");
@@ -147,11 +155,11 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.DropColumn(
                 name: "CreateTimeStamp",
-                table: "Licences");
+                table: "Licenses");
 
             migrationBuilder.DropColumn(
                 name: "ModifyTimeStamp",
-                table: "Licences");
+                table: "Licenses");
 
             migrationBuilder.DropColumn(
                 name: "ActiveStatus",

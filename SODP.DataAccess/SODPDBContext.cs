@@ -15,9 +15,9 @@ namespace SODP.DataAccess
         public DbSet<Branch> Branches { get; set; }
         public DbSet<ProjectBranch> ProjectBranches { get; set; }
         public DbSet<Designer> Designers { get; set; }
-        public DbSet<Licence> Licences { get; set; }
+        public DbSet<License> Licenses { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
-        public DbSet<BranchLicence> BranchLicences { get; set; }
+        public DbSet<BranchLicense> BranchLicenses { get; set; }
 
 
 
@@ -36,9 +36,9 @@ namespace SODP.DataAccess
             new BranchEntityConfiguration().Configure(modelBuilder.Entity<Branch>());
             new ProjectBranchEntityConfiguration().Configure(modelBuilder.Entity<ProjectBranch>());
             new DesignerEntityConfiguration().Configure(modelBuilder.Entity<Designer>());
-            new LicenceEntityConfiguration().Configure(modelBuilder.Entity<Licence>());
+            new LicenseEntityConfiguration().Configure(modelBuilder.Entity<License>());
             new CertificateEntityConfiguration().Configure(modelBuilder.Entity<Certificate>());
-            new BranchLicenceEntityConfiguration().Configure(modelBuilder.Entity<BranchLicence>());
+            new BranchLicenseEntityConfiguration().Configure(modelBuilder.Entity<BranchLicense>());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

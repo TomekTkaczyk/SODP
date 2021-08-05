@@ -37,41 +37,39 @@
             <table class="table table-sm table-hover">
                 <thead class="thead-light">
                     <tr>
-                        <th>Symbol</th>
-                        <th>Opis</th>
+                        <th class="m-0 p-0 pl-1 pr-1">Symbol</th>
+                        <th class="m-0 p-0 pl-1 pr-1">Opis</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var stage in Model.StagesViewModel.Stages)
                     {
-                        <tr class="m-0 p-0">
-                            <td class="m-0 p-0">
-                                <a onclick='NewStage(@stage.Id)'
-                                   data-toggle="tooltip"
-                                   data-placement="top"
-                                   title="Edycja stadium">
-                                    @stage.Sign
-                                </a>
-                            </td>
-                            <td class="m-0 p-0">
-                                <a onclick='NewStage(@stage.Id)'
-                                   data-toggle="tooltip"
-                                   data-placement="top"
-                                   title="Edycja stadium">
-                                    @stage.Title
-                                </a>
-                            </td>
-                            <td class="m-0 p-0 text-right">
-                                <a onclick='Delete("/api/v0_01/stages/@stage.Id")'
-                                   class="btn btn-md m-0 p-0 text-danger"
-                                   data-toggle="tooltip"
-                                   data-placement="top"
-                                   title="Usuń stadium">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                            </td>
-                        </tr>
+                    <tr class="m-0 p-0">
+                        <td onclick='NewStage(@stage.Id)'
+                            class="cell clickable"
+                            data-toggle="tooltip"
+                            title="Edycja stadium"
+                            data-placement="top">
+                            @stage.Sign
+                        </td>
+                        <td onclick='NewStage(@stage.Id)'
+                            class="cell clickable"
+                            data-toggle="tooltip"
+                            title="Edycja stadium"
+                            data-placement="top">
+                            @stage.Title
+                        </td>
+                        <td class="cell text-right">
+                            <a onclick='Delete("/api/v0_01/stages/@stage.Id")'
+                               class="btn btn-md m-0 py-0 text-danger"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="Usuń stadium">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
                     }
                 </tbody>
                 <tfoot>

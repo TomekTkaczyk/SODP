@@ -1,4 +1,5 @@
 ﻿using SODP.Shared.DTO;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Text;
@@ -8,25 +9,13 @@ namespace SODP.UI.Pages.Designers.ViewModels
 {
     public class NewDesignerVM
     {
-        [Required]
+        [DefaultValue("")]
         public string Title { get; set; }
-        [Required]
+        
+        [Required(ErrorMessage = "Imię jest wymagane")]
         public string Firstname { get; set; }
-        [Required]
-        public string Lastname { get; set; }
 
-        public virtual StringContent ToHttpContent()
-        {
-            return new StringContent(
-                                  JsonSerializer.Serialize(new NewDesignerDTO
-                                  {
-                                      Title = this.Title,
-                                      Firstname = this.Firstname,
-                                      Lastname = this.Lastname
-                                  }),
-                                  Encoding.UTF8,
-                                  "application/json"
-                              );
-        }
+        [Required(ErrorMessage = "Nazwisko jest wymagane")]
+        public string Lastname { get; set; }
     }
 }

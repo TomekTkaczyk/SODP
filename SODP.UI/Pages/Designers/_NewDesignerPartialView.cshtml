@@ -1,5 +1,5 @@
 ﻿@using SODP.UI.Pages.Designers.ViewModels
-@model NewDesignerVM
+@model DesignerVM
 <!-- Modal -->
 <div class="modal fade" id="editdesigner" tabindex="-1" role="dialog" aria-labelledby="editStageLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -15,6 +15,7 @@
                 <div id="error-placeholder"></div>
                 <form asp-page-handler="NewDesigner">
                     <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <input asp-for="Id" type="hidden" value="@Model.Id" />
                     <div class="form-group">
                         <input class="form-control" asp-for="Title" value="@Model.Title" placeholder="Tytuł" />
                         <span class="text-danger" asp-validation-for="Title"></span>

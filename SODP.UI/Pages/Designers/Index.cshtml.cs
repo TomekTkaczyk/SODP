@@ -2,11 +2,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Shared;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +18,10 @@ namespace SODP.UI.Pages.Designers
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : SODPPageModel
     {
-        const string partialViewName = "_NewDesignerPartialView";
+        const string designerPartialViewName = "_NewDesignerPartialView";
+        const string licensePartialViewName = "_NewLicensePartialView";
+        const string licensesPartialViewName = "_LicensesPartialView";
+
         private readonly IWebAPIProvider _apiProvider;
 
         public IndexModel(IWebAPIProvider apiProvider)
@@ -26,7 +32,7 @@ namespace SODP.UI.Pages.Designers
 
         public DesignersVM Designers { get; set; }
 
-        public LicencesVM Licences { get; set; }
+        public LicensesVM Licenses { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
         {
@@ -62,51 +68,70 @@ namespace SODP.UI.Pages.Designers
             return RedirectToPage($"Index?currentPage={Designers.PageInfo.CurrentPage}:&pageSize={Designers.PageInfo.ItemsPerPage}");
         }
 
-        public PartialViewResult OnGetNewDesigner()
+        public async Task<PartialViewResult> OnGetNewDesignerAsync(int? id)
         {
-            return GetPartialView<NewDesignerVM>(new NewDesignerVM(), "_NewDesignerPartialView");
+            if (id != null)
+            {
+                var apiResponse = await _apiProvider.GetAsync($"/designers/{id}");
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
+
+                    return GetPartialView(result.Data.ToViewModel(), designerPartialViewName);
+                }
+            }
+
+            return GetPartialView(new DesignerVM(), designerPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnPostNewDesignerAsync(NewDesignerVM designer)
+        public async Task<PartialViewResult> OnPostNewDesignerAsync(DesignerVM designer)
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PostAsync($"/designers", designer.ToHttpContent());
-
-                var response = await _apiProvider.GetContent<ServiceResponse<DesignerDTO>>(apiResponse);
-                
-                if (apiResponse.IsSuccessStatusCode && response.Success)
+                var apiResponse = designer.Id == 0
+                    ? await _apiProvider.PostAsync($"/designers", designer.ToHttpContent())
+                    : await _apiProvider.PutAsync($"/designers/{designer.Id}", designer.ToHttpContent());
+                switch (apiResponse.StatusCode)
                 {
-
-                    return GetPartialView<NewDesignerVM>(new NewDesignerVM
-                    {
-                        Title = designer.Title,
-                        Firstname = designer.Firstname,
-                        Lastname = designer.Lastname
-                    }, "_NewDesignerPartialView");
+                    case HttpStatusCode.OK:
+                        var response = await _apiProvider.GetContent<ServiceResponse<DesignerDTO>>(apiResponse);
+                        if (!response.Success)
+                        {
+                            SetModelErrors(response);
+                        }
+                        break;
+                    default:
+                        // redirect to ErrorPage
+                        break;
                 }
-                else
-                {
-                    SetModelErrors(response);
-                }
-            }
+            }    
 
-            return GetPartialView<NewDesignerVM>(designer, "_NewDesignerPartialView");
+            return GetPartialView<DesignerVM>(designer, designerPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnGetPartialLicences(int id)
+        public async Task<PartialViewResult> OnGetPartialLicenses(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/designers/{id}/licences");
-            var response = await _apiProvider.GetContent<ServicePageResponse<LicenceWithBranchesDTO>>(apiResponse);
+            var apiResponse = await _apiProvider.GetAsync($"/designers/{id}/licenses");
+            var response = await _apiProvider.GetContent<ServicePageResponse<LicenseWithBranchesDTO>>(apiResponse);
             if (apiResponse.IsSuccessStatusCode)
             {
-                Licences = new LicencesVM
+                Licenses = new LicensesVM
                 {
-                    Licences = response.Data.Collection.ToList()
+                    Licenses = response.Data.Collection.ToList()
                 };
             }
 
-            return GetPartialView<LicencesVM>(Licences, "_LicencesPartialView");
+            return GetPartialView<LicensesVM>(Licenses, licensesPartialViewName);
+        }
+
+        public async Task<PartialViewResult> OnGetNewLicenseAsync(int? id)
+        {
+            if(id != null)
+            {
+                var apiResponse = await _apiProvider.GetAsync($"/licenses/{id}");
+            }
+
+            return GetPartialView<LicenseVM>(new LicenseVM(), licensePartialViewName);
         }
 
         private async Task<IList<DesignerDTO>> GetDesignersAsync(PageInfo pageInfo)

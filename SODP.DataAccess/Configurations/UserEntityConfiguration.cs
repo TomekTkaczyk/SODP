@@ -33,10 +33,12 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("nvarchar(256)");
 
             builder.Property(u => u.Firstname)
+                .HasDefaultValue("")
                 .HasColumnType("nvarchar(256)");
 
             builder.Property(u => u.Lastname)
-                .HasColumnType("nvarchar(256)");
+               .HasDefaultValue("")
+               .HasColumnType("nvarchar(256)");
 
             builder.Property(u => u.PhoneNumber)
                 .HasColumnType("varchar(256)");

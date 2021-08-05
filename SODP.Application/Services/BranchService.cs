@@ -172,6 +172,7 @@ namespace SODP.Application.Services
                     serviceResponse.ValidationErrors.Add("Sign", "Branża nie odnaleziona.");
                     return serviceResponse;
                 }
+                branch.Symbol = updateBranch.Symbol;
                 branch.Sign = updateBranch.Sign;
                 branch.Title = updateBranch.Title;
                 branch.Normalize();
@@ -242,19 +243,19 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-        public async Task<ServicePageResponse<LicenceDTO>> GetLicencesAsync(int id)
+        public async Task<ServicePageResponse<LicenseDTO>> GetLicensesAsync(int id)
         {
-            var serviceResponse = new ServicePageResponse<LicenceDTO>();
+            var serviceResponse = new ServicePageResponse<LicenseDTO>();
 
             try
             {
-                var branch = await _context.BranchLicences
-                    .Include(x => x.Licence)
+                var branch = await _context.BranchLicenses
+                    .Include(x => x.License)
                     .ThenInclude(x => x.Designer)
                     .Where(k => k.BranchId == id)
                     .ToListAsync();
 
-                serviceResponse.SetData(_mapper.Map<IList<LicenceDTO>>(branch.Select(x => x.Licence)));
+                serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(branch.Select(x => x.License)));
             }
             catch (Exception ex)
             {

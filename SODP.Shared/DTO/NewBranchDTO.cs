@@ -2,13 +2,12 @@
 
 namespace SODP.Shared.DTO
 {
-    public class NewBranchDTO
+    public class NewBranchDTO  : BaseDTO
     {
-        [Required]
-        [MinLength(1)]
+        public string Symbol { get; set; }
+
         public string Sign { get; set; }
 
-        [Required]
         public string Title { get; set; }
     }
 }

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace SODP.UI.ViewModels
 {
-    public class BranchLicencesVM
+    public class BranchLicensesVM
     {
-        public IList<LicenceDTO> Licences { get; set; }
+        public IList<LicenseDTO> Licenses { get; set; }
     }
 }

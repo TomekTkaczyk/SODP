@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Tests.MappTests
 {
-    public class MappLicenceTests
+    public class MappLicenseTests
     {
         [Fact]
         public void AutoMapper_Configuration_IsValid()
@@ -23,7 +23,7 @@ namespace Tests.MappTests
 
 
         [Fact]
-        public void AutoMapper_ConvertFromLicence_IsValid()
+        public void AutoMapper_ConvertFromLicense_IsValid()
         {
             var fixture = new Fixture();
             fixture.Behaviors
@@ -32,18 +32,18 @@ namespace Tests.MappTests
                 .ForEach(b => fixture.Behaviors.Remove(b));
 
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            LicenceDTO dto = fixture.Create<LicenceDTO>();
-            Licence entity = fixture.Create<Licence>();
+            LicenseDTO dto = fixture.Create<LicenseDTO>();
+            License entity = fixture.Create<License>();
 
             var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
             var mapper = config.CreateMapper();
-            var licenceDTO = mapper.Map<Licence, LicenceDTO>(entity);
+            var licenseDTO = mapper.Map<License, LicenseDTO>(entity);
 
-            Assert.NotNull(licenceDTO.Designer);
+            Assert.NotNull(licenseDTO.Designer);
         }
 
         [Fact]
-        public void AutoMapper_ConvertFromLicence_ToLicenceWithBranch_IsValid()
+        public void AutoMapper_ConvertFromLicense_ToLicenseWithBranch_IsValid()
         {
             var fixture = new Fixture();
             fixture.Behaviors
@@ -52,14 +52,14 @@ namespace Tests.MappTests
                 .ForEach(b => fixture.Behaviors.Remove(b));
 
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            LicenceDTO dto = fixture.Create<LicenceDTO>();
-            Licence entity = fixture.Create<Licence>();
+            LicenseDTO dto = fixture.Create<LicenseDTO>();
+            License entity = fixture.Create<License>();
 
             var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
             var mapper = config.CreateMapper();
-            var licenceDTO = mapper.Map<Licence, LicenceDTO>(entity);
+            var licenseDTO = mapper.Map<License, LicenseDTO>(entity);
 
-            Assert.NotNull(licenceDTO.Designer);
+            Assert.NotNull(licenseDTO.Designer);
         }
     }
 }

@@ -58,17 +58,20 @@ namespace SODP.Domain
                 .PreserveReferences();
 
             CreateMap<Branch, BranchDTO>()
+                .ReverseMap()
                 .PreserveReferences();
 
             CreateMap<Designer, DesignerDTO>()
+                .ReverseMap()
                 .PreserveReferences();
 
-            CreateMap<Licence, LicenceWithBranchesDTO>()
+            CreateMap<License, LicenseWithBranchesDTO>()
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.Designer))
                 .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
                 .PreserveReferences();
 
-            CreateMap<Licence, LicenceDTO>()
+            CreateMap<License, LicenseDTO>()
+                .ReverseMap()
                 .PreserveReferences();
         }
     }
