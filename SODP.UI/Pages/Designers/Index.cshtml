@@ -44,9 +44,10 @@
         @foreach (var item in Model.Designers.Designers)
         {
             <div class="button card">
-                <div class="card-header" 
+                <div class="card-header"
                      id="card-header-@item.Id">
-                    <div class="row" >
+                    <div class="row">
+
                         <div class="col font-weight-bold clickable"
                              onclick="accordionCollapse(@item.Id)"
                              id="card-head-@item.Id"
@@ -54,9 +55,35 @@
                              data-target="#collapse-@item.Id"
                              aria-expanded="false"
                              aria-controls="collapse-@item.Id">
-                             @item.Title @item.Firstname @item.Lastname
+                            @item.Title @item.Firstname @item.Lastname
                         </div>
                         <div class="colgroup justify-content-end mr-2">
+                           
+                            <a id="editLicense-@item.Id"
+                               onclick="EditLicense(@item.Id)"
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="Dodaj uprawnienia"
+                               hidden>
+                                <i class="fas fa-plus"></i>
+                            </a>
+
+                            <a onclick='EditDesigner(@item.Id)'
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="Edycja">
+                                <i class="fas fa-edit"></i>
+                            </a>
+
+                            <a onclick='Delete("/api/v0_01/designers/@item.Id")'
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-danger"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="Usuń projektanta">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                             <style>
                                 .toggle.ios, .toggle-on.ios, .toggle-off.ios {
                                     border-radius: 30px;
@@ -72,22 +99,6 @@
                                    data-toggle="toggle"
                                    title="Aktywność"
                                    data-style="ios">
-
-                            <a onclick='EditDesigner(@item.Id)'
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
-                               data-toggle="tooltip"
-                               data-placement="top"
-                               title="Edycja stadium">
-                                <i class="fas fa-edit"></i>
-                            </a>
-
-                            <a onclick='Delete("/api/v0_01/designers/@item.Id")'
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-danger"
-                               data-toggle="tooltip"
-                               data-placement="top"
-                               title="Usuń projektanta">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -127,6 +138,20 @@ else
     </script>
 
     <script>
+    function EditLicense(id) {
+        console.log("Edit license");
+        $.ajax({
+            type: "Get",
+            url: '@Url.Page("Index","NewLicense")&Id=' + id,
+            success: function (data) {
+                $('#modal-placeholder').html(data);
+                $('#editlicense').modal('show');
+            }
+        })
+    }
+    </script>
+
+    <script>
         function handleChange(id, checked) {
 
             let c = checked ? 1 : 0;
@@ -151,7 +176,11 @@ else
     <script>
         function accordionCollapse(id) {
             if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
+                document.getElementById(`editLicense-${id}`).hidden = false;
                 $(`#license-${id}`).load(`/Designers/index?handler=PartialLicenses&id=${id}`);
+            }
+            else {
+                document.getElementById(`editLicense-${id}`).hidden = true;
             }
         }
     </script>

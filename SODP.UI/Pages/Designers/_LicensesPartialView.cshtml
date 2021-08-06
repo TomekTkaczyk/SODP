@@ -2,13 +2,6 @@
 
 @model LicensesVM
 
-<button type="button"
-        class="btn btn-info text-white"
-        title="Nowe uprawnienia"
-        data-toggle="ajax-modal"
-        data-url="@Url.Page("Index","NewLicense")">
-    <i class="fas fa-plus"></i>
-</button>
 <div>
     @if (Model.Licenses.Count > 0)
     {
@@ -36,3 +29,5 @@
         <p>Brak uprawnień</p>
     }
 </div>
+
+

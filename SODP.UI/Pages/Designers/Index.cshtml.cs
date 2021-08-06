@@ -34,6 +34,8 @@ namespace SODP.UI.Pages.Designers
 
         public LicensesVM Licenses { get; set; }
 
+        public LicenseVM License { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
         {
             var url = new StringBuilder();
@@ -116,7 +118,8 @@ namespace SODP.UI.Pages.Designers
             if (apiResponse.IsSuccessStatusCode)
             {
                 Licenses = new LicensesVM
-                {
+                {   
+                    DesignerId = id,
                     Licenses = response.Data.Collection.ToList()
                 };
             }
@@ -124,14 +127,21 @@ namespace SODP.UI.Pages.Designers
             return GetPartialView<LicensesVM>(Licenses, licensesPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnGetNewLicenseAsync(int? id)
+        public async Task<PartialViewResult> OnGetNewLicenseAsync(int designerId, int? id)
         {
-            if(id != null)
+            if (id != null)
             {
                 var apiResponse = await _apiProvider.GetAsync($"/licenses/{id}");
             }
 
-            return GetPartialView<LicenseVM>(new LicenseVM(), licensePartialViewName);
+            return GetPartialView<LicenseVM>(new LicenseVM { DesignerId = designerId }, licensePartialViewName);
+        }
+
+
+        public PartialViewResult OnPostNewLicenseAsync(LicenseVM license)
+        {
+
+            return GetPartialView<LicenseVM>(license, licensePartialViewName);
         }
 
         private async Task<IList<DesignerDTO>> GetDesignersAsync(PageInfo pageInfo)

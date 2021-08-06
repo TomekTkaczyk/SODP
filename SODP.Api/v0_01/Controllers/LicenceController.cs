@@ -50,7 +50,7 @@ namespace SODP.Api.v0_01.Controllers
         [HttpPut("id")]
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] LicenseDTO license)
         {
-            return Ok(_service.UpdateAsync(license));
+            return Ok(await _service.UpdateAsync(license));
         }
 
         [HttpDelete("{id}/branch/{branchId}")]
