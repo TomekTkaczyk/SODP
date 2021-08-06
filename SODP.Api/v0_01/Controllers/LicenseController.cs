@@ -42,12 +42,17 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpPost("{id}/branch/{branchId}")]
-        public async Task<IActionResult> AddBranchAsync(int id, int branchId)
+        public async Task<IActionResult> AddBranchAsync(int id, int branchId, [FromBody] BranchDTO branch)
         {
-            return Ok(await _service.AddBranch(id, branchId));
+            if (branchId != branch.Id)
+            {
+                return BadRequest();
+            }
+
+            return Ok(await _service.AddBranch(id, branch.Id));
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] LicenseDTO license)
         {
             return Ok(await _service.UpdateAsync(license));

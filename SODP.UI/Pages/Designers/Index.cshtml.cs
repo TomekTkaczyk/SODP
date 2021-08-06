@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -21,6 +23,7 @@ namespace SODP.UI.Pages.Designers
         const string designerPartialViewName = "_NewDesignerPartialView";
         const string licensePartialViewName = "_NewLicensePartialView";
         const string licensesPartialViewName = "_LicensesPartialView";
+        const string branchesPartialViewName = "_SelectBranchPartialView";
 
         private readonly IWebAPIProvider _apiProvider;
 
@@ -35,6 +38,8 @@ namespace SODP.UI.Pages.Designers
         public LicensesVM Licenses { get; set; }
 
         public LicenseVM License { get; set; }
+
+        public BranchesVM Branches { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
         {
@@ -77,9 +82,9 @@ namespace SODP.UI.Pages.Designers
                 var apiResponse = await _apiProvider.GetAsync($"/designers/{id}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
-                    var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
+                    var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
 
-                    return GetPartialView(result.Data.ToViewModel(), designerPartialViewName);
+                    return GetPartialView(response.Data.ToViewModel(), designerPartialViewName);
                 }
             }
 
@@ -120,26 +125,68 @@ namespace SODP.UI.Pages.Designers
                 Licenses = new LicensesVM
                 {   
                     DesignerId = id,
-                    Licenses = response.Data.Collection.ToList()
+                    Licenses = response.Data.Collection.ToList(),
                 };
             }
 
             return GetPartialView<LicensesVM>(Licenses, licensesPartialViewName);
         }
 
+        public async Task<PartialViewResult> OnGetSelectBranchAsync(int id)
+        {
+            var branches = await GetBranchesVM(new BranchesVM { LicenseId = id });
+
+            return GetPartialView<BranchesVM>(branches, branchesPartialViewName);
+        }
+
+
+
+        public async Task<PartialViewResult> OnPostSelectBranchAsync(BranchesVM branches)
+        {
+            await _apiProvider.PostAsync($"/licenses/{branches.LicenseId}/branch/{branches.BranchId}", branches.ToHttpContent());
+
+            branches = await GetBranchesVM(branches);
+
+            return GetPartialView<BranchesVM>(branches, branchesPartialViewName);
+        }
+ 
         public async Task<PartialViewResult> OnGetNewLicenseAsync(int designerId, int? id)
         {
             if (id != null)
             {
                 var apiResponse = await _apiProvider.GetAsync($"/licenses/{id}");
+                var response = await _apiProvider.GetContent<ServiceResponse<LicenseDTO>>(apiResponse);
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    return GetPartialView(response.Data.ToViewModel(), licensePartialViewName);
+                }
             }
 
             return GetPartialView<LicenseVM>(new LicenseVM { DesignerId = designerId }, licensePartialViewName);
         }
 
 
-        public PartialViewResult OnPostNewLicenseAsync(LicenseVM license)
+        public async Task<PartialViewResult> OnPostNewLicenseAsync(LicenseVM license)
         {
+            if (ModelState.IsValid)
+            {
+                var apiResponse = license.Id == 0
+                    ? await _apiProvider.PostAsync($"/designers/{license.DesignerId}/licences", license.ToHttpContent())
+                    : await _apiProvider.PutAsync($"/licenses/{license.Id}", license.ToHttpContent());
+                switch (apiResponse.StatusCode)
+                {
+                    case HttpStatusCode.OK:
+                        var response = await _apiProvider.GetContent<ServiceResponse<LicenseDTO>>(apiResponse);
+                        if (!response.Success)
+                        {
+                            SetModelErrors(response);
+                        }
+                        break;
+                    default:
+                        // redirect to ErrorPage
+                        break;
+                }
+            }
 
             return GetPartialView<LicenseVM>(license, licensePartialViewName);
         }
@@ -157,6 +204,51 @@ namespace SODP.UI.Pages.Designers
             }
 
             return new List<DesignerDTO>();
+        }
+
+        private async Task<PartialViewResult> GetPartialViewAsync(BranchesVM branches)
+        {
+            var apiResponse = await _apiProvider.GetAsync($"/licenses/{branches.LicenseId}/branches");
+            var response = await _apiProvider.GetContent<ServiceResponse<LicenseWithBranchesDTO>>(apiResponse);
+
+            apiResponse = await _apiProvider.GetAsync($"/branches");
+            var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
+
+            var branchesItems = responseBranch.Data.Collection
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.ToString()
+                }).ToList();
+
+            branches.Branches = branchesItems;
+
+            return new PartialViewResult
+            {
+                ViewName = branchesPartialViewName,
+                ViewData = new ViewDataDictionary<BranchesVM>(ViewData, branches)
+            };
+        }
+
+        private async Task<BranchesVM> GetBranchesVM(BranchesVM branches)
+        {
+            var apiResponse = await _apiProvider.GetAsync($"/licenses/{branches.LicenseId}/branches");
+            var response = await _apiProvider.GetContent<ServiceResponse<LicenseWithBranchesDTO>>(apiResponse);
+
+            apiResponse = await _apiProvider.GetAsync($"/branches");
+            var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
+
+            var branchesItems = responseBranch.Data.Collection
+                .Where(y => response.Data.Branches.FirstOrDefault(z => z.Sign == y.Sign) == null)
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.ToString()
+                }).ToList();
+
+            branches.Branches = branchesItems;
+
+            return branches;
         }
     }
 }

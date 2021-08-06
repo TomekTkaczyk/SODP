@@ -9,5 +9,6 @@ namespace SODP.Domain.Services
         Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = false);
         Task<ServiceResponse> SetActiveStatusAsync(int id, bool status);
         Task<ServicePageResponse<LicenseWithBranchesDTO>> GetLicensesAsync(int id);
+        Task<ServiceResponse> AddLicenceAsync(int id, LicenseDTO licence);
     }
 }

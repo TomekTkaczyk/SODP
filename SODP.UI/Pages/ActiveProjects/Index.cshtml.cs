@@ -119,7 +119,7 @@ namespace SODP.UI.Pages.ActiveProjects
             if (response.IsSuccessStatusCode)
             {
                 var stages = await response.Content.ReadAsAsync<ServicePageResponse<StageDTO>>();
-                stagesItems = stages.Data.Collection.Select(x => new SelectListItem()
+                stagesItems = stages.Data.Collection.Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),
                     Text = x.ToString()

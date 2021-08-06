@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using SODP.Shared.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Designers.ViewModels
 {
-    public class LicensesVM
+    public class BranchesVM
     {
-        public int DesignerId { get; set; }
-        
-        public IList<LicenseWithBranchesDTO> Licenses { get; set; }
+        public int LicenseId { get; set; }
 
+        public int BranchId { get; set; }
+
+        public IEnumerable<SelectListItem> Branches { get; set; }
     }
 }

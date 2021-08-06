@@ -9,10 +9,22 @@
         @foreach (var lic in Model.Licenses)
         {
             <div class="row">
-                <div class="col font-weight-bold">
+                <div onclick="EditLicense(@Model.DesignerId, @lic.Id)"
+                        class="col font-weight-bold clickable">
                     @lic.Contents
                 </div>
+                <div class=" col-1">
+                    <a id="addBranch-@lic.Id"
+                       onclick="AddBranch(@lic.Id)"
+                       class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
+                       data-toggle="tooltip"
+                       data-placement="top"
+                       title="Dodaj branżę">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
             </div>
+
             @foreach (var branch in lic.Branches)
             {
                 <div class="row">

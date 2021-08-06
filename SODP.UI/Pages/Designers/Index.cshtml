@@ -58,7 +58,7 @@
                             @item.Title @item.Firstname @item.Lastname
                         </div>
                         <div class="colgroup justify-content-end mr-2">
-                           
+
                             <a id="editLicense-@item.Id"
                                onclick="EditLicense(@item.Id)"
                                class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
@@ -69,19 +69,23 @@
                                 <i class="fas fa-plus"></i>
                             </a>
 
-                            <a onclick='EditDesigner(@item.Id)'
+                            <a id="editDesigner-@item.Id"
+                               onclick='EditDesigner(@item.Id)'
                                class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
                                data-toggle="tooltip"
                                data-placement="top"
-                               title="Edycja">
+                               title="Edycja"
+                               hidden>
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            <a onclick='Delete("/api/v0_01/designers/@item.Id")'
+                            <a id="deleteDesigner-@item.Id"
+                               onclick='Delete("/api/v0_01/designers/@item.Id")'
                                class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-danger"
                                data-toggle="tooltip"
                                data-placement="top"
-                               title="Usuń projektanta">
+                               title="Usuń projektanta"
+                               hidden>
                                 <i class="fas fa-trash-alt"></i>
                             </a>
                             <style>
@@ -128,7 +132,7 @@ else
         function EditDesigner(id) {
             $.ajax({
                 type: "Get",
-                url: '@Url.Page("Index","NewDesigner")&Id=' + id,
+                url: `@Url.Page("Index","NewDesigner")&Id=${id}`,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
                     $('#editdesigner').modal('show');
@@ -138,17 +142,30 @@ else
     </script>
 
     <script>
-    function EditLicense(id) {
-        console.log("Edit license");
+    function EditLicense(designerId, licenseId) {
+        console.log(`Designer: ${designerId}`);
         $.ajax({
             type: "Get",
-            url: '@Url.Page("Index","NewLicense")&Id=' + id,
+            url: `@Url.Page("Index","NewLicense")&designerId=${designerId}&id=${licenseId}`,
             success: function (data) {
                 $('#modal-placeholder').html(data);
-                $('#editlicense').modal('show');
+                $('#editLicense').modal('show');
             }
         })
     }
+    </script>
+
+    <script>
+        function AddBranch(licenseId) {
+            console.log(`AddBranch to license: ${licenseId} `);
+        $.ajax({
+            type: "Get",
+            url: `@Url.Page("Index","SelectBranch")&id=${licenseId}`,
+            success: function (data) {
+                $('#modal-placeholder').html(data);
+                $('#selectBranch').modal('show');
+            }
+        })        }
     </script>
 
     <script>
@@ -174,13 +191,23 @@ else
     </script>
 
     <script>
+        function collapseChange(id) {
+            console.log(`collapse ${id}`);
+        }
+    </script>
+
+    <script>
         function accordionCollapse(id) {
             if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
                 document.getElementById(`editLicense-${id}`).hidden = false;
+                document.getElementById(`editDesigner-${id}`).hidden = false;
+                document.getElementById(`deleteDesigner-${id}`).hidden = false;
                 $(`#license-${id}`).load(`/Designers/index?handler=PartialLicenses&id=${id}`);
             }
             else {
                 document.getElementById(`editLicense-${id}`).hidden = true;
+                document.getElementById(`editDesigner-${id}`).hidden = true;
+                document.getElementById(`deleteDesigner-${id}`).hidden = true;
             }
         }
     </script>

@@ -225,5 +225,32 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse> AddLicenceAsync(int id, LicenseDTO newLicense)
+        {
+            var serviceResponse = new ServiceResponse<LicenseDTO>();
+
+            try
+            {
+                var license = await _context.Licenses.FirstOrDefaultAsync(x => x.Contents.Equals(newLicense.Contents));
+                if(license != null)
+                {
+                    serviceResponse.SetError("Licence exist", 409);
+                    return serviceResponse;
+                }
+
+                var licence = _mapper.Map<License>(newLicense);
+                licence.Designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == licence.DesignerId);
+                var entity = await _context.AddAsync(licence);
+                await _context.SaveChangesAsync();
+                serviceResponse.SetData(_mapper.Map<LicenseDTO>(entity.Entity));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
     }
 }
