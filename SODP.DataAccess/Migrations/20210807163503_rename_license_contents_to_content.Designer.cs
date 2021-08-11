@@ -9,8 +9,8 @@ using SODP.DataAccess;
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    [Migration("20210811210848_CreateInit")]
-    partial class CreateInit
+    [Migration("20210807163503_rename_license_contents_to_content")]
+    partial class rename_license_contents_to_content
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -159,22 +159,23 @@ namespace SODP.DataAccess.Migrations
 
             modelBuilder.Entity("SODP.Model.BranchLicense", b =>
                 {
-                    b.Property<int>("BranchId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("LicenseId")
+                    b.Property<int>("BranchId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("LicenseId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("BranchId", "LicenseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BranchId")
                         .HasName("IX_Branch");
@@ -283,25 +284,11 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(250)")
-                        .HasDefaultValue("");
-
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
-
-                    b.Property<string>("Investment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("Investor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(250)");
@@ -320,12 +307,6 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(250)")
-                        .HasDefaultValue("");
-
-                    b.Property<string>("TitleStudy")
                         .IsRequired()
                         .HasColumnType("nvarchar(250)");
 
@@ -488,13 +469,11 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Firstname")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(256)")
                         .HasDefaultValue("");
 
                     b.Property<string>("Lastname")
-                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(256)")
                         .HasDefaultValue("");
@@ -665,7 +644,6 @@ namespace SODP.DataAccess.Migrations
                     b.HasOne("SODP.Model.Project", "Project")
                         .WithMany("Branches")
                         .HasForeignKey("ProjectId")
-                        .HasConstraintName("FK_Project")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

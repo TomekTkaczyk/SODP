@@ -15,7 +15,7 @@ namespace SODP.Model
 
         public override string ToString()
         {
-            return Firstname is null ? "" : Firstname.ToString().Trim() + " " + Lastname is null ? "" : Lastname.ToString().Trim();
+            return Firstname.ToString().Trim() + " " + Lastname.ToString().Trim();
         }
     }
 }

@@ -2,19 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SODP.DataAccess;
 
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    partial class SODPDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210321211553_CreateInit")]
+    partial class CreateInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.15")
+                .HasAnnotation("ProductVersion", "3.1.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -122,65 +124,17 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<bool>("ActiveStatus")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(true);
-
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("ModifyTimeStamp")
-                        .HasColumnType("datetime(6)");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Sign")
                         .IsRequired()
                         .HasColumnType("varchar(10)");
 
-                    b.Property<string>("Symbol")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(2)")
-                        .HasDefaultValue("00");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(50)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("Symbol")
-                        .IsUnique()
-                        .HasName("IX_SYMBOL");
-
                     b.ToTable("Branches");
-                });
-
-            modelBuilder.Entity("SODP.Model.BranchLicense", b =>
-                {
-                    b.Property<int>("BranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LicenseId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModifyTimeStamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("BranchId", "LicenseId");
-
-                    b.HasIndex("BranchId")
-                        .HasName("IX_Branch");
-
-                    b.HasIndex("LicenseId")
-                        .HasName("IX_License");
-
-                    b.ToTable("BranchLicense");
                 });
 
             modelBuilder.Entity("SODP.Model.Certificate", b =>
@@ -189,16 +143,10 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<int>("DesignerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Number")
@@ -222,12 +170,6 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<bool>("ActiveStatus")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
@@ -235,9 +177,6 @@ namespace SODP.DataAccess.Migrations
                     b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("ModifyTimeStamp")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -254,20 +193,20 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Content")
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Contents")
                         .IsRequired()
                         .HasColumnType("nvarchar(250)");
-
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("DesignerId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifyTimeStamp")
-                        .HasColumnType("datetime(6)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("BranchId")
+                        .HasName("IX_Branch");
 
                     b.HasIndex("DesignerId")
                         .HasName("IX_Designer");
@@ -281,29 +220,11 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Investment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("Investor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)");
-
                     b.Property<string>("Location")
                         .HasColumnType("nvarchar(250)");
-
-                    b.Property<DateTime>("ModifyTimeStamp")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Number")
                         .IsRequired()
@@ -316,10 +237,6 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("TitleStudy")
                         .IsRequired()
                         .HasColumnType("nvarchar(250)");
 
@@ -409,15 +326,6 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<bool>("ActiveStatus")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("ModifyTimeStamp")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Sign")
                         .IsRequired()
                         .HasColumnType("varchar(10)");
@@ -436,12 +344,6 @@ namespace SODP.DataAccess.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("ModifyTimeStamp")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Refresh")
                         .HasColumnType("nvarchar(256)");
@@ -482,14 +384,10 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Firstname")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(256)")
-                        .HasDefaultValue("");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Lastname")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(256)")
-                        .HasDefaultValue("");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -596,21 +494,6 @@ namespace SODP.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SODP.Model.BranchLicense", b =>
-                {
-                    b.HasOne("SODP.Model.Branch", "Branch")
-                        .WithMany("Licenses")
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SODP.Model.License", "License")
-                        .WithMany("Branches")
-                        .HasForeignKey("LicenseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("SODP.Model.Certificate", b =>
                 {
                     b.HasOne("SODP.Model.Designer", "Designer")
@@ -622,8 +505,14 @@ namespace SODP.DataAccess.Migrations
 
             modelBuilder.Entity("SODP.Model.License", b =>
                 {
+                    b.HasOne("SODP.Model.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SODP.Model.Designer", "Designer")
-                        .WithMany("Licenses")
+                        .WithMany()
                         .HasForeignKey("DesignerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -657,7 +546,6 @@ namespace SODP.DataAccess.Migrations
                     b.HasOne("SODP.Model.Project", "Project")
                         .WithMany("Branches")
                         .HasForeignKey("ProjectId")
-                        .HasConstraintName("FK_Project")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -16,31 +16,25 @@ namespace SODP.DataAccess.Configurations
 
             builder.Property(p => p.Title)
                 .HasColumnType("nvarchar(250)")
-                .HasDefaultValue("")
                 .IsRequired();
 
             builder.Property(p => p.Description)
-                .HasDefaultValue("")
                 .HasColumnType("longtext");
 
             builder.Property(p => p.TitleStudy)
                 .HasColumnType("nvarchar(250)")
-                .HasDefaultValue("")
                 .IsRequired();
 
             builder.Property(p => p.Investment)
                 .HasColumnType("nvarchar(250)")
-                .HasDefaultValue("")
                 .IsRequired();
 
             builder.Property(p => p.Address)
                 .HasColumnType("nvarchar(250)")
-                .HasDefaultValue("")
                 .IsRequired();
 
             builder.Property(p => p.Investor)
                 .HasColumnType("nvarchar(250)")
-                .HasDefaultValue("")
                 .IsRequired();
 
             builder.Property(p => p.Location)
