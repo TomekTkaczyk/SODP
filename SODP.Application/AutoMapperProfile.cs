@@ -67,7 +67,7 @@ namespace SODP.Domain
 
             CreateMap<License, LicenseWithBranchesDTO>()
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.Designer))
-                .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
+                .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches))
                 .PreserveReferences();
 
             CreateMap<License, LicenseDTO>()

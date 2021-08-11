@@ -16,10 +16,32 @@ namespace SODP.DataAccess.Configurations
 
             builder.Property(p => p.Title)
                 .HasColumnType("nvarchar(250)")
+                .HasDefaultValue("")
                 .IsRequired();
 
             builder.Property(p => p.Description)
+                .HasDefaultValue("")
                 .HasColumnType("longtext");
+
+            builder.Property(p => p.TitleStudy)
+                .HasColumnType("nvarchar(250)")
+                .HasDefaultValue("")
+                .IsRequired();
+
+            builder.Property(p => p.Investment)
+                .HasColumnType("nvarchar(250)")
+                .HasDefaultValue("")
+                .IsRequired();
+
+            builder.Property(p => p.Address)
+                .HasColumnType("nvarchar(250)")
+                .HasDefaultValue("")
+                .IsRequired();
+
+            builder.Property(p => p.Investor)
+                .HasColumnType("nvarchar(250)")
+                .HasDefaultValue("")
+                .IsRequired();
 
             builder.Property(p => p.Location)
                 .HasColumnType("nvarchar(250)");
@@ -32,6 +54,11 @@ namespace SODP.DataAccess.Configurations
                 .HasName("IX_Stage");
 
             builder.ToTable("Projects");
+
+            builder.HasMany(x => x.Branches)
+                .WithOne(y => y.Project)
+                .HasForeignKey(z => z.ProjectId)
+                .HasConstraintName("FK_Project");
 
             //builder.HasOne(x => x.stage)
             //    .withmany()

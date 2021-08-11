@@ -13,13 +13,13 @@
             <div class="modal-body">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div id="error-placeholder"></div>
-                <form asp-page-handler="NewLicense">
+                <form asp-page-handler="EditLicense" id="form">
                     <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <input asp-for="Id" type="hidden" value="@Model.Id" />
                     <input asp-for="DesignerId" type="hidden" value="@Model.DesignerId" />
-                    <div class="form-group">
-                        <input class="form-control" asp-for="Contents" value="@Model.Contents" placeholder="Numer" />
-                        <span class="text-danger" asp-validation-for="Contents"></span>
+                   <div class="form-group">
+                        <input class="form-control" asp-for="Content" value="@Model.Content" placeholder="Numer" />
+                        <span class="text-danger" asp-validation-for="Content"></span>
                     </div>
                 </form>
             </div>

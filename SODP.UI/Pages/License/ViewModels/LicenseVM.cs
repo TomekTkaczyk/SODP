@@ -1,25 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using SODP.Shared.DTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Http;
 
-namespace SODP.UI.Pages.Designers.ViewModels
+namespace SODP.UI.Pages.License.ViewModels
 {
-    public class NewLicenseVM
+    public class LicenseVM
     {
+        public int Id { get; set; }
+
         public int DesignerId { get; set; }
-    
+
+        public string Designer { get; set; }
+
         public string Content { get; set; }
 
         public SelectListItem Branch { get; set; }
 
-        public int BranchId { get; set; } 
+        public int BranchId { get; set; }
 
         public List<SelectListItem> Branches { get; set; }
 
         public List<SelectListItem> ApplyBranches { get; set; }
 
+        internal StringContent ToHttpContent()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

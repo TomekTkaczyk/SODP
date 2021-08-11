@@ -103,6 +103,8 @@ namespace SODP.UI
 
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
+
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)

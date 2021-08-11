@@ -211,8 +211,8 @@ namespace SODP.Application.Services
             try
             {
                 var licenses = await _context.Licenses
+                    .Include(x => x.Designer)
                     .Include(x => x.Branches)
-                    .ThenInclude(y => y.Branch)
                     .Where(z => z.DesignerId == id)
                     .ToListAsync();
 
@@ -232,7 +232,7 @@ namespace SODP.Application.Services
 
             try
             {
-                var license = await _context.Licenses.FirstOrDefaultAsync(x => x.Contents.Equals(newLicense.Contents));
+                var license = await _context.Licenses.FirstOrDefaultAsync(x => x.Content.Equals(newLicense.Content));
                 if(license != null)
                 {
                     serviceResponse.SetError("Licence exist", 409);

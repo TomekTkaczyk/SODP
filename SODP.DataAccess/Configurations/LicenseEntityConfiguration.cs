@@ -8,7 +8,7 @@ namespace SODP.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<License> builder)
         {
-            builder.Property(x => x.Contents)
+            builder.Property(x => x.Content)
                 .HasColumnType("nvarchar(250)")
                 .IsRequired();
 

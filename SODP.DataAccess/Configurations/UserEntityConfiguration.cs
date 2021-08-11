@@ -34,10 +34,12 @@ namespace SODP.DataAccess.Configurations
 
             builder.Property(u => u.Firstname)
                 .HasDefaultValue("")
+                .IsRequired()
                 .HasColumnType("nvarchar(256)");
 
             builder.Property(u => u.Lastname)
                .HasDefaultValue("")
+               .IsRequired()
                .HasColumnType("nvarchar(256)");
 
             builder.Property(u => u.PhoneNumber)

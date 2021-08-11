@@ -27,6 +27,15 @@ namespace SODP.Application.Services
             _context = context;
         }
 
+        public ServiceResponse Test()
+        {
+            var result = new ServiceResponse();
+
+            // var project = await _context.ProjectBranches.ToListAsync();
+
+            return result;
+        }
+
         public async Task<ServicePageResponse<BranchDTO>> GetAllAsync()
         {
             return await GetAllAsync(1, 0, null);
@@ -199,12 +208,12 @@ namespace SODP.Application.Services
                     return serviceResponse;
                 }
 
-                var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.BranchId == id);
-                if(projectBranch != null)
-                {
-                    serviceResponse.SetError($"Błąd: Branża {projectBranch.Branch.Sign} posiada powiązane projekty.", 400);
-                    return serviceResponse;
-                }
+                //var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.BranchId == id);
+                //if(projectBranch != null)
+                //{
+                //    serviceResponse.SetError($"Błąd: Branża {projectBranch.Branch.Sign} posiada powiązane projekty.", 400);
+                //    return serviceResponse;
+                //}
 
                 _context.Entry(branch).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();

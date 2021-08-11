@@ -135,7 +135,6 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-
         public async Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO newProject)
         {
             var serviceResponse = new ServiceResponse<ProjectDTO>();
@@ -208,6 +207,10 @@ namespace SODP.Application.Services
 
                 oldProject.Title = project.Title;
                 oldProject.Description = project.Description;
+                oldProject.TitleStudy = project.TitleStudy;
+                oldProject.Investment = project.Investment;
+                oldProject.Address = project.Address;
+                oldProject.Investor = project.Investor;
                 oldProject.Location = project.ToString();
                 _context.Projects.Update(oldProject);
                 await _context.SaveChangesAsync();
@@ -323,17 +326,17 @@ namespace SODP.Application.Services
                     serviceResponse.SetError($"Błąd: Branża Id:{branchId} nie odnaleziona.", 404);
                     return serviceResponse;
                 }
-                var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == projectId && x.BranchId == branchId);
-                if (projectBranch == null)
-                {
-                    projectBranch = new ProjectBranch
-                    {
-                        ProjectId = projectId,
-                        BranchId = branchId
-                    };
-                    var result = await _context.ProjectBranches.AddAsync(projectBranch);
-                    await _context.SaveChangesAsync();
-                }
+                //var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == projectId && x.BranchId == branchId);
+                //if (projectBranch == null)
+                //{
+                //    projectBranch = new ProjectBranch
+                //    {
+                //        ProjectId = projectId,
+                //        BranchId = branchId
+                //    };
+                //    var result = await _context.ProjectBranches.AddAsync(projectBranch);
+                //    await _context.SaveChangesAsync();
+                //}
             }
             catch (Exception ex)
             {

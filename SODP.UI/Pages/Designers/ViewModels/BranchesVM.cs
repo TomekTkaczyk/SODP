@@ -12,6 +12,6 @@ namespace SODP.UI.Pages.Designers.ViewModels
 
         public int BranchId { get; set; }
 
-        public IEnumerable<SelectListItem> Branches { get; set; }
+        public List<SelectListItem> Branches { get; set; }
     }
 }

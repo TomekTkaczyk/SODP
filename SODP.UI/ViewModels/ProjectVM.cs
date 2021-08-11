@@ -31,6 +31,16 @@ namespace SODP.UI.ViewModels
         public ProjectStatus Status { get; set; }
 
         public string Stage { get { return $"({StageSign}) {StageTitle}"; } }
+        
+        public string  Investment { get; set; }
+
+        public string TitleStudy { get; set; }
+
+        public string Address { get; set; }
+
+        public string Investor { get; set; }
+
+        public List<BranchVM> Branches { get; set; }
 
     }
 }

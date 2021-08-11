@@ -11,7 +11,7 @@ namespace SODP.UI.Pages.Designers.ViewModels
     {
         public int DesignerId { get; set; }
         
-        public IList<LicenseWithBranchesDTO> Licenses { get; set; }
+        public List<LicenseVM> Licenses { get; set; }
 
     }
 }

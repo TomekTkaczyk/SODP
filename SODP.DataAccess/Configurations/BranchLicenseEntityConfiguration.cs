@@ -21,6 +21,16 @@ namespace SODP.DataAccess.Configurations
                 .HasName("IX_License");
 
             builder.ToTable("BranchLicense");
+
+            builder.HasKey(x => new { x.BranchId, x.LicenseId });
+
+            builder.HasOne(x => x.License)
+                .WithMany(y => y.Branches)
+                .HasForeignKey(x => x.LicenseId);
+
+            builder.HasOne(x => x.Branch)
+                .WithMany(y => y.Licenses)
+                .HasForeignKey(x => x.BranchId);
         }
     }
 }

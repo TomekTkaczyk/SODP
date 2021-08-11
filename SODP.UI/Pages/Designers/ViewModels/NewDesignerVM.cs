@@ -17,5 +17,7 @@ namespace SODP.UI.Pages.Designers.ViewModels
 
         [Required(ErrorMessage = "Nazwisko jest wymagane")]
         public string Lastname { get; set; }
+
+        public bool ActiveStatus { get; set; }
     }
 }

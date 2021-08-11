@@ -74,7 +74,7 @@ namespace SODP.UI.Pages.ActiveProjects
             if (ModelState.IsValid)
             {
                 var apiResponse = await _apiProvider.PostAsync("/active-projects", project.ToHttpContent());
-                    
+
                 var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
                 if (apiResponse.IsSuccessStatusCode && response.Success)

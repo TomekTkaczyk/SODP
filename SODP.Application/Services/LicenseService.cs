@@ -46,7 +46,7 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse<LicenseDTO>();
             var license = await _context.Licenses
                 .Include(x => x.Designer)
-                .FirstOrDefaultAsync(x => x.Contents.Equals(newLicense.Contents.Trim()));
+                .FirstOrDefaultAsync(x => x.Content.Equals(newLicense.Content.Trim()));
             if(license != null)
             {
                 serviceResponse.SetError("License not exist", 409);
@@ -70,8 +70,22 @@ namespace SODP.Application.Services
                 var license = await _context.Licenses.FirstOrDefaultAsync(x => x.Id == id);
                 if(license == null)
                 {
-                    serviceResponse.SetError($"Błąd: Uprawnieania Id:{id} nie odnalezione.", 401);
+                    serviceResponse.SetError($"Błąd: Uprawnienia Id:{id} nie odnalezione.", 401);
                     return serviceResponse;
+                }
+
+                var projectsWithLicense = await _context.Projects
+                    .Include(x => x.Stage)
+                    //.Include(x => x.Branches)
+                    //.ThenInclude(y => y.DesignerLicense)
+                    //.Include(x => x.Branches)
+                    //.ThenInclude(y => y.CheckingLicense)
+                    .ToListAsync();
+                    //.FirstOrDefaultAsync(x => x.DesignerLicenseId == id || x.CheckingLicenseId == id);
+                if(projectsWithLicense != null)
+                {
+                    //serviceResponse.SetError($"Błąd: Uprawnienia użyte w projekcie {projectsWithLicense.Project}");
+                    //return serviceResponse;
                 }
 
                 _context.Entry(license).State = EntityState.Deleted;
@@ -120,7 +134,6 @@ namespace SODP.Application.Services
                 var license = await _context.Licenses
                     .Include(x => x.Designer)
                     .Include(x => x.Branches)
-                    .ThenInclude(y => y.Branch)
                     .FirstOrDefaultAsync(x => x.Id == id);
                 serviceResponse.SetData(_mapper.Map<LicenseWithBranchesDTO>(license));
             }
@@ -145,7 +158,7 @@ namespace SODP.Application.Services
                     return serviceResponse;
                 }
 
-                oldLicense.Contents = updateLicense.Contents;
+                oldLicense.Content = updateLicense.Content;
                 _context.Licenses.Update(oldLicense);
                 await _context.SaveChangesAsync();
             }
@@ -170,13 +183,13 @@ namespace SODP.Application.Services
                     return result;
                 }
 
-                if (license.Branches.FirstOrDefault(x => x.BranchId == branchId) != null)
+                if (license.Branches.FirstOrDefault(x => x.Id == branchId) != null)
                 {
                     return result;
                 }
 
                 license.Branches.Add(new BranchLicense
-                {
+                {                              
                     BranchId = branchId,
                     LicenseId = id
                 });

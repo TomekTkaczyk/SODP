@@ -36,7 +36,11 @@ namespace SODP.UI.Mappers
                     Title = project.StageTitle
                 },
                 Title = project.Title,
-                Description = project.Description
+                Description = project.Description,
+                Investment = project.Investment,
+                TitleStudy = project.TitleStudy,
+                Address = project.Address,
+                Investor = project.Investor                
             });
 
             return new StringContent(jsonBody, Encoding.UTF8, "application/json" );

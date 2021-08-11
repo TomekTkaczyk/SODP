@@ -1,4 +1,5 @@
-﻿using SODP.Shared.DTO;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SODP.Shared.DTO;
 using SODP.UI.Pages.Designers.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace SODP.UI.Extensions
             var licenseDTO = new LicenseDTO
             {
                 Id = license.Id,
-                Contents = license.Contents
+                Content = license.Content
             };
             licenseDTO.Designer = new DesignerDTO
             {
@@ -31,14 +32,17 @@ namespace SODP.UI.Extensions
                               );
         }
 
-        public static LicenseVM ToViewModel(this LicenseDTO license)
+        public static LicenseVM ToViewModel(this LicenseWithBranchesDTO licenseDTO)
         {
-            return new LicenseVM
+            var license = new LicenseVM
             {
-                Id = license.Id,
-                Contents = license.Contents,
-                DesignerId = license.Designer.Id
+                DesignerId = licenseDTO.Designer.Id,
+                Id = licenseDTO.Id,
+                Content = licenseDTO.Content,
+                ApplyBranches = licenseDTO.Branches.Select(x => new SelectListItem {Value=x.Id.ToString(), Text=x.ToString()}).ToList()
             };
+
+            return license;
         }
     }
 }

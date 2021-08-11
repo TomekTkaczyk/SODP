@@ -41,15 +41,11 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.CreateAsync(license));
         }
 
-        [HttpPost("{id}/branch/{branchId}")]
-        public async Task<IActionResult> AddBranchAsync(int id, int branchId, [FromBody] BranchDTO branch)
+        [HttpPut("{id}/branches/{branchId}")]
+        public async Task<IActionResult> AddBranchAsync(int id, int branchId)
         {
-            if (branchId != branch.Id)
-            {
-                return BadRequest();
-            }
 
-            return Ok(await _service.AddBranch(id, branch.Id));
+            return Ok(await _service.AddBranch(id, branchId));
         }
 
         [HttpPut("{id}")]
@@ -58,7 +54,7 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.UpdateAsync(license));
         }
 
-        [HttpDelete("{id}/branch/{branchId}")]
+        [HttpDelete("{id}/branches/{branchId}")]
         public async Task<IActionResult> RemoveBranchAsync(int id, int branchId)
         {
             return Ok(await _service.RemoveBranchAsync(id, branchId));

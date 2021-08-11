@@ -10,5 +10,6 @@ namespace SODP.Domain.Services
         Task<ServiceResponse<BranchDTO>> GetAsync(string sign);
         Task<ServiceResponse> SetActiveStatusAsync(int id, bool status);
         Task<ServicePageResponse<LicenseDTO>> GetLicensesAsync(int id);
+        ServiceResponse Test();
     }
 }

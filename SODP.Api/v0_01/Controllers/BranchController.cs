@@ -88,5 +88,11 @@ namespace SODP.Api.v0_01.Controllers
         {
             return Ok(await _service.GetLicensesAsync(id));
         }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return Ok(_service.Test());
+        }
     }
 }

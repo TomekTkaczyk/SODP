@@ -7,6 +7,8 @@
 
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
 
 @inject SignInManager<User> SignInManager
 
@@ -25,11 +27,10 @@
     {
         <div id="modal-placeholder"></div>
         <div class="col-3 justify-content-end">
-            <button type="button"
-                    class="btn btn-info form-control text-white float-right"
-                    title="Nowy projektant"
-                    data-toggle="ajax-modal"
-                    data-url="@Url.Page("Index","NewDesigner")">
+            <button class="btn btn-info form-control text-white float-right"
+                    type="button"
+                    onclick="EditDesigner()"
+                    title="Nowy projektant">
                 <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
             </button>
         </div>
@@ -57,6 +58,7 @@
                              aria-controls="collapse-@item.Id">
                             @item.Title @item.Firstname @item.Lastname
                         </div>
+
                         <div class="colgroup justify-content-end mr-2">
 
                             <a id="editLicense-@item.Id"
@@ -128,45 +130,112 @@ else
     <script src="~/js/initModalPlaceholder.js"></script>
     <script src="~/js/designersList.js"></script>
 
-    <script>
-        function EditDesigner(id) {
+    @*<script>
+        function AddBranch(license) {
+            console.log("Klik na data-save modal");
+            var form = $(this).parents('.modal').find('form');
+            var actionUrl = form.attr('action');
+            var dataToSend = form.serialize();
+            $.post(`@Url.Page("Index", "AddBranch")`, dataToSend).done(function (data) {
+                var newBody = $('.modal-body', data);
+                placeholderElement.find('.modal-body').replaceWith(newBody);
+                var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
+                if (isValid) {
+                    placeholderElement.find('.modal').modal('hide');
+                    window.location = returnUrl;
+                }
+            });
             $.ajax({
-                type: "Get",
-                url: `@Url.Page("Index","NewDesigner")&Id=${id}`,
+                type: "post",
+                url: actionUrl,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: dataToSend,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
                 success: function (data) {
-                    $('#modal-placeholder').html(data);
-                    $('#editdesigner').modal('show');
+                    console.log("success");
+                    var newBody = $('.modal-body', data);
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+                    var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
+                    if (isValid) {
+                        placeholderElement.find('.modal').modal('hide');
+                        window.location = returnUrl;
+                    }
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data.responseText);
+                    var newBody = $('.modal-body', data.responseText);
+                    var placeholderElement = $('#modal-placeholder');
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+                    placeholderElement.find('.modal').modal('hide');
+                    $('#modal-placeholder').html(data.responseText);
+                    $('#editLicense').modal('show');
+                }
+            })
+
+            var placeholderElement = $('#modal-placeholder');
+            console.log("Klik na plus");
+            event.preventDefault();
+            var form = $(this).parents('.modal').find('form');
+            var actionUrl = form.attr('action');
+            var dataToSend = form.serialize();
+            var url = `@Url.Page("Index", "AddBranch")`;
+            $.ajax({
+                type: "post",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: dataToSend,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                success: function (data) {
+                    console.log("success");
+                    console.log(data.responseText);
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data.responseText);
+                    var newBody = $('.modal-body', data.responseText);
+                    var placeholderElement = $('#modal-placeholder');
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+                    placeholderElement.find('.modal').modal('hide');
+                    $('#modal-placeholder').html(data.responseText);
+                    $('#editLicense').modal('show');
                 }
             })
         }
     </script>
 
     <script>
-    function EditLicense(designerId, licenseId) {
-        console.log(`Designer: ${designerId}`);
-        $.ajax({
-            type: "Get",
-            url: `@Url.Page("Index","NewLicense")&designerId=${designerId}&id=${licenseId}`,
-            success: function (data) {
-                $('#modal-placeholder').html(data);
-                $('#editLicense').modal('show');
-            }
-        })
-    }
-    </script>
+        function RemoveBranch(licenseId, branchId) {
+            console.log(`Remove branch: ${branchId} from license: ${licenseId} `);
+            $.ajax({
+                type: "Post",
+                url: `@Url.Page("Index", "RemoveBranch")&id=${licenseId}&branchId=${branchId}`,
+                success: function (data) {
+                    console.log(data);
+                    var placeholderElement = $('#modal-placeholder');
+                    var newBody = $('.modal-body', data);
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+                    var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
+                    if (isValid) {
+                        placeholderElement.find('.modal').modal('hide');
+                        window.location = `\Designers`;
+                    }
 
-    <script>
-        function AddBranch(licenseId) {
-            console.log(`AddBranch to license: ${licenseId} `);
-        $.ajax({
-            type: "Get",
-            url: `@Url.Page("Index","SelectBranch")&id=${licenseId}`,
-            success: function (data) {
-                $('#modal-placeholder').html(data);
-                $('#selectBranch').modal('show');
-            }
-        })        }
-    </script>
+                    $('#modal-placeholder').html(data);
+                    $('#editLicense').modal('show');
+
+                }
+            })
+        }
+    </script>*@
 
     <script>
         function handleChange(id, checked) {
@@ -181,6 +250,8 @@ else
                 dataType: 'json',
                 data: JSON.stringify(c),
                 success: function (response) {
+                    console.log("PUT zrobiony");
+                    console.log(response);
                 },
                 error: function (jqXHR, exception) {
                     console.log(jqXHR);
@@ -202,7 +273,7 @@ else
                 document.getElementById(`editLicense-${id}`).hidden = false;
                 document.getElementById(`editDesigner-${id}`).hidden = false;
                 document.getElementById(`deleteDesigner-${id}`).hidden = false;
-                $(`#license-${id}`).load(`/Designers/index?handler=PartialLicenses&id=${id}`);
+                $(`#license-${id}`).load(`/Designers/index?handler=LicensesPartial&id=${id}`);
             }
             else {
                 document.getElementById(`editLicense-${id}`).hidden = true;

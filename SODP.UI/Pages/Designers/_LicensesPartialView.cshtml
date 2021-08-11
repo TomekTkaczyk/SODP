@@ -3,34 +3,38 @@
 @model LicensesVM
 
 <div>
-    @if (Model.Licenses.Count > 0)
+    @if (Model.Licenses.Count() > 0)
     {
 
         @foreach (var lic in Model.Licenses)
         {
             <div class="row">
-                <div onclick="EditLicense(@Model.DesignerId, @lic.Id)"
-                        class="col font-weight-bold clickable">
-                    @lic.Contents
-                </div>
+
                 <div class=" col-1">
-                    <a id="addBranch-@lic.Id"
-                       onclick="AddBranch(@lic.Id)"
-                       class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
+                    <a onclick='Delete("/api/v0_01/licenses/@lic.Id")'
+                       class="btn btn-lg m-0 p-0 text-danger clickable"
                        data-toggle="tooltip"
                        data-placement="top"
-                       title="Dodaj branżę">
-                        <i class="fas fa-plus"></i>
+                       title="Usuń uprawnienia">
+                        <i class="fas fa-trash-alt"></i>
                     </a>
                 </div>
+                <a href="/License/Edit?id=@lic.Id"
+                   class="cell clickable"
+                   data-toggle="tooltip"
+                   title="Edycja"
+                   data-placement="top">
+                    @lic.Content
+                </a>
+
             </div>
 
-            @foreach (var branch in lic.Branches)
+            @foreach (var branch in lic.ApplyBranches)
             {
                 <div class="row">
                     <div class="col-1"></div>
                     <div class="col">
-                        (@branch.Sign) @branch.Title
+                        @branch.Text
                     </div>
                 </div>
             }

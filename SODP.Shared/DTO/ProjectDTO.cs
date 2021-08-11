@@ -16,6 +16,14 @@ namespace SODP.Shared.DTO
 
         public string Description { get; set; }
 
+        public string TitleStudy { get; set; }
+
+        public string Investment { get; set; }
+
+        public string Address { get; set; }
+
+        public string Investor { get; set; }
+
         public StageDTO Stage { get; set; }
 
         public ProjectStatus Status { get; set; }
@@ -26,5 +34,6 @@ namespace SODP.Shared.DTO
         {
             return $"{Number.Trim()}{Stage.Sign} {Title.Trim()}";
         }
+
     }
 }

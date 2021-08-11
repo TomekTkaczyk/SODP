@@ -1,0 +1,67 @@
+﻿@using SODP.UI.Pages.Designers.ViewModels
+@model LicenseVM
+<!-- Modal -->
+<div class="modal fade" id="editLicense" tabindex="-1" role="dialog" aria-labelledby="editLicenseLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="text-info" id="editLicenseLabel">@(Model.Id==0?"Nowe uprawnienie":"Edycja uprawnienia")</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <div id="error-placeholder"></div>
+                <form asp-page-handler="EditLicense">
+                    <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <input asp-for="Id" type="hidden" value="@Model.Id" />
+                    <input asp-for="DesignerId" type="hidden" value="@Model.DesignerId" />
+                    <input asp-for="Branches" type="hidden" value="@Model.Branches" />
+                    <input asp-for="ApplyBranches" type="hidden" value="@Model.ApplyBranches" />
+                    <div class="form-group">
+                        <input class="form-control" asp-for="Content" value="@Model.Content" placeholder="Numer" />
+                        <span class="text-danger" asp-validation-for="Content"></span>
+                    </div>
+                    @foreach (var item in Model.ApplyBranches)
+                    {
+                        <div class="row">
+                            <div class="col-2">
+                                <a onclick="RemoveBranch(@Model.Id, @Model.BranchId)"
+                                   class="btn btn-lg text-success"
+                                   data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="Usuń branżę">
+                                    <i class="fas fa-minus-circle"></i>
+                                </a>
+                            </div>
+                            <div class="col">
+                                <p>@item.Text</p>
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                @Html.DropDownListFor(model => model.Branches, @Model.Branches, "-- Branża --", new { @class = "form-control" })
+                                <span asp-validation-for="@Model.BranchId" style="font-size:14px" class="text-danger"></span>
+                            </div>
+                            <div class="col-2" border-color="red">
+                                <a onclick="AddBranch(@Model.Id, @Model.BranchId)"
+                                   class="btn btn-lg text-success"
+                                   data-toggle="tooltip"
+                                   data-placement="top"
+                                   title="Dodaj branżę">
+                                    <i class="fas fa-plus-circle"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <partial name="_SubmitAndBackButtonModalPartial" />
+            </div>
+        </div>
+    </div>
+</div>
