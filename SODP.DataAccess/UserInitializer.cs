@@ -25,6 +25,8 @@ namespace SODP.DataAccess
             CreateUserIfNotExist(_userManager, "Administrator", "Administrator").Wait();
             AddToRoleIfNotExist(_userManager, "Administrator", "Administrator").Wait();
 
+            CreateUserIfNotExist(_userManager, "PManager", "PManager").Wait();
+            AddToRoleIfNotExist(_userManager, "PManager", "ProjectManager").Wait();
         }
 
         static async Task<bool> CreateRoleIfNotExist(RoleManager<Role> roleManager, string role)
@@ -46,7 +48,13 @@ namespace SODP.DataAccess
 
             if (user == null)
             {
-                var result = await userManager.CreateAsync(new User(userName), password);
+                user = new User(userName) 
+                {
+                    Firstname = "",
+                    Lastname = ""
+                };
+                var result = await userManager.CreateAsync(user, password);
+
                 return result.Succeeded;
             }
 

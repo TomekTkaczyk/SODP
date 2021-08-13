@@ -1,8 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SODP.Shared.DTO;
-using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Mappers;
@@ -17,10 +17,12 @@ namespace SODP.UI.Pages.ActiveProjects
     public class EditModel : SODPPageModel
     {
         private readonly IWebAPIProvider _apiProvider;
+        private readonly IMapper _mapper;
 
-        public EditModel(IWebAPIProvider apiProvider)
+        public EditModel(IWebAPIProvider apiProvider, IMapper mapper)
         {
             _apiProvider = apiProvider;
+            _mapper = mapper;
         }
 
         public ProjectVM Project { get; set; }
@@ -34,17 +36,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
             if (apiResponse.IsSuccessStatusCode && response.Success)
             {
-                Project = new ProjectVM
-                {
-                  Id = response.Data.Id,
-                  Number = response.Data.Number,
-                  StageId = response.Data.Stage.Id,
-                  StageSign = response.Data.Stage.Sign,
-                  StageTitle = response.Data.Stage.Title,
-                  Title = response.Data.Title,
-                  Description = response.Data.Description,
-                  Status = response.Data.Status
-                };
+                Project = _mapper.Map<ProjectVM>(response.Data);
             }
             else
             {
@@ -56,10 +48,6 @@ namespace SODP.UI.Pages.ActiveProjects
                 {
                     ModelState.AddModelError(error.Key, error.Value);
                 }
-                Project = new ProjectVM
-                {
-                    Status = ProjectStatus.Archived
-                };
             }
 
             return Page();
@@ -69,7 +57,7 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PutAsync($"/active-projects/{Project.Id}", project.ToHttpContent());
+                var apiResponse = await _apiProvider.PutAsync($"/active-projects/{project.Id}", project.ToHttpContent());
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     return RedirectToPage("Index");

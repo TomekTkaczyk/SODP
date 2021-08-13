@@ -40,11 +40,11 @@
                 <div class="col-12">
                     @if (Model.CurrentUser.Username == "Administrator" && role.Key == "Administrator")
                     {
-                        <input asp-for="AllRoles[role.Key]" type="checkbox" checked="@Model.CurrentUser.Roles.Contains(role.Key)" disabled="disabled" />
+                        <input asp-for="AllRoles[role.Key]" type="checkbox" onclick="return false;" checked="checked" readonly />
                     }
                     else if (Model.CurrentUser.Username == "PManager" && role.Key == "ProjectManager")
                     {
-                        <input asp-for="AllRoles[role.Key]" type="checkbox" checked="@Model.CurrentUser.Roles.Contains(role.Key)" disabled="disabled" />
+                        <input asp-for="AllRoles[role.Key]" type="checkbox" onclick="return false;" checked="checked" readonly />
                     }
                     else
                     {

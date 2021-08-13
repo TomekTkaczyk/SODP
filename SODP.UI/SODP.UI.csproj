@@ -45,7 +45,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\ActiveProjects\ViewModels\" />
     <Folder Include="Pages\ArchiveProjects\ViewModels\" />
   </ItemGroup>
 

@@ -12,7 +12,7 @@ namespace SODP.Shared.DTO
         public bool ActiveStatus { get; set; } = true;
         public override string ToString()
         {
-            return $"{Title.Trim()} {Firstname.Trim()} {Lastname.Trim()}";
+            return $"{(Title ?? string.Empty).Trim()} {(Firstname ?? string.Empty).Trim()} {(Lastname ?? string.Empty).Trim()}";
         }
     }
 }

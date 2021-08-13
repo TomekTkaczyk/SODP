@@ -134,6 +134,7 @@ namespace SODP.Application.Services
                 var license = await _context.Licenses
                     .Include(x => x.Designer)
                     .Include(x => x.Branches)
+                    .ThenInclude(x => x.Branch)
                     .FirstOrDefaultAsync(x => x.Id == id);
                 serviceResponse.SetData(_mapper.Map<LicenseWithBranchesDTO>(license));
             }

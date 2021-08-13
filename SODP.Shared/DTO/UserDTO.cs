@@ -12,7 +12,7 @@ namespace SODP.Shared.DTO
 
         public override string ToString()
         {
-            return Firstname.ToString().Trim() + " " + Lastname.ToString().Trim();
+            return Firstname is null ? "" : Firstname.ToString().Trim() + " " + Lastname is null ? "" : Lastname.ToString().Trim();
         }
     }
 }

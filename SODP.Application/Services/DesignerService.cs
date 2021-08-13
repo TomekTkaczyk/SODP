@@ -213,6 +213,7 @@ namespace SODP.Application.Services
                 var licenses = await _context.Licenses
                     .Include(x => x.Designer)
                     .Include(x => x.Branches)
+                    .ThenInclude(x => x.Branch)
                     .Where(z => z.DesignerId == id)
                     .ToListAsync();
 

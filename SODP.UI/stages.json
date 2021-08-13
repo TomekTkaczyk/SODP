@@ -57,7 +57,7 @@
   },
   {
     "Sign": "IO",
-    "Title": "INSTRUKCJA ODŒNIE¯ANIA"
+    "Title": "INSTRUKCJA ODÅšNIEÅ»ANIA"
   },
   {
     "Sign": "PP",
@@ -70,6 +70,14 @@
   {
     "Sign": "WZII",
     "Title": "WARUNKI ZABUDOWY"
+  },
+  {
+    "Sign": "IB",
+    "Title": "INWENTARYZACJA BUDOWLANA"
+  },
+  {
+    "Sign": "PO",
+    "Title": "PROJEKT ORGANIZACJI RUCHU"
   },
   {
     "Sign": "WZ",

@@ -30,6 +30,8 @@ namespace SODP.Model.Extensions
                 {
                     return text[(charLocation + 1)..];
                 }
+
+                return text;
             }
 
             return String.Empty;

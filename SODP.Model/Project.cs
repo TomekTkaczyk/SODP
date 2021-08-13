@@ -11,17 +11,19 @@ namespace SODP.Model
 
         public Project(string number, string stageSign, string title)
         {
-            Number = number;
-            Stage = new Stage() { Sign = stageSign };
-            Title = title;
+            RequiredPropertiesInit(number, stageSign, title);
+            EmptyPropertiesInit();
         }
 
         public Project(string foldername)
         {
             var sign = foldername.GetUntilOrEmpty("_");
-            Number = sign.Substring(0, 4);
-            Stage = new Stage() { Sign = sign[4..] };
-            Title = foldername[(sign.Length + 1)..];
+            RequiredPropertiesInit(
+                sign.Substring(0, 4),
+                sign[4..],
+                foldername[(sign.Length + 1)..]);
+            EmptyPropertiesInit();
+
             if (string.IsNullOrEmpty(Stage.Sign))
             {
                 sign = foldername.GetLastUntilOrEmpty("_");
@@ -66,6 +68,22 @@ namespace SODP.Model
             regex = new Regex("(_+)$", RegexOptions.None);
             Title = regex.Replace(Title, "");
             Title = Title.CapitalizeFirstLetter();
+        }
+
+        private void EmptyPropertiesInit()
+        {
+            Address = "";
+            Investment = "";
+            Investor = "";
+            TitleStudy = "";
+            Location = "";
+        }
+
+        private void RequiredPropertiesInit(string number, string stageSign, string title)
+        {
+            Number = number;
+            Stage = new Stage() { Sign = stageSign };
+            Title = title;
         }
     }
 }

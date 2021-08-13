@@ -35,6 +35,7 @@ namespace SODP.Domain
                 .ForMember(dest => dest.StageId, opt => opt.MapFrom(src => src.StageId));
 
             CreateMap<ProjectDTO, Project>()
+                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ForMember(dest => dest.Location, act => act.Ignore())
                 .ForMember(dest => dest.Branches, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
@@ -43,12 +44,19 @@ namespace SODP.Domain
                 .PreserveReferences();
 
             CreateMap<NewProjectDTO, Project>()
+                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ForMember(dest => dest.Location, act => act.Ignore())
                 .ForMember(dest => dest.Status, act => act.Ignore())
                 .ForMember(dest => dest.Branches, act => act.Ignore())
                 .ForMember(dest => dest.Stage, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
+                .ForMember(dest => dest.Address, act => act.Ignore())
+                .ForMember(dest => dest.Investment, act => act.Ignore())
+                .ForMember(dest => dest.Investor, act => act.Ignore())
+                .ForMember(dest => dest.Investor, act => act.Ignore())
+                .ForMember(dest => dest.TitleStudy, act => act.Ignore())
+
                 .PreserveReferences();
 
             CreateMap<BranchDTO, Branch>()
@@ -67,7 +75,7 @@ namespace SODP.Domain
 
             CreateMap<License, LicenseWithBranchesDTO>()
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.Designer))
-                .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches))
+                .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
                 .PreserveReferences();
 
             CreateMap<License, LicenseDTO>()
