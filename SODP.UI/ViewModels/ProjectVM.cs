@@ -1,4 +1,5 @@
-﻿using SODP.Shared.Enums;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SODP.Shared.Enums;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -37,7 +38,9 @@ namespace SODP.UI.ViewModels
 
         public string Investor { get; set; }
 
-        public List<BranchVM> Branches { get; set; }
+        public List<SelectListItem> Branches { get; set; }
+
+        public List<SelectListItem> ApplyBranches { get; set; }
 
     }
 }
