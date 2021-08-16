@@ -36,8 +36,8 @@ namespace SODP.Infrastructure.Extensions
                     }
                 });
 
-                var filePath = Path.Combine(AppContext.BaseDirectory, "SODP.UI.xml");
-                c.IncludeXmlComments(filePath);
+                //var filePath = Path.Combine(AppContext.BaseDirectory, "SODP.UI.xml");
+                //c.IncludeXmlComments(filePath);
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
