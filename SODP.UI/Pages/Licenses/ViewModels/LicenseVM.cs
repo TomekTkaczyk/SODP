@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 
-namespace SODP.UI.Pages.License.ViewModels
+namespace SODP.UI.Pages.Licenses.ViewModels
 {
     public class LicenseVM
     {
@@ -13,6 +14,7 @@ namespace SODP.UI.Pages.License.ViewModels
 
         public string Designer { get; set; }
 
+        [Required]
         public string Content { get; set; }
 
         public SelectListItem Branch { get; set; }

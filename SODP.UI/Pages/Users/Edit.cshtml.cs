@@ -36,6 +36,10 @@ namespace SODP.UI.Pages.Users
             var roles = await GetRoles();
             AllRoles = roles.Data.Collection.ToDictionary(x => x.Role, x => false);
             CurrentUser = await GetUser(id);
+            if(CurrentUser == null)
+            {
+                return Redirect("/Errors/404");
+            }
 
             return Page();
         }

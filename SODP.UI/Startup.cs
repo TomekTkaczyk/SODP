@@ -2,11 +2,12 @@ using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SODP.Application.Extensions;
 using SODP.DataAccess;
 using SODP.Domain.Services;
 using SODP.Infrastructure.Extensions;
@@ -21,30 +22,34 @@ namespace SODP.UI
 {
     public class Startup
     {
+
         private readonly string appPrefix;
+        
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
 
             appPrefix = Configuration.GetSection("AppSettings:AppPrefix").Value;
+            var sodpDllFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, appPrefix + "*.dll")
+                .Where(x => !x.Contains("SODP.UI.Views.dll"));
 
-            foreach (string filePath in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, appPrefix + "*.dll"))
-            {
-                if (Path.GetFileName(filePath) != "SODP.UI.Views.dll")
-                {
-                    AppDomain.CurrentDomain.Load(Path.GetFileNameWithoutExtension(filePath));
-                }
+            foreach (string filePath in sodpDllFiles)
+            {   
+                AppDomain.CurrentDomain.Load(Path.GetFileNameWithoutExtension(filePath));
             }
         }
-
-        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwagger();
 
             services.AddDbContext(Configuration);
+
+            services.AddApplicationDIServices();
+
+            services.AddInfrastructureDIServices();
 
             var app = AppDomain.CurrentDomain
                     .GetAssemblies()
@@ -60,14 +65,13 @@ namespace SODP.UI
                     .AddClasses(classes => classes.AssignableTo(typeof(IAppService)))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime();
+
                 scan
                     .FromAssemblies(app)
                     .AddClasses(classes => classes.AssignableTo(typeof(IValidator)))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime();
             });
-
-            services.AddScopedServices();
 
             services.AddScoped<IWebAPIProvider, WebAPIProvider>();
 
@@ -109,12 +113,9 @@ namespace SODP.UI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-
-            //var db = serviceProvider.GetRequiredService<SODPDBContext>();
-            //db.Database.Migrate();
-            //db.Database.EnsureCreated();
-            //serviceProvider.GetRequiredService<UserInitializer>().UserInit();
-            //serviceProvider.GetRequiredService<DataInitializer>().LoadData();
+            //app.Run(async context => {
+            //    await context.Response.WriteAsync("Hello world");
+            //});
 
             if (env.IsDevelopment())
             {
@@ -126,6 +127,8 @@ namespace SODP.UI
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithRedirects("/Errors/{0}");
 
             app.UseHttpsRedirection();
 
@@ -141,6 +144,7 @@ namespace SODP.UI
             {
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
+
             });
         }
     }

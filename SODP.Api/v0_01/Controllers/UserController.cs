@@ -29,7 +29,12 @@ namespace SODP.Api.v0_01.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
-            return Ok(await _usersService.GetAsync(id));
+            var serviceResponse = await _usersService.GetAsync(id);
+            return serviceResponse.StatusCode switch
+            {
+                404 => StatusCode(serviceResponse.StatusCode),
+                _ => Ok(serviceResponse),
+            };
         }
 
         [HttpDelete("{id}")]

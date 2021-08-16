@@ -70,6 +70,7 @@ namespace SODP.Application.Services
                 if (user == null)
                 {
                     serviceResponse.SetError("",404);
+                    return serviceResponse;
                 }
                 var userDTO = _mapper.Map<UserDTO>(user);
                 userDTO.Roles = await _userManager.GetRolesAsync(user);

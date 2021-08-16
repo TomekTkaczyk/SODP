@@ -50,11 +50,18 @@ namespace SODP.Infrastructure.Extensions
             });
         }
 
-        public static void AddTransientServices(this IServiceCollection services)
+        public static void AddInfrastructureDIServices(this IServiceCollection services)
+        {
+            AddScopedInfrastructureServices(services);
+            AddTransientInfrastructureServices(services);
+            AddSingletonInfrastructureServices(services);
+        }
+
+        private static void AddTransientInfrastructureServices(this IServiceCollection services)
         {
         }
 
-        public static void AddScopedServices(this IServiceCollection services)
+        private static void AddScopedInfrastructureServices(this IServiceCollection services)
         {
             services.AddScoped<UserInitializer>();
 
@@ -66,6 +73,10 @@ namespace SODP.Infrastructure.Extensions
 
             services.AddScoped<IFolderManager, FolderManager>();
 
+        }
+
+        private static void AddSingletonInfrastructureServices(this IServiceCollection services)
+        {
         }
     }
 }

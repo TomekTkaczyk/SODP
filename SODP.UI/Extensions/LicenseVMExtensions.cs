@@ -44,5 +44,23 @@ namespace SODP.UI.Extensions
 
             return license;
         }
+
+        public static StringContent ToHttpContent(this NewLicenseVM license)
+        {
+            var licenseDTO = new LicenseDTO
+            {
+                Content = license.Content
+            };
+            licenseDTO.Designer = new DesignerDTO
+            {
+                Id = license.DesignerId
+            };
+
+            return new StringContent(
+                                  JsonSerializer.Serialize(licenseDTO),
+                                  Encoding.UTF8,
+                                  "application/json"
+                              );
+        }
     }
 }

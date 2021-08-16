@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.License.ViewModels;
+using SODP.UI.Pages.Licenses.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace SODP.UI.Pages.License
+namespace SODP.UI.Pages.Licenses
 {
     public class EditModel : SODPPageModel
     {
@@ -53,12 +53,17 @@ namespace SODP.UI.Pages.License
                         }
                         break;
                     default:
-                        // redirect to ErrorPage
-                        break;
+                        return Redirect($"/Errors/{apiResponse.StatusCode}");
                 }
             }
+            else
+            {
+                License.Branches = await GetBranchesAsync(License.ApplyBranches);
 
-            return Redirect("../Designers");
+                return Page();
+            }
+
+            return Redirect("/Designers");
         }
 
         public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId)

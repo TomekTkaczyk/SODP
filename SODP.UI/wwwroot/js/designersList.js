@@ -15,13 +15,13 @@ function EditDesigner(id) {
     })
 }
 
-function EditLicense(designerId, licenseId) {
+function NewLicense(designerId, licenseId) {
     $.ajax({
         type: "Get",
-        url: `\Designers?handler=EditLicense&designerId=${designerId}&id=${licenseId}`,
+        url: `\Designers?handler=NewLicense&designerId=${designerId}&id=${licenseId}`,
         success: function (data) {
             $('#modal-placeholder').html(data);
-            $('#editLicense').modal('show');
+            $('#newLicense').modal('show');
         }
     })
 }
@@ -42,32 +42,32 @@ function initLicenseModalPlaceHolder(returnUrl) {
             var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
             if (isValid) {
                 placeholderElement.find('.modal').modal('hide');
-                window.location = returnUrl;
+                window.location = `/Licenses/Edit?Id=${document.getElementById('id').value}`;
             }
         });
     });
 }
 
-function initLicenseModalPlaceHolder(returnUrl) {
+//function initLicenseModalPlaceHolder(returnUrl) {
 
-    var placeholderElement = $('#modal-placeholder');
+//    var placeholderElement = $('#modal-placeholder');
 
-    placeholderElement.on('click', '[data-save="modal"]', function (event) {
-        console.log("Klik na data-save modal");
-        event.preventDefault();
-        var form = $(this).parents('.modal').find('form');
-        var actionUrl = form.attr('action');
-        var dataToSend = form.serialize();
-        $.post(actionUrl, dataToSend).done(function (data) {
-            var newBody = $('.modal-body', data);
-            placeholderElement.find('.modal-body').replaceWith(newBody);
-            var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
-            if (isValid) {
-                placeholderElement.find('.modal').modal('hide');
-                window.location = returnUrl;
-            }
-        });
-    });
-}
+//    placeholderElement.on('click', '[data-save="modal"]', function (event) {
+//        console.log("Klik na data-save modal");
+//        event.preventDefault();
+//        var form = $(this).parents('.modal').find('form');
+//        var actionUrl = form.attr('action');
+//        var dataToSend = form.serialize();
+//        $.post(actionUrl, dataToSend).done(function (data) {
+//            var newBody = $('.modal-body', data);
+//            placeholderElement.find('.modal-body').replaceWith(newBody);
+//            var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
+//            if (isValid) {
+//                placeholderElement.find('.modal').modal('hide');
+//                window.location = returnUrl;
+//            }
+//        });
+//    });
+//}
 
 

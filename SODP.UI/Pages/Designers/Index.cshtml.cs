@@ -21,7 +21,7 @@ namespace SODP.UI.Pages.Designers
     {
         const string licensesPartialViewName = "_LicensesPartialView";
         const string designerPartialViewName = "_EditDesignerPartialView";
-        const string licensePartialViewName = "_EditLicensePartialView";
+        const string licensePartialViewName = "_NewLicensePartialView";
 
         private readonly IWebAPIProvider _apiProvider;
 
@@ -131,47 +131,30 @@ namespace SODP.UI.Pages.Designers
             return GetPartialView<LicensesVM>(Licenses, licensesPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnGetEditLicenseAsync(int designerId, int? id)
+        public PartialViewResult OnGetNewLicenseAsync(int designerId)
         {
-            LicenseVM license;
-            if (id != null)
-            {
-                var apiResponse = await _apiProvider.GetAsync($"/licenses/{id}/branches");
-                var response = await _apiProvider.GetContent<ServiceResponse<LicenseWithBranchesDTO>>(apiResponse);
-                if (apiResponse.IsSuccessStatusCode)
-                {
-                    license = response.Data.ToViewModel();
-                    license.Branches = await GetBranchesAsync(license.ApplyBranches);
-
-                    return GetPartialView(license, licensePartialViewName);
-                }
-            }
-
-            license = new LicenseVM
+            var license = new NewLicenseVM
             {
                 DesignerId = designerId,
-                Branches = await GetBranchesAsync(),
-                ApplyBranches = new List<SelectListItem>()
             };
 
-            return GetPartialView<LicenseVM>(license, licensePartialViewName);
+            return GetPartialView<NewLicenseVM>(license, licensePartialViewName);
         }
 
-        public async Task<PartialViewResult> OnPostEditLicenseAsync(LicenseVM license)
+        public async Task<PartialViewResult> OnPostNewLicenseAsync(NewLicenseVM license)
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = license.Id == 0
-                    ? await _apiProvider.PostAsync($"/designers/{license.DesignerId}/licences", license.ToHttpContent())
-                    : await _apiProvider.PutAsync($"/licenses/{license.Id}", license.ToHttpContent());
+                var apiResponse = await _apiProvider.PostAsync($"/designers/{license.DesignerId}/licences", license.ToHttpContent());
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
                         var response = await _apiProvider.GetContent<ServiceResponse<LicenseDTO>>(apiResponse);
-                        if (!response.Success)
+                        if (response.Success)
                         {
-                            SetModelErrors(response);
+                            
                         }
+                        SetModelErrors(response);
                         break;
                     default:
                         // redirect to ErrorPage
@@ -179,7 +162,7 @@ namespace SODP.UI.Pages.Designers
                 }
             }
 
-            return GetPartialView<LicenseVM>(license, licensePartialViewName);
+            return GetPartialView<NewLicenseVM>(license, licensePartialViewName);
         }
 
         public async Task<PartialViewResult> OnPostAddBranchAsync(LicenseVM license)

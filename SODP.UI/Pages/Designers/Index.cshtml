@@ -61,8 +61,8 @@
 
                         <div class="colgroup justify-content-end mr-2">
 
-                            <a id="editLicense-@item.Id"
-                               onclick="EditLicense(@item.Id)"
+                            <a id="newLicense-@item.Id"
+                               onclick="NewLicense(@item.Id)"
                                class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
                                data-toggle="tooltip"
                                data-placement="top"
@@ -130,113 +130,6 @@ else
     <script src="~/js/initModalPlaceholder.js"></script>
     <script src="~/js/designersList.js"></script>
 
-    @*<script>
-        function AddBranch(license) {
-            console.log("Klik na data-save modal");
-            var form = $(this).parents('.modal').find('form');
-            var actionUrl = form.attr('action');
-            var dataToSend = form.serialize();
-            $.post(`@Url.Page("Index", "AddBranch")`, dataToSend).done(function (data) {
-                var newBody = $('.modal-body', data);
-                placeholderElement.find('.modal-body').replaceWith(newBody);
-                var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
-                if (isValid) {
-                    placeholderElement.find('.modal').modal('hide');
-                    window.location = returnUrl;
-                }
-            });
-            $.ajax({
-                type: "post",
-                url: actionUrl,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                data: dataToSend,
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("XSRF-TOKEN",
-                        $('input:hidden[name="__RequestVerificationToken"]').val());
-                },
-                success: function (data) {
-                    console.log("success");
-                    var newBody = $('.modal-body', data);
-                    placeholderElement.find('.modal-body').replaceWith(newBody);
-                    var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
-                    if (isValid) {
-                        placeholderElement.find('.modal').modal('hide');
-                        window.location = returnUrl;
-                    }
-                },
-                error: function (data) {
-                    console.log("error");
-                    console.log(data.responseText);
-                    var newBody = $('.modal-body', data.responseText);
-                    var placeholderElement = $('#modal-placeholder');
-                    placeholderElement.find('.modal-body').replaceWith(newBody);
-                    placeholderElement.find('.modal').modal('hide');
-                    $('#modal-placeholder').html(data.responseText);
-                    $('#editLicense').modal('show');
-                }
-            })
-
-            var placeholderElement = $('#modal-placeholder');
-            console.log("Klik na plus");
-            event.preventDefault();
-            var form = $(this).parents('.modal').find('form');
-            var actionUrl = form.attr('action');
-            var dataToSend = form.serialize();
-            var url = `@Url.Page("Index", "AddBranch")`;
-            $.ajax({
-                type: "post",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                data: dataToSend,
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader("XSRF-TOKEN",
-                        $('input:hidden[name="__RequestVerificationToken"]').val());
-                },
-                success: function (data) {
-                    console.log("success");
-                    console.log(data.responseText);
-                },
-                error: function (data) {
-                    console.log("error");
-                    console.log(data.responseText);
-                    var newBody = $('.modal-body', data.responseText);
-                    var placeholderElement = $('#modal-placeholder');
-                    placeholderElement.find('.modal-body').replaceWith(newBody);
-                    placeholderElement.find('.modal').modal('hide');
-                    $('#modal-placeholder').html(data.responseText);
-                    $('#editLicense').modal('show');
-                }
-            })
-        }
-    </script>
-
-    <script>
-        function RemoveBranch(licenseId, branchId) {
-            console.log(`Remove branch: ${branchId} from license: ${licenseId} `);
-            $.ajax({
-                type: "Post",
-                url: `@Url.Page("Index", "RemoveBranch")&id=${licenseId}&branchId=${branchId}`,
-                success: function (data) {
-                    console.log(data);
-                    var placeholderElement = $('#modal-placeholder');
-                    var newBody = $('.modal-body', data);
-                    placeholderElement.find('.modal-body').replaceWith(newBody);
-                    var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
-                    if (isValid) {
-                        placeholderElement.find('.modal').modal('hide');
-                        window.location = `\Designers`;
-                    }
-
-                    $('#modal-placeholder').html(data);
-                    $('#editLicense').modal('show');
-
-                }
-            })
-        }
-    </script>*@
-
     <script>
         function handleChange(id, checked) {
 
@@ -250,8 +143,6 @@ else
                 dataType: 'json',
                 data: JSON.stringify(c),
                 success: function (response) {
-                    console.log("PUT zrobiony");
-                    console.log(response);
                 },
                 error: function (jqXHR, exception) {
                     console.log(jqXHR);
@@ -262,21 +153,15 @@ else
     </script>
 
     <script>
-        function collapseChange(id) {
-            console.log(`collapse ${id}`);
-        }
-    </script>
-
-    <script>
         function accordionCollapse(id) {
             if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
-                document.getElementById(`editLicense-${id}`).hidden = false;
+                document.getElementById(`newLicense-${id}`).hidden = false;
                 document.getElementById(`editDesigner-${id}`).hidden = false;
                 document.getElementById(`deleteDesigner-${id}`).hidden = false;
                 $(`#license-${id}`).load(`/Designers/index?handler=LicensesPartial&id=${id}`);
             }
             else {
-                document.getElementById(`editLicense-${id}`).hidden = true;
+                document.getElementById(`newLicense-${id}`).hidden = true;
                 document.getElementById(`editDesigner-${id}`).hidden = true;
                 document.getElementById(`deleteDesigner-${id}`).hidden = true;
             }

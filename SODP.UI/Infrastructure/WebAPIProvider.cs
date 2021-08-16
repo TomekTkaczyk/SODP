@@ -16,7 +16,9 @@ namespace SODP.UI.Infrastructure
 
         public async Task<HttpResponseMessage> GetAsync(string endPoint)
         {
-            return await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}{endPoint}");
+            var apiResponse = await new HttpClient().GetAsync($"{_apiUrl}{_apiVersion}{endPoint}");
+
+            return apiResponse;
         }
 
         public async Task<HttpResponseMessage> PostAsync(string endPoint, StringContent content)

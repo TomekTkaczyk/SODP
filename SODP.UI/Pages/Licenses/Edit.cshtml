@@ -1,6 +1,6 @@
 ﻿@page
 
-@using SODP.UI.Pages.License.ViewModels;
+@using SODP.UI.Pages.Licenses.ViewModels;
 
 @model EditModel
 @{
@@ -61,7 +61,7 @@
                         <span asp-validation-for="License.BranchId" style="font-size:14px" class="text-danger"></span>
                     </div>
                     <div class="btn btn-lg col-2 text-success">
-                        <a onclick="AddBranch(@Model.License.Id,@Model.License.BranchId)">
+                        <a onclick="AddBranch(@Model.License.Id)">
                             <i class="fas fa-plus-circle"></i>
                         </a>
                     </div>
@@ -80,7 +80,6 @@
 <script>
 
 function RemoveBranch(licenseId, branchId) {
-    console.log(`Remove branch: ${branchId} from license: ${licenseId} `);
     $.ajax({
         type: "Delete",
         url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${branchId}`,
@@ -90,7 +89,7 @@ function RemoveBranch(licenseId, branchId) {
         },
         success: function (data) {
             console.log(data);
-            window.location.href = `/License/Edit?Id=${licenseId}`;
+            //window.location.href = `/Licenses/Edit?Id=${licenseId}`;
         }
     })
 }
@@ -99,10 +98,9 @@ function RemoveBranch(licenseId, branchId) {
 
 <script>
 
-    function AddBranch(licenseId, branchId) {
+    function AddBranch(licenseId) {
 
         var select = $("#License_BranchId").val();
-        console.log(`Add branch: ${select} to license: ${licenseId} `);
         $.ajax({
             type: "Put",
             url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${select}`,
@@ -111,7 +109,7 @@ function RemoveBranch(licenseId, branchId) {
                     $('input:hidden[name="__RequestVerificationToken"]').val());
             },
             success: function (data) {
-                window.location.href = `/License/Edit?Id=${licenseId}`;
+                window.location.href = `/Licenses/Edit?Id=${licenseId}`;
             }
         })
     }
