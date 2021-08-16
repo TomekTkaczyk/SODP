@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SODP.Domain.Services;
 using System.Threading.Tasks;
 
@@ -13,13 +14,22 @@ namespace SODP.Api.v0_01.Controllers
             _projectsService = projectsService;
         }
 
+        /// <summary>
+        /// Get page of list projects
+        /// </summary>
+        /// <param name="currentPage"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 15)
         {
             return Ok(await _projectsService.GetAllAsync(currentPage, pageSize));
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAsync(int id)
         {
             var response = await _projectsService.GetAsync(id);
@@ -28,6 +38,8 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpGet("{id}/branches")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetWithBranchesAsync(int id)
         {
             return Ok(await _projectsService.GetWithBranchesAsync(id));

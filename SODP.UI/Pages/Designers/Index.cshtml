@@ -134,7 +134,7 @@ else
         function handleChange(id, checked) {
 
             let c = checked ? 1 : 0;
-            let url = `/api/v0_01/designers/${id}/${c}`;
+            let url = `/api/v0_01/designers/${id}/status/${c}`;
 
             $.ajax({
                 type: "PUT",

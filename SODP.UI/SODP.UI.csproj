@@ -6,6 +6,10 @@
     <UserSecretsId>dcb793a3-5288-4d43-b965-93d79c8f1c06</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Remove="Pages\ArchiveProjects\_ProjectPartialView.cshtml" />
     <Content Remove="stages.json" />

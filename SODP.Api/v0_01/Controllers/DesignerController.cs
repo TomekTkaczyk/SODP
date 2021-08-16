@@ -46,7 +46,15 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.UpdateAsync(designer));
         }
 
-        [HttpPut("{id}/{status}")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var response = await _service.DeleteAsync(id);
+
+            return Ok(response);
+        }
+
+        [HttpPut("{id}/status/{status}")]
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] int status)
         {
             return Ok(await _service.SetActiveStatusAsync(id, status == 1));
@@ -56,14 +64,6 @@ namespace SODP.Api.v0_01.Controllers
         public async Task<IActionResult> GetLicensesAsync(int id)
         {
             var response = await _service.GetLicensesAsync(id);
-
-            return Ok(response);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var response = await _service.DeleteAsync(id);
 
             return Ok(response);
         }

@@ -7,6 +7,7 @@ using SODP.DataAccess;
 using SODP.Domain.Managers;
 using SODP.Infrastructure.Managers;
 using System;
+using System.IO;
 
 namespace SODP.Infrastructure.Extensions
 {
@@ -16,7 +17,28 @@ namespace SODP.Infrastructure.Extensions
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SODP.API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "SODP.API",
+                    Version = "v1",
+                    Description = "Aplikacja do zarządzania projektami SODP",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Tomasz Tkaczyk",
+                        Email = "tomasz.tkaczyk@unipromax.pl",
+                        Url = new Uri("http://www.unipromax.pl")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Used License",
+                        Url = new Uri("https://example.com/license")
+                    }
+                });
+
+                var filePath = Path.Combine(AppContext.BaseDirectory, "SODP.UI.xml");
+                c.IncludeXmlComments(filePath);
+
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -24,6 +46,7 @@ namespace SODP.Infrastructure.Extensions
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey
                 });
+
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement {
                     {
                         new OpenApiSecurityScheme

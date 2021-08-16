@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SODP.Domain.Services;
 using SODP.Shared.DTO;
@@ -7,6 +8,7 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("api/v0_01/active-projects")]
+    [EnableCors("MyAllowSpecificOrigins")]
     public class ActiveProjectController : ProjectController
     {
         public ActiveProjectController(IProjectService projectsService) : base(projectsService) { }

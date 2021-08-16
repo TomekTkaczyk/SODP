@@ -2,7 +2,6 @@ using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +43,14 @@ namespace SODP.UI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwagger();
+
+            services.AddCors(options =>
+                options.AddPolicy(name: "MyAllowSpecificOrigins", builder => 
+                    {
+                        //builder.AllowAnyOrigin();                                 // mozliwy dowolny origin inny ni¿ w³asny aplikacji
+                        builder.WithOrigins("https://localhost:44303");           // mozliwy origin 
+                    })
+            );
 
             services.AddDbContext(Configuration);
 
@@ -111,7 +118,7 @@ namespace SODP.UI
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //app.Run(async context => {
             //    await context.Response.WriteAsync("Hello world");
@@ -120,13 +127,14 @@ namespace SODP.UI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.ConfigureSwagger();
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            app.UseMySwagger();
 
             app.UseStatusCodePagesWithRedirects("/Errors/{0}");
 
@@ -135,6 +143,8 @@ namespace SODP.UI
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
 
