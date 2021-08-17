@@ -46,7 +46,7 @@ namespace SODP.UI.Pages.Users
 
         private async Task<UserDTO> GetUser(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/users/{id}");
+            var apiResponse = await _apiProvider.GetAsync($"users/{id}");
             if (apiResponse.IsSuccessStatusCode) 
             { 
                 var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<UserDTO>>();
@@ -61,7 +61,7 @@ namespace SODP.UI.Pages.Users
 
         private async Task<ServicePageResponse<RoleDTO>> GetRoles()
         {
-            var apiResponse = await _apiProvider.GetAsync($"/roles");
+            var apiResponse = await _apiProvider.GetAsync($"roles");
             if (apiResponse.IsSuccessStatusCode)
             {
                 var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<RoleDTO>>();
@@ -76,7 +76,7 @@ namespace SODP.UI.Pages.Users
             if (ModelState.IsValid)
             {
                 CurrentUser.Roles = AllRoles.Where(x => x.Value).Select(x => x.Key).ToList();
-                var apiResponse = await _apiProvider.PutAsync($"/users/{CurrentUser.Id}", 
+                var apiResponse = await _apiProvider.PutAsync($"users/{CurrentUser.Id}", 
                     new StringContent(
                         JsonSerializer.Serialize(CurrentUser), 
                         Encoding.UTF8, 

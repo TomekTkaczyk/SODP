@@ -64,7 +64,7 @@ namespace SODP.UI.Pages.Designers
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            var response = await _apiProvider.DeleteAsync($"/designers/{id}");
+            var response = await _apiProvider.DeleteAsync($"designers/{id}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -78,7 +78,7 @@ namespace SODP.UI.Pages.Designers
         {
             if (id != null)
             {
-                var apiResponse = await _apiProvider.GetAsync($"/designers/{id}");
+                var apiResponse = await _apiProvider.GetAsync($"designers/{id}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
@@ -95,8 +95,8 @@ namespace SODP.UI.Pages.Designers
             if (ModelState.IsValid)
             {
                 var apiResponse = designer.Id == 0
-                    ? await _apiProvider.PostAsync($"/designers", designer.ToHttpContent())
-                    : await _apiProvider.PutAsync($"/designers/{designer.Id}", designer.ToHttpContent());
+                    ? await _apiProvider.PostAsync($"designers", designer.ToHttpContent())
+                    : await _apiProvider.PutAsync($"designers/{designer.Id}", designer.ToHttpContent());
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
@@ -117,7 +117,7 @@ namespace SODP.UI.Pages.Designers
 
         public async Task<PartialViewResult> OnGetLicensesPartialAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/designers/{id}/licenses");
+            var apiResponse = await _apiProvider.GetAsync($"designers/{id}/licenses");
             if (apiResponse.IsSuccessStatusCode)
             {
                 var response = await _apiProvider.GetContent<ServicePageResponse<LicenseWithBranchesDTO>>(apiResponse);
@@ -145,7 +145,7 @@ namespace SODP.UI.Pages.Designers
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PostAsync($"/designers/{license.DesignerId}/licences", license.ToHttpContent());
+                var apiResponse = await _apiProvider.PostAsync($"designers/{license.DesignerId}/licences", license.ToHttpContent());
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
@@ -188,7 +188,7 @@ namespace SODP.UI.Pages.Designers
         public async Task<PartialViewResult> OnGetRemoveBranchAsync(int id, int branchId)
         {
             LicenseVM license;
-            var apiResponse = await _apiProvider.GetAsync($"/licenses/{id}/branches");
+            var apiResponse = await _apiProvider.GetAsync($"licenses/{id}/branches");
             var response = await _apiProvider.GetContent<ServiceResponse<LicenseWithBranchesDTO>>(apiResponse);
 
             license = response.Data.ToViewModel();
@@ -199,7 +199,7 @@ namespace SODP.UI.Pages.Designers
 
         private async Task<List<DesignerVM>> GetDesignersAsync(PageInfo pageInfo)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/designers?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
+            var apiResponse = await _apiProvider.GetAsync($"designers?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
             if (apiResponse.IsSuccessStatusCode)
             {
                 var response = await _apiProvider.GetContent<ServicePageResponse<DesignerDTO>>(apiResponse);
@@ -224,7 +224,7 @@ namespace SODP.UI.Pages.Designers
 
         private async Task<List<SelectListItem>> GetBranchesAsync(List<SelectListItem> exclusionList)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/branches");
+            var apiResponse = await _apiProvider.GetAsync($"branches");
             var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
             var result = responseBranch.Data.Collection
                 .Select(x => new SelectListItem

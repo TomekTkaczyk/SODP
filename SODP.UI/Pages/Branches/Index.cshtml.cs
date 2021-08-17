@@ -42,7 +42,7 @@ namespace SODP.UI.Pages.Branches
         {
             if (id != null)
             {
-                var apiResponse = await _apiProvider.GetAsync($"/branches/{id}");
+                var apiResponse = await _apiProvider.GetAsync($"branches/{id}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
@@ -59,8 +59,8 @@ namespace SODP.UI.Pages.Branches
             if (ModelState.IsValid)
             {
                 var apiResponse = branch.Id == 0 
-                    ? await _apiProvider.PostAsync($"/branches", branch.ToHttpContent())
-                    : await _apiProvider.PutAsync($"/branches/{branch.Id}", branch.ToHttpContent());
+                    ? await _apiProvider.PostAsync($"branches", branch.ToHttpContent())
+                    : await _apiProvider.PutAsync($"branches/{branch.Id}", branch.ToHttpContent());
 
                 switch (apiResponse.StatusCode)
                 {
@@ -82,7 +82,7 @@ namespace SODP.UI.Pages.Branches
 
         public async Task<PartialViewResult> OnGetPartialDesigners(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/branches/{id}/designers");
+            var apiResponse = await _apiProvider.GetAsync($"branches/{id}/designers");
             switch (apiResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -110,7 +110,7 @@ namespace SODP.UI.Pages.Branches
                 Branches = new List<BranchDTO>()
             };
 
-            var apiResponse = await _apiProvider.GetAsync($"/branches");
+            var apiResponse = await _apiProvider.GetAsync($"branches");
 
             if (apiResponse.IsSuccessStatusCode)
             {

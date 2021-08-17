@@ -15,6 +15,7 @@
     <form method="post">
         <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
         <input type="hidden" asp-for="Project.Id" />
+        <input type="hidden" asp-for="Project.Number" />
         <input type="hidden" asp-for="Project.StageId" />
         <input type="hidden" asp-for="Project.StageSign" />
         <input type="hidden" asp-for="Project.StageTitle" />

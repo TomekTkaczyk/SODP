@@ -54,7 +54,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            var response = await _apiProvider.DeleteAsync($"/active-projects/{id}");
+            var response = await _apiProvider.DeleteAsync($"active-projects/{id}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -73,7 +73,7 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PostAsync("/active-projects", project.ToHttpContent());
+                var apiResponse = await _apiProvider.PostAsync("active-projects", project.ToHttpContent());
 
                 var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
@@ -99,7 +99,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         private async Task<IList<ProjectDTO>> GetProjectsAsync(PageInfo pageInfo)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/active-projects?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
+            var apiResponse = await _apiProvider.GetAsync($"active-projects?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
             if (apiResponse.IsSuccessStatusCode)
             {
                 var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();
@@ -114,7 +114,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         private async Task<PartialViewResult> GetPartialViewAsync(NewProjectVM project)
         {
-            var response = await _apiProvider.GetAsync("/stages");
+            var response = await _apiProvider.GetAsync("stages");
             List<SelectListItem> stagesItems = new List<SelectListItem>();
             if (response.IsSuccessStatusCode)
             {

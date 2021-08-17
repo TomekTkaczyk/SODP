@@ -50,7 +50,7 @@ namespace SODP.UI.Pages.ArchiveProjects
 
         //public async Task<IActionResult> OnGetAsync()
         //{
-        //    var response = await _apiProvider.GetAsync($"/archive-projects");
+        //    var response = await _apiProvider.GetAsync($"archive-projects");
         //    if (response.IsSuccessStatusCode)
         //    {
         //        ProjectsViewModel = await response.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();
@@ -61,7 +61,7 @@ namespace SODP.UI.Pages.ArchiveProjects
 
         private async Task<IList<ProjectDTO>> GetProjectsAsync(PageInfo pageInfo)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/archive-projects?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
+            var apiResponse = await _apiProvider.GetAsync($"archive-projects?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
             if (apiResponse.IsSuccessStatusCode)
             {
                 var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();

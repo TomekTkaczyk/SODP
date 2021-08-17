@@ -33,7 +33,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/active-projects/{id}");
+            var apiResponse = await _apiProvider.GetAsync($"active-projects/{id}");
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
             if (apiResponse.IsSuccessStatusCode)
@@ -83,7 +83,7 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PutAsync($"/active-projects/{project.Id}", project.ToHttpContent());
+                var apiResponse = await _apiProvider.PutAsync($"active-projects/{project.Id}", project.ToHttpContent());
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     return RedirectToPage("Index");
@@ -105,7 +105,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         private async Task<List<SelectListItem>> GetBranchesAsync(List<SelectListItem> exclusionList)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/branches");
+            var apiResponse = await _apiProvider.GetAsync($"branches");
             var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
             var result = responseBranch.Data.Collection
                 .OrderBy(x => x.Symbol)

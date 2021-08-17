@@ -42,7 +42,7 @@ namespace SODP.UI.Pages.Licenses
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PutAsync($"/licenses/{License.Id}", this.ToHttpContent());
+                var apiResponse = await _apiProvider.PutAsync($"licenses/{License.Id}", this.ToHttpContent());
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
@@ -68,7 +68,7 @@ namespace SODP.UI.Pages.Licenses
 
         public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId)
         {
-            await _apiProvider.DeleteAsync($"/licenses/{id}/branches/{branchId}");
+            await _apiProvider.DeleteAsync($"licenses/{id}/branches/{branchId}");
 
             await GetLicenceAsync(id);
 
@@ -78,7 +78,7 @@ namespace SODP.UI.Pages.Licenses
 
         public async Task<IActionResult> OnPutBranchAsync(int id, int branchId)
         {
-            await _apiProvider.PutAsync($"/licenses/{id}/branches/{branchId}", new StringContent(
+            await _apiProvider.PutAsync($"licenses/{id}/branches/{branchId}", new StringContent(
                                   JsonSerializer.Serialize(branchId),
                                   Encoding.UTF8,
                                   "application/json"
@@ -91,7 +91,7 @@ namespace SODP.UI.Pages.Licenses
 
         private async Task GetLicenceAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/licenses/{id}/branches");
+            var apiResponse = await _apiProvider.GetAsync($"licenses/{id}/branches");
             var response = await _apiProvider.GetContent<ServiceResponse<LicenseWithBranchesDTO>>(apiResponse);
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -116,7 +116,7 @@ namespace SODP.UI.Pages.Licenses
 
         private async Task<List<SelectListItem>> GetBranchesAsync(List<SelectListItem> exclusionList)
         {
-            var apiResponse = await _apiProvider.GetAsync($"/branches");
+            var apiResponse = await _apiProvider.GetAsync($"branches");
             var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
             var result = responseBranch.Data.Collection
                 .OrderBy(x => x.Symbol)

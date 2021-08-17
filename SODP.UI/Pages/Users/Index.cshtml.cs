@@ -23,7 +23,7 @@ namespace SODP.UI.Pages.Users
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var response = await _apiProvider.GetAsync($"/users");
+            var response = await _apiProvider.GetAsync($"users");
             if (response.IsSuccessStatusCode)
             {
                 Users = await response.Content.ReadAsAsync<ServicePageResponse<UserDTO>>();

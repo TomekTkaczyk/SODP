@@ -110,12 +110,22 @@ namespace SODP.UI
 
             services.AddDistributedMemoryCache();
 
+            services.AddHttpClient("SODPApiClient", client => 
+            {
+                client.BaseAddress = new Uri(
+                    $"{Configuration.GetSection($"AppSettings:apiUrl").Value}" +
+                    $"{Configuration.GetSection($"AppSettings:apiVersion").Value}/"
+                    );
+                client.Timeout = new TimeSpan(0, 0, 30);
+                client.DefaultRequestHeaders.Clear();
+            });
+
+            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
+
             services.AddControllers();
 
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
-
-            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
