@@ -11,13 +11,7 @@
     </div>
 </div>
 
-<br />
-
 <div class="container">
-
-
-    <br />
-
     <form method="post">
         <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
         <input type="hidden" asp-for="Project.Id" />
@@ -25,26 +19,13 @@
         <input type="hidden" asp-for="Project.StageSign" />
         <input type="hidden" asp-for="Project.StageTitle" />
 
-        <div class="justify-content-end col-md-7" style="padding:20px">
-
-            <div class="form-group row">
-                <div class="col">
-                    <input asp-for="Project.Number" class="form-control" placeholder="Numer" readonly />
-                    <span asp-validation-for="Project.Number" style="font-size:14px" class="text-danger"></span>
-                </div>
+        <div class="justify-content-end col-md-7 font-weight-bold" style="padding:20px">
+            <div>
+                @Model.Project.Number
+                @Model.Project.Stage
             </div>
-
-            <div class="form-group row">
-                <div class="col">
-                    <input asp-for="Project.Stage" class="form-control" readonly />
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-12">
-                    <input asp-for="Project.Title" class="form-control" placeholder="Tytuł" readonly="@(Model.Project.Status.Equals(ProjectStatus.Active) ? false : true)" />
-                    <span asp-validation-for="Project.Title" style="font-size:14px" class="text-danger"></span>
-                </div>
+            <div>
+                @Model.Project.Title
             </div>
         </div>
 
@@ -62,41 +43,47 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
                     <br />
-
                     <div class="form-group row">
                         <div class="col-12">
-                            <textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)" readonly="@(Model.Project.Status.Equals(ProjectStatus.Active) ? false : true)"></textarea>
+                            <input asp-for="Project.Title" class="form-control" placeholder="Tytuł" />
+                            <span asp-validation-for="Project.Title" style="font-size:14px" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <div class="col-12">
-                            <textarea asp-for="Project.TitleStudy" class="form-control" placeholder="Tytuł opracowania" readonly="@(Model.Project.Status.Equals(ProjectStatus.Active) ? false : true)"></textarea>
+                            <textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)"></textarea>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <div class="col-12">
-                            <textarea asp-for="Project.Investment" class="form-control" placeholder="Nazwa inwestycji" readonly="@(Model.Project.Status.Equals(ProjectStatus.Active) ? false : true)"></textarea>
+                            <textarea asp-for="Project.TitleStudy" class="form-control" placeholder="Tytuł opracowania"></textarea>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <div class="col-12">
-                            <textarea asp-for="Project.Address" class="form-control" placeholder="Adres inwestycji" readonly="@(Model.Project.Status.Equals(ProjectStatus.Active) ? false : true)"></textarea>
+                            <textarea asp-for="Project.Investment" class="form-control" placeholder="Nazwa inwestycji"></textarea>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <div class="col-12">
-                            <textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor" readonly="@(Model.Project.Status.Equals(ProjectStatus.Active) ? false : true)"></textarea>
+                            <textarea asp-for="Project.Address" class="form-control" placeholder="Adres inwestycji"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-12">
+                            <textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="branch" role="tabpanel" aria-labelledby="branch-tab">
                     <br />
                     <div class="form-group">
-                        @for (int i = 0; i < Model.Project.Branches.Count; i++)
+                        @for (int i = 0; i < Model.Project.ApplyBranches.Count; i++)
                         {
                             <input asp-for="Project.Branches[i].Value" type="hidden" value="Project.Branches[i].Value">
                             <input asp-for="Project.Branches[i].Text" type="hidden" value="Project.Branches[i].Text">
@@ -111,10 +98,23 @@
                             </div>
                         }
                     </div>
+                    <div class="form-group">
+                        <div class="row align-middle">
+                            <div class="col pt-1 pb-1">
+                                @Html.DropDownListFor(model => model.Project.BranchId, @Model.Project.Branches, new { @class = "form-control" })
+                                <span asp-validation-for="Project.BranchId" style="font-size:14px" class="text-danger"></span>
+                            </div>
+                            <div class="btn btn-lg col-2 text-success">
+                                <a onclick="AddBranch(@Model.Project.Id)">
+                                    <i class="fas fa-plus-circle"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="justify-content-end col-md-7" style="padding:20px">
             <div class="col-12">
                 <partial name="_SubmitAndBackButtonPartial" />
@@ -126,4 +126,55 @@
 
 @section Scripts{
     <partial name="/Pages/Shared/_ValidationScriptsPartial.cshtml" />
+    <script>
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        // store the currently selected tab in the hash value
+        $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+            var id = $(e.target).attr("href").substr(1);
+            window.location.hash = id;
+        });
+
+        // on load of the page: switch to the currently selected tab
+        var hash = window.location.hash;
+        $('#myTab a[href="' + hash + '"]').tab('show');
+    </script>
+
+    <script>
+        function RemoveBranch(projectId, branchId) {
+            $.ajax({
+                type: "Delete",
+                url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${branchId}`,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                success: function (data) {
+                    console.log(data);
+                    window.location.href = `/Project/Edit?Id=${projectId}`;
+                    //window.location.href = `/Licenses/Edit?Id=${licenseId}`;
+                }
+            })
+        }
+    </script>
+
+    <script>
+        function AddBranch(projectId) {
+            var select = $("#Project_BranchId").val();
+            $.ajax({
+                type: "Put",
+                url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${select}`,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("XSRF-TOKEN",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                success: function (data) {
+                    window.location.href = `/Project/Edit?Id=${projectId}`;
+                }
+            })
+        }
+    </script>
 }

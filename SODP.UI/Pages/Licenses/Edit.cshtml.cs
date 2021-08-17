@@ -97,9 +97,9 @@ namespace SODP.UI.Pages.Licenses
             {
                 License = new LicenseVM
                 {
+                    Id = response.Data.Id,
                     DesignerId = response.Data.Designer.Id,
                     Designer = response.Data.Designer.ToString(),
-                    Id = response.Data.Id,
                     Content = response.Data.Content,
                     ApplyBranches = response.Data.Branches
                     .OrderBy(x => x.Symbol)

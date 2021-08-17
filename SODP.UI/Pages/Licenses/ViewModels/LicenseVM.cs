@@ -25,9 +25,5 @@ namespace SODP.UI.Pages.Licenses.ViewModels
 
         public List<SelectListItem> ApplyBranches { get; set; }
 
-        internal StringContent ToHttpContent()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
