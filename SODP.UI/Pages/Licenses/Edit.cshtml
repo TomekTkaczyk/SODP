@@ -43,30 +43,39 @@
                     <input asp-for="License.ApplyBranches[i].Value" type="hidden" value="License.ApplyBranches[i].Value">
                     <input asp-for="License.ApplyBranches[i].Text" type="hidden" value="License.ApplyBranches[i].Text">
                     <div class="row">
-                        <div class="col-1 clickable">
-                            <a onclick="RemoveBranch(@Model.License.Id,@Model.License.ApplyBranches[i].Value)"
-                               class="text-danger text-right">
-                                <i class="fas fa-minus-circle"></i>
-                            </a>
+                        <div class="btn btn-lg col-1"
+                             data-toggle="tooltip"
+                             data-placement="top"
+                             title="Usuń branżę"
+                             onclick="RemoveBranch(@Model.License.Id,@Model.License.ApplyBranches[i].Value)">
+                            <i class="fas fa-times text-danger"></i>
                         </div>
-                        <div class="col">@Model.License.ApplyBranches[i].Text</div>
+                        <div class="col my-auto">@Model.License.ApplyBranches[i].Text</div>
                     </div>
                 }
+
+
+
             </div>
 
-            <div class="form-group">
-                <div class="row align-middle">
-                    <div class="col pt-1 pb-1">
-                        @Html.DropDownListFor(model => model.License.BranchId, @Model.License.Branches, new { @class = "form-control" })
-                        <span asp-validation-for="License.BranchId" style="font-size:14px" class="text-danger"></span>
-                    </div>
-                    <div class="btn btn-lg col-2 text-success">
-                        <a onclick="AddBranch(@Model.License.Id)">
-                            <i class="fas fa-plus-circle"></i>
-                        </a>
+            @if (@Model.License.Branches.Count > 0)
+            {
+                <div class="form-group">
+                    <div class="row align-middle">
+                        <div class="col pt-1 pb-1">
+                            @Html.DropDownListFor(model => model.License.BranchId, @Model.License.Branches, new { @class = "form-control" })
+                            <span asp-validation-for="License.BranchId" style="font-size:14px" class="text-danger"></span>
+                        </div>
+                        <div class="btn btn-lg col-1"
+                             data-toggle="tooltip"
+                             data-placement="top"
+                             title="Dodaj branżę"
+                             onclick="AddBranch(@Model.License.Id)">
+                            <i class="fas fa-plus text-success"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
 
             <input type="submit" class="btn btn-primary form-control" value="Zapisz i wróć do listy projektantów" />
         </form>
@@ -76,34 +85,12 @@
 
 @section Scripts{
 
-    
-<script>
+    <script>
 
-function RemoveBranch(licenseId, branchId) {
-    $.ajax({
-        type: "Delete",
-        url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${branchId}`,
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("XSRF-TOKEN",
-                $('input:hidden[name="__RequestVerificationToken"]').val());
-        },
-        success: function (data) {
-            console.log(data);
-            //window.location.href = `/Licenses/Edit?Id=${licenseId}`;
-        }
-    })
-}
-
-</script>
-
-<script>
-
-    function AddBranch(licenseId) {
-
-        var select = $("#License_BranchId").val();
+    function RemoveBranch(licenseId, branchId) {
         $.ajax({
-            type: "Put",
-            url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${select}`,
+            type: "Delete",
+            url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${branchId}`,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());
@@ -113,6 +100,25 @@ function RemoveBranch(licenseId, branchId) {
             }
         })
     }
+    </script>
 
-</script>
+    <script>
+
+    function AddBranch(licenseId) {
+
+        var selectedBranch = $("#License_BranchId").val();
+        $.ajax({
+            type: "Put",
+            url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${selectedBranch}`,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            success: function (data) {
+                window.location.href = `/Licenses/Edit?Id=${licenseId}`;
+            }
+        })
+    }
+    </script>
+
 }

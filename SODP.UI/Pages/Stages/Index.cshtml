@@ -19,7 +19,6 @@
     </div>
     @if (SignInManager.IsSignedIn(User))
     {
-        <div id="modal-placeholder"></div>
         <div class="col-3 justify-content-end">
             <button type="button"
                     class="btn btn-info form-control text-white float-right"
@@ -62,11 +61,11 @@
                         </td>
                         <td class="cell text-right">
                             <a onclick='Delete("/api/v0_01/stages/@stage.Id")'
-                               class="btn btn-md m-0 py-0 text-danger"
+                               class="btn btn-md m-0 py-0"
                                data-toggle="tooltip"
                                data-placement="top"
                                title="Usuń stadium">
-                                <i class="fas fa-trash-alt"></i>
+                                <i class="fas fa-times text-danger"></i>
                             </a>
                         </td>
                     </tr>

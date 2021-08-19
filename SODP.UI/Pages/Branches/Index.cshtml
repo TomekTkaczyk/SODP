@@ -21,9 +21,6 @@
     </div>
     @if (SignInManager.IsSignedIn(User))
     {
-        <div id="modal-placeholder">
-
-        </div>
         <div class="col-3 justify-content-end">
             <button type="button"
                     class="btn btn-info form-control text-white float-right"
@@ -48,22 +45,47 @@
                      id="card-header-@item.Id">
                     <div class="row ">
                         <div class="col font-weight-bold clickable"
-                             onclick="accordionCollapse(@item.Id)"
+                             onclick="accordionCollapse(this,@item.Id)"
                              id="card-head-@item.Id"
                              data-toggle="collapse"
-                             data-target="#collapse_@item.Id"
+                             data-target="#collapse-@item.Id"
                              aria-expanded="false"
                              aria-controls="collapse-@item.Id">
                              @item.Symbol:@item.Sign @item.Title
                         </div>
+
                         <div class="colgroup justify-content-end mr-2">
+                            
+                            <a name="additionalBtn"
+                               id="editBranch-@item.Id"
+                               onclick='EditBranch(@item.Id)'
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="Edycja stadium"
+                               hidden>
+                                <i class="fas fa-edit text-success"></i>
+                            </a>
+
+                            <a name="additionalBtn"
+                               id="deleteBranch-@item.Id"
+                               onclick='Delete("/api/v0_01/branches/@item.Id")'
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+                               data-toggle="tooltip"
+                               data-placement="top"
+                               title="Usuń branżę"
+                               hidden>
+                                <i class="fas fa-times text-danger"></i>
+                            </a>
+
                             <style>
                                 .toggle.ios, .toggle-on.ios, .toggle-off.ios {
                                     border-radius: 30px;
                                 }
-                                .toggle.ios .toggle-handle {
-                                    border-radius: 30px;
-                                }
+
+                                    .toggle.ios .toggle-handle {
+                                        border-radius: 30px;
+                                    }
                             </style>
                             <input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
                                    onchange="handleChange(@item.Id, this.checked)"
@@ -72,32 +94,18 @@
                                    title="Aktywność"
                                    data-style="ios">
 
-                            <a onclick='EditBranch(@item.Id)'
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
-                               data-toggle="tooltip"
-                               data-placement="top"
-                               title="Edycja stadium">
-                                <i class="fas fa-edit"></i>
-                            </a>
 
-                            <a onclick='Delete("/api/v0_01/branches/@item.Id")'
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-danger"
-                               data-toggle="tooltip"
-                               data-placement="top"
-                               title="Usuń branżę">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="collapse_@item.Id"
+            <div id="collapse-@item.Id"
                  class="collapse hide"
                  aria-labelledby="heading-@item.Id"
                  data-parent="#branchesAccordion">
 
                 <div class="card-body" id="designer-@item.Id">
-                    Lorem ipsum
+                    Coś poszło nie tak z ładowaniem listy projektantów
                 </div>
             </div>
         }
@@ -149,8 +157,16 @@ else
     </script>
 
     <script>
-        function accordionCollapse(id) {
+        function accordionCollapse(self, id) {
+            var additionalElements = document.getElementsByName('additionalBtn');
+            var inputList = Array.prototype.slice.call(additionalElements);
+            for (let i = 0; i < inputList.length; i++) {
+                inputList[i].hidden = true;
+            }
+
             if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
+                document.getElementById(`editBranch-${id}`).hidden = false;
+                document.getElementById(`deleteBranch-${id}`).hidden = false;
                 $(`#designer-${id}`).load(`/Branches/index?handler=PartialDesigners&id=${id}`);
             }
         }

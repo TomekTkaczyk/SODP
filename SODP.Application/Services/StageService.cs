@@ -93,7 +93,6 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-
         public async Task<ServiceResponse<StageDTO>> GetAsync(string sign)
         {
             var serviceResponse = new ServiceResponse<StageDTO>();

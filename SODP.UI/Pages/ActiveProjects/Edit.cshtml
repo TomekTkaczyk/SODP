@@ -86,16 +86,18 @@
                     <div class="form-group">
                         @for (int i = 0; i < Model.Project.ApplyBranches.Count; i++)
                         {
-                            <input asp-for="Project.Branches[i].Value" type="hidden" value="Project.Branches[i].Value">
-                            <input asp-for="Project.Branches[i].Text" type="hidden" value="Project.Branches[i].Text">
+                            <input asp-for="Project.ApplyBranches[i].Value" type="hidden" value="Project.ApplyBranches[i].Value">
+                            <input asp-for="Project.ApplyBranches[i].Text" type="hidden" value="Project.ApplyBranches[i].Text">
                             <div class="row">
-                                <div class="col-1 clickable">
-                                    <a onclick="RemoveBranch(@Model.Project.Id,@Model.Project.ApplyBranches[i].Value)"
-                                       class="text-danger text-right">
-                                        <i class="fas fa-minus-circle"></i>
-                                    </a>
+
+                                <div class="btn btn-lg col-1"
+                                     data-toggle="tooltip"
+                                     data-placement="top"
+                                     title="Usuń branżę"
+                                     onclick="RemoveBranch(@Model.Project.Id,@Model.Project.ApplyBranches[i].Value)">
+                                    <i class="fas fa-times text-danger"></i>
                                 </div>
-                                <div class="col">@Model.Project.ApplyBranches[i].Text</div>
+                                <div class="col my-auto">@Model.Project.ApplyBranches[i].Text</div>
                             </div>
                         }
                     </div>
@@ -105,10 +107,8 @@
                                 @Html.DropDownListFor(model => model.Project.BranchId, @Model.Project.Branches, new { @class = "form-control" })
                                 <span asp-validation-for="Project.BranchId" style="font-size:14px" class="text-danger"></span>
                             </div>
-                            <div class="btn btn-lg col-2 text-success">
-                                <a onclick="AddBranch(@Model.Project.Id)">
-                                    <i class="fas fa-plus-circle"></i>
-                                </a>
+                            <div class="btn btn-lg col-1" onclick="AddBranch(@Model.Project.Id)">
+                                <i class="fas fa-plus text-success"></i>
                             </div>
                         </div>
                     </div>
@@ -162,12 +162,13 @@
         }
     </script>
 
-    <script>
+    <script>           
         function AddBranch(projectId) {
-            var select = $("#Project_BranchId").val();
+            var selectedBranch = $("#Project_BranchId").val();
+            console.log(selectedBranch);
             $.ajax({
                 type: "Put",
-                url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${select}`,
+                url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${selectedBranch}`,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("XSRF-TOKEN",
                         $('input:hidden[name="__RequestVerificationToken"]').val());

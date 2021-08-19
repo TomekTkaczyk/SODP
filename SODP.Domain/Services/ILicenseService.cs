@@ -11,7 +11,7 @@ namespace SODP.Domain.Services
     {
         Task<ServiceResponse<LicenseWithBranchesDTO>> GetBranchesAsync(int id);
 
-        Task<ServiceResponse> AddBranch(int id, int branchId);
+        Task<ServiceResponse> AddBranchAsync(int id, int branchId);
 
         Task<ServiceResponse> RemoveBranchAsync(int id, int branchId);
     }

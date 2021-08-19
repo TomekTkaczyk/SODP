@@ -170,7 +170,7 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse> AddBranch(int id, int branchId)
+        public async Task<ServiceResponse> AddBranchAsync(int id, int branchId)
         {
             var result = new ServiceResponse();
             try

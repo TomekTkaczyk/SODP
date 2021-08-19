@@ -11,6 +11,9 @@ using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
@@ -33,48 +36,20 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"active-projects/{id}");
-            var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
+            await GetProjectAsync(id);
 
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                // Project = _mapper.Map<ProjectVM>(response.Data);
-                Project = new ProjectVM
-                {
-                    Id = response.Data.Id,
-                    Number = response.Data.Number,
-                    StageId = response.Data.Stage.Id,
-                    StageSign = response.Data.Stage.Sign,
-                    StageTitle = response.Data.Stage.Title,
-                    Title = response.Data.Title,
-                    Status = response.Data.Status,
-                    Address = response.Data.Address,
-                    Investment = response.Data.Investment,
-                    Investor = response.Data.Investor,
-                    Description = response.Data.Description,
-                    TitleStudy = response.Data.TitleStudy,
-                    ApplyBranches = response.Data.Branches
-                    .Select(x => new SelectListItem 
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.ToString()
-                    })
-                    .ToList(),
-                };
-                Project.Branches = await GetBranchesAsync(Project.ApplyBranches);
+            return Page();
+        }
 
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(response.Message))
-                {
-                    ModelState.AddModelError("", response.Message);
-                }
-                foreach (var error in response.ValidationErrors)
-                {
-                    ModelState.AddModelError(error.Key, error.Value);
-                }
-            }
+        public async Task<IActionResult> OnPutBranchAsync(int id, int branchId)
+        {
+            var apiResponse = await _apiProvider.PutAsync($"active-projects/{id}/branches/{branchId}", new StringContent(
+                                  JsonSerializer.Serialize(branchId),
+                                  Encoding.UTF8,
+                                  "application/json"
+                              ));
+
+            await GetProjectAsync(id);
 
             return Page();
         }
@@ -101,6 +76,50 @@ namespace SODP.UI.Pages.ActiveProjects
             }
           
             return Page();
+        }
+
+        private async Task GetProjectAsync(int id)
+        {
+            var apiResponse = await _apiProvider.GetAsync($"active-projects/{id}/branches");
+            var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                Project = new ProjectVM
+                {
+                    Id = response.Data.Id,
+                    Number = response.Data.Number,
+                    StageId = response.Data.Stage.Id,
+                    StageSign = response.Data.Stage.Sign,
+                    StageTitle = response.Data.Stage.Title,
+                    Title = response.Data.Title,
+                    Status = response.Data.Status,
+                    Address = response.Data.Address,
+                    Investment = response.Data.Investment,
+                    Investor = response.Data.Investor,
+                    Description = response.Data.Description,
+                    TitleStudy = response.Data.TitleStudy,
+                    ApplyBranches = response.Data.Branches
+                    .Select(x => new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name
+                    })
+                    .ToList(),
+                };
+                Project.Branches = await GetBranchesAsync(Project.ApplyBranches);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(response.Message))
+                {
+                    ModelState.AddModelError("", response.Message);
+                }
+                foreach (var error in response.ValidationErrors)
+                {
+                    ModelState.AddModelError(error.Key, error.Value);
+                }
+            }
         }
 
         private async Task<List<SelectListItem>> GetBranchesAsync(List<SelectListItem> exclusionList)

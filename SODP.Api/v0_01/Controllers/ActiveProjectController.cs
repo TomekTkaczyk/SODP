@@ -48,5 +48,15 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _projectsService.DeleteAsync(id));
         }
 
+        [HttpPut("{id}/branches/{branchId}")]
+        public async Task<IActionResult> AddBranchAsync(int id, int branchId)
+        {
+            var serviceResponse = await _projectsService.AddBranchAsync(id, branchId);
+
+            return Ok(serviceResponse);
+        }
+
+
+
     }
 }

@@ -20,7 +20,6 @@
 
     @if (User.IsInRole("Administrator") || User.IsInRole("ProjectManager"))
     {
-        <div id="modal-placeholder"></div>
         <div class="col-3 justify-content-end">
             <button type="button"
                     class="btn btn-info form-control text-white float-right"
@@ -71,19 +70,19 @@
                             </td>
                             <td class="cell text-right">
                                 <div class="row">
-                                    <a onclick='Delete("/api/v0_01/active-projects/@item.Id")'
-                                        class='btn btn-md m-0 py-0 text-danger'
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Usuń projekt">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
                                     <a onclick='Archive("/api/v0_01/active-projects/@item.Id/archive")'
-                                        class='btn btn-md m-0 py-0 text-success'
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Przenieś projekt do archiwum">
+                                       class='btn btn-md m-0 py-0 text-success'
+                                       data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="Przenieś projekt do archiwum">
                                         <i class="fas fa-archive"></i>
+                                    </a>
+                                    <a onclick='Delete("/api/v0_01/active-projects/@item.Id")'
+                                       class='btn btn-md m-0 py-0 text-danger'
+                                       data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="Usuń projekt">
+                                        <i class="fas fa-times"></i>
                                     </a>
                                 </div>
                             </td>

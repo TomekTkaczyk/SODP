@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SODP.Shared.Response;
-using System.Net.Http;
 
 namespace SODP.UI.Pages.Shared
 {

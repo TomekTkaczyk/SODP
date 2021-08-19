@@ -25,7 +25,6 @@
     </div>
     @if (SignInManager.IsSignedIn(User))
     {
-        <div id="modal-placeholder"></div>
         <div class="col-3 justify-content-end">
             <button class="btn btn-info form-control text-white float-right"
                     type="button"
@@ -61,35 +60,39 @@
 
                         <div class="colgroup justify-content-end mr-2">
 
-                            <a id="newLicense-@item.Id"
+                            <a name="additionalBtn"
+                               id="newLicense-@item.Id"
                                onclick="NewLicense(@item.Id)"
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
                                data-toggle="tooltip"
                                data-placement="top"
                                title="Dodaj uprawnienia"
                                hidden>
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-plus text-success"></i>
                             </a>
 
-                            <a id="editDesigner-@item.Id"
+                            <a name="additionalBtn"
+                               id="editDesigner-@item.Id"
                                onclick='EditDesigner(@item.Id)'
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-success"
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
                                data-toggle="tooltip"
                                data-placement="top"
                                title="Edycja"
                                hidden>
-                                <i class="fas fa-edit"></i>
+                                <i class="fas fa-edit text-success"></i>
                             </a>
 
-                            <a id="deleteDesigner-@item.Id"
+                            <a name="additionalBtn"
+                               id="deleteDesigner-@item.Id"
                                onclick='Delete("/api/v0_01/designers/@item.Id")'
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1 text-danger"
+                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
                                data-toggle="tooltip"
                                data-placement="top"
                                title="Usuń projektanta"
                                hidden>
-                                <i class="fas fa-trash-alt"></i>
+                                <i class="fas fa-times text-danger"></i>
                             </a>
+
                             <style>
                                 .toggle.ios, .toggle-on.ios, .toggle-off.ios {
                                     border-radius: 30px;
@@ -154,16 +157,17 @@ else
 
     <script>
         function accordionCollapse(id) {
+            var additionalElements = document.getElementsByName('additionalBtn');
+            var inputList = Array.prototype.slice.call(additionalElements);
+            for (let i = 0; i < inputList.length; i++) {
+                inputList[i].hidden = true;
+            }
+
             if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
                 document.getElementById(`newLicense-${id}`).hidden = false;
                 document.getElementById(`editDesigner-${id}`).hidden = false;
                 document.getElementById(`deleteDesigner-${id}`).hidden = false;
                 $(`#license-${id}`).load(`/Designers/index?handler=LicensesPartial&id=${id}`);
-            }
-            else {
-                document.getElementById(`newLicense-${id}`).hidden = true;
-                document.getElementById(`editDesigner-${id}`).hidden = true;
-                document.getElementById(`deleteDesigner-${id}`).hidden = true;
             }
         }
     </script>

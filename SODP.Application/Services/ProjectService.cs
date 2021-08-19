@@ -212,6 +212,7 @@ namespace SODP.Application.Services
                 oldProject.Address = project.Address;
                 oldProject.Investor = project.Investor;
                 oldProject.Location = project.ToString();
+                oldProject.ModifyTimeStamp = DateTime.UtcNow;
                 _context.Projects.Update(oldProject);
                 await _context.SaveChangesAsync();
             }
@@ -247,6 +248,7 @@ namespace SODP.Application.Services
                 }
                 
                 project.Status = ProjectStatus.Archived;
+                project.ModifyTimeStamp = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -315,7 +317,7 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse> AddBrach(int projectId, int branchId)
+        public async Task<ServiceResponse> AddBranchAsync(int id, int branchId)
         {
             var serviceResponse = new ServiceResponse();
             try
@@ -326,17 +328,18 @@ namespace SODP.Application.Services
                     serviceResponse.SetError($"Błąd: Branża Id:{branchId} nie odnaleziona.", 404);
                     return serviceResponse;
                 }
-                //var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == projectId && x.BranchId == branchId);
-                //if (projectBranch == null)
-                //{
-                //    projectBranch = new ProjectBranch
-                //    {
-                //        ProjectId = projectId,
-                //        BranchId = branchId
-                //    };
-                //    var result = await _context.ProjectBranches.AddAsync(projectBranch);
-                //    await _context.SaveChangesAsync();
-                //}
+
+                var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == id && x.BranchId == branchId);
+                if (projectBranch == null)
+                {
+                    projectBranch = new ProjectBranch
+                    {
+                        ProjectId = id,
+                        BranchId = branchId
+                    };
+                    var result = await _context.ProjectBranches.AddAsync(projectBranch);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -351,12 +354,7 @@ namespace SODP.Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResponse> AddBranchAsync(int projectId, int branchId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ServiceResponse> DeleteBranchAsync(int projectId, int branchId)
+        public Task<ServiceResponse> DeleteBranchAsync(int id, int branchId)
         {
             throw new NotImplementedException();
         }

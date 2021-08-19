@@ -45,7 +45,7 @@ namespace SODP.Api.v0_01.Controllers
         public async Task<IActionResult> AddBranchAsync(int id, int branchId)
         {
 
-            return Ok(await _service.AddBranch(id, branchId));
+            return Ok(await _service.AddBranchAsync(id, branchId));
         }
 
         [HttpPut("{id}")]

@@ -14,12 +14,6 @@ namespace SODP.Api.v0_01.Controllers
             _projectsService = projectsService;
         }
 
-        /// <summary>
-        /// Get page of list projects
-        /// </summary>
-        /// <param name="currentPage"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 15)
