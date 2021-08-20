@@ -43,11 +43,20 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnPutBranchAsync(int id, int branchId)
         {
-            var apiResponse = await _apiProvider.PutAsync($"active-projects/{id}/branches/{branchId}", new StringContent(
+            await _apiProvider.PutAsync($"active-projects/{id}/branches/{branchId}", new StringContent(
                                   JsonSerializer.Serialize(branchId),
                                   Encoding.UTF8,
                                   "application/json"
                               ));
+
+            await GetProjectAsync(id);
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId)
+        {
+            await _apiProvider.DeleteAsync($"active-projects/{id}/branches/{branchId}");
 
             await GetProjectAsync(id);
 
@@ -102,9 +111,10 @@ namespace SODP.UI.Pages.ActiveProjects
                     ApplyBranches = response.Data.Branches
                     .Select(x => new SelectListItem
                     {
-                        Value = x.Id.ToString(),
+                        Value = x.BranchId.ToString(),
                         Text = x.Name
                     })
+                    .OrderBy(o => o.Text)
                     .ToList(),
                 };
                 Project.Branches = await GetBranchesAsync(Project.ApplyBranches);

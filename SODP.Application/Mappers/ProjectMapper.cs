@@ -23,10 +23,10 @@ namespace SODP.Application.Mappers
                     Branches = (from branch in project.Branches select new ProjectBranchDTO()
                     {
                        Id = branch.Id,
+                       BranchId = branch.BranchId,
                        Name = branch.ToString()
                     }).ToList()
                 };
-
             }
 
             return null;

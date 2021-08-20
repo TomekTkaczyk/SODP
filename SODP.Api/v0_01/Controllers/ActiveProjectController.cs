@@ -56,7 +56,12 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(serviceResponse);
         }
 
+        [HttpDelete("{id}/branches/{branchId}")]
+        public async Task<IActionResult> DeleteBranchAsync(int id, int branchId)
+        {
+            var serviceResponse = await _projectsService.DeleteBranchAsync(id, branchId);
 
-
+            return Ok(serviceResponse);
+        }
     }
 }

@@ -349,14 +349,24 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-        public Task<ServicePageResponse<BranchDTO>> GetBranchesAsync(int id)
+        public async Task<ServiceResponse> DeleteBranchAsync(int id, int branchId)
         {
-            throw new NotImplementedException();
-        }
+            var serviceResponse = new ServiceResponse();
+            try
+            {
+                var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == id && x.BranchId == branchId);
+                if(projectBranch != null)
+                {
+                    _context.Entry(projectBranch).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
 
-        public Task<ServiceResponse> DeleteBranchAsync(int id, int branchId)
-        {
-            throw new NotImplementedException();
+            return serviceResponse;
         }
     }
 }

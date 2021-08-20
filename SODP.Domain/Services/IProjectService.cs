@@ -16,7 +16,6 @@ namespace SODP.Domain.Services
         Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id);
         Task<ServiceResponse> RestoreAsync(int id);
         Task<ServiceResponse> ArchiveAsync(int id);
-        Task<ServicePageResponse<BranchDTO>> GetBranchesAsync(int id);
         Task<ServiceResponse> AddBranchAsync(int id, int branchId);
         Task<ServiceResponse> DeleteBranchAsync(int id, int branchId);
 

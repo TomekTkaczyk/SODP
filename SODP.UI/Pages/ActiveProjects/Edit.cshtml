@@ -154,9 +154,7 @@
                         $('input:hidden[name="__RequestVerificationToken"]').val());
                 },
                 success: function (data) {
-                    console.log(data);
-                    window.location.href = `/Project/Edit?Id=${projectId}`;
-                    //window.location.href = `/Licenses/Edit?Id=${licenseId}`;
+                    window.location.reload(true);
                 }
             })
         }
@@ -165,7 +163,6 @@
     <script>           
         function AddBranch(projectId) {
             var selectedBranch = $("#Project_BranchId").val();
-            console.log(selectedBranch);
             $.ajax({
                 type: "Put",
                 url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${selectedBranch}`,
@@ -174,7 +171,8 @@
                         $('input:hidden[name="__RequestVerificationToken"]').val());
                 },
                 success: function (data) {
-                    window.location.href = `/Project/Edit?Id=${projectId}`;
+                    console.log('success');
+                    window.location.reload(true);
                 }
             })
         }
