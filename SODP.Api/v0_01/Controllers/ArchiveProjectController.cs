@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SODP.Domain.Services;
 using SODP.Model.Enums;
@@ -7,6 +8,7 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("api/v0_01/archive-projects")]
+    [EnableCors("SODPOriginsSpecification1")]
     public class ArchiveProjectController : ProjectController
     {
         public ArchiveProjectController(IProjectService projectsService) : base(projectsService)

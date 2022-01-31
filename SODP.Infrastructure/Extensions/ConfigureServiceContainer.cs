@@ -7,13 +7,12 @@ using SODP.DataAccess;
 using SODP.Domain.Managers;
 using SODP.Infrastructure.Managers;
 using System;
-using System.IO;
 
 namespace SODP.Infrastructure.Extensions
 {
     public static class ConfigureServiceContainer
     {
-        public static void AddSwagger(this IServiceCollection services)
+        public static void AddSwagger(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSwaggerGen(c =>
             {
@@ -22,17 +21,17 @@ namespace SODP.Infrastructure.Extensions
                     Title = "SODP.API",
                     Version = "v1",
                     Description = "Aplikacja do zarządzania projektami SODP",
-                    TermsOfService = new Uri("https://example.com/terms"),
+                    TermsOfService = new Uri(configuration.GetSection($"AppSettings:termsOfService").Value),
                     Contact = new OpenApiContact
                     {
-                        Name = "Tomasz Tkaczyk",
-                        Email = "tomasz.tkaczyk@unipromax.pl",
-                        Url = new Uri("http://www.unipromax.pl")
+                        Name = configuration.GetSection($"AppSettings:contactName").Value,
+                        Email = configuration.GetSection($"AppSettings:contactEmail").Value,
+                        Url = new Uri(configuration.GetSection($"AppSettings:contactUrl").Value)
                     },
                     License = new OpenApiLicense
                     {
                         Name = "Used License",
-                        Url = new Uri("https://example.com/license")
+                        Url = new Uri(configuration.GetSection($"AppSettings:licenseUrl").Value)
                     }
                 });
 

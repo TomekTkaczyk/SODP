@@ -42,10 +42,10 @@ namespace SODP.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSwagger();
+            services.AddSwagger(Configuration);
 
             services.AddCors(options =>
-                options.AddPolicy(name: "MyAllowSpecificOrigins", builder => 
+                options.AddPolicy(name: "SODPOriginsSpecification", builder => 
                     {
                         //builder.AllowAnyOrigin();                                 // mozliwy dowolny origin inny ni¿ w³asny aplikacji
                         builder.WithOrigins("https://localhost:44303");           // mozliwy origin 

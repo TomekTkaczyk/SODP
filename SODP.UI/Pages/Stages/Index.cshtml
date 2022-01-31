@@ -8,31 +8,48 @@
     ViewData["Title"] = "Stadia projektowe";
 }
 
-
 @inject SignInManager<User> SignInManager
 
-<br />
 
-<div class="container row p-0 m-0">
-    <div class="col-9">
-        <h2 class="text-info">@ViewData["Title"]</h2>
-    </div>
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <div class="col-3 justify-content-end">
-            <button type="button"
-                    class="btn btn-info form-control text-white float-right"
-                    title="Nowe stadium"
-                    data-toggle="ajax-modal"
-                    data-url="@Url.Page("Index","NewStage")">
-                <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowe stadium
-            </button>
+<div class="container p-0 m-0">
+    <div class="row pl-3 pr-3">
+        <div class="col-8">
+            <h2 class="text-info">@ViewData["Title"]</h2>
         </div>
-    }
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="col-4 justify-content-end">
+                <button type="button"
+                        class="btn btn-info form-control text-white float-right"
+                        title="Nowe stadium"
+                        data-toggle="ajax-modal"
+                        data-url="@Url.Page("Index","NewStage")">
+                    <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowe stadium
+                </button>
+            </div>
+        }
+    </div>
 
     @if (Model.StagesViewModel.Stages.Count() > 0)
-    {
-        <div id="StagesTable" class="col-12 p-3 mt-3">
+    {   
+        <form>
+            <div class="row pl-3 pr-3 justify-content-end">
+@*                <div class="col-3 pr-0 mr-0">
+                    <input asp-for="StagesViewModel.SearchString" class="form-control" placeholder="Search" />
+                </div>
+                <div class="col-1 pl-0">
+                    <button type="button"
+                            class="btn btn-info form-control text-white float-right p-0 m-0"
+                        title="Nowe stadium"
+                        data-toggle="ajax-modal"
+                        data-url="@Url.Page("Index","NewStage")">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>*@
+            </div>
+        </form>  
+
+        <div id="StagesTable" class="col-12 p-3 mt-0">
             <table class="table table-sm table-hover">
                 <thead class="thead-light">
                     <tr>
@@ -91,6 +108,7 @@
     }
     else
     {
+        <br /> 
         <p> Lista stadiów jest pusta</p>
     }
 

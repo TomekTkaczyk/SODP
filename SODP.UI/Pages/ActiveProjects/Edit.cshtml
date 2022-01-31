@@ -31,10 +31,12 @@
         </div>
 
         <div class="justify-content-end col-md-7" style="padding:20px">
-
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="basic-tab" data-toggle="tab" href="#basic" role="tab" aria-controls="basic" aria-selected="true">Podstawowe</a>
+                    <a class="nav-link active" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="summary" aria-selected="true">Podsumowanie</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="basic-tab" data-toggle="tab" href="#basic" role="tab" aria-controls="basic" aria-selected="false">Podstawowe</a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="branch-tab" data-toggle="tab" href="#branch" role="tab" aria-controls="branch" aria-selected="false">Branże</a>
@@ -42,7 +44,10 @@
             </ul>
 
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+                <div class="tab-pane fade show active" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+
+                </div>
+                <div class="tab-pane fade show" id="basic" role="tabpanel" aria-labelledby="basic-tab">
                     <br />
                     <div class="form-group row">
                         <div class="col-12">

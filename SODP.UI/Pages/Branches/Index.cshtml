@@ -1,7 +1,9 @@
 ﻿@page
 @model IndexModel
 
-@{ ViewData["Title"] = "Branże"; }
+@{ 
+    ViewData["Title"] = "Branże"; 
+}
 
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
@@ -13,31 +15,29 @@
 <script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
 
-<br />
-
-<div class="container row p-0 m-0">
-    <div class="col-9">
-        <h2 class="text-info">@ViewData["Title"]</h2>
-    </div>
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <div class="col-3 justify-content-end">
-            <button type="button"
-                    class="btn btn-info form-control text-white float-right"
-                    title="Nowa branża"
-                    data-toggle="ajax-modal"
-                    data-url="@Url.Page("Index", "NewBranch")">
-                <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa branża
-            </button>
+<div class="container p-0 m-0">
+    <div class="row pl-3 pr-3">
+        <div class="col-9">
+            <h2 class="text-info">@ViewData["Title"]</h2>
         </div>
-    }
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="col-3 justify-content-end">
+                <button type="button"
+                        class="btn btn-info form-control text-white float-right"
+                        title="Nowa branża"
+                        data-toggle="ajax-modal"
+                        data-url="@Url.Page("Index", "NewBranch")">
+                    <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa branża
+                </button>
+            </div>
+        }
+    </div>
 </div>
-
-<br />
 
 @if (Model.Branches.Branches.Count() > 0)
 {
-    <div class="accordion" id="branchesAccordion">
+    <div id="branchesAccordion" class="accordion col-12 p-3 mt-0">
         @foreach (var item in Model.Branches.Branches.OrderBy(x => x.Symbol))
         {
             <div class="button card">

@@ -17,30 +17,27 @@
 <script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
 
-<br />
-
-<div class="container row p-0 m-0">
-    <div class="col-9">
-        <h2 class="text-info">@ViewData["Title"]</h2>
-    </div>
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <div class="col-3 justify-content-end">
-            <button class="btn btn-info form-control text-white float-right"
-                    type="button"
-                    onclick="EditDesigner()"
-                    title="Nowy projektant">
-                <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
-            </button>
+<div class="container p-0 m-0">
+    <div class="row pl-3 pr-3">
+        <div class="col-8">
+            <h2 class="text-info">@ViewData["Title"]</h2>
         </div>
-    }
-</div>
-
-<br />
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="col-4 justify-content-end">
+                <button type="button"
+                        class="btn btn-info form-control text-white float-right"
+                        onclick="EditDesigner()"
+                        title="Nowy projektant">
+                    <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
+                </button>
+            </div>
+        }
+    </div>
 
 @if (Model.Designers.Designers.Count() > 0)
 {
-    <div class="accordion" id="designersAccordion">
+    <div id="designersAccordion" class="accordion col-12 p-3 mt-0">
         @foreach (var item in Model.Designers.Designers)
         {
             <div class="button card">
@@ -127,6 +124,8 @@ else
     <br />
     <p> Lista projektantów jest pusta</p>
 }
+
+</div>
 
 @section Scripts{
     <script src="~/js/delete.js"></script>

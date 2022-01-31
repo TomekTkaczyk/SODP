@@ -8,106 +8,126 @@
     ViewData["Title"] = "Projekty aktywne";
 }
 
-
 @inject SignInManager<User> SignInManager
 
-<br />
-
-<div class="container row p-0 m-0">
-    <div class="col-9">
-        <h2 class="text-info">@ViewData["Title"]</h2>
-    </div>
-
-    @if (User.IsInRole("Administrator") || User.IsInRole("ProjectManager"))
-    {
-        <div class="col-3 justify-content-end">
-            <button type="button"
-                    class="btn btn-info form-control text-white float-right"
-                    title="Nowy projekt"
-                    data-toggle="ajax-modal"
-                    data-url="@Url.Page("Index","NewProject")">
-                <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projekt
-            </button>
+<div class="container p-0 m-0">
+    <div class="row pl-3 pr-3">
+        <div class="col-8">
+            <h2 class="text-info">@ViewData["Title"]</h2>
         </div>
-    }
+
+        @if (User.IsInRole("Administrator") || User.IsInRole("ProjectManager"))
+        {
+            <div class="col-4 justify-content-end">
+                <button type="button"
+                        class="btn btn-info form-control text-white float-right"
+                        title="Nowy projekt"
+                        data-toggle="ajax-modal"
+                        data-url="@Url.Page("Index","NewProject")">
+                    <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projekt
+                </button>
+            </div>
+        }
+    </div>
 
     @if (Model.ProjectsViewModel.Projects.Count() > 0)
     {
-            <div id="ProjectTable" class="col-12 p-3 mt-3">
-                <table class="table table-sm table-hover">
-                    <thead class="thead-light">
-                        <tr>
-                            <th class="m-0 p-0 pl-1 pr-1">Numer</th>
-                            <th class="m-0 p-0 pl-1 pr-1">Stadium</th>
-                            <th class="m-0 p-0 pl-1 pr-1">Tytuł</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.ProjectsViewModel.Projects)
-                        {
-                        <tr class="m-0 p-0">
-                            <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
-                                class="cell clickable"
-                                data-toggle="tooltip"
-                                title="Edycja"
-                                data-placement="top">
-                                @item.Number
-                            </td>
-                            <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
-                                class="cell clickable"
-                                data-toggle="tooltip"
-                                title="Edycja"
-                                data-placement="top">
-                                @item.Stage.Sign
-                            </td>
-                            <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
-                                class="cell clickable"
-                                data-toggle="tooltip"
-                                title="Edycja"
-                                data-placement="top">
-                                @item.Title
-                            </td>
-                            <td class="cell text-right">
-                                <div class="row">
+        <form>
+            <div class="row pl-3 pr-3 justify-content-end">
+                <div class="col-3 pr-0 mr-0">
+                    <input asp-for="ProjectsViewModel.SearchString" class="form-control" placeholder="Search" />
+                </div>
+                <div class="col-1 pl-0">
+                    <button type="button"
+                            class="btn btn-info form-control text-white float-right p-0 m-0"
+                        title="Nowy projekt"
+                        data-toggle="ajax-modal"
+                        data-url="@Url.Page("Index","NewProject")">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>  
+
+        <div id="ProjectTable" class="col-12 p-3 mt-0">
+            <table class="table table-sm table-hover">
+                <thead class="m-0 p-0 thead-light">
+                    <tr>
+                        <th class="m-0 p-0 pl-1 pr-1">Numer</th>
+                        <th class="m-0 p-0 pl-1 pr-1">Stadium</th>
+                        <th class="m-0 p-0 pl-1 pr-1">Tytuł</th>
+                        <th class="m-0 p-0 pl-1 pr-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ProjectsViewModel.Projects)
+                    {
+                    <tr class="m-0 p-0">
+                        <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
+                            class="cell clickable col-1"
+                            data-toggle="tooltip"
+                            title="Edycja"
+                            data-placement="top">
+                            @item.Number
+                        </td>
+                        <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
+                            class="cell clickable col-1"
+                            data-toggle="tooltip"
+                            title="Edycja"
+                            data-placement="top">
+                            @item.Stage.Sign
+                        </td>
+                        <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
+                            class="cell clickable col-9"
+                            data-toggle="tooltip"
+                            title="Edycja"
+                            data-placement="top">
+                            @item.Title
+                        </td>
+                        <td class="cell p-0 m-0 col-1">
+                            <div class="row">
+                                <div>
                                     <a onclick='Archive("/api/v0_01/active-projects/@item.Id/archive")'
-                                       class='btn btn-md m-0 py-0 text-success'
-                                       data-toggle="tooltip"
-                                       data-placement="top"
-                                       title="Przenieś projekt do archiwum">
+                                        class='btn btn-md border-0 p-1 text-success'
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Przenieś projekt do archiwum">
                                         <i class="fas fa-archive"></i>
                                     </a>
+                                </div>
+                                <div>
                                     <a onclick='Delete("/api/v0_01/active-projects/@item.Id")'
-                                       class='btn btn-md m-0 py-0 text-danger'
-                                       data-toggle="tooltip"
-                                       data-placement="top"
-                                       title="Usuń projekt">
+                                        class='btn btn-md border-0 p-1 text-danger'
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Usuń projekt">
                                         <i class="fas fa-times"></i>
                                     </a>
                                 </div>
-                            </td>
-                        </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </tfoot>
-                </table>
-                <div class="col-12 text-right">
-                    <div class="btn-group" asp-action="Index"
-                         page-model="@Model.ProjectsViewModel.PageInfo"
-                         page-class="btn border"
-                         page-class-normal="btn btn-light"
-                         page-class-selected="btn btn-info">
-                    </div>
+                            </div>                       
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="col-12 text-right">
+                <div class="btn-group"
+                        page-model="@Model.ProjectsViewModel.PageInfo"
+                        page-class="btn border"
+                        page-class-normal="btn-light"
+                        page-class-selected="btn-info">
                 </div>
-            </div>        
-        }
+            </div>
+        </div>        
+    }
     else
     {
         <br />
