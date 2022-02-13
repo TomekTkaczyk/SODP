@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SODP.Domain.Services;
 using SODP.Shared.DTO;
 using System.Threading.Tasks;
@@ -8,15 +10,17 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/users")]
-    public class UserController : ControllerBase
+    public class UserController : ApiControllerBase
     {
         private readonly IUserService _usersService;
-        public UserController(IUserService usersService)
+        public UserController(IUserService usersService, ILogger<UserController> logger) : base(logger)
         {
             _usersService = usersService;
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAllAsync()
         {
             var req = HttpContext.Request.Query;
@@ -27,6 +31,9 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAsync(int id)
         {
             var serviceResponse = await _usersService.GetAsync(id);
@@ -38,12 +45,18 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await _usersService.DeleteAsync(id));
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> SetEnable(int id, [FromBody] UserDTO user)
         {
             if(id != user.Id)
@@ -55,6 +68,9 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpPut("{id}/{enabled}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> SetEnable(int id, [FromBody]int enabled)
         {
             return Ok(await _usersService.SetActiveStatusAsync(id, enabled==1));

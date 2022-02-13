@@ -47,7 +47,9 @@ namespace SODP.UI
             services.AddCors(options =>
                 options.AddPolicy(name: "SODPOriginsSpecification", builder => 
                     {
-                        //builder.AllowAnyOrigin();                                 // mozliwy dowolny origin inny ni¿ w³asny aplikacji
+                        //builder.AllowAnyOrigin();                               // mozliwy dowolny origin inny ni¿ w³asny aplikacji
+                        //builder.AllowAnyMethod();                               // mozliwy dowolny origin inny ni¿ w³asny aplikacji
+                        //builder.AllowAnyHeader();                               // mozliwy dowolny origin inny ni¿ w³asny aplikacji
                         builder.WithOrigins("https://localhost:44303");           // mozliwy origin 
                     })
             );
@@ -154,7 +156,13 @@ namespace SODP.UI
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(options =>
+                options
+                //.AllowAnyOrigin()                           //
+                //.AllowAnyMethod()                           //
+                //.AllowAnyHeader()                           //
+                .WithOrigins("https://localhost:44303")     //
+            );
 
             app.UseAuthentication();
 

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
@@ -17,44 +18,19 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.ActiveProjects
 {
     [Authorize(Roles = "User, Administrator, ProjectManager")]
-    public class IndexModel : SODPPageModel
+    public class IndexModel : ProjectsPageModel
     {
         const string partialViewName = "_NewProjectPartialView";
-        private readonly IWebAPIProvider _apiProvider;
 
-        public IndexModel(IWebAPIProvider apiProvider)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(apiProvider, logger)
         {
             ReturnUrl = "/ActiveProjects";
-            _apiProvider = apiProvider;
-        }
-
-        public ProjectsListVM ProjectsViewModel { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 15)
-        {
-            var url = new StringBuilder();
-            url.Append(ReturnUrl);
-            url.Append("?currentPage=:&pageSize=");
-            url.Append(pageSize.ToString());
-
-            ProjectsViewModel = new ProjectsListVM
-            {
-                PageInfo = new PageInfo
-                {
-                    CurrentPage = currentPage,
-                    ItemsPerPage = pageSize,
-                    Url = url.ToString()
-                },
-            };
-
-            ProjectsViewModel.Projects = await GetProjectsAsync(ProjectsViewModel.PageInfo);
-
-            return Page();
+            _endpoint = "active-projects";
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
-            var response = await _apiProvider.DeleteAsync($"active-projects/{id}");
+            var response = await _apiProvider.DeleteAsync(_endpoint + $"/{id}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -73,7 +49,7 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PostAsync("active-projects", project.ToHttpContent());
+                var apiResponse = await _apiProvider.PostAsync(_endpoint, project.ToHttpContent());
 
                 var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
@@ -95,21 +71,6 @@ namespace SODP.UI.Pages.ActiveProjects
             }
 
             return await GetPartialViewAsync(project);
-        }
-
-        private async Task<IList<ProjectDTO>> GetProjectsAsync(PageInfo pageInfo)
-        {
-            var apiResponse = await _apiProvider.GetAsync($"active-projects?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();
-                pageInfo.TotalItems = response.Data.TotalCount;
-                pageInfo.CurrentPage = response.Data.PageNumber;
-
-                return response.Data.Collection.ToList();
-            }
-
-            return new List<ProjectDTO>();
         }
 
         private async Task<PartialViewResult> GetPartialViewAsync(NewProjectVM project)

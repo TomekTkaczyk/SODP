@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace SODP.Shared.Response
 {
@@ -6,13 +7,13 @@ namespace SODP.Shared.Response
     {
         public bool Success { get; set; } = true;
         public string Message { get; set; } = "";
-        public int StatusCode { get; set; } = 204;
-        public IDictionary<string,string> ValidationErrors { get; set; } = new Dictionary<string,string>();
+        public int StatusCode { get; set; } = StatusCodes.Status204NoContent;
+        public IDictionary<string, string> ValidationErrors { get; set; } = new Dictionary<string, string>();
 
 
         public void SetError(string message)
         {
-            SetError(message, 500);
+            SetError(message, StatusCodes.Status500InternalServerError);
         }
 
         public void SetError(string message, int statusCode)
@@ -30,7 +31,7 @@ namespace SODP.Shared.Response
         public void SetData(T data)
         {
             Data = data;
-            StatusCode = 200;
+            StatusCode = StatusCodes.Status200OK;
         }
     }
 

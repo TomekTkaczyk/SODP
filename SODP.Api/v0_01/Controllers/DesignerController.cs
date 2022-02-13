@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SODP.Domain.Services;
 using SODP.Shared.DTO;
 using System.Threading.Tasks;
@@ -12,18 +14,23 @@ namespace SODP.Api.v0_01.Controllers
     {
         private readonly IDesignerService _service;
 
-        public DesignerController(IDesignerService service)
+        public DesignerController(IDesignerService service, ILogger<DesignerController> logger) : base(logger)
         {
             _service = service;
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 15, bool? active = null)
         {
             return Ok(await _service.GetAllAsync(currentPage, pageSize, active));
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAsync(int id)
         {
             return Ok(await _service.GetAsync(id));
@@ -36,6 +43,9 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] DesignerDTO designer)
         {
             if (id != designer.Id)
@@ -47,6 +57,9 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _service.DeleteAsync(id);
@@ -55,12 +68,18 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpPut("{id}/status/{status}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] int status)
         {
             return Ok(await _service.SetActiveStatusAsync(id, status == 1));
         }
 
         [HttpGet("{id}/licenses")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetLicensesAsync(int id)
         {
             var response = await _service.GetLicensesAsync(id);
@@ -69,6 +88,9 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpPost("{id}/licences")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> AddLicence(int id, [FromBody] LicenseDTO licence)
         {
 

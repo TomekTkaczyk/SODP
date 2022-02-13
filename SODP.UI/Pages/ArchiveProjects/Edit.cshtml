@@ -17,7 +17,7 @@
     <div class="border justify-content-end col-12 col-md-7" style="padding:30px;">
         <form method="post">
             <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-            <input type="hidden" asp-for="Project.Id" />
+            <input asp-for="Project.Id" type="hidden"/>
 
             <div class="form-group row">
                 <div class="col-12">
@@ -28,9 +28,9 @@
                 </div>
             </div>
 
-            <input type="hidden" asp-for="Project.StageId" />
-            <input type="hidden" asp-for="Project.StageSign" />
-            <input type="hidden" asp-for="Project.StageTitle" />
+            <input asp-for="Project.StageId" type="hidden" />
+            <input asp-for="Project.StageSign" type="hidden" />
+            <input asp-for="Project.StageTitle" type="hidden" />
             <div class="form-group row">
                 <div class="col-12">
                     <input asp-for="Project.Stage" class="form-control" readonly />
@@ -58,6 +58,14 @@
     </div>
 </div>
 
-@section Scripts{
-    <partial name="/Pages/Shared/_ValidationScriptsPartial.cshtml" />
-}
+<script>
+    $(function(){
+    $('input').keydown(function(e){
+        if (e.keyCode == 13) {
+            console.log("wcisniety ENTER");
+            $("input[value='next']").focus().click();
+            return false;
+        }
+    });
+});
+</script>

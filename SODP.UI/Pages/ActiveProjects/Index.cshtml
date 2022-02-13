@@ -18,37 +18,22 @@
 
         @if (User.IsInRole("Administrator") || User.IsInRole("ProjectManager"))
         {
-            <div class="col-4 justify-content-end">
+            <div class="col-4 p-1 m-0">
                 <button type="button"
-                        class="btn btn-info form-control text-white float-right"
+                        class="btn btn-info form-control text-white float-right p-0 m-0"
                         title="Nowy projekt"
                         data-toggle="ajax-modal"
                         data-url="@Url.Page("Index","NewProject")">
-                    <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projekt
+                        <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projekt
                 </button>
             </div>
         }
     </div>
 
+    <partial name="_SearchString" />
+    
     @if (Model.ProjectsViewModel.Projects.Count() > 0)
     {
-        <form>
-            <div class="row pl-3 pr-3 justify-content-end">
-                <div class="col-3 pr-0 mr-0">
-                    <input asp-for="ProjectsViewModel.SearchString" class="form-control" placeholder="Search" />
-                </div>
-                <div class="col-1 pl-0">
-                    <button type="button"
-                            class="btn btn-info form-control text-white float-right p-0 m-0"
-                        title="Nowy projekt"
-                        data-toggle="ajax-modal"
-                        data-url="@Url.Page("Index","NewProject")">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </form>  
-
         <div id="ProjectTable" class="col-12 p-3 mt-0">
             <table class="table table-sm table-hover">
                 <thead class="m-0 p-0 thead-light">
@@ -118,14 +103,18 @@
                     </tr>
                 </tfoot>
             </table>
-            <div class="col-12 text-right">
-                <div class="btn-group"
-                        page-model="@Model.ProjectsViewModel.PageInfo"
+            @if (Model.PageInfo.TotalPages > 1)
+            {
+                <div class="col text-center">
+                    <div class="btn-group"
+                        page-model="@Model.PageInfo"
                         page-class="btn border"
                         page-class-normal="btn-light"
-                        page-class-selected="btn-info">
+                        page-class-selected="btn-info"
+                        page-class-prev-next="btn">
+                    </div>
                 </div>
-            </div>
+            }
         </div>        
     }
     else
@@ -136,23 +125,10 @@
 
 </div>
 
-
 @section Scripts{
     <script src="~/js/edit.js"></script>
     <script src="~/js/delete.js"></script>
+    <script src="~/js/submitForm.js"></script>
     <script src="~/js/archive.js"></script>
     <script src="~/js/activeProjectList.js"></script>
-
-    <script>
-        function NewProject(id) {
-            $.ajax({
-                type: "Get",
-                url: '@Url.Page("Index","NewProject")&Id=' + id,
-                success: function (data) {
-                    $('#modal-placeholder').html(data);
-                    $('#editproject').modal('show');
-                }
-            })
-        }
-    </script>
 }

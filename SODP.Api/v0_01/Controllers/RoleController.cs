@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SODP.Domain.Services;
 using System.Threading.Tasks;
 
@@ -7,15 +9,17 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/roles")]
-    public class RoleController : ControllerBase
+    public class RoleController : ApiControllerBase
     {
         private readonly IRoleService _roleService;
-        public RoleController(IRoleService roleService)
+        public RoleController(IRoleService roleService, ILogger<RoleController> logger) : base(logger)
         {
             _roleService = roleService;
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAllAsync()
         {
             var req = HttpContext.Request.Query;

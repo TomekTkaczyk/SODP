@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
@@ -21,7 +22,7 @@ namespace SODP.UI.Pages.Licenses
     {
         private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IWebAPIProvider apiProvider)
+        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
         {
             _apiProvider = apiProvider;
             var prev = Request;

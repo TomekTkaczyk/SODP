@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SODP.Domain.Services;
 using SODP.Shared.DTO;
 using SODP.UI.Pages.Shared;
@@ -13,7 +14,7 @@ namespace SODP.UI.Pages.ActiveProjects
     {
         private readonly IProjectService _projectsService;
 
-        public InfoModel(IProjectService projectsService)
+        public InfoModel(IProjectService projectsService, ILogger<InfoModel> logger) : base(logger) 
         {
             _projectsService = projectsService;
         }

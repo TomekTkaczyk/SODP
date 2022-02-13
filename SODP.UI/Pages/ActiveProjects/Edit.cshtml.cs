@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -24,7 +25,7 @@ namespace SODP.UI.Pages.ActiveProjects
         private readonly IWebAPIProvider _apiProvider;
         private readonly IMapper _mapper;
 
-        public EditModel(IWebAPIProvider apiProvider, IMapper mapper)
+        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper) : base(logger)
         {
             _apiProvider = apiProvider;
             _mapper = mapper;

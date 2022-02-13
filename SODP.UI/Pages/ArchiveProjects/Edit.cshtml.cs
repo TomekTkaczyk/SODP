@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
@@ -15,7 +16,7 @@ namespace SODP.UI.Pages.ArchiveProjects
     {
         private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IWebAPIProvider apiProvider)
+        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger) : base(logger)
         {
             _apiProvider = apiProvider;
         }

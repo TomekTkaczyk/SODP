@@ -66,6 +66,7 @@ namespace SODP.Infrastructure.Extensions
         {
             services.AddDbContext<SODPDBContext>(options =>
             {
+                options.EnableDetailedErrors();
                 options.UseMySql(
                     configuration.GetConnectionString("DefaultDbConnection"),
                     b => b.CharSetBehavior(CharSetBehavior.NeverAppend));

@@ -1,0 +1,3 @@
+﻿function SubmitForm() {
+    $('form').submit();
+}

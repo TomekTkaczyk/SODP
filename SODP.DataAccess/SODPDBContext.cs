@@ -10,14 +10,14 @@ namespace SODP.DataAccess
     {
         public SODPDBContext(DbContextOptions<SODPDBContext> options) : base(options) { }
 
-        public DbSet<Stage> Stages { get; set; }
-        public DbSet<Project> Projects { get; set; }
-        public DbSet<Branch> Branches { get; set; }
-        public DbSet<ProjectBranch> ProjectBranches { get; set; }
-        public DbSet<Designer> Designers { get; set; }
-        public DbSet<License> Licenses { get; set; }
-        public DbSet<Certificate> Certificates { get; set; }
-        public DbSet<BranchLicense> BranchLicenses { get; set; }
+        public virtual DbSet<Stage> Stages { get; set; }
+        public virtual DbSet<Project> Projects { get; set; }
+        public virtual DbSet<Branch> Branches { get; set; }
+        public virtual DbSet<ProjectBranch> ProjectBranches { get; set; }
+        public virtual DbSet<Designer> Designers { get; set; }
+        public virtual DbSet<License> Licenses { get; set; }
+        public virtual DbSet<Certificate> Certificates { get; set; }
+        public virtual DbSet<BranchLicense> BranchLicenses { get; set; }
 
 
 

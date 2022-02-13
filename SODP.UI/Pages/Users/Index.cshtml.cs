@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
@@ -14,7 +15,7 @@ namespace SODP.UI.Pages.Users
     {
         private readonly IWebAPIProvider _apiProvider;
 
-        public IndexModel(IWebAPIProvider apiProvider)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
         {
             ReturnUrl = "/Users";
             _apiProvider = apiProvider;

@@ -53,12 +53,14 @@ namespace SODP.Application.Services
             return await GetAllAsync(1, 0);
         }   
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var serviceResponse = new ServicePageResponse<ProjectDTO>();
             IList<Project> projects = new List<Project>();
 
-            serviceResponse.Data.TotalCount = await _context.Projects.Where(x => x.Status == _mode).CountAsync();
+            serviceResponse.Data.TotalCount = await _context.Projects
+                .Where(x => x.Status == _mode && (string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString)))
+                .CountAsync();
             if (pageSize == 0)
             {
                 pageSize = serviceResponse.Data.TotalCount;
@@ -69,7 +71,7 @@ namespace SODP.Application.Services
                 projects = await _context.Projects.Include(s => s.Stage)
                     .OrderBy(x => x.Number)
                     .ThenBy(y => y.Stage.Sign)
-                    .Where(x => x.Status == _mode)
+                    .Where(x => x.Status == _mode && (string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString)))
                     .Skip((currentPage-1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
@@ -96,7 +98,7 @@ namespace SODP.Application.Services
                     .FirstOrDefaultAsync(x => x.Id == id);
                 if (project == null)
                 {
-                    serviceResponse.SetError($"Błąd: Projekt Id:{id} nie odnaleziony.", 404);
+                    serviceResponse.SetError($"Error: Project Id:{id} not found.", 404);
                 } else
                 {
                     serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
@@ -143,7 +145,7 @@ namespace SODP.Application.Services
                 var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
                 if(exist != null)
                 {
-                    serviceResponse.SetError($"Błąd: Projekt {exist.Symbol} już istnieje.", 400);
+                    serviceResponse.SetError($"Error: Project {exist.Symbol} exist.", 400);
                     return serviceResponse;
                 }
 

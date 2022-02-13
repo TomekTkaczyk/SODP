@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SODP.Domain.Services;
 using SODP.Shared.DTO;
 using System;
@@ -14,24 +16,32 @@ namespace SODP.Api.v0_01.Controllers
     {
         private readonly IBranchService _service;
 
-        public BranchController(IBranchService service)
+        public BranchController(IBranchService service, ILogger<ApiControllerBase> logger) :base(logger)
         {
             _service = service;
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAllAsync()
         {
             return Ok(await _service.GetAllAsync());
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAsync(int id)
         {
             return Ok(await _service.GetAsync(id));
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<BranchDTO>> Create([FromBody] BranchDTO branch)
         {
             var response = await _service.CreateAsync(branch);
@@ -60,6 +70,9 @@ namespace SODP.Api.v0_01.Controllers
         //}
 
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<BranchDTO>> Update(int id, [FromBody] BranchDTO branch)
         {
             if (id != branch.Id)
@@ -71,12 +84,18 @@ namespace SODP.Api.v0_01.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> Delete(int id)
         {
             return Ok(await _service.DeleteAsync(id));
         }
 
         [HttpPut("{Id}/{status}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateAsync(int id, [FromBody] int status)
         {
             return Ok(await _service.SetActiveStatusAsync(id, status == 1));
@@ -84,12 +103,18 @@ namespace SODP.Api.v0_01.Controllers
 
 
         [HttpGet("{id}/designers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetLicensesAsync(int id)
         {
             return Ok(await _service.GetLicensesAsync(id));
         }
 
         [HttpGet("test")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public IActionResult Test()
         {
             return Ok(_service.Test());

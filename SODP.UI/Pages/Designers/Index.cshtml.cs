@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -25,7 +26,7 @@ namespace SODP.UI.Pages.Designers
 
         private readonly IWebAPIProvider _apiProvider;
 
-        public IndexModel(IWebAPIProvider apiProvider)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
         {
             ReturnUrl = "/Designers";
             _apiProvider = apiProvider;

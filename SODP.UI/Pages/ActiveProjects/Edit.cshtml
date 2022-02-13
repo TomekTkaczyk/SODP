@@ -3,24 +3,28 @@
 
 @using SODP.Shared.Enums
 
-<br />
+@{
+    ViewData["Title"] = "Edycja projektu";
+}
 
-<div class="container row p-0 m-0">
-    <div class="col">
-        <h2 class="text-info">Edycja projektu</h2>
+<div class="container p-0 m-0">
+    <div class="row pl-3 pr-3">
+        <div class="col-8">
+            <h2 class="text-info">@ViewData["Title"]</h2>
+        </div>
     </div>
 </div>
 
-<div class="container">
+<div class="container p-0 m-0">
     <form method="post">
         <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-        <input type="hidden" asp-for="Project.Id" />
-        <input type="hidden" asp-for="Project.Number" />
-        <input type="hidden" asp-for="Project.StageId" />
-        <input type="hidden" asp-for="Project.StageSign" />
-        <input type="hidden" asp-for="Project.StageTitle" />
+        <input asp-for="Project.Id" type="hidden" />
+        <input asp-for="Project.Number" type="hidden" />
+        <input asp-for="Project.StageId" type="hidden" />
+        <input asp-for="Project.StageSign" type="hidden" />
+        <input asp-for="Project.StageTitle" type="hidden" />
 
-        <div class="justify-content-end col-md-7 font-weight-bold" style="padding:20px">
+        <div class="col-md-7 justify-content-end font-weight-bold" style="padding:20px">
             <div>
                 @Model.Project.Number
                 @Model.Project.Stage
@@ -45,7 +49,10 @@
 
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="summary" role="tabpanel" aria-labelledby="summary-tab">
-
+                    <br/>
+                    <div>
+                        Podsumowanie danych projektu...
+                    </div>
                 </div>
                 <div class="tab-pane fade show" id="basic" role="tabpanel" aria-labelledby="basic-tab">
                     <br />

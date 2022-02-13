@@ -8,7 +8,7 @@ namespace SODP.Domain.Services
     {
         IProjectService SetArchiveMode();
         IProjectService SetActiveMode();
-        Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0);
+        Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "");
         Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO project);
         Task<ServiceResponse<ProjectDTO>> GetAsync(int id);
         Task<ServiceResponse> UpdateAsync(ProjectDTO project);

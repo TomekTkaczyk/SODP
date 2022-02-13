@@ -32,23 +32,6 @@
 
     @if (Model.StagesViewModel.Stages.Count() > 0)
     {   
-        <form>
-            <div class="row pl-3 pr-3 justify-content-end">
-@*                <div class="col-3 pr-0 mr-0">
-                    <input asp-for="StagesViewModel.SearchString" class="form-control" placeholder="Search" />
-                </div>
-                <div class="col-1 pl-0">
-                    <button type="button"
-                            class="btn btn-info form-control text-white float-right p-0 m-0"
-                        title="Nowe stadium"
-                        data-toggle="ajax-modal"
-                        data-url="@Url.Page("Index","NewStage")">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>*@
-            </div>
-        </form>  
-
         <div id="StagesTable" class="col-12 p-3 mt-0">
             <table class="table table-sm table-hover">
                 <thead class="thead-light">
@@ -96,14 +79,18 @@
                     </tr>
                 </tfoot>
             </table>
-            <div class="col-12 text-right">
-                <div class="btn-group" asp-action="Index"
-                     page-model="@Model.StagesViewModel.PageInfo"
-                     page-class="btn border"
-                     page-class-normal="btn btn-light"
-                     page-class-selected="btn btn-info">
+            @if(Model.StagesViewModel.PageInfo.TotalPages > 1)
+            {
+                <div class="col-12 text-center">
+                    <div class="btn-group"
+                         page-model="@Model.StagesViewModel.PageInfo"
+                         page-class="btn border"
+                         page-class-normal="btn btn-light"
+                         page-class-selected="btn btn-info"
+                         page-class-prev-next="btn">
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     }
     else

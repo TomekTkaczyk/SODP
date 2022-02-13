@@ -16,29 +16,14 @@
             <h2 class="text-info">@ViewData["Title"]</h2>
         </div>
     </div>
+    
+    <partial name="_SearchString" />
 
     @if (Model.ProjectsViewModel.Projects.Count() > 0)
     {
-        <form>
-            <div class="row pl-3 pr-3 justify-content-end">
-                <div class="col-3 pr-0 mr-0">
-                    <input asp-for="ProjectsViewModel.SearchString" class="form-control" placeholder="Search" />
-                </div>
-                <div class="col-1 pl-0">
-                    <button type="button"
-                            class="btn btn-info form-control text-white float-right p-0 m-0"
-                        title="Nowy projekt"
-                        data-toggle="ajax-modal"
-                        data-url="@Url.Page("Index","NewProject")">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </form>
-
         <div id="ProjectTable" class="col-12 p-3 mt-0">
             <table class="table table-sm table-hover">
-                <thead class="tm-0 p-0 thead-light">
+                <thead class="m-0 p-0 thead-light">
                     <tr>
                         <th class="m-0 p-0 pl-1 pr-1">Numer</th>
                         <th class="m-0 p-0 pl-1 pr-1">Stadium</th>
@@ -96,14 +81,18 @@
                     </tr>
                 </tfoot>
             </table>
-            <div class="col-12 text-right">
-                <div class="btn-group" asp-action="Index"
-                     page-model="@Model.ProjectsViewModel.PageInfo"
-                     page-class="btn border"
-                     page-class-normal="btn btn-light"
-                     page-class-selected="btn btn-info">
+            @if (Model.PageInfo.TotalPages > 1)
+            {
+                <div class="col text-center">
+                    <div class="btn-group"
+                        page-model="@Model.PageInfo"
+                        page-class="btn border"
+                        page-class-normal="btn-light"
+                        page-class-selected="btn-info"
+                        page-class-prev-next="btn">
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     }
     else
@@ -115,5 +104,6 @@
 @section Scripts{
     <script src="~/js/edit.js"></script>
     <script src="~/js/restore.js"></script>
+    <script src="~/js/submitForm.js"></script>
     <script src="~/js/archiveProjectList.js"></script>
 }

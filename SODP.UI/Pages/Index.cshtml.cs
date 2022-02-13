@@ -1,22 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using SODP.UI.Pages.Shared;
 
 namespace SODP.UI.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel : SODPPageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-
-        public string ReturnUrl { get; set; } = "/";
-
-        public IndexModel(ILogger<IndexModel> logger)
-        {
-            _logger = logger;
-        }
-
-        public void OnGet()
-        {
-        }
+        public IndexModel(ILogger<SODPPageModel> logger) : base(logger) { } 
     }
 }
