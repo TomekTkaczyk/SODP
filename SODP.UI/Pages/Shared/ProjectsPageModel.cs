@@ -13,36 +13,19 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Shared
 {
-    public class ProjectsPageModel : SODPPageModel
+    public class ProjectsPageModel : ListPageModel
     {
-        protected readonly IWebAPIProvider _apiProvider;
-        protected string _endpoint;
 
-        public string SearchString { get; set; }
-        public int PageSize { get; set; }
-        public PageInfo PageInfo { get; set; } = new PageInfo();
-        public List<SelectListItem> PageSizeList { get; set; } = new List<SelectListItem> { };
         public ProjectsListVM ProjectsViewModel { get; set; }
 
-        public ProjectsPageModel(IWebAPIProvider apiProvider, ILogger<ProjectsPageModel> logger) : base(logger)
-        {
-            foreach (var item in PageSizeSelectList.PageSizeList)
-            {
-                PageSizeList.Add(new SelectListItem(item.ToString(), item.ToString()));
-            }
-            PageSize = PageSizeSelectList.PageSizeList[0];
-            _apiProvider = apiProvider;
-        }
+        public ProjectsPageModel(IWebAPIProvider apiProvider, ILogger<ProjectsPageModel> logger) : base(apiProvider, logger) { }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var url = new StringBuilder();
             url.Append(ReturnUrl);
             url.Append("?currentPage=:&pageSize=");
-            if (pageSize < 1)
-            {
-                pageSize = PageSizeSelectList.PageSizeList[0];
-            }
+            pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
             url.Append(pageSize.ToString());
 
             if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrWhiteSpace(searchString))

@@ -32,14 +32,23 @@ namespace SODP.Application.Services
             return await GetAllAsync(1, 0, null);
         }
 
-        public async Task<ServicePageResponse<StageDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
+        public async Task<ServicePageResponse<StageDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "", bool? active = null)
         {
             var serviceResponse = new ServicePageResponse<StageDTO>();
-            
+            IList<Stage> projects = new List<Stage>();
+
+            serviceResponse.Data.TotalCount = await _context.Stages
+                .Where(x => x.ActiveStatus == active && (string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString)))
+                .CountAsync();
+            if (pageSize == 0)
+            {
+                pageSize = serviceResponse.Data.TotalCount;
+            }
+
             try
             {
                 var stages = _context.Stages
-                    .Where(p => !string.IsNullOrEmpty(p.Sign))
+                    .Where(p => !string.IsNullOrEmpty(p.Sign) && (string.IsNullOrEmpty(searchString) || p.Title.Contains(searchString)))
                     .OrderBy(x => x.Sign);
 
                 serviceResponse.Data.TotalCount = await stages.CountAsync();

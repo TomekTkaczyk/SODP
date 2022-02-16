@@ -14,7 +14,7 @@ namespace SODP.UI.Pages.Shared
 
         public string ReturnUrl { get; protected set; }
 
-        public SODPPageModel(ILogger<SODPPageModel> logger)
+        protected SODPPageModel(ILogger<SODPPageModel> logger)
         {
             _logger = logger;
         }
@@ -31,7 +31,7 @@ namespace SODP.UI.Pages.Shared
             }
         }
 
-        public virtual PartialViewResult GetPartialView<T>(T model, string partialViewName)
+        protected virtual PartialViewResult GetPartialView<T>(T model, string partialViewName)
         {
             return new PartialViewResult()
             {

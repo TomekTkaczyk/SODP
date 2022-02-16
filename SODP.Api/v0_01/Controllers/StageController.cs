@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Domain.Services;
@@ -10,6 +11,7 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/stages")]
+    [EnableCors("SODPOriginsSpecification")]
     public class StageController : ApiControllerBase
     {
         private readonly IStageService _stagesService;
@@ -22,15 +24,11 @@ namespace SODP.Api.v0_01.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 15)
+        public async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 15, string searchString = "")
         {
-            // sample code with id from token
-            //var claim = User.Claims.FirstOrDefault(x => x.Type == "id");
-            //if((claim == null) || !int.TryParse(claim.Value, out int userId))
-            //{
-            //    return BadRequest();
-            //}
-            return Ok(await _stagesService.GetAllAsync(currentPage, pageSize));
+            var response = await _stagesService.GetAllAsync(currentPage, pageSize, searchString);
+
+            return StatusCode(response.StatusCode, response);
         }
 
         [HttpGet("{id}")]

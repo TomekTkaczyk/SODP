@@ -18,36 +18,39 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.Stages
 {
     [Authorize(Roles = "Administrator, ProjectManager")]
-    public class IndexModel : SODPPageModel
+    public class IndexModel : ListPageModel
     {
-
         const string partialViewName = "_NewStagePartialView";
-        private readonly IWebAPIProvider _apiProvider;
-
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
-        {
-            ReturnUrl = "/Stages";
-            _apiProvider = apiProvider;
-        }
 
         public StagesListVM StagesViewModel { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 15)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(apiProvider, logger)
+        {
+            ReturnUrl = "/Stages";
+            _endpoint = "stages";
+        }
+
+        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var url = new StringBuilder();
-            url.Append("/Stages?currentPage=:&pageSize=");
+            url.Append(ReturnUrl);
+            url.Append("?currentPage=:&pageSize=");
+            pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize; 
             url.Append(pageSize.ToString());
+
+            if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrWhiteSpace(searchString))
+            {
+                url.Append($"&searchString={searchString}");
+            }
 
             StagesViewModel = new StagesListVM
             {
-                PageInfo = new PageInfo
-                {
-                    CurrentPage = currentPage,
-                    ItemsPerPage = pageSize,
-                    Url = url.ToString()
-                },
+                Stages = await GetStagesAsync(currentPage, pageSize, searchString)
             };
-            StagesViewModel.Stages = await GetStagesAsync(StagesViewModel.PageInfo);
+
+            SearchString = searchString;
+            PageInfo.ItemsPerPage = pageSize;
+            PageInfo.Url = url.ToString();
 
             return Page();
         }
@@ -114,15 +117,15 @@ namespace SODP.UI.Pages.Stages
             return GetPartialView(stage);
         }
 
-        private async Task<IList<StageDTO>> GetStagesAsync(PageInfo pageInfo)
+        private async Task<IList<StageDTO>> GetStagesAsync(int currentPage, int pageSize, string searchString)
         {
-            var apiResponse = await _apiProvider.GetAsync($"stages?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
+            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={currentPage}&pageSize={pageSize}&searchString={searchString}");
 
             if (apiResponse.IsSuccessStatusCode)
             {
                 var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<StageDTO>>();
-                pageInfo.TotalItems = result.Data.TotalCount;
-                pageInfo.CurrentPage = result.Data.PageNumber;
+                PageInfo.TotalItems = result.Data.TotalCount;
+                PageInfo.CurrentPage = result.Data.PageNumber;
 
                 return result.Data.Collection.ToList();
             }

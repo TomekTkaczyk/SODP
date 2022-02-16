@@ -31,6 +31,7 @@
     <ProjectReference Include="..\SODP.Application\SODP.Application.csproj" />
     <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
     <ProjectReference Include="..\SODP.Model\SODP.Model.csproj" />
+    <ProjectReference Include="..\SODP.UI\SODP.UI.csproj" />
   </ItemGroup>
 
 </Project>

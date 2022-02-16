@@ -106,12 +106,13 @@
             @if (Model.PageInfo.TotalPages > 1)
             {
                 <div class="col text-center">
-                    <div class="btn-group"
+                    <div 
                         page-model="@Model.PageInfo"
                         page-class="btn border"
-                        page-class-normal="btn-light"
-                        page-class-selected="btn-info"
-                        page-class-prev-next="btn">
+                        page-class-normal="btn btn-light"
+                        page-class-selected="btn btn-info"
+                        page-class-prev-next="btn"
+                        class="btn-group">
                     </div>
                 </div>
             }

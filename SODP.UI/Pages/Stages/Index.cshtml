@@ -29,7 +29,9 @@
             </div>
         }
     </div>
-
+     
+    <partial name="_SearchString" />
+ 
     @if (Model.StagesViewModel.Stages.Count() > 0)
     {   
         <div id="StagesTable" class="col-12 p-3 mt-0">
@@ -79,15 +81,16 @@
                     </tr>
                 </tfoot>
             </table>
-            @if(Model.StagesViewModel.PageInfo.TotalPages > 1)
+            @if(Model.PageInfo.TotalPages > 1)
             {
-                <div class="col-12 text-center">
-                    <div class="btn-group"
-                         page-model="@Model.StagesViewModel.PageInfo"
-                         page-class="btn border"
-                         page-class-normal="btn btn-light"
-                         page-class-selected="btn btn-info"
-                         page-class-prev-next="btn">
+                <div class="col text-center">
+                    <div 
+                        page-model="@Model.PageInfo"
+                        page-class="btn border"
+                        page-class-normal="btn btn-light"
+                        page-class-selected="btn btn-info"
+                        page-class-prev-next="btn"
+                        class="btn-group">
                     </div>
                 </div>
             }
@@ -103,6 +106,7 @@
 
 @section Scripts{
     <script src="~/js/delete.js"></script>
+    <script src="~/js/submitForm.js"></script>
     <script src="~/js/initModalPlaceholder.js"></script>
     <script src="~/js/stagesList.js"></script>
 
