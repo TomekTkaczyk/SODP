@@ -1,4 +1,4 @@
-# Main specific file exclude
+# Main specific file ignore
 uprawnienia
 ssmtp.conf
 
