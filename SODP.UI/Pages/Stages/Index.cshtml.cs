@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
@@ -20,7 +21,7 @@ namespace SODP.UI.Pages.Stages
     [Authorize(Roles = "Administrator, ProjectManager")]
     public class IndexModel : ListPageModel
     {
-        const string partialViewName = "_NewStagePartialView";
+        const string newStagePartialViewName = "_NewStagePartialView";
 
         public StagesListVM StagesViewModel { get; set; }
 
@@ -63,9 +64,9 @@ namespace SODP.UI.Pages.Stages
                 var apiResponse = await _apiProvider.GetAsync($"stages/{id}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
-                    var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
+                    var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
 
-                    return GetPartialView(result.Data);
+                    return GetPartialView(response.Data.ToViewModel(), newStagePartialViewName);
                 }
             }
 
@@ -142,7 +143,7 @@ namespace SODP.UI.Pages.Stages
 
             return new PartialViewResult()
             {
-                ViewName = partialViewName,
+                ViewName = newStagePartialViewName,
                 ViewData = new ViewDataDictionary<NewStageVM>(ViewData, viewModel)
             };
         }

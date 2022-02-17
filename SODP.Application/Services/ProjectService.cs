@@ -159,6 +159,10 @@ namespace SODP.Application.Services
 
                 project.Normalize();
                 project.Stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == project.StageId);
+                project.Address = "";
+                project.Investment = "";
+                project.Investor = "";
+                project.TitleStudy = "";
                 var (Success, Message) = await _folderManager.CreateFolderAsync(project);
                 if (!Success)
                 {

@@ -4,10 +4,9 @@ using System.Collections.Generic;
 
 namespace SODP.UI.ViewModels
 {
-    public class DesignersVM
+    public class DesignersListVM
     {
         public IList<DesignerDTO> Designers { get; set; }
-
         public PageInfo PageInfo { get; set; }
 
     }
