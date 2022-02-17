@@ -1,6 +1,0 @@
-Subject: Alert archiwizacji
-From:proliant
-To:tomasz.tkaczyk@unipromax.pl
-
-Archiwizacja projektu zakonczona
-
