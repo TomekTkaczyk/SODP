@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SODP.UI", "SODP.UI\SODP.UI.csproj", "{6A6A2E49-FD2C-4F43-AF75-55190192B519}"
 EndProject
@@ -27,6 +27,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SODP.Shared", "SODP.Shared\SODP.Shared.csproj", "{F2185F5F-0587-4EF4-A2FC-B8A56709F26A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SODP.Infrastructure", "SODP.Infrastructure\SODP.Infrastructure.csproj", "{F1082453-0A77-474E-BEBF-0907A5149873}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODP.ApiTests", "SODP.ApiTests\SODP.ApiTests.csproj", "{FB3A743A-074F-495E-8C79-2B75E7B3E09B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +72,10 @@ Global
 		{F1082453-0A77-474E-BEBF-0907A5149873}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1082453-0A77-474E-BEBF-0907A5149873}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1082453-0A77-474E-BEBF-0907A5149873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB3A743A-074F-495E-8C79-2B75E7B3E09B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB3A743A-074F-495E-8C79-2B75E7B3E09B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB3A743A-074F-495E-8C79-2B75E7B3E09B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB3A743A-074F-495E-8C79-2B75E7B3E09B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

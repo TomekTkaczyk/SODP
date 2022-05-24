@@ -29,7 +29,7 @@ namespace SODP.UI.TagHelpers
 
             if (PageModel.CurrentPage > 1)
             {
-                tagBuilder.InnerHtml.AppendHtml(GetTag(PageModel.CurrentPage - 1, "Następna", PageClassPrevNext));
+                tagBuilder.InnerHtml.AppendHtml(GetTag(PageModel.CurrentPage - 1, "Poprzednia", PageClassPrevNext));
             }
 
             tagBuilder.InnerHtml.AppendHtml(GetTag(1, 1.ToString(), 1 == PageModel.CurrentPage ? PageClassSelected : PageClassNormal));

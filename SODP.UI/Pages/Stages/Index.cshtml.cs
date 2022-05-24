@@ -8,7 +8,7 @@ using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
-using SODP.UI.ViewModels;
+using SODP.UI.Pages.Stages.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -138,7 +138,8 @@ namespace SODP.UI.Pages.Stages
         {
             var viewModel = new NewStageVM()
             {
-                Stage = stage
+                Sign = stage.Sign,
+                Title = stage.Title
             };
 
             return new PartialViewResult()
