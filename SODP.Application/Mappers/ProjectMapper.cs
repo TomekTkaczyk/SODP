@@ -18,8 +18,12 @@ namespace SODP.Application.Mappers
                     Id = project.Id,
                     Number = project.Number,
                     Stage = project.Stage.ToDTO(),
-                    Description = project.Description,
                     Title = project.Title,
+                    Description = project.Description,
+                    TitleStudy = project.TitleStudy,
+                    Investment = project.Investment,
+                    Address = project.Address,
+                    Investor = project.Investor,
                     Branches = (from branch in project.Branches select new ProjectBranchDTO()
                     {
                        Id = branch.Id,
