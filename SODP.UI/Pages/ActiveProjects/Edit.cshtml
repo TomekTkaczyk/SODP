@@ -1,6 +1,8 @@
 ﻿@page
 @model EditModel
 
+@using System.Web
+@using System.Text.RegularExpressions;
 @using SODP.Shared.Enums
 
 @{
@@ -51,10 +53,35 @@
                 <div class="tab-pane fade show active" id="summary" role="tabpanel" aria-labelledby="summary-tab">
                     <br/>
                     <div>
-                        <div>Nazwa inwestycji: @Model.Project.Investment</div>
-                        <div>Adres inwestycji: @Model.Project.Address</div>
-                        <div>Inwestor: @Model.Project.Investor</div>
-                        <div>Opis: @Model.Project.Description</div>
+                        <div>
+                            Nazwa inwestycji:<br/>
+                            <div class="col font-weight-bold">
+                                <span style="white-space: pre-line">@Model.Project.Investment</span>
+                            </div>
+                        </div>
+                        <div>
+                            Tytuł opracowania:<br/>
+                            <div class="col font-weight-bold">
+                                <span style="white-space: pre-line">@Model.Project.TitleStudy</span>
+                            </div>
+                        </div>
+                        <div>
+                            Adres inwestycji:<br/>
+                            <div class="col font-weight-bold">
+                                <span style="white-space: pre-line">@Model.Project.Address</span>
+                            </div>
+                        </div>
+                        <div>Inwestor:<br/>
+                            <div class="col font-weight-bold">
+                                <span style="white-space: pre-line">@Model.Project.Investor</span>
+                            </div>
+                        </div>
+                        <div>
+                            Opis:<br/>
+                            <div class="col font-weight-bold">
+                                <span class="font-weight-bold" style="white-space: pre-line">@Model.Project.Description</span>
+                            </div>
+                        </div>
                         <div>
                             Branże:
                             @foreach (var item in Model.Project.ApplyBranches)
@@ -78,21 +105,14 @@
 
                     <div class="form-group row">
                         <div class="col-12">
-                            <label>Opis:</label>
-                            <textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-12">
                             <label>Tytuł opracowania:</label>
-                            <textarea asp-for="Project.TitleStudy" class="form-control" placeholder="Tytuł opracowania (strona tytyułowa)"></textarea>
+                            <textarea asp-for="Project.TitleStudy" class="form-control" placeholder="Tytuł opracowania (strona tytułowa)"></textarea>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <div class="col-12">
-                            <label>Obiekt:</label>
+                            <label>Nazwa inwestycji:</label>
                             <textarea asp-for="Project.Investment" class="form-control" placeholder="Obiekt"></textarea>
                         </div>
                     </div>
@@ -110,7 +130,16 @@
                             <textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor"></textarea>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <div class="col-12">
+                            <label>Opis:</label>
+                            <textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)"></textarea>
+                        </div>
+                    </div>
+
                 </div>
+
                 <div class="tab-pane fade" id="branch" role="tabpanel" aria-labelledby="branch-tab">
                     <br />
                     <div class="form-group">
@@ -130,6 +159,7 @@
                             </div>
                         }
                     </div>
+
                     @if (Model.Project.Branches.Count > 0)
                     {
                         <div class="form-group">

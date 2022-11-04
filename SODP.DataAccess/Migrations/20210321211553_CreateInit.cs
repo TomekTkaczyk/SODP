@@ -14,12 +14,8 @@ namespace SODP.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false),
-                    Symbol = table.Column<string>(type: "varchar(2)", nullable: false, defaultValue: "00"),
                     Sign = table.Column<string>(type: "varchar(10)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    ActiveStatus = table.Column<bool>(nullable: false, defaultValue: true)
+                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,12 +28,9 @@ namespace SODP.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false),
                     Title = table.Column<string>(type: "nvarchar(20)", nullable: false),
                     Firstname = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    Lastname = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    ActiveStatus = table.Column<bool>(nullable: false)
+                    Lastname = table.Column<string>(type: "nvarchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,11 +58,8 @@ namespace SODP.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false),
                     Sign = table.Column<string>(type: "varchar(10)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    ActiveStatus = table.Column<bool>(nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,8 +86,8 @@ namespace SODP.DataAccess.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    Firstname = table.Column<string>(type: "nvarchar(256)", nullable: true, defaultValue: ""),
-                    Lastname = table.Column<string>(type: "nvarchar(256)", nullable: true, defaultValue: "")
+                    Firstname = table.Column<string>(type: "nvarchar(256)", nullable: true),
+                    Lastname = table.Column<string>(type: "nvarchar(256)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -110,8 +100,6 @@ namespace SODP.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false),
                     DesignerId = table.Column<int>(nullable: false),
                     Number = table.Column<string>(type: "varchar(20)", nullable: false),
                     StartDate = table.Column<DateTime>(nullable: false),
@@ -129,21 +117,26 @@ namespace SODP.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Licenses",
+                name: "Licences",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false),
                     DesignerId = table.Column<int>(nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(250)", nullable: false)
+                    BranchId = table.Column<int>(nullable: false),
+                    Contents = table.Column<string>(type: "nvarchar(250)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Licenses", x => x.Id);
+                    table.PrimaryKey("PK_Licences", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Licenses_Designers_DesignerId",
+                        name: "FK_Licences_Branches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "Branches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Licences_Designers_DesignerId",
                         column: x => x.DesignerId,
                         principalTable: "Designers",
                         principalColumn: "Id",
@@ -177,16 +170,10 @@ namespace SODP.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false),
                     Number = table.Column<string>(type: "varchar(4)", nullable: false),
                     StageId = table.Column<int>(nullable: false),
                     Title = table.Column<string>(type: "nvarchar(250)", nullable: false),
                     Description = table.Column<string>(type: "longtext", nullable: true),
-                    TitleStudy = table.Column<string>(type: "nvarchar(250)", nullable: false),
-                    Investment = table.Column<string>(type: "nvarchar(250)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(250)", nullable: false),
-                    Investor = table.Column<string>(type: "nvarchar(250)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(250)", nullable: true),
                     Status = table.Column<int>(nullable: false)
                 },
@@ -292,8 +279,6 @@ namespace SODP.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     RefreshTokenKey = table.Column<string>(type: "nvarchar(256)", nullable: true),
                     Refresh = table.Column<string>(type: "nvarchar(256)", nullable: true)
@@ -310,33 +295,6 @@ namespace SODP.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BranchLicense",
-                columns: table => new
-                {
-                    BranchId = table.Column<int>(nullable: false),
-                    LicenseId = table.Column<int>(nullable: false),
-                    Id = table.Column<int>(nullable: false),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BranchLicense", x => new { x.BranchId, x.LicenseId });
-                    table.ForeignKey(
-                        name: "FK_BranchLicense_Branches_BranchId",
-                        column: x => x.BranchId,
-                        principalTable: "Branches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BranchLicense_Licenses_LicenseId",
-                        column: x => x.LicenseId,
-                        principalTable: "Licenses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProjectBranches",
                 columns: table => new
                 {
@@ -344,8 +302,8 @@ namespace SODP.DataAccess.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ProjectId = table.Column<int>(nullable: false),
                     BranchId = table.Column<int>(nullable: false),
-                    DesignerLicenseId = table.Column<int>(nullable: true),
-                    CheckingLicenseId = table.Column<int>(nullable: true)
+                    DesignerLicenceId = table.Column<int>(nullable: true),
+                    CheckingLicenceId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -357,19 +315,19 @@ namespace SODP.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
-                        column: x => x.CheckingLicenseId,
-                        principalTable: "Licenses",
+                        name: "FK_ProjectBranches_Licences_CheckingLicenceId",
+                        column: x => x.CheckingLicenceId,
+                        principalTable: "Licences",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
-                        column: x => x.DesignerLicenseId,
-                        principalTable: "Licenses",
+                        name: "FK_ProjectBranches_Licences_DesignerLicenceId",
+                        column: x => x.DesignerLicenceId,
+                        principalTable: "Licences",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Project",
+                        name: "FK_ProjectBranches_Projects_ProjectId",
                         column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
@@ -397,29 +355,18 @@ namespace SODP.DataAccess.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SYMBOL",
-                table: "Branches",
-                column: "Symbol",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Branch",
-                table: "BranchLicense",
-                column: "BranchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_License",
-                table: "BranchLicense",
-                column: "LicenseId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Designer",
                 table: "Certificates",
                 column: "DesignerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Branch",
+                table: "Licences",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Designer",
-                table: "Licenses",
+                table: "Licences",
                 column: "DesignerId");
 
             migrationBuilder.CreateIndex(
@@ -430,12 +377,12 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Checking",
                 table: "ProjectBranches",
-                column: "CheckingLicenseId");
+                column: "CheckingLicenceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Designer",
                 table: "ProjectBranches",
-                column: "DesignerLicenseId");
+                column: "DesignerLicenceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Project",
@@ -511,9 +458,6 @@ namespace SODP.DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "BranchLicense");
-
-            migrationBuilder.DropTable(
                 name: "Certificates");
 
             migrationBuilder.DropTable(
@@ -526,16 +470,16 @@ namespace SODP.DataAccess.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Branches");
-
-            migrationBuilder.DropTable(
-                name: "Licenses");
+                name: "Licences");
 
             migrationBuilder.DropTable(
                 name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Branches");
 
             migrationBuilder.DropTable(
                 name: "Designers");

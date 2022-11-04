@@ -36,18 +36,24 @@ namespace SODP.UI.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Nr telefonu")]
             public string PhoneNumber { get; set; }
+
+            [EmailAddress]
+            [Display(Name = "Adres email")]
+            public string AddressEmail { get; set; }
         }
 
         private async Task LoadAsync(User user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var addressEmail = await _userManager.GetEmailAsync(user);
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                AddressEmail = addressEmail
             };
         }
 
@@ -82,6 +88,17 @@ namespace SODP.UI.Areas.Identity.Pages.Account.Manage
             {
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    return RedirectToPage();
+                }
+            }
+
+            var addressEmail = await _userManager.GetEmailAsync(user);
+            if (Input.AddressEmail != addressEmail)
+            {
+                var setEmailResult = await _userManager.SetEmailAsync(user, Input.AddressEmail);
+                if (!setEmailResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();

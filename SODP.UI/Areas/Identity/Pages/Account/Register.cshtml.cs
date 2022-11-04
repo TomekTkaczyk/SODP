@@ -47,6 +47,11 @@ namespace SODP.UI.Areas.Identity.Pages.Account
             public string Login { get; set; }
 
             [Required]
+            [EmailAddress]
+            [Display(Name = "Adres email")]
+            public string Email { get; set; }
+
+            [Required]
             [DataType(DataType.Password)]
             [Display(Name = "Hasło")]
             public string Password { get; set; }
@@ -69,16 +74,24 @@ namespace SODP.UI.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = Input.Login };
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
+                if (await _userManager.FindByEmailAsync(Input.Email) == null)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-                }
-                foreach (var error in result.Errors)
+                    var user = new User { UserName = Input.Login, Email = Input.Email };
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("User created a new account with password.");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                } 
+                else
                 {
+                    var error = _userManager.ErrorDescriber.DuplicateEmail(Input.Email);
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }

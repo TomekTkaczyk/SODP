@@ -1,14 +1,14 @@
 ﻿@page
+@using Microsoft.AspNetCore.Identity
+@using SODP.Model
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+
 @model IndexModel
 
 @{
     ViewData["Title"] = "Projektanci";
 }
-
-@using Microsoft.AspNetCore.Identity
-@using SODP.Model
-@using System.Text.Json;
-@using System.Text.Json.Serialization;
 
 @inject SignInManager<User> SignInManager
 
@@ -19,21 +19,23 @@
 
 <div class="container p-0 m-0">
     <div class="row pl-3 pr-3">
-        <div class="col-8">
+        <div class="col-9">
             <h2 class="text-info">@ViewData["Title"]</h2>
         </div>
         @if (SignInManager.IsSignedIn(User))
         {
-            <div class="col-4 justify-content-end">
+            <div class="col-3 justify-content-end">
                 <button type="button"
                         class="btn btn-info form-control text-white float-right"
-                        onclick="EditDesigner()"
-                        title="Nowy projektant">
+                        title="Nowy projektant"
+                        data-toggle="ajax-modal"
+                    data-url="@Url.Page("Index","NewDesigner")">
                     <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
                 </button>
             </div>
         }
     </div>
+</div>
 
 @if (Model.Designers.Designers.Count() > 0)
 {
@@ -125,12 +127,23 @@ else
     <p> Lista projektantów jest pusta</p>
 }
 
-</div>
-
 @section Scripts{
     <script src="~/js/delete.js"></script>
     <script src="~/js/initModalPlaceholder.js"></script>
     <script src="~/js/designersList.js"></script>
+
+    <script>
+        function EditDesigner(id) {
+            $.ajax({
+                type: "Get",
+                url: `@Url.Page("Index","NewDesigner")&Id=` + id,
+                success: function (data) {
+                    $('#modal-placeholder').html(data);
+                    $('#editdesigner').modal('show');
+                }
+            })
+        }
+    </script>
 
     <script>
         function handleChange(id, checked) {

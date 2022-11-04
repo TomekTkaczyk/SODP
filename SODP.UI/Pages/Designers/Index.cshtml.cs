@@ -20,15 +20,15 @@ namespace SODP.UI.Pages.Designers
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : SODPPageModel
     {
-        const string licensesPartialViewName = "_LicensesPartialView";
-        const string designerPartialViewName = "_EditDesignerPartialView";
+        const string newDesignerPartialViewName = "_NewDesignerPartialView";
         const string licensePartialViewName = "_NewLicensePartialView";
+        const string licensesPartialViewName = "_LicensesPartialView";
 
         private readonly IWebAPIProvider _apiProvider;
 
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
         {
-            ReturnUrl = "/Designers";
+            ReturnUrl = "/designers";
             _apiProvider = apiProvider;
         }
 
@@ -75,7 +75,7 @@ namespace SODP.UI.Pages.Designers
             return RedirectToPage($"Index?currentPage={Designers.PageInfo.CurrentPage}:&pageSize={Designers.PageInfo.ItemsPerPage}");
         }
 
-        public async Task<PartialViewResult> OnGetEditDesignerAsync(int? id)
+        public async Task<PartialViewResult> OnGetNewDesignerAsync(int? id)
         {
             if (id != null)
             {
@@ -84,14 +84,14 @@ namespace SODP.UI.Pages.Designers
                 {
                     var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
 
-                    return GetPartialView(response.Data.ToViewModel(), designerPartialViewName);
+                    return GetPartialView(response.Data.ToViewModel(), newDesignerPartialViewName);
                 }
             }
 
-            return GetPartialView(new DesignerVM(), designerPartialViewName);
+            return GetPartialView(new DesignerVM(), newDesignerPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnPostEditDesignerAsync(DesignerVM designer)
+        public async Task<PartialViewResult> OnPostNewDesignerAsync(DesignerVM designer)
         {
             if (ModelState.IsValid)
             {
@@ -113,10 +113,10 @@ namespace SODP.UI.Pages.Designers
                 }
             }
 
-            return GetPartialView<DesignerVM>(designer, designerPartialViewName);
+            return GetPartialView<DesignerVM>(designer, newDesignerPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnGetLicensesPartialAsync(int id)
+        public async Task<PartialViewResult> OnGetPartialLicensesAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"designers/{id}/licenses");
             if (apiResponse.IsSuccessStatusCode)

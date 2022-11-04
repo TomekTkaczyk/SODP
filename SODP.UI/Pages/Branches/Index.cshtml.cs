@@ -19,8 +19,9 @@ namespace SODP.UI.Pages.Branches
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : SODPPageModel
     {
-        const string branchPartialViewName = "_NewBranchPartialView";
+        const string newBranchPartialViewName = "_NewBranchPartialView";
         const string designersPartialViewName = "_DesignersPartialView";
+        
         private readonly IWebAPIProvider _apiProvider;
 
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
@@ -48,11 +49,11 @@ namespace SODP.UI.Pages.Branches
                 {
                     var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
 
-                    return GetPartialView(result.Data.ToViewModel(), branchPartialViewName);
+                    return GetPartialView(result.Data.ToViewModel(), newBranchPartialViewName);
                 }
             }
 
-            return GetPartialView(new BranchVM(), branchPartialViewName);
+            return GetPartialView(new BranchVM(), newBranchPartialViewName);
         }
 
         public async Task<PartialViewResult> OnPostNewBranchAsync(BranchVM branch)
@@ -78,10 +79,10 @@ namespace SODP.UI.Pages.Branches
                 }
             }
 
-            return GetPartialView<BranchVM>(branch, branchPartialViewName);
+            return GetPartialView<BranchVM>(branch, newBranchPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnGetPartialDesigners(int id)
+        public async Task<PartialViewResult> OnGetPartialDesignersAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"branches/{id}/designers");
             switch (apiResponse.StatusCode)

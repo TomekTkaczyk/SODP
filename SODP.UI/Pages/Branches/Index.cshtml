@@ -7,6 +7,8 @@
 
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
 
 @inject SignInManager<User> SignInManager
 
@@ -62,7 +64,7 @@
                                class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
                                data-toggle="tooltip"
                                data-placement="top"
-                               title="Edycja stadium"
+                               title="Edycja branży"
                                hidden>
                                 <i class="fas fa-edit text-success"></i>
                             </a>
@@ -93,8 +95,6 @@
                                    data-toggle="toggle"
                                    title="Aktywność"
                                    data-style="ios">
-
-
                         </div>
                     </div>
                 </div>
@@ -105,7 +105,7 @@
                  data-parent="#branchesAccordion">
 
                 <div class="card-body" id="designer-@item.Id">
-                    Coś poszło nie tak z ładowaniem listy projektantów
+                    Coś poszło nie tak z ładowaniem listy branż
                 </div>
             </div>
         }

@@ -1,13 +1,21 @@
 ﻿$(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
+    $('button[data-toggle="ajax-modal"]').click(function (event) {
+        var url = $(this).data('url');
+        $.get(url).done(function (data) {
+            var placeholderElement = $('#modal-placeholder');
+            placeholderElement.html(data);
+            placeholderElement.find('.modal').modal('show');
+        });
+    });
 
-    initLicenseModalPlaceHolder('/designers');
+    initModalPlaceHolder('/designers');
 });
 
-function EditDesigner(id) {
+function NewDesigner(id) {
     $.ajax({
         type: "Get",
-        url: `\Designers?handler=EditDesigner&id=${id}`,
+        url: `\Designers?handler=NewDesigner&id=${id}`,
         success: function (data) {
             $('#modal-placeholder').html(data);
             $('#editdesigner').modal('show');
@@ -27,7 +35,6 @@ function NewLicense(designerId, licenseId) {
 }
 
 function initLicenseModalPlaceHolder(returnUrl) {
-
     var placeholderElement = $('#modal-placeholder');
 
     placeholderElement.on('click', '[data-save="modal"]', function (event) {
