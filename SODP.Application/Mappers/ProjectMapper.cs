@@ -1,9 +1,6 @@
 ﻿using SODP.Model;
 using SODP.Shared.DTO;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SODP.Application.Mappers
 {
@@ -18,12 +15,12 @@ namespace SODP.Application.Mappers
                     Id = project.Id,
                     Number = project.Number,
                     Stage = project.Stage.ToDTO(),
+                    Name = project.Name,
                     Title = project.Title,
-                    Description = project.Description,
-                    TitleStudy = project.TitleStudy,
-                    Investment = project.Investment,
                     Address = project.Address,
+                    LocationUnit = project.LocationUnit,
                     Investor = project.Investor,
+                    Description = project.Description,
                     Branches = (from branch in project.Branches select new ProjectBranchDTO()
                     {
                        Id = branch.Id,

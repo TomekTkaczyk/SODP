@@ -9,7 +9,7 @@
         });
     });
 
-    initModalPlaceHolder('/Designers');
+    initModalPlaceHolder('/Sample');
 });
 
 

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SODP.Shared.DTO;
-using SODP.UI.ViewModels;
+using SODP.UI.Pages.ActiveProjects;
 
 namespace SODP.UI.Mappers
 {
@@ -14,7 +14,7 @@ namespace SODP.UI.Mappers
                 .ForMember(dest => dest.Stage, act => act.Ignore())
                 .ForMember(dest => dest.StageId, opt => opt.MapFrom(x => x.Stage.Id))
                 .ForMember(dest => dest.StageSign, opt => opt.MapFrom(x => x.Stage.Sign))
-                .ForMember(dest => dest.StageTitle, opt => opt.MapFrom(x => x.Stage.Title))
+                .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Name))
                 .PreserveReferences();
 
             CreateMap<ProjectBranchDTO, SelectListItem>()

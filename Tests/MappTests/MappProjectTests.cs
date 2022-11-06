@@ -44,12 +44,11 @@ namespace Tests.MappTests
 
             var entity = _mapper.Map<ProjectDTO, Project>(dto);
 
+            Assert.NotNull(entity.Title);
             Assert.NotNull(entity.Address);
-            Assert.NotNull(entity.Description);
-            Assert.NotNull(entity.Investment);
+            Assert.NotNull(entity.LocationUnit);
             Assert.NotNull(entity.Investor);
-            Assert.NotNull(entity.Location);
-            Assert.NotNull(entity.TitleStudy);
+            Assert.NotNull(entity.Description);
         }
     }
 }

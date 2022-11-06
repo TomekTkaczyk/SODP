@@ -12,7 +12,7 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("varchar(10)")
                 .IsRequired();
 
-            builder.Property(p => p.Title)
+            builder.Property(p => p.Name)
                 .HasColumnType("nvarchar(50)")
                 .IsRequired();
 

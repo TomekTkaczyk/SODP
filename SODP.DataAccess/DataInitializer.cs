@@ -100,7 +100,7 @@ namespace SODP.DataAccess
                     var stage = _context.Stages.FirstOrDefault(x => x.Sign == currentProject.Stage.Sign);
                     if (stage == null)
                     {
-                        stage = new Stage() { Sign = currentProject.Stage.Sign, Title = "" };
+                        stage = new Stage() { Sign = currentProject.Stage.Sign, Name = "" };
                     }
                     currentProject.Stage = stage;
 

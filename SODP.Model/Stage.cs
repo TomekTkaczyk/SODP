@@ -9,20 +9,20 @@ namespace SODP.Model
 
         public Stage(string sign): this(sign,"") { }
 
-        public Stage(string sign, string title)
+        public Stage(string sign, string name)
         {
             Sign = sign;
-            Title = title;
+            Name = name;
         }
 
         public string Sign { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
         public bool ActiveStatus { get; set; }
 
         public void Normalize()
         {
             Sign = Sign.ToUpper();
-            Title = Title.CapitalizeFirstLetter();
+            Name = Name.CapitalizeFirstLetter();
         }
     }
 }

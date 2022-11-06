@@ -1,0 +1,38 @@
+﻿@using SODP.UI.Pages.Designers.ViewModels
+@model DesignerVM
+<!-- Modal -->
+<div class="modal fade" id="editDesigner" tabindex="-1" role="dialog" aria-labelledby="editDesignerLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="text-info" id="editDesignerLabel">@(Model.Id == 0 ? "Nowa projektant" : "Edycja projektanta")</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <div id="error-placeholder"></div>
+                <form asp-page-handler="EditDesigner">
+                    <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <input asp-for="Id" type="hidden" value="@Model.Id" />
+                    <div class="form-group">
+                        <input class="form-control" asp-for="Title" value="@Model.Title" placeholder="Tytuł" />
+                        <span class="text-danger" asp-validation-for="Title"></span>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" asp-for="Firstname" value="@Model.Firstname" placeholder="Imię" />
+                        <span class="text-danger" asp-validation-for="Firstname"></span>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" asp-for="Lastname" value="@Model.Lastname" placeholder="Nazwisko" />
+                        <span class="text-danger" asp-validation-for="Lastname"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <partial name="_SubmitAndBackButtonModalPartial" />
+            </div>
+        </div>
+    </div>
+</div>

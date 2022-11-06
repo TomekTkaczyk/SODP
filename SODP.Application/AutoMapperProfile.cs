@@ -36,7 +36,6 @@ namespace SODP.Domain
 
             CreateMap<ProjectDTO, Project>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-                .ForMember(dest => dest.Location, act => act.Ignore())
                 .ForMember(dest => dest.Branches, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
@@ -45,17 +44,14 @@ namespace SODP.Domain
 
             CreateMap<NewProjectDTO, Project>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-                .ForMember(dest => dest.Location, act => act.Ignore())
                 .ForMember(dest => dest.Status, act => act.Ignore())
                 .ForMember(dest => dest.Branches, act => act.Ignore())
                 .ForMember(dest => dest.Stage, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.Address, act => act.Ignore())
-                .ForMember(dest => dest.Investment, act => act.Ignore())
                 .ForMember(dest => dest.Investor, act => act.Ignore())
                 .ForMember(dest => dest.Investor, act => act.Ignore())
-                .ForMember(dest => dest.TitleStudy, act => act.Ignore())
 
                 .PreserveReferences();
 

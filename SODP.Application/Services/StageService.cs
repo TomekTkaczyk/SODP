@@ -38,7 +38,7 @@ namespace SODP.Application.Services
             IList<Stage> projects = new List<Stage>();
 
             serviceResponse.Data.TotalCount = await _context.Stages
-                .Where(x => x.ActiveStatus == active && (string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString)))
+                .Where(x => x.ActiveStatus == active && (string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString)))
                 .CountAsync();
             if (pageSize == 0)
             {
@@ -48,7 +48,7 @@ namespace SODP.Application.Services
             try
             {
                 var stages = _context.Stages
-                    .Where(p => !string.IsNullOrEmpty(p.Sign) && (string.IsNullOrEmpty(searchString) || p.Title.Contains(searchString)))
+                    .Where(p => !string.IsNullOrEmpty(p.Sign) && (string.IsNullOrEmpty(searchString) || p.Name.Contains(searchString)))
                     .OrderBy(x => x.Sign);
 
                 serviceResponse.Data.TotalCount = await stages.CountAsync();
@@ -168,7 +168,7 @@ namespace SODP.Application.Services
                     serviceResponse.ValidationErrors.Add("Sign", "Stadium nie odnalezione.");
                     return serviceResponse;
                 }
-                stage.Title = updateStage.Title;
+                stage.Name = updateStage.Name;
                 stage.Normalize();
                 _context.Stages.Update(stage);
                 await _context.SaveChangesAsync();
@@ -254,6 +254,32 @@ namespace SODP.Application.Services
             var result = await _context.Stages.FirstOrDefaultAsync(x => x.Id == id);
 
             return result != null;
+        }
+
+        public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
+        {
+            var serviceResponse = new ServiceResponse();
+            try
+            {
+                var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (stage == null)
+                {
+                    serviceResponse.SetError($"Stadium Id:{id} nie odnalezione.", 404);
+
+                    return serviceResponse;
+                }
+
+                stage.ActiveStatus = status;
+                _context.Stages.Update(stage);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿@using SODP.UI.Pages.Designers.ViewModels
-@model DesignersVM
+﻿@using SODP.UI.Pages.Samples.ViewModels
+@model SamplesVM
 <!-- Modal -->
-<div class="modal fade" id="editdesigners" tabindex="-1" role="dialog" aria-labelledby="editDesignersLabel" aria-hidden="true">
+<div class="modal fade" id="editSample" tabindex="-1" role="dialog" aria-labelledby="editSampleLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="text-info" id="editDesignersLabel">Nowy sampel</h5>
+                <h5 class="text-info" id="editSampleLabel">Nowy sampel</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -13,7 +13,7 @@
             <div class="modal-body">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div id="error-placeholder"></div>
-                <form asp-page-handler="NewDesigners">
+                <form asp-page-handler="EditSample">
                 </form>
             </div>
             <div class="modal-footer">

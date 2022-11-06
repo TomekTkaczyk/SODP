@@ -5,6 +5,7 @@ using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
+using SODP.UI.Pages.ActiveProjects;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace SODP.UI.Pages.ArchiveProjects
                   Number = response.Data.Number,
                   StageId = response.Data.Stage.Id,
                   StageSign = response.Data.Stage.Sign,
-                  StageTitle = response.Data.Stage.Title,
+                  StageName = response.Data.Stage.Name,
                   Title = response.Data.Title,
                   Description = response.Data.Description,
                   Status = response.Data.Status

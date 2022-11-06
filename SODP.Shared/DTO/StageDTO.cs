@@ -9,11 +9,13 @@ namespace SODP.Shared.DTO
         public string Sign { get; set; }
 
         [Required]
-        public string Title { get; set; }
+        public string Name { get; set; }
+
+        public bool ActiveStatus { get; set; }
 
         public override string ToString()
         {
-            return $"({Sign.Trim()}) {Title.Trim()}";
+            return $"({Sign.Trim()}) {Name.Trim()}";
         }
     }
 }

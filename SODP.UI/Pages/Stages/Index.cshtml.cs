@@ -3,14 +3,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
+using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
+using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.Pages.Stages.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -21,7 +24,7 @@ namespace SODP.UI.Pages.Stages
     [Authorize(Roles = "Administrator, ProjectManager")]
     public class IndexModel : ListPageModel
     {
-        const string newStagePartialViewName = "_NewStagePartialView";
+        const string editStagePartialViewName = "_EditStagePartialView";
 
         public StagesListVM StagesViewModel { get; set; }
 
@@ -57,7 +60,7 @@ namespace SODP.UI.Pages.Stages
         }
 
 
-        public async Task<PartialViewResult> OnGetNewStageAsync(int? id)
+        public async Task<PartialViewResult> OnGetEditStageAsync(int? id)
         {
             if (id != null)
             {
@@ -66,56 +69,36 @@ namespace SODP.UI.Pages.Stages
                 {
                     var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
 
-                    return GetPartialView(response.Data.ToViewModel(), newStagePartialViewName);
+                    return GetPartialView(response.Data.ToViewModel(), editStagePartialViewName);
                 }
             }
 
-            return GetPartialView(new StageDTO());
+            return GetPartialView(new StageVM(), editStagePartialViewName);
         }
 
-        public async Task<PartialViewResult> OnPostNewStageAsync(StageDTO stage)
+        public async Task<PartialViewResult> OnPostEditStageAsync(StageVM stage)
         {
             if (ModelState.IsValid)
             {
-                var body = new StringContent(JsonSerializer.Serialize(stage), Encoding.UTF8, "application/json");
-                if(stage.Id == 0)
+                var apiResponse = stage.Id == 0
+                    ? await _apiProvider.PostAsync($"stages/{stage.Sign}", stage.ToHttpContent())
+                    : await _apiProvider.PutAsync($"stages/{stage.Sign}", stage.ToHttpContent());
+                switch (apiResponse.StatusCode)
                 {
-                    var apiResponse = await _apiProvider.PostAsync($"stages/{stage.Sign}", body);
-                    var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
-                    if (response.Success)
-                    {
-                        stage = response.Data;
-                    }
-                    else
-                    {
-                        SetModelErrors(response);
-                    }
-                }
-                else
-                {
-                    var apiResponse = await _apiProvider.PutAsync($"stages/{stage.Sign}", body);
-                    var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
-                    if (response.Success)
-                    {
-                        apiResponse = await _apiProvider.GetAsync($"stages/{stage.Id}");
-                        response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
-                        if (response.Success)
-                        {
-                            stage = response.Data;
-                        }
-                        else
+                    case HttpStatusCode.OK:
+                        var response = await _apiProvider.GetContent<ServiceResponse<StageDTO>>(apiResponse);
+                        if (!response.Success)
                         {
                             SetModelErrors(response);
                         }
-                    }
-                    else
-                    {
-                        SetModelErrors(response);
-                    }
+                        break;
+                    default:
+                        // redirect to ErrorPage
+                        break;
                 }
             }
 
-            return GetPartialView(stage);
+            return GetPartialView(stage, editStagePartialViewName); 
         }
 
         private async Task<IList<StageDTO>> GetStagesAsync(int currentPage, int pageSize, string searchString)
@@ -132,21 +115,6 @@ namespace SODP.UI.Pages.Stages
             }
 
             return new List<StageDTO>();
-        }
-
-        private PartialViewResult GetPartialView(StageDTO stage)
-        {
-            var viewModel = new NewStageVM()
-            {
-                Sign = stage.Sign,
-                Title = stage.Title
-            };
-
-            return new PartialViewResult()
-            {
-                ViewName = newStagePartialViewName,
-                ViewData = new ViewDataDictionary<NewStageVM>(ViewData, viewModel)
-            };
         }
     }
 }

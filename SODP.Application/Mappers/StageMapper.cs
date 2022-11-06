@@ -16,7 +16,7 @@ namespace SODP.Application.Mappers
                 {
                     Id = stage.Id,
                     Sign = stage.Sign,
-                    Title = stage.Title
+                    Name = stage.Name
                 };
             }
 

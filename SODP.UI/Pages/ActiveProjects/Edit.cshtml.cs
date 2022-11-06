@@ -9,7 +9,6 @@ using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Mappers;
 using SODP.UI.Pages.Shared;
-using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -101,14 +100,13 @@ namespace SODP.UI.Pages.ActiveProjects
                     Number = response.Data.Number,
                     StageId = response.Data.Stage.Id,
                     StageSign = response.Data.Stage.Sign,
-                    StageTitle = response.Data.Stage.Title,
+                    StageName = response.Data.Stage.Name,
+                    Name = response.Data.Name,
                     Title = response.Data.Title,
                     Status = response.Data.Status,
                     Address = response.Data.Address,
-                    Investment = response.Data.Investment,
                     Investor = response.Data.Investor,
                     Description = response.Data.Description,
-                    TitleStudy = response.Data.TitleStudy,
                     ApplyBranches = response.Data.Branches
                     .Select(x => new SelectListItem
                     {

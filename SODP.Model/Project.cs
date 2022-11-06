@@ -9,9 +9,9 @@ namespace SODP.Model
     {
         public Project() { }
 
-        public Project(string number, string stageSign, string title)
+        public Project(string number, string stageSign, string name)
         {
-            RequiredPropertiesInit(number, stageSign, title);
+            RequiredPropertiesInit(number, stageSign, name);
             EmptyPropertiesInit();
         }
 
@@ -28,21 +28,21 @@ namespace SODP.Model
             {
                 sign = foldername.GetLastUntilOrEmpty("_");
                 Stage.Sign = sign;
-                var titleLength = Title.Length - Stage.Sign.Length - 1;
-                Title = Title[0..titleLength];
+                var nameLength = Name.Length - Stage.Sign.Length - 1;
+                Name = Name[0..nameLength];
             }
         }
 
-        public string Number { get; set; }
-        public int StageId { get; set; }
-        public virtual Stage Stage { get; set; }
-        public string Title { get; set; } 
-        public string Description { get; set; }
-        public string TitleStudy { get; set; }
-        public string Investment { get; set; }
-        public string Address { get; set; }
+        public string Number { get; set; }           // Project number
+        public int StageId { get; set; }             // Project stage Id
+        public virtual Stage Stage { get; set; }     // Stage object
+        public string Name { get; set; }             // Project name (file system - directory name)
+        public string Title { get; set; }            // The name of the construction project 
+        public string Address { get; set; }          // Address
+        public string LocationUnit { get; set; }     // Location record unit
+        public string BuildingCategory { get; set; }  
         public string Investor { get; set; }
-        public string Location { get; set; }
+        public string Description { get; set; }     
         public ProjectStatus Status { get; set; }
         public ICollection<ProjectBranch> Branches { get; set; }
 
@@ -56,34 +56,31 @@ namespace SODP.Model
 
         public override string ToString()
         {
-            return Number.Trim() + Stage.Sign.Trim() + "_" + Title.Trim();
+            return Number.Trim() + Stage.Sign.Trim() + "_" + Name.Trim();
         }
 
         public void Normalize()
         {
             Regex regex = new Regex("[ ]", RegexOptions.None);
-            Title = regex.Replace(Title, "_");
+            Name = regex.Replace(Name, "_");
             regex = new Regex("[_]{2,}", RegexOptions.None);
-            Title = regex.Replace(Title, "_");
+            Name = regex.Replace(Name, "_");
             regex = new Regex("(_+)$", RegexOptions.None);
-            Title = regex.Replace(Title, "");
-            Title = Title.CapitalizeFirstLetter();
+            Name = regex.Replace(Name, "");
+            Name = Name.CapitalizeFirstLetter();
         }
 
         private void EmptyPropertiesInit()
         {
             Address = "";
-            Investment = "";
             Investor = "";
-            TitleStudy = "";
-            Location = "";
         }
 
-        private void RequiredPropertiesInit(string number, string stageSign, string title)
+        private void RequiredPropertiesInit(string number, string stageSign, string name)
         {
             Number = number;
             Stage = new Stage() { Sign = stageSign };
-            Title = title;
+            Name = name;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace SODP.UI.Pages.Branches
 
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
         {
-            ReturnUrl = "/branches";
+            ReturnUrl = "/Branches";
             _apiProvider = apiProvider;
         }
 

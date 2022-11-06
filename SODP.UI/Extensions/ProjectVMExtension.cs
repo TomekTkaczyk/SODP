@@ -1,5 +1,6 @@
 ﻿using SODP.Shared.DTO;
 using SODP.UI.Pages.ActiveProjects;
+using SODP.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,24 +14,39 @@ namespace SODP.UI.Extensions
     public static class ProjectVMExtension
     {
 
+        public static StringContent ToHttpContent(this NewProjectVM project)
+        {
+            return new StringContent(
+                                  JsonSerializer.Serialize(new NewProjectDTO
+                                  {
+                                      Number = project.Number,
+                                      StageId = project.StageId,
+                                      Name = project.Name,
+                                  }),
+                                  Encoding.UTF8,
+                                  "application/json"
+                              );
+        }
+
+
         public static StringContent ToHttpContent(this ProjectVM project)
         {
             var projectDTO = new ProjectDTO
             {
                 Id = project.Id,
+                Number = project.Number,
+                Name = project.Name,
                 Title = project.Title,
                 Address = project.Address,
-                Description = project.Description,
-                Investment = project.Investment,
+                LocationUnit = project.LocationUnit,
                 Investor = project.Investor,
-                Number = project.Number,
-                TitleStudy = project.TitleStudy,
+                Description = project.Description,
                 Status = project.Status, 
                 Stage = new StageDTO
                 {
                     Id = project.StageId,
                     Sign = project.StageSign,
-                    Title = project.Title
+                    Name = project.StageName
                 }
             };
 
@@ -40,5 +56,7 @@ namespace SODP.UI.Extensions
                                   "application/json"
                               );
         }
+
+
     }
 }

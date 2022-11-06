@@ -7,8 +7,11 @@ namespace SODP.UI.Pages.Stages.ViewModels
         [Required(ErrorMessage = "Symbol jest wymagany")]
         public string Sign { get; set; }
         
-        [Required(ErrorMessage = "Tytuł jest wymagany")]
-        public string Title { get; set; }
+        [Required(ErrorMessage = "Nazwa jest wymagana")]
+        public string Name { get; set; }
+
+        public bool ActiveStatus { get; set; }
+
 
     }
 }

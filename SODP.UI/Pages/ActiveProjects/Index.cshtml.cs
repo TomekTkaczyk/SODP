@@ -5,14 +5,13 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Mappers;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
@@ -59,8 +58,6 @@ namespace SODP.UI.Pages.ActiveProjects
                     {
                         Id = response.Data.Id,
                         Number = response.Data.Number,
-                        Title = response.Data.Title,
-                        Description = response.Data.Description,
                         StageId = response.Data.Stage.Id
                     });
                 }

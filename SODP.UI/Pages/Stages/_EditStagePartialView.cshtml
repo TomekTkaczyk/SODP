@@ -1,0 +1,34 @@
+﻿@using SODP.UI.Pages.Stages.ViewModels
+@model StageVM
+<!-- Modal -->
+<div class="modal fade" id="editStage" tabindex="-1" role="dialog" aria-labelledby="editStageLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="text-info" id="editStageLabel">@(Model.Id==0 ? "Nowe stadium" : "Edycja") stadium</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <div id="error-placeholder"></div>
+                <form asp-page-handler="EditStage">
+                    <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <input asp-for="Id" type="hidden" value="@Model.Id" />
+                    <div class="form-group">
+                        <input asp-for="Sign" onkeyup="this.value = this.value.toUpperCase();" id="sign" class="form-control" value="@Model.Sign" placeholder="Znak stadium" readonly="@(Model.Id.Equals(0) ? false : true)" />
+                        <span asp-validation-for="Sign" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="Name" onkeyup="this.value = this.value.toUpperCase();" id="title" class="form-control" value="@Model.Name" placeholder="Opis stadium" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <partial name="_SubmitAndBackButtonModalPartial" />
+            </div>
+        </div>
+    </div>
+</div>

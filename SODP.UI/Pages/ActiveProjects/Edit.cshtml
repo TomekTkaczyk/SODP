@@ -24,7 +24,7 @@
         <input asp-for="Project.Number" type="hidden" />
         <input asp-for="Project.StageId" type="hidden" />
         <input asp-for="Project.StageSign" type="hidden" />
-        <input asp-for="Project.StageTitle" type="hidden" />
+        <input asp-for="Project.StageName" type="hidden" />
 
         <div class="col-md-7 justify-content-end font-weight-bold" style="padding:20px">
             <div>
@@ -32,7 +32,7 @@
                 @Model.Project.Stage
             </div>
             <div>
-                @Model.Project.Title
+                @Model.Project.Name
             </div>
         </div>
 
@@ -54,21 +54,27 @@
                     <br/>
                     <div>
                         <div>
-                            Nazwa inwestycji:<br/>
+                            Nazwa projektu:<br/>
                             <div class="col font-weight-bold">
-                                <span style="white-space: pre-line">@Model.Project.Investment</span>
+                                <span style="white-space: pre-line">@Model.Project.Name</span>
                             </div>
                         </div>
                         <div>
-                            Tytuł opracowania:<br/>
+                            Nazwa zamierzenia budowlanego:<br/>
                             <div class="col font-weight-bold">
-                                <span style="white-space: pre-line">@Model.Project.TitleStudy</span>
+                                <span style="white-space: pre-line">@Model.Project.Title</span>
                             </div>
                         </div>
                         <div>
-                            Adres inwestycji:<br/>
+                            Adres:<br/>
                             <div class="col font-weight-bold">
                                 <span style="white-space: pre-line">@Model.Project.Address</span>
+                            </div>
+                        </div>
+                        <div>
+                            Jednostka ewidencyjna:<br/>
+                            <div class="col font-weight-bold">
+                                <span style="white-space: pre-line">@Model.Project.LocationUnit</span>
                             </div>
                         </div>
                         <div>Inwestor:<br/>
@@ -98,22 +104,16 @@
                     <div class="form-group row">
                         <div class="col-12">
                             <label>Nazwa projektu:</label>
-                            <input asp-for="Project.Title" class="form-control" placeholder="Nazwa projektu" />
+                            <input asp-for="Project.Name" class="form-control" placeholder="Nazwa projektu" />
+                            <span asp-validation-for="Project.Name" style="font-size:14px" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-12">
+                            <label>Nazwa zamierzenia budowlanego:</label>
+                            <input asp-for="Project.Title" class="form-control" placeholder="Nazwa zamierzenia budowlanego" />
                             <span asp-validation-for="Project.Title" style="font-size:14px" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-12">
-                            <label>Tytuł opracowania:</label>
-                            <textarea asp-for="Project.TitleStudy" class="form-control" placeholder="Tytuł opracowania (strona tytułowa)"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-12">
-                            <label>Nazwa inwestycji:</label>
-                            <textarea asp-for="Project.Investment" class="form-control" placeholder="Obiekt"></textarea>
                         </div>
                     </div>
 

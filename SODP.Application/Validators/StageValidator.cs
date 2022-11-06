@@ -15,11 +15,11 @@ namespace SODP.Application.Validators
                 .WithMessage("Znak moze zawierać litery i podkreślenie. Na początku minimum 2 litery")
                 .WithName("Znak");
 
-            RuleFor(x => x.Title)
+            RuleFor(x => x.Name)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage("Opis stadium jest wymagany.")
-                .WithName("Opis");
+                .WithMessage("Nazwa stadium jest wymagana")
+                .WithName("Nazwa");
         }
     }
 }

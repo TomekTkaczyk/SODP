@@ -27,16 +27,17 @@
             <div class="col-3 justify-content-end">
                 <button type="button"
                     class="btn btn-info form-control text-white float-right"
-                    title="Nowy projektant"
+                    title="Nowy sampel"
                     data-toggle="ajax-modal"
-                    data-url="@Url.Page("Index", "EditDesigner")">
-                    <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
+                    data-url="@Url.Page("Index", "NewDesigner")">
+                    <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy sampel
                 </button>
             </div>
         }
     </div>
 </div>
 
+@*
 @if (Model.Designers.Designers.Count() > 0)
 {
     <div id="designersAccordion" class="accordion col-12 p-3 mt-0">
@@ -44,8 +45,9 @@
         {
             <div class="button card">
                 <div class="card-header"
-             id="card-header-@item.Id">
+                     id="card-header-@item.Id">
                     <div class="row">
+
                         <div class="col font-weight-bold clickable"
                              onclick="accordionCollapse(@item.Id)"
                              id="card-head-@item.Id"
@@ -66,7 +68,7 @@
                                data-placement="top"
                                title="Dodaj uprawnienia"
                                hidden>
-                               <i class="fas fa-plus text-success"></i>
+                                <i class="fas fa-plus text-success"></i>
                             </a>
 
                             <a name="additionalBtn"
@@ -76,7 +78,8 @@
                                data-toggle="tooltip"
                                data-placement="top"
                                title="Edycja"
-                               hidden><i class="fas fa-edit text-success"></i>
+                               hidden>
+                                <i class="fas fa-edit text-success"></i>
                             </a>
 
                             <a name="additionalBtn"
@@ -86,16 +89,18 @@
                                data-toggle="tooltip"
                                data-placement="top"
                                title="Usuń projektanta"
-                               hidden><i class="fas fa-times text-danger"></i>
+                               hidden>
+                                <i class="fas fa-times text-danger"></i>
                             </a>
 
                             <style>
                                 .toggle.ios, .toggle-on.ios, .toggle-off.ios {
                                     border-radius: 30px;
                                 }
-                                .toggle.ios .toggle-handle {
-                                    border-radius: 30px;
-                                }
+
+                                    .toggle.ios .toggle-handle {
+                                        border-radius: 30px;
+                                    }
                             </style>
                             <input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
                                    onchange="handleChange(@item.Id,this.checked)"
@@ -111,6 +116,7 @@
                  class="collapse hide"
                  aria-labelledby="heading-@item.Id"
                  data-parent="#designersAccordion">
+
                 <div class="card-body" id="license-@item.Id"></div>
             </div>
         }
@@ -122,19 +128,21 @@ else
     <p> Lista projektantów jest pusta</p>
 }
 
+*@
 
 @section Scripts{
-    <script src="~/js/delete.js"></script>
+    @*<script src="~/js/delete.js"></script>*@
     <script src="~/js/initModalPlaceholder.js"></script>
     <script src="~/js/designersList.js"></script>
+@*
     <script>
         function EditDesigner(id) {
             $.ajax({
                 type: "Get",
-                url: `@Url.Page("Index","EditDesigner")&Id=` + id,
+                url: `@Url.Page("Index","NewDesigner")&Id=` + id,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
-                    $('#editDesigner').modal('show');
+                    $('#editdesigner').modal('show');
                 }
             })
         }
@@ -162,19 +170,6 @@ else
     </script>
 
     <script>
-        function NewLicense(designerId, licenseId) {
-            $.ajax({
-                type: "Get",
-                url: `\Designers?handler=NewLicense&designerId=${designerId}&id=${licenseId}`,
-                success: function (data) {
-                    $('#modal-placeholder').html(data);
-                    $('#newLicense').modal('show');
-                }
-            })
-        }
-    </script>
-
-    <script>
         function accordionCollapse(id) {
             var additionalElements = document.getElementsByName('additionalBtn');
             var inputList = Array.prototype.slice.call(additionalElements);
@@ -190,4 +185,5 @@ else
             }
         }
     </script>
+*@
 }

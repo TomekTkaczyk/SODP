@@ -14,18 +14,11 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("varchar(4)")
                 .IsRequired();
 
+            builder.Property(p => p.Name)
+                .HasColumnType("nvarchar(250)")
+                .IsRequired();
+
             builder.Property(p => p.Title)
-                .HasColumnType("nvarchar(250)")
-                .IsRequired();
-
-            builder.Property(p => p.Description)
-                .HasColumnType("longtext");
-
-            builder.Property(p => p.TitleStudy)
-                .HasColumnType("nvarchar(250)")
-                .IsRequired();
-
-            builder.Property(p => p.Investment)
                 .HasColumnType("nvarchar(250)")
                 .IsRequired();
 
@@ -33,12 +26,20 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("nvarchar(250)")
                 .IsRequired();
 
+            builder.Property(p => p.LocationUnit)
+                .HasColumnType("nvarchar(250)")
+                .IsRequired();
+
+            builder.Property(p => p.BuildingCategory)
+                .HasColumnType("nvarchar(250)")
+                .IsRequired();
+
             builder.Property(p => p.Investor)
                 .HasColumnType("nvarchar(250)")
                 .IsRequired();
 
-            builder.Property(p => p.Location)
-                .HasColumnType("nvarchar(250)");
+            builder.Property(p => p.Description)
+                .HasColumnType("longtext");
 
             builder.HasIndex(p => new { p.Number, p.StageId })
                 .IsUnique()

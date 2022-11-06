@@ -1,6 +1,8 @@
 ﻿@page
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
 
 @model IndexModel
 
@@ -10,6 +12,10 @@
 
 @inject SignInManager<User> SignInManager
 
+<link rel="stylesheet " href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/css/bootstrap4-toggle.min.css">
+
+<script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
 
 <div class="container p-0 m-0">
     <div class="row pl-3 pr-3">
@@ -23,7 +29,7 @@
                         class="btn btn-info form-control text-white float-right"
                         title="Nowe stadium"
                         data-toggle="ajax-modal"
-                        data-url="@Url.Page("Index","NewStage")">
+                        data-url="@Url.Page("Index","EditStage")">
                     <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowe stadium
                 </button>
             </div>
@@ -47,19 +53,19 @@
                     @foreach (var stage in Model.StagesViewModel.Stages)
                     {
                     <tr class="m-0 p-0">
-                        <td onclick='NewStage(@stage.Id)'
+                        <td onclick='EditStage(@stage.Id)'
                             class="cell clickable"
                             data-toggle="tooltip"
                             title="Edycja stadium"
                             data-placement="top">
                             @stage.Sign
                         </td>
-                        <td onclick='NewStage(@stage.Id)'
+                        <td onclick='EditStage(@stage.Id)'
                             class="cell clickable"
                             data-toggle="tooltip"
                             title="Edycja stadium"
                             data-placement="top">
-                            @stage.Title
+                            @stage.Name
                         </td>
                         <td class="cell text-right">
                             <a onclick='Delete("/api/v0_01/stages/@stage.Id")'
@@ -69,6 +75,20 @@
                                title="Usuń stadium">
                                 <i class="fas fa-times text-danger"></i>
                             </a>
+                                <style>
+                                    .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+                                        border-radius: 30px;
+                                    }
+                                    .toggle.ios .toggle-handle {
+                                        border-radius: 30px;
+                                    }
+                                </style>
+                                <input type="checkbox" asp-for="@stage.ActiveStatus" name="checkbox_@stage.Id"
+                                       onchange="handleChange(@stage.Id,this.checked)"
+                                       id="checkbox_@stage.Id"
+                                       data-toggle="toggle"
+                                       title="Aktywność"
+                                       data-style="ios">
                         </td>
                     </tr>
                     }
@@ -111,15 +131,36 @@
     <script src="~/js/stagesList.js"></script>
 
     <script>
-        function NewStage(id) {
+        function EditStage(id) {
             $.ajax({
                 type: "Get",
-                url: `@Url.Page("Index","NewStage")&id=${id}`,
+                url: `@Url.Page("Index","EditStage")&id=${id}`,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
-                    $('#editstage').modal('show');
+                    $('#editStage').modal('show');
                 }
             })
+        }
+    </script>
+    <script>
+        function handleChange(id, checked) {
+
+            let c = checked ? 1 : 0;
+            let url = `/api/v0_01/stages/${id}/status/${c}`;
+
+            $.ajax({
+                type: "PUT",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify(c),
+                success: function (response) {
+                },
+                error: function (jqXHR, exception) {
+                    console.log(jqXHR);
+                    console.log(exception);
+                }
+            });
         }
     </script>
 

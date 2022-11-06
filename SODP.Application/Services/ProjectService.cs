@@ -159,17 +159,18 @@ namespace SODP.Application.Services
 
                 project.Normalize();
                 project.Stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == project.StageId);
+                project.Title = "";
                 project.Address = "";
-                project.Investment = "";
+                project.LocationUnit = "";
+                project.BuildingCategory = "";
                 project.Investor = "";
-                project.TitleStudy = "";
+                project.Description = "";
                 var (Success, Message) = await _folderManager.CreateFolderAsync(project);
                 if (!Success)
                 {
                     throw new ApplicationException($"Błąd: {Message}");
                 }
 
-                project.Location = newProject.ToString();
                 var entity = await _context.AddAsync(project);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<ProjectDTO>(entity.Entity));
@@ -211,13 +212,13 @@ namespace SODP.Application.Services
                     throw new ApplicationException($"Błąd: {Message}");
                 }
 
+                oldProject.Name = project.Name;
                 oldProject.Title = project.Title;
-                oldProject.Description = project.Description;
-                oldProject.TitleStudy = project.TitleStudy;
-                oldProject.Investment = project.Investment;
                 oldProject.Address = project.Address;
+                oldProject.LocationUnit = project.LocationUnit;
+                oldProject.BuildingCategory = project.BuildingCategory;
                 oldProject.Investor = project.Investor;
-                oldProject.Location = project.ToString();
+                oldProject.Description = project.Description;
                 oldProject.ModifyTimeStamp = DateTime.UtcNow;
                 _context.Projects.Update(oldProject);
                 await _context.SaveChangesAsync();
