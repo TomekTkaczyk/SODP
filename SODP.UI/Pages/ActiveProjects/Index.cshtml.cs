@@ -7,8 +7,8 @@ using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
+using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared;
-using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -77,11 +77,13 @@ namespace SODP.UI.Pages.ActiveProjects
             if (response.IsSuccessStatusCode)
             {
                 var stages = await response.Content.ReadAsAsync<ServicePageResponse<StageDTO>>();
-                stagesItems = stages.Data.Collection.Select(x => new SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = x.ToString()
-                }).ToList();
+                stagesItems = stages.Data.Collection
+                    .Where(x => x.ActiveStatus)
+                    .Select(x => new SelectListItem
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.ToString()
+                    }).ToList();
 
                 if (project.StageId != 0)
                 {

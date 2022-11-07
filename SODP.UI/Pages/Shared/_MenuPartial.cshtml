@@ -3,10 +3,6 @@
 @inject SignInManager<User> SignInManager
 
 <ul class="navbar-nav flex-grow-1">
-    <li class="nav-item">
-        <a class="nav-link text-white-50" asp-area="" asp-page="/Samples/Index">Sample</a>
-    </li>
-
     @if (User.IsInRole("User") || User.IsInRole("ProjectManager"))
     {
         <li class="nav-item">

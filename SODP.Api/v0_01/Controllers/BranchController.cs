@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Domain.Services;
 using SODP.Shared.DTO;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.Api.v0_01.Controllers
@@ -24,9 +21,9 @@ namespace SODP.Api.v0_01.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(bool? ActiveOnly)
         {
-            return Ok(await _service.GetAllAsync());
+            return Ok(await _service.GetAllAsync(ActiveOnly));
         }
 
         [HttpGet("{id}")]
@@ -109,15 +106,6 @@ namespace SODP.Api.v0_01.Controllers
         public async Task<IActionResult> GetLicensesAsync(int id)
         {
             return Ok(await _service.GetLicensesAsync(id));
-        }
-
-        [HttpGet("test")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public IActionResult Test()
-        {
-            return Ok(_service.Test());
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿function Delete(url) {
     swal({
         title: "Czy jesteś pewien?",
-        text: "Usunięcie projektu. Operacja nie może być cofnięta.",
+        text: "Usunięcie rekordu. Operacja nie może być cofnięta.",
         icon: "warning",
         buttons: true,
         danegerMode: true

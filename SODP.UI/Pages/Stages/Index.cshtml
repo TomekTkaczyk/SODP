@@ -75,20 +75,20 @@
                                title="Usuń stadium">
                                 <i class="fas fa-times text-danger"></i>
                             </a>
-                                <style>
-                                    .toggle.ios, .toggle-on.ios, .toggle-off.ios {
-                                        border-radius: 30px;
-                                    }
-                                    .toggle.ios .toggle-handle {
-                                        border-radius: 30px;
-                                    }
-                                </style>
-                                <input type="checkbox" asp-for="@stage.ActiveStatus" name="checkbox_@stage.Id"
-                                       onchange="handleChange(@stage.Id,this.checked)"
-                                       id="checkbox_@stage.Id"
-                                       data-toggle="toggle"
-                                       title="Aktywność"
-                                       data-style="ios">
+                            <style>
+                                .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+                                    border-radius: 30px;
+                                }
+                                .toggle.ios .toggle-handle {
+                                    border-radius: 30px;
+                                }
+                            </style>
+                            <input type="checkbox" asp-for="@stage.ActiveStatus" name="checkbox_@stage.Id"
+                                    onchange="handleChange(@stage.Id,this.checked)"
+                                    id="checkbox_@stage.Id"
+                                    data-toggle="toggle"
+                                    title="Aktywność"
+                                    data-style="ios">
                         </td>
                     </tr>
                     }
@@ -133,7 +133,7 @@
     <script>
         function EditStage(id) {
             $.ajax({
-                type: "Get",
+                type: "GET",
                 url: `@Url.Page("Index","EditStage")&id=${id}`,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
@@ -142,6 +142,35 @@
             })
         }
     </script>
+
+    <script>
+        function DeleteStage(id) {
+            swal({
+                title: "Czy jesteś pewien?",
+                text: "Usunięcie stadium. Operacja nie może być cofnięta.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                window.location.reload();
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    })
+                }
+            })
+        }
+    </script>
+
     <script>
         function handleChange(id, checked) {
 

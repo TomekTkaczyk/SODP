@@ -111,8 +111,8 @@ namespace SODP.UI.Pages.ActiveProjects
                     ApplyBranches = response.Data.Branches
                     .Select(x => new SelectListItem
                     {
-                        Value = x.BranchId.ToString(),
-                        Text = x.Name
+                        Value = x.Branch.Id.ToString(),
+                        Text = $"{x.Branch.Name}"
                     })
                     .OrderBy(o => o.Text)
                     .ToList(),
@@ -135,14 +135,15 @@ namespace SODP.UI.Pages.ActiveProjects
 
         private async Task<List<SelectListItem>> GetBranchesAsync(List<SelectListItem> exclusionList)
         {
-            var apiResponse = await _apiProvider.GetAsync($"branches");
+            var url = $"branches?activeOnly=true"; 
+            var apiResponse = await _apiProvider.GetAsync(url);
             var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
             var result = responseBranch.Data.Collection
                 .OrderBy(x => x.Symbol)
                 .Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),
-                    Text = $"{x.Sign}-{x.Name.Trim()}"
+                    Text = $"{x.Name.Trim()}"
                 }).ToList();
 
             if (exclusionList != null)

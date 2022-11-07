@@ -1,4 +1,5 @@
-﻿using SODP.Model;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using SODP.Model;
 using SODP.Shared.DTO;
 using System.Linq;
 
@@ -10,7 +11,7 @@ namespace SODP.Application.Mappers
         {
             if(project != null)
             {
-                return new ProjectDTO
+                var result = new ProjectDTO
                 {
                     Id = project.Id,
                     Number = project.Number,
@@ -25,10 +26,10 @@ namespace SODP.Application.Mappers
                     Branches = (from branch in project.Branches select new ProjectBranchDTO()
                     {
                        Id = branch.Id,
-                       BranchId = branch.BranchId,
-                       Name = branch.ToString()
                     }).ToList()
                 };
+
+                return result;
             }
 
             return null;

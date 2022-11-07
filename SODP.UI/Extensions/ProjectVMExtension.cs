@@ -1,6 +1,6 @@
 ﻿using SODP.Shared.DTO;
 using SODP.UI.Pages.ActiveProjects;
-using SODP.UI.ViewModels;
+using SODP.UI.Pages.ActiveProjects.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

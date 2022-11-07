@@ -59,7 +59,7 @@ namespace SODP.Application.Services
             IList<Project> projects = new List<Project>();
 
             serviceResponse.Data.TotalCount = await _context.Projects
-                .Where(x => x.Status == _mode && (string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString)))
+                .Where(x => x.Status == _mode && (string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString)))
                 .CountAsync();
             if (pageSize == 0)
             {
@@ -71,7 +71,7 @@ namespace SODP.Application.Services
                 projects = await _context.Projects.Include(s => s.Stage)
                     .OrderBy(x => x.Number)
                     .ThenBy(y => y.Stage.Sign)
-                    .Where(x => x.Status == _mode && (string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString)))
+                    .Where(x => x.Status == _mode && (string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.Title.Contains(searchString)))
                     .Skip((currentPage-1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
@@ -127,7 +127,7 @@ namespace SODP.Application.Services
                 {
                     serviceResponse.SetError($"Błąd: Projekt Id:{id} nie odnaleziony.", 404);
                 }
-                serviceResponse.SetData(project.ToDTO());
+                serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
             }
             catch (Exception ex)
             {

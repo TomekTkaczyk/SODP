@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace SODP.UI.ViewModels
+namespace SODP.UI.Pages.ActiveProjects.ViewModels
 {
     public class NewProjectVM
     {

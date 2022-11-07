@@ -21,11 +21,12 @@ namespace SODP.Domain
                 .ReverseMap();
 
             CreateMap<ProjectBranch, ProjectBranchDTO>()
-                .ForMember(dest => dest.Name, act => act.Ignore())
-                .ForMember(dest => dest.DesignerId, act => act.Ignore())
-                .ForMember(dest => dest.DesignerName, act => act.Ignore())
-                .ForMember(dest => dest.CheckerId, act => act.Ignore())
-                .ForMember(dest => dest.CheckerName, act => act.Ignore());
+                .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch));
+                //.ForMember(dest => dest.Name, act => act.Ignore())
+                //.ForMember(dest => dest.DesignerId, act => act.Ignore())
+                //.ForMember(dest => dest.DesignerName, act => act.Ignore())
+                //.ForMember(dest => dest.CheckerId, act => act.Ignore())
+                //.ForMember(dest => dest.CheckerName, act => act.Ignore());
 
             CreateMap<Project, ProjectDTO>()
                 .ForMember(dest => dest.Branches, opt => opt.MapFrom(src => src.Branches));

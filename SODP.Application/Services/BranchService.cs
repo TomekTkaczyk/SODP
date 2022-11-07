@@ -27,54 +27,27 @@ namespace SODP.Application.Services
             _context = context;
         }
 
-        public ServiceResponse Test()
-        {
-            var result = new ServiceResponse();
-
-            // var project = await _context.ProjectBranches.ToListAsync();
-
-            return result;
-        }
-
         public async Task<ServicePageResponse<BranchDTO>> GetAllAsync()
         {
-            return await GetAllAsync(1, 0, null);
+            return await GetAllAsync(null);
         }
 
-        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
-        {
-            return await GetAllAsync(currentPage, pageSize, null);
-        }
-
-        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
+        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(bool? activeOnly = null)
         {
             var serviceResponse = new ServicePageResponse<BranchDTO>();
 
             try
             {
                 var branches = _context.Branches
-                    .Where(x => active == null || (x.ActiveStatus == active))
+                    .Where(x => (activeOnly == null || !activeOnly.Value) || (x.ActiveStatus == activeOnly))
                     .OrderBy(x => x.Sign);
 
                 serviceResponse.Data.TotalCount = await branches.CountAsync();
 
-                if (pageSize == 0)
-                {
-                    currentPage = 1;
-                    pageSize = serviceResponse.Data.TotalCount;
-                }
-                else
-                {
-                    currentPage = Math.Min(currentPage, (int)Math.Ceiling(decimal.Divide(serviceResponse.Data.TotalCount, pageSize)));
-                }
+                var br = await branches.ToListAsync();
 
-                var br = await branches
-                    .Skip((currentPage-1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
-
-                serviceResponse.Data.PageNumber = currentPage;
-                serviceResponse.Data.PageSize = pageSize;
+                //serviceResponse.Data.PageNumber = currentPage;
+                //serviceResponse.Data.PageSize = pageSize;
                 serviceResponse.SetData(_mapper.Map<IList<BranchDTO>>(branches));
 
             }
