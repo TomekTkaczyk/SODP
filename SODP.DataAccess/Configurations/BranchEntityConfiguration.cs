@@ -14,10 +14,10 @@ namespace SODP.DataAccess.Configurations
                .IsRequired();
 
             builder.Property(x => x.Sign)
-                .HasColumnType("varchar(10)")
+                .HasColumnType("nvarchar(10)")
                 .IsRequired();
 
-            builder.Property(x => x.Title)
+            builder.Property(x => x.Name)
                 .HasColumnType("nvarchar(50)");
 
             builder.Property(x => x.ActiveStatus)

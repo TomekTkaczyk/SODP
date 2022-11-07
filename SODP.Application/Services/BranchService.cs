@@ -183,7 +183,7 @@ namespace SODP.Application.Services
                 }
                 branch.Symbol = updateBranch.Symbol;
                 branch.Sign = updateBranch.Sign;
-                branch.Title = updateBranch.Title;
+                branch.Name = updateBranch.Name;
                 branch.Normalize();
                 _context.Branches.Update(branch);
                 await _context.SaveChangesAsync();

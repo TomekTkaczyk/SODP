@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SODP.DataAccess.Migrations
 {
-    public partial class AddProjectProperty : Migration
+    public partial class ModifyProjectProperty : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,8 +20,26 @@ namespace SODP.DataAccess.Migrations
                 name: "FK_ProjectBranches_Projects_ProjectId",
                 table: "ProjectBranches");
 
-            migrationBuilder.DropTable(
-                name: "Licences");
+            migrationBuilder.RenameTable(
+                name: "Licences",
+                newName: "Licenses");
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CreateTimeStamp",
+                table: "Licenses",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ModifyTimeStamp",
+                table: "Licenses",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.RenameColumn(
+                name: "Contents",
+                table: "Licenses",
+                newName: "Content");
 
             migrationBuilder.DropIndex(
                 name: "IX_Checking",
@@ -39,9 +57,10 @@ namespace SODP.DataAccess.Migrations
                 name: "DesignerLicenceId",
                 table: "ProjectBranches");
 
-            migrationBuilder.DropColumn(
-                name: "Name",
-                table: "Branches");
+            migrationBuilder.RenameColumn(
+                name: "Title",
+                table: "Stages",
+                newName: "Name");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Lastname",
@@ -93,10 +112,26 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            migrationBuilder.DropColumn(
+                name: "Location",
+                table: "Projects");
+
+            migrationBuilder.RenameColumn(
+                name: "Title",
+                table: "Projects",
+                newName: "Name");
+
             migrationBuilder.AddColumn<string>(
                 name: "Address",
                 table: "Projects",
-                type: "nvarchar(250)",
+                type: "nvarchar(256)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "BuildingCategory",
+                table: "Projects",
+                type: "nvarchar(256)",
                 nullable: false,
                 defaultValue: "");
 
@@ -107,16 +142,16 @@ namespace SODP.DataAccess.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "Investment",
+                name: "Investor",
                 table: "Projects",
-                type: "nvarchar(250)",
+                type: "nvarchar(256)",
                 nullable: false,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
-                name: "Investor",
+                name: "LocationUnit",
                 table: "Projects",
-                type: "nvarchar(250)",
+                type: "nvarchar(256)",
                 nullable: false,
                 defaultValue: "");
 
@@ -127,9 +162,9 @@ namespace SODP.DataAccess.Migrations
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "TitleStudy",
+                name: "Title",
                 table: "Projects",
-                type: "nvarchar(250)",
+                type: "nvarchar(256)",
                 nullable: false,
                 defaultValue: "");
 
@@ -161,6 +196,14 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            migrationBuilder.AlterColumn<string>(
+                name: "Number",
+                table: "Certificates",
+                type: "nvarchar(20)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "varchar(20)");
+
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreateTimeStamp",
                 table: "Certificates",
@@ -172,6 +215,22 @@ namespace SODP.DataAccess.Migrations
                 table: "Certificates",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Sign",
+                table: "Branches",
+                type: "nvarchar(10)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "varchar(10)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
+                table: "Branches",
+                type: "nvarchar(50)",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(50)");
 
             migrationBuilder.AddColumn<bool>(
                 name: "ActiveStatus",
@@ -195,36 +254,7 @@ namespace SODP.DataAccess.Migrations
                 name: "Symbol",
                 table: "Branches",
                 type: "varchar(2)",
-                nullable: false,
-                defaultValue: "00");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Title",
-                table: "Branches",
-                type: "nvarchar(50)",
-                nullable: true);
-
-            migrationBuilder.CreateTable(
-                name: "Licenses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false),
-                    DesignerId = table.Column<int>(nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(250)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Licenses", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Licenses_Designers_DesignerId",
-                        column: x => x.DesignerId,
-                        principalTable: "Designers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                nullable: false);
 
             migrationBuilder.CreateTable(
                 name: "BranchLicense",
@@ -279,11 +309,6 @@ namespace SODP.DataAccess.Migrations
                 table: "BranchLicense",
                 column: "LicenseId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Designer",
-                table: "Licenses",
-                column: "DesignerId");
-
             migrationBuilder.AddForeignKey(
                 name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
                 table: "ProjectBranches",
@@ -326,9 +351,6 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.DropTable(
                 name: "BranchLicense");
 
-            migrationBuilder.DropTable(
-                name: "Licenses");
-
             migrationBuilder.DropIndex(
                 name: "IX_Checking",
                 table: "ProjectBranches");
@@ -366,11 +388,11 @@ namespace SODP.DataAccess.Migrations
                 table: "Projects");
 
             migrationBuilder.DropColumn(
-                name: "CreateTimeStamp",
+                name: "BuildingCategory",
                 table: "Projects");
 
             migrationBuilder.DropColumn(
-                name: "Investment",
+                name: "CreateTimeStamp",
                 table: "Projects");
 
             migrationBuilder.DropColumn(
@@ -378,12 +400,21 @@ namespace SODP.DataAccess.Migrations
                 table: "Projects");
 
             migrationBuilder.DropColumn(
+                name: "LocationUnit",
+                table: "Projects");
+
+            migrationBuilder.DropColumn(
                 name: "ModifyTimeStamp",
                 table: "Projects");
 
             migrationBuilder.DropColumn(
-                name: "TitleStudy",
+                name: "Title",
                 table: "Projects");
+
+            migrationBuilder.RenameColumn(
+                name: "Name",
+                table: "Projects",
+                newName: "Title");
 
             migrationBuilder.DropColumn(
                 name: "CheckingLicenseId",
@@ -429,9 +460,10 @@ namespace SODP.DataAccess.Migrations
                 name: "Symbol",
                 table: "Branches");
 
-            migrationBuilder.DropColumn(
-                name: "Title",
-                table: "Branches");
+            migrationBuilder.RenameColumn(
+                name: "Name",
+                table: "Stages",
+                newName: "Title");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Lastname",
@@ -453,6 +485,20 @@ namespace SODP.DataAccess.Migrations
                 oldNullable: true,
                 oldDefaultValue: "");
 
+            migrationBuilder.AlterColumn<string>(
+                name: "Title",
+                table: "Projects",
+                type: "nvarchar(250)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(256)");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Location",
+                table: "Projects",
+                type: "nvarchar(250)",
+                nullable: true);
+
             migrationBuilder.AddColumn<int>(
                 name: "CheckingLicenceId",
                 table: "ProjectBranches",
@@ -465,39 +511,47 @@ namespace SODP.DataAccess.Migrations
                 type: "int",
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AlterColumn<string>(
+                name: "Number",
+                table: "Certificates",
+                type: "varchar(20)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(20)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Sign",
+                table: "Branches",
+                type: "varchar(10)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(10)");
+
+            migrationBuilder.AlterColumn<string>(
                 name: "Name",
                 table: "Branches",
                 type: "nvarchar(50)",
                 nullable: false,
-                defaultValue: "");
+                oldClrType: typeof(string),
+                oldType: "nvarchar(50)",
+                oldNullable: true);
 
-            migrationBuilder.CreateTable(
-                name: "Licences",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    BranchId = table.Column<int>(type: "int", nullable: false),
-                    Contents = table.Column<string>(type: "nvarchar(250)", nullable: false),
-                    DesignerId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Licences", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Licences_Branches_BranchId",
-                        column: x => x.BranchId,
-                        principalTable: "Branches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Licences_Designers_DesignerId",
-                        column: x => x.DesignerId,
-                        principalTable: "Designers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.DropColumn(
+                name: "CreateTimeStamp",
+                table: "Licenses");
+
+            migrationBuilder.DropColumn(
+                name: "ModifyTimeStamp",
+                table: "Licenses");
+
+            migrationBuilder.RenameColumn(
+                name: "Content",
+                table: "Licenses",
+                newName: "Contents");
+
+            migrationBuilder.RenameTable(
+                name: "Licenses",
+                newName: "Licences");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Checking",
@@ -508,16 +562,6 @@ namespace SODP.DataAccess.Migrations
                 name: "IX_Designer",
                 table: "ProjectBranches",
                 column: "DesignerLicenceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Branch",
-                table: "Licences",
-                column: "BranchId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Designer",
-                table: "Licences",
-                column: "DesignerId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ProjectBranches_Licences_CheckingLicenceId",

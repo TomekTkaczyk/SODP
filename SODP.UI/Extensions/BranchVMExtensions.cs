@@ -16,7 +16,7 @@ namespace SODP.UI.Extensions
                                       Id = branch.Id,
                                       Symbol = branch.Symbol,
                                       Sign = branch.Sign,
-                                      Title = branch.Title
+                                      Name = branch.Name
                                   }),
                                   Encoding.UTF8,
                                   "application/json"
@@ -30,7 +30,7 @@ namespace SODP.UI.Extensions
                 Id = branch.Id,
                 Symbol = branch.Symbol,
                 Sign = branch.Sign,
-                Title = branch.Title
+                Name = branch.Name
             };
         }
     }

@@ -39,6 +39,7 @@ namespace SODP.UI.Extensions
                 Title = project.Title,
                 Address = project.Address,
                 LocationUnit = project.LocationUnit,
+                BuildingCategory = project.BuildingCategory,
                 Investor = project.Investor,
                 Description = project.Description,
                 Status = project.Status, 

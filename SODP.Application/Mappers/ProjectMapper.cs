@@ -19,6 +19,7 @@ namespace SODP.Application.Mappers
                     Title = project.Title,
                     Address = project.Address,
                     LocationUnit = project.LocationUnit,
+                    BuildingCategory = project.BuildingCategory,
                     Investor = project.Investor,
                     Description = project.Description,
                     Branches = (from branch in project.Branches select new ProjectBranchDTO()

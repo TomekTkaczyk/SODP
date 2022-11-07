@@ -8,11 +8,11 @@ namespace SODP.Shared.DTO
 
         public string Sign { get; set; }
 
-        public string Title { get; set; }
+        public string Name { get; set; }
 
         public override string ToString()
         {
-            return $"{Symbol.Trim()}:{Sign.Trim()} {Title.Trim()}";
+            return $"{Symbol.Trim()}:{Sign.Trim()} {Name.Trim()}";
         }
     }
 }

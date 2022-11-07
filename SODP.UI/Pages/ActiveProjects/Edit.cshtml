@@ -54,12 +54,6 @@
                     <br/>
                     <div>
                         <div>
-                            Nazwa projektu:<br/>
-                            <div class="col font-weight-bold">
-                                <span style="white-space: pre-line">@Model.Project.Name</span>
-                            </div>
-                        </div>
-                        <div>
                             Nazwa zamierzenia budowlanego:<br/>
                             <div class="col font-weight-bold">
                                 <span style="white-space: pre-line">@Model.Project.Title</span>
@@ -77,7 +71,14 @@
                                 <span style="white-space: pre-line">@Model.Project.LocationUnit</span>
                             </div>
                         </div>
-                        <div>Inwestor:<br/>
+                        <div>
+                            Kategoria obiektu budowlanego:<br />
+                            <div class="col font-weight-bold">
+                                <span style="white-space: pre-line">@Model.Project.BuildingCategory</span>
+                            </div>
+                        </div>
+                        <div>
+                            Inwestor:<br />
                             <div class="col font-weight-bold">
                                 <span style="white-space: pre-line">@Model.Project.Investor</span>
                             </div>
@@ -112,8 +113,7 @@
                     <div class="form-group row">
                         <div class="col-12">
                             <label>Nazwa zamierzenia budowlanego:</label>
-                            <input asp-for="Project.Title" class="form-control" placeholder="Nazwa zamierzenia budowlanego" />
-                            <span asp-validation-for="Project.Title" style="font-size:14px" class="text-danger"></span>
+                            <textarea asp-for="Project.Title" class="form-control" placeholder="Nazwa zamierzenia budowlanego"></textarea>
                         </div>
                     </div>
 
@@ -121,6 +121,22 @@
                         <div class="col-12">
                             <label>Adres:</label>
                             <textarea asp-for="Project.Address" class="form-control" placeholder="Adres inwestycji"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-12">
+                            <label>Jednostka ewidencyjna:</label>
+                            <input asp-for="Project.LocationUnit" class="form-control" placeholder="Jednostka ewidencyjna" />
+                            <span asp-validation-for="Project.LocationUnit" style="font-size:14px" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-12">
+                            <label>Kategoria obiektu budowlanego:</label>
+                            <input asp-for="Project.BuildingCategory" class="form-control" placeholder="Kategoria obiektu budowlanego" />
+                            <span asp-validation-for="Project.BuildingCategory" style="font-size:14px" class="text-danger"></span>
                         </div>
                     </div>
 

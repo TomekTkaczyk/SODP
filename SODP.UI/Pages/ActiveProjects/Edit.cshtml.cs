@@ -41,6 +41,30 @@ namespace SODP.UI.Pages.ActiveProjects
             return Page();
         }
 
+        public async Task<IActionResult> OnPostAsync(ProjectVM project)
+        {
+            if (ModelState.IsValid)
+            {
+                var apiResponse = await _apiProvider.PutAsync($"active-projects/{project.Id}", project.ToHttpContent());
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    return RedirectToPage("Index");
+                }
+
+                var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
+                if (!string.IsNullOrEmpty(response.Message))
+                {
+                    ModelState.AddModelError("", response.Message);
+                }
+                foreach (var error in response.ValidationErrors)
+                {
+                    ModelState.AddModelError(error.Key, error.Value);
+                }
+            }
+
+            return Page();
+        }
+
         public async Task<IActionResult> OnPutBranchAsync(int id, int branchId)
         {
             await _apiProvider.PutAsync($"active-projects/{id}/branches/{branchId}", new StringContent(
@@ -63,30 +87,6 @@ namespace SODP.UI.Pages.ActiveProjects
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(ProjectVM project)
-        {
-            if (ModelState.IsValid)
-            {
-                var apiResponse = await _apiProvider.PutAsync($"active-projects/{project.Id}", project.ToHttpContent());
-                if (apiResponse.IsSuccessStatusCode)
-                {
-                    return RedirectToPage("Index");
-                }
-
-                var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
-                if (!string.IsNullOrEmpty(response.Message))
-                {
-                    ModelState.AddModelError("", response.Message);
-                }
-                foreach (var error in response.ValidationErrors)
-                {
-                    ModelState.AddModelError(error.Key, error.Value);
-                }
-            }
-          
-            return Page();
-        }
-
         private async Task GetProjectAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"active-projects/{id}/branches");
@@ -103,8 +103,9 @@ namespace SODP.UI.Pages.ActiveProjects
                     StageName = response.Data.Stage.Name,
                     Name = response.Data.Name,
                     Title = response.Data.Title,
-                    Status = response.Data.Status,
                     Address = response.Data.Address,
+                    LocationUnit = response.Data.LocationUnit,
+                    BuildingCategory = response.Data.BuildingCategory,
                     Investor = response.Data.Investor,
                     Description = response.Data.Description,
                     ApplyBranches = response.Data.Branches
@@ -115,6 +116,7 @@ namespace SODP.UI.Pages.ActiveProjects
                     })
                     .OrderBy(o => o.Text)
                     .ToList(),
+                    Status = response.Data.Status,
                 };
                 Project.Branches = await GetBranchesAsync(Project.ApplyBranches);
             }
@@ -140,7 +142,7 @@ namespace SODP.UI.Pages.ActiveProjects
                 .Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),
-                    Text = x.ToString()
+                    Text = $"{x.Sign}-{x.Name.Trim()}"
                 }).ToList();
 
             if (exclusionList != null)

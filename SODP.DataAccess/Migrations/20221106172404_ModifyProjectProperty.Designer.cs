@@ -9,8 +9,8 @@ using SODP.DataAccess;
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    [Migration("20221007084819_AddProjectProperty")]
-    partial class AddProjectProperty
+    [Migration("20221106172404_ModifyProjectProperty")]
+    partial class ModifyProjectProperty
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -135,18 +135,18 @@ namespace SODP.DataAccess.Migrations
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Sign")
                         .IsRequired()
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Symbol")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(2)")
                         .HasDefaultValue("00");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -205,7 +205,7 @@ namespace SODP.DataAccess.Migrations
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime(6)");
@@ -258,7 +258,7 @@ namespace SODP.DataAccess.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");
@@ -285,7 +285,11 @@ namespace SODP.DataAccess.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("BuildingCategory")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");
@@ -293,19 +297,20 @@ namespace SODP.DataAccess.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Investment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)");
-
                     b.Property<string>("Investor")
                         .IsRequired()
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(250)");
+                    b.Property<string>("LocationUnit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Number")
                         .IsRequired()
@@ -319,11 +324,7 @@ namespace SODP.DataAccess.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("TitleStudy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -420,13 +421,13 @@ namespace SODP.DataAccess.Migrations
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Sign")
                         .IsRequired()
                         .HasColumnType("varchar(10)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 

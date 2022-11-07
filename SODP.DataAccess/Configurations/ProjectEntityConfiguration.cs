@@ -15,27 +15,27 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.Property(p => p.Name)
-                .HasColumnType("nvarchar(250)")
+                .HasColumnType("nvarchar(256)")
                 .IsRequired();
 
             builder.Property(p => p.Title)
-                .HasColumnType("nvarchar(250)")
+                .HasColumnType("nvarchar(256)")
                 .IsRequired();
 
             builder.Property(p => p.Address)
-                .HasColumnType("nvarchar(250)")
+                .HasColumnType("nvarchar(256)")
                 .IsRequired();
 
             builder.Property(p => p.LocationUnit)
-                .HasColumnType("nvarchar(250)")
+                .HasColumnType("nvarchar(256)")
                 .IsRequired();
 
             builder.Property(p => p.BuildingCategory)
-                .HasColumnType("nvarchar(250)")
+                .HasColumnType("nvarchar(256)")
                 .IsRequired();
 
             builder.Property(p => p.Investor)
-                .HasColumnType("nvarchar(250)")
+                .HasColumnType("nvarchar(256)")
                 .IsRequired();
 
             builder.Property(p => p.Description)
