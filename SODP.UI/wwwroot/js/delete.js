@@ -4,7 +4,7 @@
         text: "Usunięcie rekordu. Operacja nie może być cofnięta.",
         icon: "warning",
         buttons: true,
-        danegerMode: true
+        dangerMode: true
     }).then((willDelete) => {
         if (willDelete) {
             $.ajax({

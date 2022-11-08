@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -25,6 +26,7 @@ namespace SODP.UI.Pages.Stages
     public class IndexModel : ListPageModel
     {
         const string editStagePartialViewName = "_EditStagePartialView";
+        const string deleteStagePartialViewName = "_DeleteStagePartialView";
 
         public StagesListVM StagesViewModel { get; set; }
 
@@ -39,7 +41,7 @@ namespace SODP.UI.Pages.Stages
             var url = new StringBuilder();
             url.Append(ReturnUrl);
             url.Append("?currentPage=:&pageSize=");
-            pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize; 
+            pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
             url.Append(pageSize.ToString());
 
             if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrWhiteSpace(searchString))
@@ -59,6 +61,33 @@ namespace SODP.UI.Pages.Stages
             return Page();
         }
 
+        public PartialViewResult OnGetDeleteStage(int? id)
+        {
+            return GetPartialView(id, deleteStagePartialViewName);
+        }
+
+        public async Task<PartialViewResult> OnPostDeleteStageAsync(int id)
+        {
+            if (id != 0)
+            {
+                var apiResponse = await _apiProvider.DeleteAsync($"stages/{id}");
+                switch (apiResponse.StatusCode)
+                {
+                    case HttpStatusCode.OK:
+                        var response = await _apiProvider.GetContent<ServiceResponse<int>>(apiResponse);
+                        if (!response.Success)
+                        {
+                            SetModelErrors(response);
+                        }
+                        break;
+                    default:
+                        // redirect to ErrorPage
+                        break;
+                }
+            }
+
+            return GetPartialView(id, deleteStagePartialViewName);
+        }
 
         public async Task<PartialViewResult> OnGetEditStageAsync(int? id)
         {
@@ -71,6 +100,9 @@ namespace SODP.UI.Pages.Stages
 
                     return GetPartialView(response.Data.ToViewModel(), editStagePartialViewName);
                 }
+
+                // Cos posz³o nie tak !!!
+                RedirectToPage("Errors/404");
             }
 
             return GetPartialView(new StageVM(), editStagePartialViewName);
@@ -98,7 +130,7 @@ namespace SODP.UI.Pages.Stages
                 }
             }
 
-            return GetPartialView(stage, editStagePartialViewName); 
+            return  GetPartialView(stage, editStagePartialViewName);
         }
 
         private async Task<IList<StageDTO>> GetStagesAsync(int currentPage, int pageSize, string searchString)

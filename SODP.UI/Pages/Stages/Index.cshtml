@@ -68,7 +68,8 @@
                             @stage.Name
                         </td>
                         <td class="cell text-right">
-                            <a onclick='Delete("/api/v0_01/stages/@stage.Id")'
+                            <a onclick='DeleteStage1(@stage.Id)'
+                                @*onclick='DeleteStage("/api/v0_01/stages/@stage.Id")'*@
                                class="btn btn-md m-0 py-0"
                                data-toggle="tooltip"
                                data-placement="top"
@@ -144,10 +145,23 @@
     </script>
 
     <script>
-        function DeleteStage(id) {
+        function DeleteStage1(id) {
+            $.ajax({
+                type: "GET",
+                url: `@Url.Page("Index","DeleteStage")&id=${id}`,
+                success: function (data) {
+                    $('#modal-placeholder').html(data);
+                    $('#deleteStage').modal('show');
+                }
+            })
+        }
+    </script>
+
+    <script>
+        function DeleteStage(url) {
             swal({
                 title: "Czy jesteś pewien?",
-                text: "Usunięcie stadium. Operacja nie może być cofnięta.",
+                text: "Usunięcie stadium nie może być cofnięte.",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true
@@ -157,6 +171,7 @@
                         type: "DELETE",
                         url: url,
                         success: function (data) {
+                            console.log(data)
                             if (data.success) {
                                 toastr.success(data.message);
                                 window.location.reload();

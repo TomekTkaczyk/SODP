@@ -27,18 +27,6 @@ namespace SODP.UI.Pages.ActiveProjects
             _endpoint = "active-projects";
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(int id)
-        {
-            var response = await _apiProvider.DeleteAsync(_endpoint + $"/{id}");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return Page();
-            }
-
-            return RedirectToPage("Index");
-        }
-
         public async Task<IActionResult> OnGetNewProjectAsync()
         {
             return await GetPartialViewAsync(new NewProjectVM());
@@ -69,6 +57,18 @@ namespace SODP.UI.Pages.ActiveProjects
 
             return await GetPartialViewAsync(project);
         }
+
+        //public async Task<IActionResult> OnPostDeleteAsync(int id)
+        //{
+        //    var response = await _apiProvider.DeleteAsync(_endpoint + $"/{id}");
+
+        //    if (!response.IsSuccessStatusCode)
+        //    {
+        //        return Page();
+        //    }
+
+        //    return RedirectToPage("Index");
+        //}
 
         private async Task<PartialViewResult> GetPartialViewAsync(NewProjectVM project)
         {
