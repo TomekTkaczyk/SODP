@@ -99,6 +99,13 @@
                             }
                         </div>
                     </div>
+                    <br />
+
+                    <div class="row justify-content-md-center">
+                        <div class="col-4">
+                            <a asp-page="Index" class="btn btn-success form-control">Powrót do listy</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane fade show" id="basic" role="tabpanel" aria-labelledby="basic-tab">
                     <br />
@@ -153,6 +160,12 @@
                             <textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)"></textarea>
                         </div>
                     </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-12">
+                            <partial name="_SubmitAndBackButtonPartial" />
+                        </div>
+                    </div>
 
                 </div>
 
@@ -194,11 +207,6 @@
             </div>
         </div>
 
-        <div class="justify-content-end col-md-7" style="padding:20px">
-            <div class="col-12">
-                <partial name="_SubmitAndBackButtonPartial" />
-            </div>
-        </div>
     </form>
 </div>
 

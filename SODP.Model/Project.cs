@@ -56,7 +56,7 @@ namespace SODP.Model
 
         public override string ToString()
         {
-            return Number.Trim() + Stage.Sign.Trim() + "_" + Name.Trim();
+            return Symbol + "_" + Name.Trim();
         }
 
         public void Normalize()

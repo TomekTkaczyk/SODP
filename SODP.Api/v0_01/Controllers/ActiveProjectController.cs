@@ -39,6 +39,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] NewProjectDTO project)
         {
             var result = await _projectsService.CreateAsync(project);
@@ -46,7 +47,8 @@ namespace SODP.Api.v0_01.Controllers
             {
                 StatusCodes.Status200OK => Ok(result),
                 StatusCodes.Status403Forbidden => Forbid(),
-                _ => BadRequest(project),
+                StatusCodes.Status500InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
+                _ => BadRequest(result),
             };
         }
                                      

@@ -20,6 +20,10 @@ namespace SODP.DataAccess.Migrations
                 name: "FK_ProjectBranches_Projects_ProjectId",
                 table: "ProjectBranches");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Licences_Branches_BranchId",
+                table: "Licences");
+
             migrationBuilder.RenameTable(
                 name: "Licences",
                 newName: "Licenses");
@@ -40,6 +44,14 @@ namespace SODP.DataAccess.Migrations
                 name: "Contents",
                 table: "Licenses",
                 newName: "Content");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Branch",
+                table: "Licenses");
+
+            migrationBuilder.DropColumn(
+                name: "BranchId",
+                table: "Licenses");
 
             migrationBuilder.DropIndex(
                 name: "IX_Checking",

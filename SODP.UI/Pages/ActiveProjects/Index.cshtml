@@ -12,22 +12,20 @@
 
 @inject SignInManager<User> SignInManager
 
-<link rel="stylesheet " href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/css/bootstrap4-toggle.min.css">
-
 <script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
 
 <div class="container p-0 m-0">
-    <div class="row pl-3 pr-3">
+    <div class="row">
         <div class="col-8">
             <h2 class="text-info">@ViewData["Title"]</h2>
         </div>
 
         @if (User.IsInRole("Administrator") || User.IsInRole("ProjectManager"))
         {
-            <div class="col-4 p-1 m-0">
+            <div class="col-4 p-0 m-0">
                 <button type="button"
-                        class="btn btn-info form-control text-white float-right p-0 m-0"
+                        class="btn btn-info form-control text-white float-right"
                         title="Nowy projekt"
                         data-toggle="ajax-modal"
                         data-url="@Url.Page("Index","NewProject")">
@@ -41,9 +39,9 @@
     
     @if (Model.ProjectsViewModel.Projects.Count() > 0)
     {
-        <div id="ProjectTable" class="col-12 p-3 mt-0">
+        <div id="ProjectTable">
             <table class="table table-sm table-hover">
-                <thead class="m-0 p-0 thead-light">
+                <thead class="thead-light">
                     <tr>
                         <th class="m-0 p-0 pl-1 pr-1">Numer</th>
                         <th class="m-0 p-0 pl-1 pr-1">Stadium</th>
@@ -59,44 +57,44 @@
                             class="cell clickable col-1"
                             data-toggle="tooltip"
                             title="Edycja"
-                            data-placement="top">
+                            style="vertical-align:middle">
                             @item.Number
                         </td>
                         <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
                             class="cell clickable col-1"
                             data-toggle="tooltip"
                             title="Edycja"
-                            data-placement="top">
+                            style="vertical-align:middle">
                             @item.Stage.Sign
                         </td>
                         <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
                             class="cell clickable col-9"
                             data-toggle="tooltip"
                             title="Edycja"
-                            data-placement="top">
+                            style="vertical-align:middle">
                             @item.Name
                         </td>
-                        <td class="cell p-0 m-0 col-1">
+                        <td class="cell text-right">
                             <div class="row">
                                 <div>
                                     <a onclick='Archive("/api/v0_01/active-projects/@item.Id/archive")'
-                                        class='btn btn-md border-0 p-1 text-success'
+                                        class='col btn btn-md p-0 m-0 border-2 text-success'
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Przenieś projekt do archiwum">
-                                        <i class="fas fa-archive"></i>
+                                        <i class="fas fa-archive fa-lg"></i>
                                     </a>
                                 </div>
                                 <div>
                                     <a onclick='Delete("/api/v0_01/active-projects/@item.Id")'
-                                        class='btn btn-md border-0 p-1 text-danger'
+                                        class='col btn btn-md p-0 m-0 border-2 text-danger'
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Usuń projekt">
-                                        <i class="fas fa-times"></i>
+                                        <i class="fas fa-times fs-lg"></i>
                                     </a>
                                 </div>
-                            </div>                       
+                            </div>
                         </td>
                     </tr>
                     }

@@ -20,7 +20,7 @@ namespace SODP.UI.Extensions
                                   JsonSerializer.Serialize(new NewProjectDTO
                                   {
                                       Number = project.Number,
-                                      StageId = project.StageId,
+                                      StageId = (int)project.StageId,
                                       Name = project.Name,
                                   }),
                                   Encoding.UTF8,

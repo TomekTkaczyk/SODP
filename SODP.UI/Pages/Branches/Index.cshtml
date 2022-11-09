@@ -12,19 +12,17 @@
 
 @inject SignInManager<User> SignInManager
 
-<link rel="stylesheet " href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/css/bootstrap4-toggle.min.css">
-
 <script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
 
 <div class="container p-0 m-0">
     <div class="row pl-3 pr-3">
-        <div class="col-9">
+        <div class="col-8">
             <h2 class="text-info">@ViewData["Title"]</h2>
         </div>
         @if (SignInManager.IsSignedIn(User))
         {
-            <div class="col-3 justify-content-end">
+            <div class="col-4 p-0 m-0">
                 <button type="button"
                         class="btn btn-info form-control text-white float-right"
                         title="Nowa branża"
@@ -82,11 +80,11 @@
 
                             <style>
                                 .toggle.ios, .toggle-on.ios, .toggle-off.ios {
-                                    border-radius: 30px;
+                                    border-radius: 20px;
                                 }
 
                                     .toggle.ios .toggle-handle {
-                                        border-radius: 30px;
+                                        border-radius: 20px;
                                     }
                             </style>
                             <input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"

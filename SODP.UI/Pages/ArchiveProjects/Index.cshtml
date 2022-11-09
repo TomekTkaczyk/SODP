@@ -1,6 +1,8 @@
 ﻿@page
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
 
 @model IndexModel
 
@@ -10,8 +12,11 @@
 
 @inject SignInManager<User> SignInManager
 
+<script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
+
 <div class="container p-0 m-0">
-    <div class="row pl-3 pr-3">
+    <div class="row">
         <div class="col-8">
             <h2 class="text-info">@ViewData["Title"]</h2>
         </div>
@@ -21,9 +26,9 @@
 
     @if (Model.ProjectsViewModel.Projects.Count() > 0)
     {
-        <div id="ProjectTable" class="col-12 p-3 mt-0">
+        <div id="ProjectTable">
             <table class="table table-sm table-hover">
-                <thead class="m-0 p-0 thead-light">
+                <thead class="thead-light">
                     <tr>
                         <th class="m-0 p-0 pl-1 pr-1">Numer</th>
                         <th class="m-0 p-0 pl-1 pr-1">Stadium</th>
@@ -39,24 +44,24 @@
                             class="cell clickable col-1"
                             data-toggle="tooltip"
                             title="Edycja"
-                            data-placement="top">
+                            style="vertical-align:middle">
                             @item.Number
                         </td>
                         <td onclick='Edit("/ArchiveProjects/Edit?Id=@item.Id")'
                             class="cell clickable col-1"
                             data-toggle="tooltip"
                             title="Edycja"
-                            data-placement="top">
+                            style="vertical-align:middle">
                             @item.Stage.Sign
                         </td>
                         <td onclick='Edit("/ArchiveProjects/Edit?Id=@item.Id")'
                             class="cell clickable col-9"
                             data-toggle="tooltip"
                             title="Edycja"
-                            data-placement="top">
+                            style="vertical-align:middle">
                             @item.Name
                         </td>
-                        <td class="cell p-0 m-0 col-1">
+                        <td class="cell text-right">
                             <div class="row">
                                 <div>
                                     <a onclick='Restore("/api/v0_01/archive-projects/@item.Id/restore")'
@@ -64,7 +69,7 @@
                                         data-toggle="tooltip"
                                         data-placement="top"
                                         title="Przywróć projekt">
-                                        <i class="fas fa-archive"></i>
+                                        <i class="fas fa-archive fa-lg"></i>
                                     </a>
                                 </div>
                            </div>
@@ -84,12 +89,13 @@
             @if (Model.PageInfo.TotalPages > 1)
             {
                 <div class="col text-center">
-                    <div class="btn-group"
+                    <div
                         page-model="@Model.PageInfo"
                         page-class="btn border"
                         page-class-normal="btn-light"
                         page-class-selected="btn-info"
-                        page-class-prev-next="btn">
+                        page-class-prev-next="btn" 
+                        class="btn-group">
                     </div>
                 </div>
             }

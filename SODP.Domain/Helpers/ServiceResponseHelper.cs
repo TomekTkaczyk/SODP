@@ -14,6 +14,7 @@ namespace SODP.Domain.Helpers
                 response.ValidationErrors.Add(new KeyValuePair<string, string>(item.PropertyName, item.ErrorMessage));
             }
             response.StatusCode = 400;
+            response.Success = false;
         }
 
         public static void IdentityResultErrorProcess(this ServiceResponse response, IdentityResult identityResult)
@@ -22,6 +23,7 @@ namespace SODP.Domain.Helpers
             {
                 response.SetError($"{error.Code}: {error.Description}");
             }
+            response.Success = false;
         }
     }
 

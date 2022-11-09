@@ -145,7 +145,7 @@ namespace SODP.Application.Services
                 var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
                 if(exist != null)
                 {
-                    serviceResponse.SetError($"Error: Project {exist.Symbol} exist.", 400);
+                    serviceResponse.SetError($"Błąd: Projekt {exist.Symbol} już istnieje.", 400);
                     return serviceResponse;
                 }
 
@@ -168,7 +168,7 @@ namespace SODP.Application.Services
                 var (Success, Message) = await _folderManager.CreateFolderAsync(project);
                 if (!Success)
                 {
-                    throw new ApplicationException($"Błąd: {Message}");
+                    throw new ApplicationException($"Error: {Message}");
                 }
 
                 var entity = await _context.AddAsync(project);

@@ -126,7 +126,7 @@ namespace SODP.UI.Pages.Designers
                 DesignerId = designerId,
             };
 
-            return GetPartialView<NewLicenseVM>(license, newLicensePartialViewName);
+            return GetPartialView(license, newLicensePartialViewName);
         }
 
         public async Task<PartialViewResult> OnPostNewLicenseAsync(NewLicenseVM license)

@@ -93,7 +93,6 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> AddLicence(int id, [FromBody] LicenseDTO licence)
         {
-
             return Ok(await _service.AddLicenceAsync(id, licence));
         }
     }

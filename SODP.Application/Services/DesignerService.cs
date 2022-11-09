@@ -236,7 +236,7 @@ namespace SODP.Application.Services
                 var license = await _context.Licenses.FirstOrDefaultAsync(x => x.Content.Equals(newLicense.Content));
                 if(license != null)
                 {
-                    serviceResponse.SetError("Licence exist", 409);
+                    serviceResponse.SetError("Numer uprawnień już istnieje", 409);
                     return serviceResponse;
                 }
 

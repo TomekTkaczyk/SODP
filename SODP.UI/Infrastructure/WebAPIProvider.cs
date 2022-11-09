@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -26,7 +27,14 @@ namespace SODP.UI.Infrastructure
         {
             var apiResponse = await new HttpClient().PostAsync($"{_httpClient.BaseAddress}{endPoint}", content);
 
-            apiResponse.EnsureSuccessStatusCode();
+            try
+            {
+                apiResponse.EnsureSuccessStatusCode();
+            }
+            catch( Exception ex)
+            {
+                var aaa = ex;
+            }
 
             return apiResponse;
         }

@@ -19,7 +19,7 @@ namespace SODP.UI.Pages.ActiveProjects
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
-        const string partialViewName = "_NewProjectPartialView";
+        const string newProjectPartialViewName = "_NewProjectPartialView";
 
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(apiProvider, logger)
         {
@@ -94,7 +94,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
             return new PartialViewResult
             {
-                ViewName = partialViewName,
+                ViewName = newProjectPartialViewName,
                 ViewData = new ViewDataDictionary<NewProjectVM>(ViewData, project)
             };
         }
