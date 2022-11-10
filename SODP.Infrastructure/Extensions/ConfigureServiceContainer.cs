@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SODP.DataAccess;
 using SODP.Domain.Managers;
 using SODP.Infrastructure.Managers;
@@ -69,7 +70,11 @@ namespace SODP.Infrastructure.Extensions
                 options.EnableDetailedErrors();
                 options.UseMySql(
                     configuration.GetConnectionString("DefaultDbConnection"),
-                    b => b.CharSetBehavior(CharSetBehavior.NeverAppend));
+                    b =>
+                    {
+                        b.CharSetBehavior(CharSetBehavior.NeverAppend);
+                        b.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MariaDb));
+                    });
             });
         }
 

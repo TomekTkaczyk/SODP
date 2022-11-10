@@ -30,7 +30,8 @@ namespace SODP.DataAccess.Configurations
 
             builder.HasOne(x => x.Branch)
                 .WithMany(y => y.Licenses)
-                .HasForeignKey(x => x.BranchId);
+                .HasForeignKey(x => x.BranchId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

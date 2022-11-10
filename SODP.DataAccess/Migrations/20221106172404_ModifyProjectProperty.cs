@@ -8,6 +8,7 @@ namespace SODP.DataAccess.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // ProjectBranches
             migrationBuilder.DropForeignKey(
                 name: "FK_ProjectBranches_Licences_CheckingLicenceId",
                 table: "ProjectBranches");
@@ -19,39 +20,6 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_ProjectBranches_Projects_ProjectId",
                 table: "ProjectBranches");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Licences_Branches_BranchId",
-                table: "Licences");
-
-            migrationBuilder.RenameTable(
-                name: "Licences",
-                newName: "Licenses");
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreateTimeStamp",
-                table: "Licenses",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "ModifyTimeStamp",
-                table: "Licenses",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.RenameColumn(
-                name: "Contents",
-                table: "Licenses",
-                newName: "Content");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Branch",
-                table: "Licenses");
-
-            migrationBuilder.DropColumn(
-                name: "BranchId",
-                table: "Licenses");
 
             migrationBuilder.DropIndex(
                 name: "IX_Checking",
@@ -69,11 +37,130 @@ namespace SODP.DataAccess.Migrations
                 name: "DesignerLicenceId",
                 table: "ProjectBranches");
 
+            migrationBuilder.AddColumn<int>(
+                name: "CheckingLicenseId",
+                nullable: true,
+                table: "ProjectBranches");
+
+            migrationBuilder.AddColumn<int>(
+                name: "DesignerLicenseId",
+                nullable: true,
+                table: "ProjectBranches");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Checking",
+                table: "ProjectBranches",
+                column: "CheckingLicenseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Designer",
+                table: "ProjectBranches",
+                column: "DesignerLicenseId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
+                table: "ProjectBranches",
+                column: "CheckingLicenseId",
+                principalTable: "Licenses",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
+                table: "ProjectBranches",
+                column: "DesignerLicenseId",
+                principalTable: "Licenses",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Project",
+                table: "ProjectBranches",
+                column: "ProjectId",
+                principalTable: "Projects",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+
+
+            // Licenses
+            migrationBuilder.DropForeignKey(
+                name: "FK_Licences_Branches_BranchId",
+                table: "Licences");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Licences_Designers_DesignerId",
+                table: "Licences");
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CreateTimeStamp",
+                table: "Licences",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ModifyTimeStamp",
+                table: "Licences",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.DropIndex(
+                name: "IX_Branch",
+                table: "Licences");
+
+            migrationBuilder.DropColumn(
+                name: "BranchId",
+                table: "Licences");
+
+            migrationBuilder.DropColumn(
+                name: "Contents",
+                table: "Licences");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Content",
+                table: "Licences",
+                nullable: true);
+
+            migrationBuilder.RenameTable(
+                name: "Licences",
+                newName: "Licenses");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Licenses_Designers_DesignerId",
+                table: "Licenses",
+                column: "DesignerId",
+                principalTable: "Designers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+
+            // Stages
             migrationBuilder.RenameColumn(
                 name: "Title",
                 table: "Stages",
                 newName: "Name");
 
+            migrationBuilder.AddColumn<bool>(
+               name: "ActiveStatus",
+               table: "Stages",
+               nullable: false,
+               defaultValue: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CreateTimeStamp",
+                table: "Stages",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ModifyTimeStamp",
+                table: "Stages",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+
+
+            // Users
             migrationBuilder.AlterColumn<string>(
                 name: "Lastname",
                 table: "Users",
@@ -94,6 +181,9 @@ namespace SODP.DataAccess.Migrations
                 oldType: "nvarchar(256)",
                 oldNullable: true);
 
+
+
+            // Tokens
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreateTimeStamp",
                 table: "Tokens",
@@ -106,24 +196,9 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<bool>(
-                name: "ActiveStatus",
-                table: "Stages",
-                nullable: false,
-                defaultValue: false);
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreateTimeStamp",
-                table: "Stages",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "ModifyTimeStamp",
-                table: "Stages",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
+            // Projects
             migrationBuilder.DropColumn(
                 name: "Location",
                 table: "Projects");
@@ -180,21 +255,14 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: "");
 
-            migrationBuilder.AddColumn<int>(
-                name: "CheckingLicenseId",
-                table: "ProjectBranches",
-                nullable: true);
 
-            migrationBuilder.AddColumn<int>(
-                name: "DesignerLicenseId",
-                table: "ProjectBranches",
-                nullable: true);
 
+            // Designers
             migrationBuilder.AddColumn<bool>(
                 name: "ActiveStatus",
                 table: "Designers",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: true);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreateTimeStamp",
@@ -208,6 +276,9 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+
+
+            // Certificates
             migrationBuilder.AlterColumn<string>(
                 name: "Number",
                 table: "Certificates",
@@ -228,6 +299,9 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+
+
+            // Branches
             migrationBuilder.AlterColumn<string>(
                 name: "Sign",
                 table: "Branches",
@@ -268,6 +342,8 @@ namespace SODP.DataAccess.Migrations
                 type: "varchar(2)",
                 nullable: false);
 
+
+            // BranchLicense
             migrationBuilder.CreateTable(
                 name: "BranchLicense",
                 columns: table => new
@@ -296,16 +372,6 @@ namespace SODP.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Checking",
-                table: "ProjectBranches",
-                column: "CheckingLicenseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Designer",
-                table: "ProjectBranches",
-                column: "DesignerLicenseId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_SYMBOL",
                 table: "Branches",
                 column: "Symbol",
@@ -321,29 +387,6 @@ namespace SODP.DataAccess.Migrations
                 table: "BranchLicense",
                 column: "LicenseId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
-                table: "ProjectBranches",
-                column: "CheckingLicenseId",
-                principalTable: "Licenses",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
-                table: "ProjectBranches",
-                column: "DesignerLicenseId",
-                principalTable: "Licenses",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Project",
-                table: "ProjectBranches",
-                column: "ProjectId",
-                principalTable: "Projects",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -556,10 +599,24 @@ namespace SODP.DataAccess.Migrations
                 name: "ModifyTimeStamp",
                 table: "Licenses");
 
-            migrationBuilder.RenameColumn(
-                name: "Content",
+            migrationBuilder.AddColumn<int>(
+                name: "BranchId",
                 table: "Licenses",
-                newName: "Contents");
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Branch",
+                table: "Licenses",
+                column: "BranchId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Licences_Branches_BranchId",
+                table: "Licenses",
+                column: "BranchId",
+                principalTable: "Branches",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.RenameTable(
                 name: "Licenses",

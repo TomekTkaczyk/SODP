@@ -9,7 +9,7 @@ namespace SODP.DataAccess.Configurations
         public void Configure(EntityTypeBuilder<License> builder)
         {
             builder.Property(x => x.Content)
-                .HasColumnType("nvarchar(256)")
+                .HasColumnType("nvarchar(250)")
                 .IsRequired();
 
             builder.HasIndex(x => x.DesignerId)
