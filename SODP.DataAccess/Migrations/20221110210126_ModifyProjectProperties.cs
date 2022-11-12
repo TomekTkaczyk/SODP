@@ -4,147 +4,22 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SODP.DataAccess.Migrations
 {
-    public partial class ModifyProjectProperty : Migration
+    public partial class ModifyProjectProperties : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // ProjectBranches
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBranches_Licences_CheckingLicenceId",
-                table: "ProjectBranches");
+            #region Stages
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBranches_Licences_DesignerLicenceId",
-                table: "ProjectBranches");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBranches_Projects_ProjectId",
-                table: "ProjectBranches");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Checking",
-                table: "ProjectBranches");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Designer",
-                table: "ProjectBranches");
-
-            migrationBuilder.DropColumn(
-                name: "CheckingLicenceId",
-                table: "ProjectBranches");
-
-            migrationBuilder.DropColumn(
-                name: "DesignerLicenceId",
-                table: "ProjectBranches");
-
-            migrationBuilder.AddColumn<int>(
-                name: "CheckingLicenseId",
-                nullable: true,
-                table: "ProjectBranches");
-
-            migrationBuilder.AddColumn<int>(
-                name: "DesignerLicenseId",
-                nullable: true,
-                table: "ProjectBranches");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Checking",
-                table: "ProjectBranches",
-                column: "CheckingLicenseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Designer",
-                table: "ProjectBranches",
-                column: "DesignerLicenseId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
-                table: "ProjectBranches",
-                column: "CheckingLicenseId",
-                principalTable: "Licenses",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
-                table: "ProjectBranches",
-                column: "DesignerLicenseId",
-                principalTable: "Licenses",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Project",
-                table: "ProjectBranches",
-                column: "ProjectId",
-                principalTable: "Projects",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-
-
-            // Licenses
-            migrationBuilder.DropForeignKey(
-                name: "FK_Licences_Branches_BranchId",
-                table: "Licences");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Licences_Designers_DesignerId",
-                table: "Licences");
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreateTimeStamp",
-                table: "Licences",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "ModifyTimeStamp",
-                table: "Licences",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.DropIndex(
-                name: "IX_Branch",
-                table: "Licences");
-
-            migrationBuilder.DropColumn(
-                name: "BranchId",
-                table: "Licences");
-
-            migrationBuilder.DropColumn(
-                name: "Contents",
-                table: "Licences");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Content",
-                table: "Licences",
-                nullable: true);
-
-            migrationBuilder.RenameTable(
-                name: "Licences",
-                newName: "Licenses");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Licenses_Designers_DesignerId",
-                table: "Licenses",
-                column: "DesignerId",
-                principalTable: "Designers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-
-            // Stages
             migrationBuilder.RenameColumn(
                 name: "Title",
                 table: "Stages",
                 newName: "Name");
 
             migrationBuilder.AddColumn<bool>(
-               name: "ActiveStatus",
-               table: "Stages",
-               nullable: false,
-               defaultValue: true);
+                name: "ActiveStatus",
+                table: "Stages",
+                nullable: false,
+                defaultValue: false);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreateTimeStamp",
@@ -158,47 +33,10 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            #endregion
 
+            #region Projects
 
-            // Users
-            migrationBuilder.AlterColumn<string>(
-                name: "Lastname",
-                table: "Users",
-                type: "nvarchar(256)",
-                nullable: true,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(256)",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Firstname",
-                table: "Users",
-                type: "nvarchar(256)",
-                nullable: true,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(256)",
-                oldNullable: true);
-
-
-
-            // Tokens
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreateTimeStamp",
-                table: "Tokens",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "ModifyTimeStamp",
-                table: "Tokens",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
-
-
-
-            // Projects
             migrationBuilder.DropColumn(
                 name: "Location",
                 table: "Projects");
@@ -207,6 +45,21 @@ namespace SODP.DataAccess.Migrations
                 name: "Title",
                 table: "Projects",
                 newName: "Name");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
+                table: "Projects",
+                type: "nvarchar(256)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(250)");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Title",
+                table: "Projects",
+                type: "nvarchar(256)",
+                nullable: true,
+                defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
                 name: "Address",
@@ -248,21 +101,91 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<string>(
-                name: "Title",
-                table: "Projects",
+            #endregion
+
+            #region Licenses
+
+            migrationBuilder.CreateTable(
+                name: "Licenses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreateTimeStamp = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
+                    ModifyTimeStamp = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
+                    DesignerId = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(256)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Licenses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Licenses_Designers_DesignerId",
+                        column: x => x.DesignerId,
+                        principalTable: "Designers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Designer",
+                table: "Licenses",
+                column: "DesignerId");
+
+            migrationBuilder.Sql("REPLACE INTO `Licenses` (Id, DesignerId, Content, CreateTimeStamp, ModifyTimeStamp) SELECT Id, DesignerId, Contents, CURDATE(), CURDATE() FROM `Licences`;");
+
+            migrationBuilder.DropTable(
+                name: "Licences");
+
+            #endregion
+
+            #region Users
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Lastname",
+                table: "Users",
                 type: "nvarchar(256)",
+                nullable: true,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(256)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Firstname",
+                table: "Users",
+                type: "nvarchar(256)",
+                nullable: true,
+                defaultValue: "",
+                oldClrType: typeof(string),
+                oldType: "nvarchar(256)",
+                oldNullable: true);
+
+            #endregion
+
+            #region Tokens
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CreateTimeStamp",
+                table: "Tokens",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ModifyTimeStamp",
+                table: "Tokens",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            #endregion
 
-            // Designers
+            #region Designers
+
             migrationBuilder.AddColumn<bool>(
                 name: "ActiveStatus",
                 table: "Designers",
                 nullable: false,
-                defaultValue: true);
+                defaultValue: false);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreateTimeStamp",
@@ -276,9 +199,10 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            #endregion
 
+            #region Certificates
 
-            // Certificates
             migrationBuilder.AlterColumn<string>(
                 name: "Number",
                 table: "Certificates",
@@ -299,9 +223,10 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
+            #endregion
 
+            #region Branches
 
-            // Branches
             migrationBuilder.AlterColumn<string>(
                 name: "Sign",
                 table: "Branches",
@@ -340,10 +265,19 @@ namespace SODP.DataAccess.Migrations
                 name: "Symbol",
                 table: "Branches",
                 type: "varchar(2)",
-                nullable: false);
+                nullable: false,
+                defaultValue: "00");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_SYMBOL",
+                table: "Branches",
+                column: "Symbol",
+                unique: true);
 
-            // BranchLicense
+            #endregion
+
+            #region BranchLicenses
+
             migrationBuilder.CreateTable(
                 name: "BranchLicense",
                 columns: table => new
@@ -351,8 +285,8 @@ namespace SODP.DataAccess.Migrations
                     BranchId = table.Column<int>(nullable: false),
                     LicenseId = table.Column<int>(nullable: false),
                     Id = table.Column<int>(nullable: false),
-                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
-                    ModifyTimeStamp = table.Column<DateTime>(nullable: false)
+                    CreateTimeStamp = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
+                    ModifyTimeStamp = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified))
                 },
                 constraints: table =>
                 {
@@ -372,12 +306,6 @@ namespace SODP.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_SYMBOL",
-                table: "Branches",
-                column: "Symbol",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Branch",
                 table: "BranchLicense",
                 column: "BranchId");
@@ -387,24 +315,21 @@ namespace SODP.DataAccess.Migrations
                 table: "BranchLicense",
                 column: "LicenseId");
 
-        }
+            #endregion
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+            #region ProjectBranches
+
             migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
+                name: "FK_ProjectBranches_Licences_CheckingLicenceId",
                 table: "ProjectBranches");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
+                name: "FK_ProjectBranches_Licences_DesignerLicenceId",
                 table: "ProjectBranches");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Project",
+                name: "FK_ProjectBranches_Projects_ProjectId",
                 table: "ProjectBranches");
-
-            migrationBuilder.DropTable(
-                name: "BranchLicense");
 
             migrationBuilder.DropIndex(
                 name: "IX_Checking",
@@ -414,9 +339,112 @@ namespace SODP.DataAccess.Migrations
                 name: "IX_Designer",
                 table: "ProjectBranches");
 
+            migrationBuilder.RenameColumn(
+                name: "DesignerLicenceId",
+                newName: "DesignerLicenseId",
+                table: "ProjectBranches");
+
+            migrationBuilder.RenameColumn(
+                name: "CheckingLicenceId",
+                newName: "CheckingLicenseId",
+                table: "ProjectBranches");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Checking",
+                table: "ProjectBranches",
+                column: "CheckingLicenseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Designer",
+                table: "ProjectBranches",
+                column: "DesignerLicenseId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
+                table: "ProjectBranches",
+                column: "CheckingLicenseId",
+                principalTable: "Licenses",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
+                table: "ProjectBranches",
+                column: "DesignerLicenseId",
+                principalTable: "Licenses",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Project",
+                table: "ProjectBranches",
+                column: "ProjectId",
+                principalTable: "Projects",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            #endregion
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+
+            #region Licenses
+
+            migrationBuilder.CreateTable(
+                name: "Licences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    BranchId = table.Column<int>(type: "int", nullable: false),
+                    Contents = table.Column<string>(type: "nvarchar(250)", nullable: false),
+                    DesignerId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Licences", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Licences_Branches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "Branches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Licences_Designers_DesignerId",
+                        column: x => x.DesignerId,
+                        principalTable: "Designers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.Sql("REPLACE INTO `Licences` (Id, DesignerId, Contents) SELECT Id, DesignerId, Content FROM `Licenses`;");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Branch",
+                table: "Licences",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Designer",
+                table: "Licences",
+                column: "DesignerId");
+
+            migrationBuilder.DropTable(
+                name: "Licenses");
+
+
+            #endregion
+
+            #region Branches
+
             migrationBuilder.DropIndex(
                 name: "IX_SYMBOL",
                 table: "Branches");
+
+            #endregion
+
+            #region Tokens
 
             migrationBuilder.DropColumn(
                 name: "CreateTimeStamp",
@@ -430,6 +458,10 @@ namespace SODP.DataAccess.Migrations
                 name: "ActiveStatus",
                 table: "Stages");
 
+            #endregion
+
+            #region Stages
+
             migrationBuilder.DropColumn(
                 name: "CreateTimeStamp",
                 table: "Stages");
@@ -437,6 +469,10 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.DropColumn(
                 name: "ModifyTimeStamp",
                 table: "Stages");
+
+            #endregion
+
+            #region Projects
 
             migrationBuilder.DropColumn(
                 name: "Address",
@@ -468,16 +504,26 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.RenameColumn(
                 name: "Name",
+                newName: "Title",
+                table: "Projects");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Title",
                 table: "Projects",
-                newName: "Title");
+                type: "nvarchar(250)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(256)");
 
-            migrationBuilder.DropColumn(
-                name: "CheckingLicenseId",
-                table: "ProjectBranches");
+            migrationBuilder.AddColumn<string>(
+                name: "Location",
+                table: "Projects",
+                type: "nvarchar(250)",
+                nullable: true);
 
-            migrationBuilder.DropColumn(
-                name: "DesignerLicenseId",
-                table: "ProjectBranches");
+            #endregion
+
+            #region Designers
 
             migrationBuilder.DropColumn(
                 name: "ActiveStatus",
@@ -491,6 +537,10 @@ namespace SODP.DataAccess.Migrations
                 name: "ModifyTimeStamp",
                 table: "Designers");
 
+            #endregion
+
+            #region Certificates
+
             migrationBuilder.DropColumn(
                 name: "CreateTimeStamp",
                 table: "Certificates");
@@ -498,6 +548,18 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.DropColumn(
                 name: "ModifyTimeStamp",
                 table: "Certificates");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Number",
+                table: "Certificates",
+                type: "varchar(20)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(20)");
+
+            #endregion
+
+            #region Branches
 
             migrationBuilder.DropColumn(
                 name: "ActiveStatus",
@@ -515,10 +577,35 @@ namespace SODP.DataAccess.Migrations
                 name: "Symbol",
                 table: "Branches");
 
+            migrationBuilder.AlterColumn<string>(
+                name: "Sign",
+                table: "Branches",
+                type: "varchar(10)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(10)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
+                table: "Branches",
+                type: "nvarchar(50)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(50)",
+                oldNullable: true);
+
+            #endregion
+
+            #region Stage
+
             migrationBuilder.RenameColumn(
                 name: "Name",
                 table: "Stages",
                 newName: "Title");
+
+            #endregion
+
+            #region Users
 
             migrationBuilder.AlterColumn<string>(
                 name: "Lastname",
@@ -548,79 +635,39 @@ namespace SODP.DataAccess.Migrations
                 oldClrType: typeof(string),
                 oldType: "nvarchar(256)");
 
-            migrationBuilder.AddColumn<string>(
-                name: "Location",
-                table: "Projects",
-                type: "nvarchar(250)",
-                nullable: true);
+            #endregion
 
-            migrationBuilder.AddColumn<int>(
-                name: "CheckingLicenceId",
-                table: "ProjectBranches",
-                type: "int",
-                nullable: true);
+            #region projectBranches
 
-            migrationBuilder.AddColumn<int>(
-                name: "DesignerLicenceId",
-                table: "ProjectBranches",
-                type: "int",
-                nullable: true);
+            migrationBuilder.DropForeignKey(
+                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
+                table: "ProjectBranches");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "Number",
-                table: "Certificates",
-                type: "varchar(20)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(20)");
+            migrationBuilder.DropForeignKey(
+                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
+                table: "ProjectBranches");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "Sign",
-                table: "Branches",
-                type: "varchar(10)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(10)");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Project",
+                table: "ProjectBranches");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "Name",
-                table: "Branches",
-                type: "nvarchar(50)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(50)",
-                oldNullable: true);
+            migrationBuilder.DropIndex(
+                name: "IX_Checking",
+                table: "ProjectBranches");
 
-            migrationBuilder.DropColumn(
-                name: "CreateTimeStamp",
-                table: "Licenses");
+            migrationBuilder.DropIndex(
+                name: "IX_Designer",
+                table: "ProjectBranches");
 
-            migrationBuilder.DropColumn(
-                name: "ModifyTimeStamp",
-                table: "Licenses");
+            migrationBuilder.RenameColumn(
+                name: "CheckingLicenseId",
+                newName: "CheckingLicenceId",
+                table: "ProjectBranches");
 
-            migrationBuilder.AddColumn<int>(
-                name: "BranchId",
-                table: "Licenses",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Branch",
-                table: "Licenses",
-                column: "BranchId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Licences_Branches_BranchId",
-                table: "Licenses",
-                column: "BranchId",
-                principalTable: "Branches",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.RenameTable(
-                name: "Licenses",
-                newName: "Licences");
+            migrationBuilder.RenameColumn(
+                name: "DesignerLicenseId",
+                newName: "DesignerLicenceId",
+                table: "ProjectBranches");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Checking",
@@ -655,6 +702,16 @@ namespace SODP.DataAccess.Migrations
                 principalTable: "Projects",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
+
+            #endregion
+
+            #region BranchLicense
+
+            migrationBuilder.DropTable(
+                name: "BranchLicense");
+
+            #endregion
+
         }
     }
 }

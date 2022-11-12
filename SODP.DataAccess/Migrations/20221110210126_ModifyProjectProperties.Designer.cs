@@ -9,8 +9,8 @@ using SODP.DataAccess;
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    [Migration("20221106172404_ModifyProjectProperty")]
-    partial class ModifyProjectProperty
+    [Migration("20221110210126_ModifyProjectProperties")]
+    partial class ModifyProjectProperties
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
