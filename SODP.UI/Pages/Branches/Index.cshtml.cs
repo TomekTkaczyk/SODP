@@ -19,7 +19,7 @@ namespace SODP.UI.Pages.Branches
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : SODPPageModel
     {
-        const string newBranchPartialViewName = "_NewBranchPartialView";
+        const string editBranchPartialViewName = "_EditBranchPartialView";
         const string designersPartialViewName = "_DesignersPartialView";
         
         private readonly IWebAPIProvider _apiProvider;
@@ -40,7 +40,7 @@ namespace SODP.UI.Pages.Branches
             return Page();
         }
 
-        public async Task<PartialViewResult> OnGetNewBranchAsync(int? id)
+        public async Task<PartialViewResult> OnGetUpdateBranchAsync(int? id)
         {
             if (id != null)
             {
@@ -49,14 +49,14 @@ namespace SODP.UI.Pages.Branches
                 {
                     var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
 
-                    return GetPartialView(result.Data.ToViewModel(), newBranchPartialViewName);
+                    return GetPartialView(result.Data.ToViewModel(), editBranchPartialViewName);
                 }
             }
 
-            return GetPartialView(new BranchVM(), newBranchPartialViewName);
+            return GetPartialView(new BranchVM(), editBranchPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnPostNewBranchAsync(BranchVM branch)
+        public async Task<PartialViewResult> OnPostUpdateBranchAsync(BranchVM branch)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace SODP.UI.Pages.Branches
                 }
             }
 
-            return GetPartialView<BranchVM>(branch, newBranchPartialViewName);
+            return GetPartialView<BranchVM>(branch, editBranchPartialViewName);
         }
 
         public async Task<PartialViewResult> OnGetPartialDesignersAsync(int id)

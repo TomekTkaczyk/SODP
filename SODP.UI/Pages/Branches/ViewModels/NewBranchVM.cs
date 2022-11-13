@@ -10,10 +10,6 @@ namespace SODP.UI.Pages.Branches.ViewModels
     public class NewBranchVM
     {
 
-        [Required(ErrorMessage ="Oznaczenie jest wymagane")]
-        [RegularExpression(@"^([0-9]{2})$", ErrorMessage = "Oznaczenie powinno zawierać 2 cyfry.")]
-        public string Symbol { get; set; }
-
         [Required(ErrorMessage = "Znak branży jest wymagany")]
         [MinLength(1)]
         public string Sign { get; set; }

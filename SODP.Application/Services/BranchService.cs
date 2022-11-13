@@ -154,7 +154,6 @@ namespace SODP.Application.Services
                     serviceResponse.ValidationErrors.Add("Sign", "Branża nie odnaleziona.");
                     return serviceResponse;
                 }
-                branch.Symbol = updateBranch.Symbol;
                 branch.Sign = updateBranch.Sign;
                 branch.Name = updateBranch.Name;
                 branch.Normalize();

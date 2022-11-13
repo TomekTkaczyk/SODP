@@ -57,16 +57,20 @@ namespace SODP.Domain
                 .PreserveReferences();
 
             CreateMap<BranchDTO, Branch>()
+                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
                 .ForMember(dest => dest.Licenses, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
                 .PreserveReferences();
 
             CreateMap<Branch, BranchDTO>()
-                .ReverseMap()
+                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
                 .PreserveReferences();
 
             CreateMap<Designer, DesignerDTO>()
+                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ReverseMap()
                 .PreserveReferences();
 
@@ -76,6 +80,7 @@ namespace SODP.Domain
                 .PreserveReferences();
 
             CreateMap<License, LicenseDTO>()
+                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ReverseMap()
                 .PreserveReferences();
         }

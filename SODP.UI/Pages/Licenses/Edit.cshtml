@@ -8,14 +8,6 @@
 
 <br />
 
-<div class="container row p-0 m-0">
-    <div class="col">
-        <h2 class="text-info">Edycja uprawnienia</h2>
-    </div>
-</div>
-
-<br />
-
 <div class="container">
     <div class="border justify-content-end col-md-7" style="padding:30px">
         <form asp-page-handler="EditLicense" method="post">
@@ -32,12 +24,26 @@
 
             <div class="form-group row">
                 <div class="col-12">
-                    <input asp-for="License.Content" class="form-control" placeholder="Numer" />
+                    <label>Numer uprawnień:</label>
+                    <input asp-for="License.Content" id="content" class="form-control" placeholder="Numer" />
                     <span asp-validation-for="License.Content" style="font-size:14px" class="text-danger"></span>
                 </div>
             </div>
+            
+            <input type="submit" class="btn btn-primary form-control" value="Zapisz i wróć do listy projektantów" />
+ 
+       </form>
+    </div>
+</div>
 
+<br />
+
+<div class="container">
+    <div class="border justify-content-end col-md-7" style="padding:30px">
             <div class="form-group">
+            @if (@Model.License.ApplyBranches.Count > 0)
+            {
+                <label>Lista branż uprawnień:</label>
                 @for (int i = 0; i < Model.License.ApplyBranches.Count; i++)
                 {
                     <input asp-for="License.ApplyBranches[i].Value" type="hidden" value="License.ApplyBranches[i].Value">
@@ -53,11 +59,23 @@
                         <div class="col my-auto">@Model.License.ApplyBranches[i].Text</div>
                     </div>
                 }
-            </div>
+            } else
+            {
+               <label>Lista branż jest pusta</label> 
+            }
+        </div>
+    </div>
+</div>
 
-            @if (@Model.License.Branches.Count > 0)
+<br />
+
+ <div class="container">
+    <div class="justify-content-end col-md-7" style="padding:0px">
+             @if (@Model.License.Branches.Count > 0)
             {
                 <div class="form-group">
+                           <label>Branże do wyboru</label>
+
                     <div class="row align-middle">
                         <div class="col pt-1 pb-1">
                             @Html.DropDownListFor(model => model.License.BranchId, @Model.License.Branches, new { @class = "form-control" })
@@ -73,11 +91,9 @@
                     </div>
                 </div>
             }
-
-            <input type="submit" class="btn btn-primary form-control" value="Wróć do listy projektantów" />
-        </form>
-    </div>
+    </div>                    
 </div>
+
 
 
 @section Scripts{
@@ -85,9 +101,13 @@
     <script>
 
     function RemoveBranch(licenseId, branchId) {
+        console.log(licenseId);
+        console.log(branchId);
+        var aaa = document.getElementById("content").value;
+        console.log(aaa);
         $.ajax({
             type: "Delete",
-            url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${branchId}`,
+                url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${branchId}&content=${content}`,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());

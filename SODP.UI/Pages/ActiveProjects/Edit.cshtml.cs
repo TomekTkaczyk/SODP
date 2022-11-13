@@ -139,7 +139,7 @@ namespace SODP.UI.Pages.ActiveProjects
             var apiResponse = await _apiProvider.GetAsync(url);
             var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
             var result = responseBranch.Data.Collection
-                .OrderBy(x => x.Symbol)
+                .OrderBy(x => x.Order)
                 .Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),

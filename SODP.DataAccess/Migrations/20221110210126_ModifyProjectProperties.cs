@@ -134,9 +134,6 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.Sql("REPLACE INTO `Licenses` (Id, DesignerId, Content, CreateTimeStamp, ModifyTimeStamp) SELECT Id, DesignerId, Contents, CURDATE(), CURDATE() FROM `Licences`;");
 
-            migrationBuilder.DropTable(
-                name: "Licences");
-
             #endregion
 
             #region Users
@@ -239,7 +236,7 @@ namespace SODP.DataAccess.Migrations
                 name: "Name",
                 table: "Branches",
                 type: "nvarchar(50)",
-                nullable: true,
+                nullable: false,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(50)");
 
@@ -261,18 +258,20 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<string>(
-                name: "Symbol",
+            migrationBuilder.AddColumn<int>(
+                name: "Order",
                 table: "Branches",
-                type: "varchar(2)",
+                type: "int",
                 nullable: false,
-                defaultValue: "00");
+                defaultValue: 1);
+
+            migrationBuilder.Sql("UPDATE `Branches` SET Branches.Order = Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SYMBOL",
+                name: "IX_ORDER",
                 table: "Branches",
-                column: "Symbol",
-                unique: true);
+                column: "Order",
+                unique: false);
 
             #endregion
 
@@ -384,12 +383,19 @@ namespace SODP.DataAccess.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             #endregion
+
+            #region Licences
+
+            migrationBuilder.DropTable(
+                name: "Licences");
+
+            #endregion
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
 
-            #region Licenses
+            #region Licences
 
             migrationBuilder.CreateTable(
                 name: "Licences",
@@ -397,7 +403,7 @@ namespace SODP.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    BranchId = table.Column<int>(type: "int", nullable: false),
+                    BranchId = table.Column<int>(type: "int", nullable: false, defaultValue: null),
                     Contents = table.Column<string>(type: "nvarchar(250)", nullable: false),
                     DesignerId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -418,7 +424,7 @@ namespace SODP.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.Sql("REPLACE INTO `Licences` (Id, DesignerId, Contents) SELECT Id, DesignerId, Content FROM `Licenses`;");
+            migrationBuilder.Sql("REPLACE INTO `Licences` (Id, DesignerId, Contents, BranchId) SELECT Licenses.Id,Licenses.DesignerId,Content,BranchLicense.BranchId FROM Licenses,Branches,BranchLicense WHERE BranchLicense.BranchId=Branches.Id AND BranchLicense.LicenseId=Licenses.Id GROUP BY Id;");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Branch",
@@ -430,17 +436,45 @@ namespace SODP.DataAccess.Migrations
                 table: "Licences",
                 column: "DesignerId");
 
-            migrationBuilder.DropTable(
-                name: "Licenses");
-
-
             #endregion
 
             #region Branches
 
             migrationBuilder.DropIndex(
-                name: "IX_SYMBOL",
+                name: "IX_ORDER",
                 table: "Branches");
+
+            migrationBuilder.DropColumn(
+                name: "ActiveStatus",
+                table: "Branches");
+
+            migrationBuilder.DropColumn(
+                name: "CreateTimeStamp",
+                table: "Branches");
+
+            migrationBuilder.DropColumn(
+                name: "ModifyTimeStamp",
+                table: "Branches");
+
+            migrationBuilder.DropColumn(
+                name: "Order",
+                table: "Branches");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Sign",
+                table: "Branches",
+                type: "varchar(10)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(10)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
+                table: "Branches",
+                type: "varchar(50)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(50)");
 
             #endregion
 
@@ -559,43 +593,6 @@ namespace SODP.DataAccess.Migrations
 
             #endregion
 
-            #region Branches
-
-            migrationBuilder.DropColumn(
-                name: "ActiveStatus",
-                table: "Branches");
-
-            migrationBuilder.DropColumn(
-                name: "CreateTimeStamp",
-                table: "Branches");
-
-            migrationBuilder.DropColumn(
-                name: "ModifyTimeStamp",
-                table: "Branches");
-
-            migrationBuilder.DropColumn(
-                name: "Symbol",
-                table: "Branches");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Sign",
-                table: "Branches",
-                type: "varchar(10)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(10)");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Name",
-                table: "Branches",
-                type: "nvarchar(50)",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(50)",
-                oldNullable: true);
-
-            #endregion
-
             #region Stage
 
             migrationBuilder.RenameColumn(
@@ -710,6 +707,13 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.DropTable(
                 name: "BranchLicense");
 
+            #endregion
+
+            #region Licenses
+
+            migrationBuilder.DropTable(
+                name: "Licenses");
+            
             #endregion
 
         }

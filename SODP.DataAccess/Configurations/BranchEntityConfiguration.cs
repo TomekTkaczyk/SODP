@@ -8,9 +8,9 @@ namespace SODP.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Branch> builder)
         {
-            builder.Property(x => x.Symbol)
-               .HasColumnType("varchar(2)")
-               .HasDefaultValue("00")
+            builder.Property(x => x.Order)
+               .HasColumnType("int")
+               .HasDefaultValue(1)
                .IsRequired();
 
             builder.Property(x => x.Sign)
@@ -18,15 +18,15 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.Property(x => x.Name)
-                .HasColumnType("nvarchar(50)");
+                .HasColumnType("nvarchar(50)")
+                .IsRequired();
 
             builder.Property(x => x.ActiveStatus)
                 .HasDefaultValue(1)
                 .IsRequired();
 
-            builder.HasIndex(x => new { x.Symbol })
-                .HasName("IX_SYMBOL")
-                .IsUnique();
+            builder.HasIndex(x => new { x.Order })
+                .HasName("IX_ORDER");
 
             builder.ToTable("Branches");
 

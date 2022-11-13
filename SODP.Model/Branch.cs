@@ -5,7 +5,7 @@ namespace SODP.Model
 {
     public class Branch : BaseEntity
     {
-        public string Symbol { get; set; }
+        public int Order { get; set; }
         public string Sign { get; set; }
         public string Name { get; set; }
         public bool ActiveStatus { get; set; }
@@ -19,7 +19,7 @@ namespace SODP.Model
 
         public override string ToString()
         {
-            return $"{Symbol.Trim()}:{ Sign.Trim()} {Name.Trim()}";
+            return $"{ Sign.Trim()} {Name.Trim()}";
         }
     }
 }

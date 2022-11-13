@@ -18,7 +18,8 @@ namespace SODP.UI.Mappers
                 .PreserveReferences();
 
             CreateMap<ProjectBranchDTO, SelectListItem>()
-                .ForMember(dest => dest.Text, opt => opt.MapFrom(x => $"{x.Branch.Symbol}-{x.Branch.Name}"))
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(x => $"{x.Branch.Name}"))
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(x => $"{x.Branch.Id}"))
                 .PreserveReferences();
         }
     }

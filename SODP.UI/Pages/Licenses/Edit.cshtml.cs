@@ -67,11 +67,13 @@ namespace SODP.UI.Pages.Licenses
             return Redirect("/Designers");
         }
 
-        public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId)
+        public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId, string content)
         {
             await _apiProvider.DeleteAsync($"licenses/{id}/branches/{branchId}");
 
             await GetLicenceAsync(id);
+
+            License.Content = content;
 
             return Page();
 
@@ -103,7 +105,7 @@ namespace SODP.UI.Pages.Licenses
                     Designer = response.Data.Designer.ToString(),
                     Content = response.Data.Content,
                     ApplyBranches = response.Data.Branches
-                    .OrderBy(x => x.Symbol)
+                    .OrderBy(x => x.Order)
                     .Select(x => new SelectListItem
                     {
                         Value = x.Id.ToString(),
@@ -120,7 +122,7 @@ namespace SODP.UI.Pages.Licenses
             var apiResponse = await _apiProvider.GetAsync($"branches");
             var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
             var result = responseBranch.Data.Collection
-                .OrderBy(x => x.Symbol)
+                .OrderBy(x => x.Order)
                 .Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),

@@ -14,7 +14,6 @@ namespace SODP.UI.Extensions
                                   JsonSerializer.Serialize(new BranchDTO
                                   {
                                       Id = branch.Id,
-                                      Symbol = branch.Symbol,
                                       Sign = branch.Sign,
                                       Name = branch.Name
                                   }),
@@ -28,7 +27,6 @@ namespace SODP.UI.Extensions
             return new BranchVM
             {
                 Id = branch.Id,
-                Symbol = branch.Symbol,
                 Sign = branch.Sign,
                 Name = branch.Name
             };

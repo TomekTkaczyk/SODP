@@ -27,7 +27,7 @@
                         class="btn btn-info form-control text-white float-right"
                         title="Nowa branża"
                         data-toggle="ajax-modal"
-                        data-url="@Url.Page("Index", "NewBranch")">
+                        data-url="@Url.Page("Index", "UpdateBranch")">
                     <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa branża
                 </button>
             </div>
@@ -38,7 +38,7 @@
 @if (Model.Branches.Branches.Count() > 0)
 {
     <div id="branchesAccordion" class="accordion col-12 p-3 mt-0">
-        @foreach (var item in Model.Branches.Branches.OrderBy(x => x.Symbol))
+        @foreach (var item in Model.Branches.Branches.OrderBy(x => x.Order))
         {
             <div class="button card">
                 <div class="card-header" 
@@ -51,7 +51,7 @@
                              data-target="#collapse-@item.Id"
                              aria-expanded="false"
                              aria-controls="collapse-@item.Id">
-                            @item.Symbol: @item.Sign-@item.Name
+                            @item.Sign-@item.Name
                         </div>
 
                         <div class="colgroup justify-content-end mr-2">
@@ -123,10 +123,10 @@ else
         function EditBranch(id) {
             $.ajax({
                 type: "Get",
-                url: `@Url.Page("Index","NewBranch")&Id=` + id,
+                url: `@Url.Page("Index","UpdateBranch")&Id=` + id,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
-                    $('#editbranch').modal('show');
+                    $('#updateBranch').modal('show');
                 }
             })
         }
