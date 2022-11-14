@@ -332,17 +332,23 @@ namespace SODP.Application.Services
                 var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == branchId);
                 if (branch == null)
                 {
-                    serviceResponse.SetError($"Błąd: Branża Id:{branchId} nie odnaleziona.", 404);
+                    serviceResponse.SetError($"Błąd: Branża Id:{branchId} nie odnaleziona", 404);
                     return serviceResponse;
                 }
 
-                var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == id && x.BranchId == branchId);
-                if (projectBranch == null)
+                var project = await _context.Projects.Include(b => b.Branches).FirstOrDefaultAsync(x => x.Id == id);
+                if (project == null)
                 {
-                    projectBranch = new ProjectBranch
+                    serviceResponse.SetError($"Błąd: Projekt Id:{branchId} nie odnaleziony", 404);
+                    return serviceResponse;
+                }
+
+                if(project.Branches == null || (project.Branches.FirstOrDefault(x => x.BranchId == branchId) == null))
+                {
+                    var projectBranch = new ProjectBranch
                     {
-                        ProjectId = id,
-                        BranchId = branchId
+                        Project = project,
+                        Branch = branch
                     };
                     var result = await _context.ProjectBranches.AddAsync(projectBranch);
                     await _context.SaveChangesAsync();

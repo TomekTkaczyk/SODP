@@ -102,5 +102,27 @@ namespace SODP.Api.v0_01.Controllers
 
             return Ok(serviceResponse);
         }
+
+        [HttpDelete("{id}/branches/{branchId}/designer/{licenseId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> SetBranchDesignerAsync(int id, int branchId, int licenseId)
+        {
+            var serviceResponse = await _projectsService.SetBranchDesignerAsync(id, branchId, licenseId);
+
+            return Ok(serviceResponse);
+        }
+
+        [HttpDelete("{id}/branches/{branchId}/checker/{licenseId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> SetBranchCheckerAsync(int id, int branchId, int licenseId)
+        {
+            var serviceResponse = await _projectsService.SetBranchCheckerAsync(id, branchId, licenseId);
+
+            return Ok(serviceResponse);
+        }
     }
 }

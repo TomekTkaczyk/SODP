@@ -1,4 +1,6 @@
-﻿using SODP.Shared.DTO;
+﻿using SODP.Model;
+using SODP.Model.Enums;
+using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Threading.Tasks;
 
@@ -18,6 +20,9 @@ namespace SODP.Domain.Services
         Task<ServiceResponse> ArchiveAsync(int id);
         Task<ServiceResponse> AddBranchAsync(int id, int branchId);
         Task<ServiceResponse> DeleteBranchAsync(int id, int branchId);
+        Task<ServiceResponse> SetBranchDesignerAsync(int id, int branchId, TechnicalRole role, int licenseId);
+
+
 
     }
 }

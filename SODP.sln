@@ -28,7 +28,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SODP.Shared", "SODP.Shared\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SODP.Infrastructure", "SODP.Infrastructure\SODP.Infrastructure.csproj", "{F1082453-0A77-474E-BEBF-0907A5149873}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SODP.ApiTests", "SODP.ApiTests\SODP.ApiTests.csproj", "{FB3A743A-074F-495E-8C79-2B75E7B3E09B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SODP.ApiTests", "SODP.ApiTests\SODP.ApiTests.csproj", "{FB3A743A-074F-495E-8C79-2B75E7B3E09B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

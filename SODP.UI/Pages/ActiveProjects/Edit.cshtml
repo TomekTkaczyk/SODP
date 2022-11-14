@@ -186,6 +186,28 @@
                                 </div>
                                 <div class="col my-auto">@Model.Project.ApplyBranches[i].Text</div>
                             </div>
+                            <div class="row">
+                                <div class="col my-auto">Projektant:</div>
+                                <div class="col"></div>
+                                <div class="btn btn-lg col-1"
+                                 data-toggle="tooltip"
+                                 data-placement="top"
+                                 title="Wybierz projektanta"
+                                 onclick="GetDesigner(@Model.Project.Id,@Model.Project.ApplyBranches[i].Value,1)">
+                                    <i class="fas fa-edit text-success"></i>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col my-auto" onclick="">Sprawdzający:</div>
+                                <div class="col"></div>
+                                <div class="btn btn-lg col-1"
+                                 data-toggle="tooltip"
+                                 data-placement="top"
+                                 title="Wybierz sprawdzającego"
+                                 onclick="GetDesigner(@Model.Project.Id,@Model.Project.ApplyBranches[i].Value,2)">
+                                    <i class="fas fa-edit text-success"></i>
+                                </div>
+                            </div>
                         }
                     </div>
 
@@ -228,6 +250,19 @@
         // on load of the page: switch to the currently selected tab
         var hash = window.location.hash;
         $('#myTab a[href="' + hash + '"]').tab('show');
+    </script>
+
+    <script>
+        function GetDesigner(projectId, branchId, selector) {
+            $.ajax({
+                type: "Get",
+                url: `@Url.Page("Edit","GetDesigner")$projectId=${prjectId}&branchId=${branchId}&selector=${selector}`,
+                succsess: function(data) {
+                    $('#modal-placeholder').html(data);
+                    $('getDesigner').modal('show');
+                }
+            })
+        }    
     </script>
 
     <script>

@@ -15,6 +15,7 @@ namespace SODP.Model
         public virtual License DesignerLicense { get; set; }
         public int? CheckingLicenseId { get; set; }
         public virtual License CheckingLicense { get; set; }
+        public ICollection<BranchLicense> Roles { get; set; }
 
         public override string ToString()
         {

@@ -330,6 +330,10 @@ namespace SODP.DataAccess.Migrations
                 name: "FK_ProjectBranches_Projects_ProjectId",
                 table: "ProjectBranches");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_ProjectBranches_Branches_BranchId",
+                table: "ProjectBranches"); 
+            
             migrationBuilder.DropIndex(
                 name: "IX_Checking",
                 table: "ProjectBranches");
@@ -382,6 +386,13 @@ namespace SODP.DataAccess.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
+            migrationBuilder.AddForeignKey(
+               name: "FK_Branch",
+               table: "ProjectBranches",
+               column: "BranchId",
+               principalTable: "Branches",
+               principalColumn: "Id",
+               onDelete: ReferentialAction.Cascade);
             #endregion
 
             #region Licences
@@ -648,6 +659,10 @@ namespace SODP.DataAccess.Migrations
                 name: "FK_Project",
                 table: "ProjectBranches");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Branch",
+                table: "ProjectBranches");
+            
             migrationBuilder.DropIndex(
                 name: "IX_Checking",
                 table: "ProjectBranches");
@@ -700,6 +715,13 @@ namespace SODP.DataAccess.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
 
+            migrationBuilder.AddForeignKey(
+                name: "FK_ProjectBranches_Branches_BranchId",
+                table: "ProjectBranches",
+                column: "BranchId",
+                principalTable: "Branches",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
             #endregion
 
             #region BranchLicense

@@ -2,16 +2,18 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Mappers;
+using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -24,6 +26,8 @@ namespace SODP.UI.Pages.ActiveProjects
         private readonly IWebAPIProvider _apiProvider;
         private readonly IMapper _mapper;
 
+        const string getDesignerPartialViewName = "_GetDesignerPartialView";
+
         public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper) : base(logger)
         {
             _apiProvider = apiProvider;
@@ -31,6 +35,10 @@ namespace SODP.UI.Pages.ActiveProjects
         }
 
         public ProjectVM Project { get; set; }
+
+        public GetDesignerVM Designer { get; set; }
+
+        public GetDesignerVM Checker { get; set; }
 
         public IEnumerable<SelectListItem> Stages { get; set; }
 
@@ -85,6 +93,27 @@ namespace SODP.UI.Pages.ActiveProjects
             await GetProjectAsync(id);
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnGetDesignerAsync(int projectId, int projectBranchId, int selector)
+        {
+
+
+            return await GetPartialViewAsync(projectId, projectBranchId);
+        }
+
+
+        private async Task<PartialViewResult> GetPartialViewAsync(int projectId, int projectBranchId)
+        {
+            GetDesignerVM designer = new GetDesignerVM();
+
+
+
+            return new PartialViewResult
+            {
+                ViewName = getDesignerPartialViewName,
+                ViewData = new ViewDataDictionary<GetDesignerVM>(ViewData, designer)
+            };
         }
 
         private async Task GetProjectAsync(int id)
