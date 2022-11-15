@@ -17,9 +17,9 @@ namespace SODP.DataAccess.Configurations
             builder.Property(x => x.BranchId)
                 .IsRequired();
 
-            builder.Property(x => x.DesignerLicenseId);
+            //builder.Property(x => x.DesignerLicenseId);
 
-            builder.Property(x => x.CheckingLicenseId);
+            //builder.Property(x => x.CheckingLicenseId);
 
             builder.HasIndex(x => x.ProjectId)
                 .HasName("IX_Project");
@@ -27,13 +27,18 @@ namespace SODP.DataAccess.Configurations
             builder.HasIndex(x => x.BranchId)
                 .HasName("IX_Branch");
 
-            builder.HasIndex(x => x.DesignerLicenseId)
-                .HasName("IX_Designer");
+            //builder.HasIndex(x => x.DesignerLicenseId)
+            //    .HasName("IX_Designer");
 
-            builder.HasIndex(x => x.CheckingLicenseId)
-                .HasName("IX_Checking");
+            //builder.HasIndex(x => x.CheckingLicenseId)
+            //    .HasName("IX_Checking");
 
             builder.ToTable("ProjectBranches");
+
+            builder.HasMany(x => x.Roles)
+                .WithOne(y => y.ProjectBranch)
+                .HasForeignKey(z => z.ProjectBranchId)
+                .HasConstraintName("FK_ProjectBranch");
 
             //builder.HasOne(x => x.Branch)
             //    .WithOne()

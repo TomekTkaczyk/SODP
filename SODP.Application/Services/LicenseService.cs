@@ -189,7 +189,7 @@ namespace SODP.Application.Services
                     return result;
                 }
 
-                license.Branches.Add(new BranchLicense
+                license.Branches.Add(new LicenseBranch
                 {                              
                     BranchId = branchId,
                     LicenseId = id
@@ -212,7 +212,7 @@ namespace SODP.Application.Services
             try
             {
                 var branch = await _context.BranchLicenses.FirstOrDefaultAsync(x => x.LicenseId == id && x.BranchId == branchId);
-                if(branch != null)
+                if (branch != null)
                 {
                     _context.BranchLicenses.Remove(branch);
                     await _context.SaveChangesAsync();

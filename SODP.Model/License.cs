@@ -9,6 +9,6 @@ namespace SODP.Model
         public int DesignerId { get; set; }
         public virtual Designer Designer { get; set; }
         public string Content { get; set; }
-        public virtual ICollection<BranchLicense> Branches { get; set; }
+        public virtual ICollection<LicenseBranch> Branches { get; set; }
     }
 }

@@ -381,5 +381,46 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse> SetBranchTechnicalRoleAsync(int id, int branchId, TechnicalRole role, int licenseId)
+        {
+            var serviceResponse = new ServiceResponse();
+            try
+            {
+                var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == id && x.BranchId == branchId);
+                if (projectBranch == null)
+                {
+                    serviceResponse.SetError("Branża projektu nie odnaleziona", 400);
+                    return serviceResponse;
+                }
+                if(licenseId == 0)
+                {
+                    switch(role) 
+                    {
+                        case TechnicalRole.Designer:
+                            break;
+                        case TechnicalRole.Checker:
+                            break;
+                        default:
+                            serviceResponse.SetError("Żle określona funkcja techniczna", 400);
+                            break;
+                    }
+                }
+                var licence = await _context.Licenses.FirstOrDefaultAsync(x => x.Id == licenseId);
+                if (licence == null)
+                {
+                    serviceResponse.SetError("Uprawnienia projektowe nie odnalezione", 400);
+                    return serviceResponse;
+                }
+                _context.Entry(projectBranch).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
     }
 }

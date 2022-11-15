@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Domain.Services;
+using SODP.Model.Enums;
 using SODP.Shared.DTO;
 using System.Threading.Tasks;
 
@@ -109,7 +110,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> SetBranchDesignerAsync(int id, int branchId, int licenseId)
         {
-            var serviceResponse = await _projectsService.SetBranchDesignerAsync(id, branchId, licenseId);
+            var serviceResponse = await _projectsService.SetBranchTechnicalRoleAsync(id, branchId, TechnicalRole.Designer, licenseId);
 
             return Ok(serviceResponse);
         }
@@ -120,7 +121,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> SetBranchCheckerAsync(int id, int branchId, int licenseId)
         {
-            var serviceResponse = await _projectsService.SetBranchCheckerAsync(id, branchId, licenseId);
+            var serviceResponse = await _projectsService.SetBranchTechnicalRoleAsync(id, branchId, TechnicalRole.Checker, licenseId);
 
             return Ok(serviceResponse);
         }

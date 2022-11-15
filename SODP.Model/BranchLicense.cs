@@ -5,9 +5,10 @@ using System.Text;
 
 namespace SODP.Model
 {
-    public class BranchLicense : BaseEntity
+    public class LicenseBranch : BaseEntity
     {
-        public TechnicalRole Role { get; set; }
+        public int BranchId { get; set; }
+        public virtual Branch Branch { get; set; }
         public int LicenseId { get; set; }
         public virtual License License { get; set; }
     }
