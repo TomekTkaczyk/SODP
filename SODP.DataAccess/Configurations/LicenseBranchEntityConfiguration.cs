@@ -22,7 +22,7 @@ namespace SODP.DataAccess.Configurations
 
             builder.ToTable("LicenseBranches");
 
-            builder.HasKey(x => new { x.BranchId, x.LicenseId });
+            builder.HasKey(x => new {x.LicenseId, x.BranchId });
 
             builder.HasOne(x => x.License)
                 .WithMany(y => y.Branches)

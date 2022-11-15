@@ -230,7 +230,8 @@ namespace SODP.DataAccess.Migrations
                 type: "nvarchar(10)",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "varchar(10)");
+                oldType: "varchar(10)",
+                oldNullable: true);
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
@@ -238,7 +239,8 @@ namespace SODP.DataAccess.Migrations
                 type: "nvarchar(50)",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(50)");
+                oldType: "nvarchar(50)",
+                oldNullable: true);
 
             migrationBuilder.AddColumn<bool>(
                 name: "ActiveStatus",
@@ -275,10 +277,10 @@ namespace SODP.DataAccess.Migrations
 
             #endregion
 
-            #region BranchLicenses
+            #region LicenseBranches
 
             migrationBuilder.CreateTable(
-                name: "BranchLicense",
+                name: "LicenseBranches",
                 columns: table => new
                 {
                     BranchId = table.Column<int>(nullable: false),
@@ -289,15 +291,15 @@ namespace SODP.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BranchLicense", x => new { x.BranchId, x.LicenseId });
+                    table.PrimaryKey("PK_LicenseBranches", x => new { x.LicenseId, x.BranchId });
                     table.ForeignKey(
-                        name: "FK_BranchLicense_Branches_BranchId",
+                        name: "FK_LicenseBranches_Branches_BranchId",
                         column: x => x.BranchId,
                         principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BranchLicense_Licenses_LicenseId",
+                        name: "FK_LicenseBranches_Licenses_LicenseId",
                         column: x => x.LicenseId,
                         principalTable: "Licenses",
                         principalColumn: "Id",
@@ -306,12 +308,12 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Branch",
-                table: "BranchLicense",
+                table: "LicenseBranches",
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_License",
-                table: "BranchLicense",
+                table: "LicenseBranches",
                 column: "LicenseId");
 
             #endregion
@@ -342,57 +344,94 @@ namespace SODP.DataAccess.Migrations
                 name: "IX_Designer",
                 table: "ProjectBranches");
 
-            migrationBuilder.RenameColumn(
-                name: "DesignerLicenceId",
-                newName: "DesignerLicenseId",
-                table: "ProjectBranches");
-
-            migrationBuilder.RenameColumn(
+            migrationBuilder.DropColumn(
                 name: "CheckingLicenceId",
-                newName: "CheckingLicenseId",
                 table: "ProjectBranches");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Checking",
-                table: "ProjectBranches",
-                column: "CheckingLicenseId");
+            migrationBuilder.DropColumn(
+                name: "DesignerLicenceId",
+                table: "ProjectBranches");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Designer",
-                table: "ProjectBranches",
-                column: "DesignerLicenseId");
+            //migrationBuilder.RenameColumn(
+            //    name: "DesignerLicenceId",
+            //    newName: "DesignerLicenseId",
+            //    table: "ProjectBranches");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
-                table: "ProjectBranches",
-                column: "CheckingLicenseId",
-                principalTable: "Licenses",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            //migrationBuilder.RenameColumn(
+            //    name: "CheckingLicenceId",
+            //    newName: "CheckingLicenseId",
+            //    table: "ProjectBranches");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
-                table: "ProjectBranches",
-                column: "DesignerLicenseId",
-                principalTable: "Licenses",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Checking",
+            //    table: "ProjectBranches",
+            //    column: "CheckingLicenseId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Project",
-                table: "ProjectBranches",
-                column: "ProjectId",
-                principalTable: "Projects",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Designer",
+            //    table: "ProjectBranches",
+            //    column: "DesignerLicenseId");
 
-            migrationBuilder.AddForeignKey(
-               name: "FK_Branch",
-               table: "ProjectBranches",
-               column: "BranchId",
-               principalTable: "Branches",
-               principalColumn: "Id",
-               onDelete: ReferentialAction.Cascade);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
+            //    table: "ProjectBranches",
+            //    column: "CheckingLicenseId",
+            //    principalTable: "Licenses",
+            //    principalColumn: "Id",
+            //    onDelete: ReferentialAction.Restrict);
+
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
+            //    table: "ProjectBranches",
+            //    column: "DesignerLicenseId",
+            //    principalTable: "Licenses",
+            //    principalColumn: "Id",
+            //    onDelete: ReferentialAction.Restrict);
+
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_Project",
+            //    table: "ProjectBranches",
+            //    column: "ProjectId",
+            //    principalTable: "Projects",
+            //    principalColumn: "Id",
+            //    onDelete: ReferentialAction.Cascade);
+
+            //migrationBuilder.AddForeignKey(
+            //   name: "FK_Branch",
+            //   table: "ProjectBranches",
+            //   column: "BranchId",
+            //   principalTable: "Branches",
+            //   principalColumn: "Id",
+            //   onDelete: ReferentialAction.Cascade);
+            #endregion
+
+            #region ProjectBranchRoles
+
+            migrationBuilder.CreateTable(
+                name: "ProjectBranchRoles",
+                columns: table => new
+                {
+                    ProjectBranchId = table.Column<int>(nullable: false),
+                    Role = table.Column<int>(nullable: false),
+                    LicenseId = table.Column<int>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectBranchRoles", x => new { x.ProjectBranchId, x.Role, x.LicenseId });
+                    table.ForeignKey(
+                        name: "FK_ProjectBranchRoles_Licenses_LicenseId",
+                        column: x => x.LicenseId,
+                        principalTable: "Licenses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectBranch",
+                        column: x => x.ProjectBranchId,
+                        principalTable: "ProjectBranches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
             #endregion
 
             #region Licences
@@ -435,7 +474,7 @@ namespace SODP.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.Sql("REPLACE INTO `Licences` (Id, DesignerId, Contents, BranchId) SELECT Licenses.Id,Licenses.DesignerId,Content,BranchLicense.BranchId FROM Licenses,Branches,BranchLicense WHERE BranchLicense.BranchId=Branches.Id AND BranchLicense.LicenseId=Licenses.Id GROUP BY Id;");
+            migrationBuilder.Sql("REPLACE INTO `Licences` (Id, DesignerId, Contents, BranchId) SELECT Licenses.Id,Licenses.DesignerId,Content,LicenseBranches.BranchId FROM Licenses,Branches,LicenseBranches WHERE LicenseBranches.BranchId=Branches.Id AND LicenseBranches.LicenseId=Licenses.Id GROUP BY Id;");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Branch",
@@ -645,41 +684,53 @@ namespace SODP.DataAccess.Migrations
 
             #endregion
 
-            #region projectBranches
+            #region ProjectBranches
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
-                table: "ProjectBranches");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
+            //    table: "ProjectBranches");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
-                table: "ProjectBranches");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
+            //    table: "ProjectBranches");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Project",
-                table: "ProjectBranches");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_Project",
+            //    table: "ProjectBranches");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Branch",
-                table: "ProjectBranches");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_Branch",
+            //    table: "ProjectBranches");
             
-            migrationBuilder.DropIndex(
-                name: "IX_Checking",
-                table: "ProjectBranches");
+            //migrationBuilder.DropIndex(
+            //    name: "IX_Checking",
+            //    table: "ProjectBranches");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Designer",
-                table: "ProjectBranches");
+            //migrationBuilder.DropIndex(
+            //    name: "IX_Designer",
+            //    table: "ProjectBranches");
 
-            migrationBuilder.RenameColumn(
-                name: "CheckingLicenseId",
-                newName: "CheckingLicenceId",
-                table: "ProjectBranches");
+            migrationBuilder.AddColumn<int>(
+                name: "CheckingLicenceId",
+                table: "ProjectBranches",
+                type: "int",
+                nullable: true);
 
-            migrationBuilder.RenameColumn(
-                name: "DesignerLicenseId",
-                newName: "DesignerLicenceId",
-                table: "ProjectBranches");
+            migrationBuilder.AddColumn<int>(
+                name: "DesignerLicenceId",
+                table: "ProjectBranches",
+                type: "int",
+                nullable: true);
+
+            //migrationBuilder.RenameColumn(
+            //    name: "CheckingLicenseId",
+            //    newName: "CheckingLicenceId",
+            //    table: "ProjectBranches");
+
+            //migrationBuilder.RenameColumn(
+            //    name: "DesignerLicenseId",
+            //    newName: "DesignerLicenceId",
+            //    table: "ProjectBranches");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Checking",
@@ -724,10 +775,16 @@ namespace SODP.DataAccess.Migrations
                 onDelete: ReferentialAction.Cascade);
             #endregion
 
-            #region BranchLicense
+            #region ProjectBranchRoles
 
             migrationBuilder.DropTable(
-                name: "BranchLicense");
+                name: "ProjectBranchRoles");
+            #endregion
+
+            #region LicenseBranches
+
+            migrationBuilder.DropTable(
+                name: "LicenseBranches");
 
             #endregion
 
