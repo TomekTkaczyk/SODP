@@ -9,6 +9,18 @@
     <Compile Remove="Migrations\20221110205539_temporary.Designer.cs" />
     <Compile Remove="Migrations\20221115210132_temporary.cs" />
     <Compile Remove="Migrations\20221115210132_temporary.Designer.cs" />
+    <Compile Remove="Migrations\20221115210714_temporary.cs" />
+    <Compile Remove="Migrations\20221115210714_temporary.Designer.cs" />
+    <Compile Remove="Migrations\20221115210913_temporary.cs" />
+    <Compile Remove="Migrations\20221115210913_temporary.Designer.cs" />
+    <Compile Remove="Migrations\20221115211219_temporary.cs" />
+    <Compile Remove="Migrations\20221115211219_temporary.Designer.cs" />
+    <Compile Remove="Migrations\20221115212240_temporary.cs" />
+    <Compile Remove="Migrations\20221115212240_temporary.Designer.cs" />
+    <Compile Remove="Migrations\20221115214319_temporary.cs" />
+    <Compile Remove="Migrations\20221115214319_temporary.Designer.cs" />
+    <Compile Remove="Migrations\20221115215244_temp.cs" />
+    <Compile Remove="Migrations\20221115215244_temp.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

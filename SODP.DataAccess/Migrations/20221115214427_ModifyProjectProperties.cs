@@ -334,8 +334,8 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.DropForeignKey(
                 name: "FK_ProjectBranches_Branches_BranchId",
-                table: "ProjectBranches"); 
-            
+                table: "ProjectBranches");
+
             migrationBuilder.DropIndex(
                 name: "IX_Checking",
                 table: "ProjectBranches");
@@ -701,7 +701,7 @@ namespace SODP.DataAccess.Migrations
             //migrationBuilder.DropForeignKey(
             //    name: "FK_Branch",
             //    table: "ProjectBranches");
-            
+
             //migrationBuilder.DropIndex(
             //    name: "IX_Checking",
             //    table: "ProjectBranches");
@@ -792,7 +792,7 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Licenses");
-            
+
             #endregion
 
         }
