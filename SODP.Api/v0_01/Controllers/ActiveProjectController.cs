@@ -25,16 +25,6 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _projectsService.ArchiveAsync(id));
         }
 
-        // To do poprawy
-
-        //[HttpPatch("{id}")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //public async Task<IActionResult> Archive(int id, [FromBody] { Status: Archive})
-        //{
-        //    return Ok(await _projectsService.ArchiveAsync(id));
-        //}
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -52,7 +42,8 @@ namespace SODP.Api.v0_01.Controllers
                 _ => BadRequest(result),
             };
         }
-                                     
+              
+        
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -73,6 +64,7 @@ namespace SODP.Api.v0_01.Controllers
             return NoContent();
         }
 
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -82,7 +74,8 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _projectsService.DeleteAsync(id));
         }
 
-        [HttpPut("{id}/branches/{branchId}")]
+
+        [HttpPost("{id}/branches/{branchId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -104,6 +97,7 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(serviceResponse);
         }
 
+
         [HttpDelete("{id}/branches/{branchId}/designer/{licenseId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -114,6 +108,7 @@ namespace SODP.Api.v0_01.Controllers
 
             return Ok(serviceResponse);
         }
+
 
         [HttpDelete("{id}/branches/{branchId}/checker/{licenseId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

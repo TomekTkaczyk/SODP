@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess;
+using SODP.Domain.Helpers;
 using SODP.Domain.Services;
 using SODP.Model;
 using SODP.Shared.DTO;
@@ -15,12 +17,16 @@ namespace SODP.Application.Services
     public class LicenseService : ILicenseService
     {
         private readonly IMapper _mapper;
+        private readonly IValidator<License> _validator;
         private readonly SODPDBContext _context;
+        private readonly IDesignerService _designerService;
 
-        public LicenseService(IMapper mapper, SODPDBContext context)
+        public LicenseService(IMapper mapper, IValidator<License> validator, SODPDBContext context, IDesignerService designerService)
         {
             _mapper = mapper;
+            _validator = validator;
             _context = context;
+            _designerService = designerService;
         }
         public async Task<ServicePageResponse<LicenseDTO>> GetAllAsync()
         {
@@ -44,17 +50,26 @@ namespace SODP.Application.Services
         public async Task<ServiceResponse<LicenseDTO>> CreateAsync(LicenseDTO newLicense)
         {
             var serviceResponse = new ServiceResponse<LicenseDTO>();
+
+
+
             var license = await _context.Licenses
                 .Include(x => x.Designer)
-                .FirstOrDefaultAsync(x => x.Content.Equals(newLicense.Content.Trim()));
+                .FirstOrDefaultAsync(x => x.Content.Trim().Equals(newLicense.Content.Trim()));
             if(license != null)
             {
-                serviceResponse.SetError("License not exist", 409);
+                serviceResponse.SetError("Nr uprawnień już występuje w bazie", 409);
                 return serviceResponse;
             }
 
             license = _mapper.Map<License>(newLicense);
-            license.Designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == newLicense.Designer.Id);
+            var validationResult = await _validator.ValidateAsync(license);
+            if (!validationResult.IsValid)
+            {
+                serviceResponse.ValidationErrorProcess(validationResult);
+                return serviceResponse;
+            }
+
             var entity = await _context.AddAsync(license);
             await _context.SaveChangesAsync();
             serviceResponse.SetData(_mapper.Map<LicenseDTO>(entity.Entity));

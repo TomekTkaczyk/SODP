@@ -27,6 +27,7 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.GetAllAsync(currentPage, pageSize, active));
         }
 
+
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -36,11 +37,13 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.GetAsync(id));
         }
 
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] DesignerDTO designer)
         {
             return Ok(await _service.CreateAsync(designer));
         }
+
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]

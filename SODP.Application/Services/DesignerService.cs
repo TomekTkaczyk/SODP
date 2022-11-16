@@ -81,20 +81,25 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
+        public async Task<int> GetAsync(DesignerDTO designer)
+        {
+            var result = await _context.Designers.FirstOrDefaultAsync(x => x.Firstname.Trim().Equals(designer.Firstname.Trim()) && x.Lastname.Trim().Equals(designer.Lastname.Trim()));
+            return (result == null ? 0 : result.Id);
+        }
+
         public async Task<ServiceResponse<DesignerDTO>> CreateAsync(DesignerDTO createDesigner)
         {
             var serviceResponse = new ServiceResponse<DesignerDTO>();
             try
             {
-                var designer = await _context.Designers.FirstOrDefaultAsync(x => x.Firstname.Trim().Equals(createDesigner.Firstname.Trim()) && x.Lastname.Trim().Equals(createDesigner.Lastname.Trim()));
-                if (designer != null)
+                if (await GetAsync(createDesigner) != 0)
                 {
-                    serviceResponse.SetError($"Projektant {createDesigner} już istnieje.", 400);
+                    serviceResponse.SetError($"Projektant {createDesigner} już istnieje.", 409);
                     serviceResponse.ValidationErrors.Add("Designer", "Projektant już istnieje.");
                     return serviceResponse;
                 }
 
-                designer = _mapper.Map<Designer>(createDesigner);
+                var designer = _mapper.Map<Designer>(createDesigner);
                 var validationResult = await _validator.ValidateAsync(designer);
                 if (!validationResult.IsValid)
                 {
@@ -251,6 +256,13 @@ namespace SODP.Application.Services
             }
 
             return serviceResponse;
+        }
+
+
+        public async Task<bool> DesignerExist(int designerId)
+        {
+            var result = await _context.Designers.FirstOrDefaultAsync(x => x.Id == designerId);
+            return (result != null);
         }
     }
 }
