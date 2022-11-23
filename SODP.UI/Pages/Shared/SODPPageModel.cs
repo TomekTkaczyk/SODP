@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
@@ -8,15 +9,17 @@ namespace SODP.UI.Pages.Shared
 {
     public abstract class SODPPageModel : PageModel
     {
-        private readonly ILogger<SODPPageModel> _logger;
+        protected readonly ILogger<SODPPageModel> _logger;
+        protected readonly IMapper _mapper;
 
         protected string PartialViewName { get; set; }
 
         public string ReturnUrl { get; protected set; }
 
-        protected SODPPageModel(ILogger<SODPPageModel> logger)
+        protected SODPPageModel(ILogger<SODPPageModel> logger, IMapper mapper)
         {
             _logger = logger;
+            _mapper = mapper;
         }
 
         protected virtual void SetModelErrors(ServiceResponse response)

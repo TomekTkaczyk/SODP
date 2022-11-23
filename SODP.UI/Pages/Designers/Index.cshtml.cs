@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -24,7 +22,7 @@ namespace SODP.UI.Pages.Designers
         const string licensesPartialViewName = "_LicensesPartialView";
         const string newLicensePartialViewName = "_NewLicensePartialView";
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger) : base(apiProvider, logger)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper) : base(apiProvider, logger, mapper)
         {
             ReturnUrl = "/Designers";
             _endpoint = "designers";
@@ -70,7 +68,9 @@ namespace SODP.UI.Pages.Designers
                 {
                     var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
 
-                    return GetPartialView(response.Data.ToViewModel(), editDesignerPartialViewName);
+                    var result = GetPartialView(response.Data.ToViewModel(), editDesignerPartialViewName);
+
+                    return result;
                 }
             }
 
@@ -117,7 +117,6 @@ namespace SODP.UI.Pages.Designers
 
             return GetPartialView<LicensesVM>(Licenses, licensesPartialViewName);
         }
-
 
         public PartialViewResult OnGetNewLicenseAsync(int designerId)
         {

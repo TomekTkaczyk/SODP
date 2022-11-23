@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess;
+using SODP.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Tests.ApplicationTests.ServiceTests
         [Fact]
         public void SampleTest()
         {
-            var context = new SODPDBContext(new DbContextOptions<SODPDBContext>());
+            var context = new SODPDBContext(new DbContextOptions<SODPDBContext>(), new DateTimeService());
             var projects = context.Projects.ToList();
 
             Assert.NotNull(projects);

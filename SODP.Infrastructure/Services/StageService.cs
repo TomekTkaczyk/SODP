@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SODP.DataAccess;
+using SODP.Application.Interfaces;
+using SODP.Application.Services;
 using SODP.Domain.Helpers;
-using SODP.Domain.Services;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -12,15 +12,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Services
+namespace SODP.Infrastructure.Services
 {
     public class StageService : IStageService
     {
         private readonly IMapper _mapper;
         private readonly IValidator<Stage> _validator;
-        private readonly SODPDBContext _context;
+        private readonly ISODPDBContext _context;
 
-        public StageService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context)
+        public StageService(IMapper mapper, IValidator<Stage> validator, ISODPDBContext context)
         {
             _mapper = mapper;
             _validator = validator;
@@ -143,7 +143,7 @@ namespace SODP.Application.Services
 
                 stage.Normalize();
                 stage.ActiveStatus = true;
-                var entity = await _context.AddAsync(stage);
+                var entity = _context.Stages.Add(stage);
                 await _context.SaveChangesAsync();
 
                 serviceResponse.SetData(_mapper.Map<StageDTO>(entity.Entity));
@@ -200,7 +200,7 @@ namespace SODP.Application.Services
                     serviceResponse.ValidationErrors.Add("Id", $"Stadium [{id}] posiada powiązane projekty.");
                     return serviceResponse;
                 }
-                _context.Entry(stage).State = EntityState.Deleted;
+                _context.Stages.Remove(stage);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -230,7 +230,7 @@ namespace SODP.Application.Services
                     serviceResponse.ValidationErrors.Add("Sign", $"Stadium {sign} posiada powiązane projekty.");
                     return serviceResponse;
                 }
-                _context.Entry(stage).State = EntityState.Deleted;
+                _context.Stages.Remove(stage);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

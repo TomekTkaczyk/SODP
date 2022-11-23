@@ -1,19 +1,23 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
+using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -24,23 +28,17 @@ namespace SODP.UI.Pages.ActiveProjects
     public class EditModel : SODPPageModel
     {
         private readonly IWebAPIProvider _apiProvider;
-        private readonly IMapper _mapper;
 
-        const string getDesignerPartialViewName = "_GetDesignerPartialView";
+        const string setDesignerPartialViewName = "_SetRolePartialView";
 
-        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper) : base(logger)
+        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper) : base(logger, mapper)
         {
             _apiProvider = apiProvider;
-            _mapper = mapper;
         }
 
         public ProjectVM Project { get; set; }
-
-        public GetDesignerVM Designer { get; set; }
-
-        public GetDesignerVM Checker { get; set; }
-
-        public IEnumerable<SelectListItem> Stages { get; set; }
+        public BranchesVM ProjectBranches { get; set; }
+        public AvailableBranchesVM AvailableBranches { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -95,25 +93,29 @@ namespace SODP.UI.Pages.ActiveProjects
             return Page();
         }
 
-        public async Task<IActionResult> OnGetDesignerAsync(int projectId, int projectBranchId, int selector)
+        public async Task<IActionResult> OnGetRoleAsync(int projectId, int branchId, int selector)
         {
 
+            var designer = new SetDesignerVM() { DesignerId = 0 };
 
-            return await GetPartialViewAsync(projectId, projectBranchId);
+            var apiResponse = await _apiProvider.GetAsync($"licenses/branch/{branchId}");
+            var response = await _apiProvider.GetContent<ServicePageResponse<LicenseDTO>>(apiResponse);
+            designer.Designers = response.Data.Collection.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = $"{x.Designer} ({x.Content})"
+            }).ToList();
+            designer.ProjectId = projectId;
+            designer.Selector = selector;
+
+            return GetPartialView(designer, setDesignerPartialViewName);
         }
 
-
-        private async Task<PartialViewResult> GetPartialViewAsync(int projectId, int projectBranchId)
+        public async Task<IActionResult> OnPostDesignerAsync(SetDesignerVM designer)
         {
-            GetDesignerVM designer = new GetDesignerVM();
-
-
-
-            return new PartialViewResult
-            {
-                ViewName = getDesignerPartialViewName,
-                ViewData = new ViewDataDictionary<GetDesignerVM>(ViewData, designer)
-            };
+            var response = await _apiProvider.PutAsync("", new StringContent(""));
+            
+            return GetPartialView(designer, setDesignerPartialViewName);
         }
 
         private async Task GetProjectAsync(int id)
@@ -137,17 +139,18 @@ namespace SODP.UI.Pages.ActiveProjects
                     BuildingCategory = response.Data.BuildingCategory,
                     Investor = response.Data.Investor,
                     Description = response.Data.Description,
-                    ApplyBranches = response.Data.Branches
-                    .Select(x => new SelectListItem
-                    {
-                        Value = x.Branch.Id.ToString(),
-                        Text = $"{x.Branch.Name}"
-                    })
-                    .OrderBy(o => o.Text)
-                    .ToList(),
                     Status = response.Data.Status,
                 };
-                Project.Branches = await GetBranchesAsync(Project.ApplyBranches);
+                
+                ProjectBranches = new BranchesVM
+                {
+                    Branches = _mapper.Map<IList<ProjectBranchVM>>(response.Data.Branches)
+                };
+
+                AvailableBranches = new AvailableBranchesVM
+                {
+                    Items = await GetBranchesAsync(ProjectBranches.Branches),
+                };
             }
             else
             {
@@ -162,7 +165,7 @@ namespace SODP.UI.Pages.ActiveProjects
             }
         }
 
-        private async Task<List<SelectListItem>> GetBranchesAsync(List<SelectListItem> exclusionList)
+        private async Task<List<SelectListItem>> GetBranchesAsync(IList<ProjectBranchVM> exclusionList)
         {
             var url = $"branches?activeOnly=true"; 
             var apiResponse = await _apiProvider.GetAsync(url);
@@ -177,12 +180,11 @@ namespace SODP.UI.Pages.ActiveProjects
 
             if (exclusionList != null)
             {
-                var shortList = result.Where(y => !exclusionList.Contains(y, new SelectListItemComparer())).ToList();
+                var shortList = result.Where(y => exclusionList.FirstOrDefault(z => z.Branch.Id.ToString() == y.Value) == null).ToList();
                 result = shortList;
             }
 
             return result;
         }
-
     }
 }

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SODP.DataAccess;
+using SODP.Application.Interfaces;
+using SODP.Application.Services;
 using SODP.Domain.Helpers;
-using SODP.Domain.Services;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -12,15 +12,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Services
+namespace SODP.Infrastructure.Services
 {
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
-        private readonly SODPDBContext _context;
+        private readonly ISODPDBContext _context;
 
-        public UserService(IMapper mapper, UserManager<User> userManager, SODPDBContext context)
+        public UserService(IMapper mapper, UserManager<User> userManager, ISODPDBContext context)
         {
             _mapper = mapper;
             _userManager = userManager;

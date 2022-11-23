@@ -1,5 +1,5 @@
 using FluentValidation;
-using SODP.Domain.Services;
+using SODP.Application.Services;
 using SODP.Model;
 using System.Threading.Tasks;
 

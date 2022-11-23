@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SODP.Domain.Services
+namespace SODP.Application.Services
 {
     public interface ILicenseService : IEntityService<LicenseDTO>
     {
@@ -14,5 +14,9 @@ namespace SODP.Domain.Services
         Task<ServiceResponse> AddBranchAsync(int id, int branchId);
 
         Task<ServiceResponse> RemoveBranchAsync(int id, int branchId);
+
+        Task<ServiceResponse<LicenseDTO>> CreateAsync(NewLicenseDTO newLicense);
+
+        Task<ServicePageResponse<LicenseDTO>> GetLicensesBranchAsync(int branchId);
     }
 }

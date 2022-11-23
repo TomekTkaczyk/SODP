@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using SODP.Shared.Enums;
-using System.Collections.Generic;
+﻿using SODP.Shared.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace SODP.UI.Pages.ActiveProjects
+namespace SODP.UI.Pages.ActiveProjects.ViewModels
 {
     public class ProjectVM
     {
@@ -36,10 +34,6 @@ namespace SODP.UI.Pages.ActiveProjects
         public string Description { get; set; }
         
         public ProjectStatus Status { get; set; }
-
-        public int BranchId { get; set; }
-        public List<SelectListItem> Branches { get; set; }
-        public List<SelectListItem> ApplyBranches { get; set; }
 
     }
 }

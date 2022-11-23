@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SODP.Shared.Response;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace SODP.Api.v0_01.Controllers

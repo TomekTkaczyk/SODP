@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,7 +25,7 @@ namespace SODP.UI.Pages.Branches
         
         private readonly IWebAPIProvider _apiProvider;
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(logger, mapper)
         {
             ReturnUrl = "/Branches";
             _apiProvider = apiProvider;

@@ -1,26 +1,27 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SODP.DataAccess;
+using SODP.Application.Interfaces;
+using SODP.Application.Services;
 using SODP.Domain.Helpers;
-using SODP.Domain.Services;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Services
+namespace SODP.Infrastructure.Services
 {
     public class DesignerService : IDesignerService
     {
         private readonly IMapper _mapper;
         private readonly IValidator<Designer> _validator;
-        private readonly SODPDBContext _context;
+        private readonly ISODPDBContext _context;
 
-        public DesignerService(IMapper mapper, IValidator<Designer> validator, SODPDBContext context)
+        public DesignerService(IMapper mapper, IValidator<Designer> validator, ISODPDBContext context)
         {
             _mapper = mapper;
             _validator = validator;
@@ -109,7 +110,7 @@ namespace SODP.Application.Services
 
                 designer.Normalize();
                 designer.ActiveStatus = true;
-                var entity = await _context.AddAsync(designer);
+                var entity = _context.Designers.Add(designer);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<DesignerDTO>(entity.Entity));
 
@@ -172,7 +173,7 @@ namespace SODP.Application.Services
                     return serviceResponse;
                 }
 
-                _context.Entry(designer).State = EntityState.Deleted;
+                _context.Designers.Remove(designer);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -218,6 +219,7 @@ namespace SODP.Application.Services
                 var licenses = await _context.Licenses
                     .Include(x => x.Designer)
                     .Include(x => x.Branches)
+                    .ThenInclude(y => y.Branch)
                     .Where(z => z.DesignerId == id)
                     .ToListAsync();
 
@@ -246,7 +248,7 @@ namespace SODP.Application.Services
 
                 var licence = _mapper.Map<License>(newLicense);
                 licence.Designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == licence.DesignerId);
-                var entity = await _context.AddAsync(licence);
+                var entity = _context.Licenses.Add(licence);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<LicenseDTO>(entity.Entity));
             }

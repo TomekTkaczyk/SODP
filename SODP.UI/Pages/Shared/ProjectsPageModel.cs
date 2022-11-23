@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
@@ -18,7 +19,7 @@ namespace SODP.UI.Pages.Shared
 
         public ProjectsListVM ProjectsViewModel { get; set; }
 
-        public ProjectsPageModel(IWebAPIProvider apiProvider, ILogger<ProjectsPageModel> logger) : base(apiProvider, logger) { }
+        public ProjectsPageModel(IWebAPIProvider apiProvider, ILogger<ProjectsPageModel> logger, IMapper mapper) : base(apiProvider, logger, mapper) { }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {

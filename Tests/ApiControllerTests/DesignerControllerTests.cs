@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
 using NSubstitute;
 using SODP.Api.v0_01.Controllers;
-using SODP.Domain.Services;
-using SODP.Shared.DTO;
-using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SODP.Application.Services;
 using System.Threading.Tasks;
 using Xunit;
 

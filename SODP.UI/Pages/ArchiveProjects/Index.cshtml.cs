@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,7 +19,7 @@ namespace SODP.UI.Pages.ArchiveProjects
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(apiProvider, logger)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(apiProvider, logger, mapper)
         {
             ReturnUrl = "/ArchiveProjects";
             _endpoint = "archive-projects";

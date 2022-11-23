@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -22,7 +23,7 @@ namespace SODP.UI.Pages.Licenses
     {
         private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
+        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(logger, mapper)
         {
             _apiProvider = apiProvider;
             var prev = Request;

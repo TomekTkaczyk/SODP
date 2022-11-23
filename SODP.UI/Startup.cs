@@ -1,4 +1,3 @@
-using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,15 +5,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SODP.Application.Extensions;
+using SODP.Application;
+using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.Domain.Services;
-using SODP.Infrastructure.Extensions;
+using SODP.Infrastructure;
 using SODP.Model;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
 using System;
-using System.Collections;
 using System.IO;
 using System.Linq;
 
@@ -55,11 +53,11 @@ namespace SODP.UI
                     })
             );
 
-            services.AddDbContext(Configuration);
+            services.AddDataAccessDI(Configuration);
 
-            services.AddApplicationDIServices();
+            services.AddApplicationDI(Configuration);
 
-            services.AddInfrastructureDIServices();
+            services.AddInfrastructureDI(Configuration);
 
             var app = AppDomain.CurrentDomain
                     .GetAssemblies()

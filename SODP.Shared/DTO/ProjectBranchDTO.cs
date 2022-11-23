@@ -8,7 +8,8 @@ namespace SODP.Shared.DTO
     {
         public int Id { get; set; }
         public BranchDTO Branch { get; set; }
-        public DesignerDTO Designer { get; set; }
-        public DesignerDTO Checker { get; set; }
+
+        public ICollection<ProjectBranchRoleDTO> Roles { get; set; }
+
     }
 }

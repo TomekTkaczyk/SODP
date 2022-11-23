@@ -20,16 +20,28 @@ namespace SODP.Domain
             CreateMap<Stage, StageDTO>()
                 .ReverseMap();
 
-            CreateMap<ProjectBranch, ProjectBranchDTO>()
-                .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch));
-                //.ForMember(dest => dest.Name, act => act.Ignore())
-                //.ForMember(dest => dest.DesignerId, act => act.Ignore())
-                //.ForMember(dest => dest.DesignerName, act => act.Ignore())
-                //.ForMember(dest => dest.CheckerId, act => act.Ignore())
-                //.ForMember(dest => dest.CheckerName, act => act.Ignore());
 
-            CreateMap<Project, ProjectDTO>()
-                .ForMember(dest => dest.Branches, opt => opt.MapFrom(src => src.Branches));
+
+            CreateMap<Project, ProjectDTO>();
+
+            CreateMap<ProjectBranch, ProjectBranchDTO>()
+                .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch))
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles))
+                .PreserveReferences();
+
+            CreateMap<ProjectBranchRole, ProjectBranchRoleDTO>()
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
+                .PreserveReferences();
+
+
+            CreateMap<Branch, BranchDTO>()
+               .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
+               .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
+               .ForMember(dest => dest.Order, act => act.Ignore())
+               .ForMember(dest => dest.ActiveStatus, act => act.Ignore())
+               .PreserveReferences();
+
+
 
 
             CreateMap<Project, NewProjectDTO>()
@@ -61,13 +73,9 @@ namespace SODP.Domain
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
                 .ForMember(dest => dest.Licenses, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
-                .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
-                .PreserveReferences();
+                .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
 
-            CreateMap<Branch, BranchDTO>()
-                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
-                .PreserveReferences();
+
 
             CreateMap<Designer, DesignerDTO>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
@@ -80,8 +88,10 @@ namespace SODP.Domain
                 .PreserveReferences();
 
             CreateMap<License, LicenseDTO>()
+                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s);
+
+            CreateMap<NewLicenseDTO, License>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-                .ReverseMap()
                 .PreserveReferences();
         }
     }

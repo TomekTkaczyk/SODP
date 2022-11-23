@@ -3,12 +3,21 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess.Configurations;
 using SODP.Model;
+using System.Threading.Tasks;
+using System.Threading;
+using System;
+using SODP.Application.Interfaces;
 
 namespace SODP.DataAccess
 {
-    public class SODPDBContext : IdentityDbContext<User, Role, int>
+    public class SODPDBContext : IdentityDbContext<User, Role, int>, ISODPDBContext
     {
-        public SODPDBContext(DbContextOptions<SODPDBContext> options) : base(options) { }
+        private readonly IDateTime _dateTime;
+
+        public SODPDBContext(DbContextOptions<SODPDBContext> options, IDateTime dateTime) : base(options)
+        {
+            _dateTime = dateTime;
+        }
 
         public virtual DbSet<Stage> Stages { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
@@ -20,7 +29,25 @@ namespace SODP.DataAccess
         public virtual DbSet<LicenseBranch> BranchLicenses { get; set; }
         public virtual DbSet<Certificate> Certificates { get; set; }
 
+        public async Task<int> SaveChangesAsync()
+        {
+            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<BaseEntity> entry in ChangeTracker.Entries<BaseEntity>())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.CreateTimeStamp = _dateTime.Now;
+                        break;
 
+                    case EntityState.Modified:
+                        entry.Entity.ModifyTimeStamp = _dateTime.Now;
+                        break;
+                }
+            }
+            var result = await base.SaveChangesAsync();
+
+            return result;
+        }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,18 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Pomelo.EntityFrameworkCore.MySql.Storage;
-using SODP.DataAccess;
+using SODP.Application.Interfaces;
 using SODP.Domain.Managers;
 using SODP.Infrastructure.Managers;
+using SODP.Infrastructure.Services;
 using System;
 
-namespace SODP.Infrastructure.Extensions
+namespace SODP.Infrastructure
 {
-    public static class ConfigureServiceContainer
+    public static class DependecyInjection
     {
+        public static void UseMySwagger(this IApplicationBuilder app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SODP.API"));
+        }
+
         public static void AddSwagger(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSwaggerGen(c =>
@@ -63,37 +68,22 @@ namespace SODP.Infrastructure.Extensions
             });
         }
 
-        public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<SODPDBContext>(options =>
-            {
-                options.EnableDetailedErrors();
-                options.UseMySql(
-                    configuration.GetConnectionString("DefaultDbConnection"),
-                    b =>
-                    {
-                        b.CharSetBehavior(CharSetBehavior.NeverAppend);
-                        b.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MariaDb));
-                    });
-            });
-        }
-
-        public static void AddInfrastructureDIServices(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructureDI(this IServiceCollection services, IConfiguration configuration)
         {
             AddScopedInfrastructureServices(services);
             AddTransientInfrastructureServices(services);
             AddSingletonInfrastructureServices(services);
+
+            return services;
         }
 
         private static void AddTransientInfrastructureServices(this IServiceCollection services)
         {
+            services.AddTransient<IDateTime, DateTimeService>();
         }
 
         private static void AddScopedInfrastructureServices(this IServiceCollection services)
         {
-            services.AddScoped<UserInitializer>();
-
-            services.AddScoped<DataInitializer>();
 
             services.AddScoped<FolderConfigurator>();
 

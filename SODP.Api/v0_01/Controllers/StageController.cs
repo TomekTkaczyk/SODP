@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Domain.Services;
+using SODP.Application.Services;
 using SODP.Shared.DTO;
 using System.Threading.Tasks;
 

@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Pages\ActiveProjects\Edit.cshtml.cs~RF233ea685.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Pages\ActiveProjects\_NewProjectPartialView.cshtml" />
     <None Include="wwwroot\lib\fontawesome\webfonts\fa-brands-400.svg" />
     <None Include="wwwroot\lib\fontawesome\webfonts\fa-brands-400.woff2" />
@@ -41,6 +45,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SODP.Api\SODP.Api.csproj" />
+    <ProjectReference Include="..\SODP.DataAccess\SODP.DataAccess.csproj" />
     <ProjectReference Include="..\SODP.Infrastructure\SODP.Infrastructure.csproj" />
     <ProjectReference Include="..\SODP.Shared\SODP.Shared.csproj" />
   </ItemGroup>

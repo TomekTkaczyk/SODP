@@ -1,13 +1,10 @@
-﻿using SODP.Model.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SODP.Shared.Enums;
 
 namespace SODP.Model
 {
     public class ProjectBranchRole
     {
-        public int Id { get; set; }
+        public int Id { get; set; }  // to do remove !!!
 
         public int ProjectBranchId { get; set; }
 

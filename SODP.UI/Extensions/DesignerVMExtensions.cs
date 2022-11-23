@@ -17,7 +17,7 @@ namespace SODP.UI.Extensions
                                       Title = designer.Title,
                                       Firstname = designer.Firstname,
                                       Lastname = designer.Lastname
-                                      
+
                                   }),
                                   Encoding.UTF8,
                                   "application/json"

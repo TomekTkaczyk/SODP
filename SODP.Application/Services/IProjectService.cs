@@ -1,10 +1,9 @@
-﻿using SODP.Model;
-using SODP.Model.Enums;
-using SODP.Shared.DTO;
+﻿using SODP.Shared.DTO;
+using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using System.Threading.Tasks;
 
-namespace SODP.Domain.Services
+namespace SODP.Application.Services
 {
     public interface IProjectService : IAppService
     {

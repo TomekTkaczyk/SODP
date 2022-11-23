@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 namespace SODP.UI.Pages.ActiveProjects.ViewModels
 {
-    public class GetDesignerVM
+    public class AvailableBranchesVM
     {
-        public int? DesignerId { get; set; }
+        public int? SelectedId { get; set; }
 
-        public IEnumerable<SelectListItem> Designers { get; set; }
+        public IList<SelectListItem> Items { get; set; }
+
     }
 }

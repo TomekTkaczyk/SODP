@@ -2,9 +2,10 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Domain.Services;
+using SODP.Application.Services;
 using SODP.Model.Enums;
 using SODP.Shared.DTO;
+using SODP.Shared.Enums;
 using System.Threading.Tasks;
 
 namespace SODP.Api.v0_01.Controllers
@@ -75,7 +76,7 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
-        [HttpPost("{id}/branches/{branchId}")]
+        [HttpPut("{id}/branches/{branchId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -85,6 +86,7 @@ namespace SODP.Api.v0_01.Controllers
 
             return Ok(serviceResponse);
         }
+
 
         [HttpDelete("{id}/branches/{branchId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -98,7 +100,7 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
-        [HttpDelete("{id}/branches/{branchId}/designer/{licenseId}")]
+        [HttpPatch("{id}/branches/{branchId}/designer/{licenseId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -110,13 +112,25 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
-        [HttpDelete("{id}/branches/{branchId}/checker/{licenseId}")]
+        [HttpPatch("{id}/branches/{branchId}/checker/{licenseId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> SetBranchCheckerAsync(int id, int branchId, int licenseId)
         {
             var serviceResponse = await _projectsService.SetBranchTechnicalRoleAsync(id, branchId, TechnicalRole.Checker, licenseId);
+
+            return Ok(serviceResponse);
+        }
+
+
+        [HttpPatch("{id}/branches/{branchId}/role/{role}/{licenseId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> SetBranchRoleAsync(int id, int branchId, TechnicalRole role, int licenseId)
+        {
+            var serviceResponse = await _projectsService.SetBranchTechnicalRoleAsync(id, branchId, role, licenseId);
 
             return Ok(serviceResponse);
         }

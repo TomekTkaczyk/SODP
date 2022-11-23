@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
+    <ProjectReference Include="..\SODP.Infrastructure\SODP.Infrastructure.csproj" />
     <ProjectReference Include="..\SODP.Model\SODP.Model.csproj" />
   </ItemGroup>
 

@@ -3,7 +3,7 @@ using SODP.Shared.Response;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SODP.Domain.Services
+namespace SODP.Application.Services
 {
     public interface IRoleService : IEntityService<RoleDTO>
     {

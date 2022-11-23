@@ -91,10 +91,10 @@
                         </div>
                         <div>
                             Branże:
-                            @foreach (var item in Model.Project.ApplyBranches)
+                            @foreach (var item in Model.ProjectBranches.Branches)
                             {
                                 <div class ="col font-weight-bold">
-                                    <span class="font-weight-bold" style="white-space: pre-line">@item.Text</span>
+                                    <span class="font-weight-bold" style="white-space: pre-line">@item.Branch.Name</span>
                                 </div>
                             }
                         </div>
@@ -172,54 +172,62 @@
                 <div class="tab-pane fade" id="branch" role="tabpanel" aria-labelledby="branch-tab">
                     <br />
                     <div class="form-group">
-                        @for (int i = 0; i < Model.Project.ApplyBranches.Count; i++)
+                        @for (int i = 0; i < Model.ProjectBranches.Branches.Count; i++)
                         {
-                            <input asp-for="Project.ApplyBranches[i].Value" type="hidden" value="Project.ApplyBranches[i].Value">
-                            <input asp-for="Project.ApplyBranches[i].Text" type="hidden" value="Project.ApplyBranches[i].Text">
+                            <input asp-for="ProjectBranches.Branches[i].Branch.Id" type="hidden" value="Project.ApplyBranches[i].Value">
+                            <input asp-for="ProjectBranches.Branches[i].Branch.Name" type="hidden" value="Project.ApplyBranches[i].Text">
                             <div class="row">
                                 <div class="btn btn-lg col-1"
                                      data-toggle="tooltip"
                                      data-placement="top"
                                      title="Usuń branżę"
-                                     onclick="RemoveBranch(@Model.Project.Id,@Model.Project.ApplyBranches[i].Value)">
+                                 onclick="RemoveBranch(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id)">
                                     <i class="fas fa-times text-danger"></i>
                                 </div>
-                                <div class="col my-auto">@Model.Project.ApplyBranches[i].Text</div>
+                                <div class="col my-auto">@Model.ProjectBranches.Branches[i].Branch.Name</div>
                             </div>
+
+                            @foreach (var role in Model.ProjectBranches.Branches[i].Roles)
+                            {
+                                <div class="row">
+                                    <div class="col my-auto">@role.Role : @role.Designer (@role.Content)</div>
+                                </div>
+                            }
+
                             <div class="row">
                                 <div class="col my-auto">Projektant:</div>
-                                <div class="col"></div>
+                                <div class="col" id="designer-@Model.ProjectBranches.Branches[i].Branch.Id"></div>
                                 <div class="btn btn-lg col-1"
                                  data-toggle="tooltip"
                                  data-placement="top"
                                  title="Wybierz projektanta"
-                                 onclick="GetDesigner(@Model.Project.Id,@Model.Project.ApplyBranches[i].Value,1)">
+                                 onclick="SetRole(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id,1)">
                                     <i class="fas fa-edit text-success"></i>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col my-auto" onclick="">Sprawdzający:</div>
-                                <div class="col"></div>
+                                <div class="col" id="checker-@Model.ProjectBranches.Branches[i].Branch.Id"></div>
                                 <div class="btn btn-lg col-1"
                                  data-toggle="tooltip"
                                  data-placement="top"
                                  title="Wybierz sprawdzającego"
-                                 onclick="GetDesigner(@Model.Project.Id,@Model.Project.ApplyBranches[i].Value,2)">
+                                 onclick="SetRole(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id,2)">
                                     <i class="fas fa-edit text-success"></i>
                                 </div>
                             </div>
                         }
                     </div>
 
-                    @if (Model.Project.Branches.Count > 0)
+                    @if (Model.AvailableBranches.Items.Count > 0)
                     {
                         <div class="form-group">
                             <div class="row align-middle">
                                 <div class="col pt-1 pb-1">
-                                    @Html.DropDownListFor(model => model.Project.BranchId, @Model.Project.Branches, new { @class = "form-control" })
-                                    <span asp-validation-for="Project.BranchId" style="font-size:14px" class="text-danger"></span>
+                                    @Html.DropDownListFor(model => model.AvailableBranches.SelectedId, @Model.AvailableBranches.Items, new { @class = "form-control" })
+                                    <span asp-validation-for="AvailableBranches.SelectedId" style="font-size:14px" class="text-danger"></span>
                                 </div>
-                                <div class="btn btn-lg col-1" onclick="AddBranch(@Model.Project.Id)">
+                                <div class="btn btn-lg col-1" onclick="AddBranch(@Model.Project.Id, @Model.AvailableBranches.SelectedId)">
                                     <i class="fas fa-plus text-success"></i>
                                 </div>
                             </div>
@@ -253,13 +261,15 @@
     </script>
 
     <script>
-        function GetDesigner(projectId, branchId, selector) {
+        function SetRole(projectId, branchId, selector) {
+            console.log(branchId);
             $.ajax({
                 type: "Get",
-                url: `@Url.Page("Edit","GetDesigner")$projectId=${prjectId}&branchId=${branchId}&selector=${selector}`,
-                succsess: function(data) {
+                url: `@Url.Page("Edit","Role")&projectId=`+projectId+`&branchId=`+branchId+`&selector=`+selector,
+                success: function (data) {
+                    console.log(data);
                     $('#modal-placeholder').html(data);
-                    $('getDesigner').modal('show');
+                    $('#setRole').modal('show');
                 }
             })
         }    
@@ -267,6 +277,8 @@
 
     <script>
         function RemoveBranch(projectId, branchId) {
+            console.log(projectId);
+            console.log(branchId);
             $.ajax({
                 type: "Delete",
                 url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${branchId}`,
@@ -281,12 +293,12 @@
         }
     </script>
 
-    <script>           
+    <script>
         function AddBranch(projectId) {
-            var selectedBranch = $("#Project_BranchId").val();
+            var selectedId = $("#AvailableBranches_SelectedId").val();
             $.ajax({
                 type: "Put",
-                url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${selectedBranch}`,
+                url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${selectedId}`,
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("XSRF-TOKEN",
                         $('input:hidden[name="__RequestVerificationToken"]').val());

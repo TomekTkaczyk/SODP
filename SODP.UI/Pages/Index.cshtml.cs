@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,6 @@ namespace SODP.UI.Pages
 {
     public class IndexModel : SODPPageModel
     {
-        public IndexModel(ILogger<SODPPageModel> logger) : base(logger) { } 
+        public IndexModel(ILogger<SODPPageModel> logger, IMapper mapper) : base(logger, mapper) { } 
     }
 }

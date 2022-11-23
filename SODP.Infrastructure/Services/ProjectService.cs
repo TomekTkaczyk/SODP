@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SODP.DataAccess;
-using SODP.Shared.DTO;
+using SODP.Application.Interfaces;
 using SODP.Domain.Helpers;
 using SODP.Domain.Managers;
-using SODP.Domain.Services;
 using SODP.Model;
 using SODP.Model.Enums;
+using SODP.Shared.DTO;
+using SODP.Shared.Enums;
+using SODP.Shared.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using SODP.Shared.Response;
-using SODP.Application.Mappers;
-using SODP.Shared.Enums;
 
 namespace SODP.Application.Services
 {
@@ -23,10 +22,10 @@ namespace SODP.Application.Services
         private readonly IMapper _mapper;
         private readonly IFolderManager _folderManager;
         private readonly IValidator<Project> _validator;
-        private readonly SODPDBContext _context;
+        private readonly ISODPDBContext _context;
         private ProjectStatus _mode = ProjectStatus.Active;
 
-        public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context)
+        public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, ISODPDBContext context)
         {
             _mapper = mapper;
             _folderManager = folderManager;
@@ -121,6 +120,10 @@ namespace SODP.Application.Services
                     .Include(s => s.Stage)
                     .Include(s => s.Branches)
                     .ThenInclude(s => s.Branch)
+                    .Include(s => s.Branches)
+                    .ThenInclude(s => s.Roles)
+                    .ThenInclude(s => s.License)
+                    .ThenInclude(s => s.Designer)
                     .Where(t => t.Status == _mode)
                     .FirstOrDefaultAsync(x => x.Id == id);
                 if (project == null)
@@ -171,7 +174,7 @@ namespace SODP.Application.Services
                     throw new ApplicationException($"Error: {Message}");
                 }
 
-                var entity = await _context.AddAsync(project);
+                var entity =_context.Projects.Add(project);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<ProjectDTO>(entity.Entity));
             }
@@ -244,13 +247,13 @@ namespace SODP.Application.Services
                 }
 
                 project.Status = ProjectStatus.DuringArchive;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 var (Success, Message) = await _folderManager.ArchiveFolderAsync(project);
                 if (!Success)
                 {
                     project.Status = ProjectStatus.Active;
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     throw new ApplicationException($"Błąd: {Message}");
                 }
                 
@@ -282,7 +285,7 @@ namespace SODP.Application.Services
                 {
                     throw new ApplicationException($"Błąd: {Message}");
                 }
-                _context.Entry(project).State = EntityState.Deleted;
+                _context.Projects.Remove(project);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -305,7 +308,7 @@ namespace SODP.Application.Services
                     return serviceResponse;
                 }
                 project.Status = ProjectStatus.DuringRestore;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 
                 var (Success, Message) = await _folderManager.RestoreFolderAsync(project);
                 if (!Success)
@@ -313,7 +316,7 @@ namespace SODP.Application.Services
                     throw new ApplicationException($"Błąd: {Message}");
                 }
                 project.Status = ProjectStatus.Active;
-                _context.Entry(project).State = EntityState.Modified;
+                _context.Projects.Update(project);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -370,7 +373,7 @@ namespace SODP.Application.Services
                 var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == id && x.BranchId == branchId);
                 if(projectBranch != null)
                 {
-                    _context.Entry(projectBranch).State = EntityState.Deleted;
+                    _context.ProjectBranches.Remove(projectBranch);
                     await _context.SaveChangesAsync();
                 }
             }
@@ -387,32 +390,52 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == id && x.BranchId == branchId);
+                var projectBranch = await _context.ProjectBranches
+                    .Include(x => x.Roles)
+                    .FirstOrDefaultAsync(x => x.ProjectId == id && x.BranchId == branchId);
                 if (projectBranch == null)
                 {
                     serviceResponse.SetError("Branża projektu nie odnaleziona", 400);
                     return serviceResponse;
                 }
-                if(licenseId == 0)
+
+                var branchRole = projectBranch.Roles.FirstOrDefault(x => x.Role == role);
+
+                if (licenseId == 0)
                 {
-                    switch(role) 
+                    if(branchRole != null)
                     {
-                        case TechnicalRole.Designer:
-                            break;
-                        case TechnicalRole.Checker:
-                            break;
-                        default:
-                            serviceResponse.SetError("Żle określona funkcja techniczna", 400);
-                            break;
+                        projectBranch.Roles.Remove(branchRole);
                     }
                 }
-                var licence = await _context.Licenses.FirstOrDefaultAsync(x => x.Id == licenseId);
-                if (licence == null)
+                else
                 {
-                    serviceResponse.SetError("Uprawnienia projektowe nie odnalezione", 400);
-                    return serviceResponse;
+                    var license = await _context.Licenses
+                        .Include(x => x.Branches)
+                        .FirstOrDefaultAsync(x => x.Id == licenseId);
+
+                    if (license == null)
+                    {
+                        serviceResponse.SetError("Uprawnienia nie odnalezione", 400);
+                        return serviceResponse;
+                    }
+
+                    if (license.Branches == null || license.Branches.FirstOrDefault(x => x.BranchId == branchId) == null)
+                    {
+                        serviceResponse.SetError($"Uprawnienia nie obejmują branży", 400);
+                        return serviceResponse;
+                    }
+
+                    if(branchRole == null)
+                    {
+                        projectBranch.Roles.Add(new ProjectBranchRole() { License = license, Role = role });
+                    } 
+                    else
+                    {
+                        branchRole.License = license;
+                    }
                 }
-                _context.Entry(projectBranch).State = EntityState.Modified;
+                _context.ProjectBranches.Update(projectBranch);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

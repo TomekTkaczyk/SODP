@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SODP.Shared.DTO
 {
-    public class NewLicenseDTO
+    public class LicenseDTO : BaseDTO
     {
-        public int DesignerId { get; set; }
+        public DesignerDTO Designer { get; set; }
         public string Content { get; set; }
     }
 }

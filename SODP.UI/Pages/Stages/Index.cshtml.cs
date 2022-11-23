@@ -1,4 +1,5 @@
 
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -30,7 +31,7 @@ namespace SODP.UI.Pages.Stages
 
         public StagesListVM StagesViewModel { get; set; }
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(apiProvider, logger)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(apiProvider, logger, mapper)
         {
             ReturnUrl = "/Stages";
             _endpoint = "stages";

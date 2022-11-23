@@ -2,7 +2,7 @@
 using SODP.Shared.Response;
 using System.Threading.Tasks;
 
-namespace SODP.Domain.Services
+namespace SODP.Application.Services
 {
     public interface IUserService : IEntityService<UserDTO>
     {

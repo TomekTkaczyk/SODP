@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SODP.Domain.Services;
+using SODP.Application.Services;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Services
+namespace SODP.Infrastructure.Services
 {
     public class RoleService : IRoleService
     {

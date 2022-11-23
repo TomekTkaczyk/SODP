@@ -126,10 +126,12 @@ else
     <script src="~/js/designersList.js"></script>
     <script>
         function EditDesigner(id) {
+            console.log(id);
             $.ajax({
                 type: "Get",
                 url: `@Url.Page("Index","EditDesigner")&Id=` + id,
                 success: function (data) {
+                    console.log(data);
                     $('#modal-placeholder').html(data);
                     $('#editDesigner').modal('show');
                 }
@@ -164,6 +166,7 @@ else
                 type: "Get",
                 url: `\Designers?handler=NewLicense&designerId=${designerId}&id=${licenseId}`,
                 success: function (data) {
+                    console.log(data);
                     $('#modal-placeholder').html(data);
                     $('#newLicense').modal('show');
                 }

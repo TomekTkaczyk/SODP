@@ -5,7 +5,6 @@
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
     <AnalysisLevel>preview-recommended</AnalysisLevel>
     <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
-    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <ItemGroup>

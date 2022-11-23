@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -26,7 +27,7 @@ namespace SODP.UI.Pages.Designers
 
         private readonly IWebAPIProvider _apiProvider;
 
-        public IndexModel1(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(logger)
+        public IndexModel1(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(logger, mapper)
         {
             ReturnUrl = "/Designers";
             _apiProvider = apiProvider;

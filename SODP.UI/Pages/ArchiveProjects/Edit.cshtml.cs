@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,7 @@ using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects;
+using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.ViewModels;
 using System.Threading.Tasks;
@@ -17,7 +19,7 @@ namespace SODP.UI.Pages.ArchiveProjects
     {
         private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger) : base(logger)
+        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper) : base(logger, mapper)
         {
             _apiProvider = apiProvider;
         }

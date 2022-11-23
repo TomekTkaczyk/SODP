@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,7 +22,7 @@ namespace SODP.UI.Pages.ActiveProjects
     {
         const string newProjectPartialViewName = "_NewProjectPartialView";
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger) : base(apiProvider, logger)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(apiProvider, logger, mapper)
         {
             ReturnUrl = "/ActiveProjects";
             _endpoint = "active-projects";

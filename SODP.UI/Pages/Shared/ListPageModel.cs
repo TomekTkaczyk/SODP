@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
@@ -16,7 +17,7 @@ namespace SODP.UI.Pages.Shared
         public PageInfo PageInfo { get; set; } = new PageInfo();
         public List<SelectListItem> PageSizeList { get; set; } = new List<SelectListItem> { };
 
-        protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger) : base(logger) 
+        protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper) : base(logger, mapper) 
         { 
             _apiProvider = apiProvider;
             foreach (var item in PageSizeSelectList.PageSizeList)

@@ -28,7 +28,6 @@ namespace SODP.Shared.DTO
 
         public string Description { get; set; }
 
-
         public ProjectStatus Status { get; set; }
 
         public ICollection<ProjectBranchDTO> Branches { get; set; }

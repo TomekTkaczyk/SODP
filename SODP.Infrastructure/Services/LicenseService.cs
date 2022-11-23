@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SODP.DataAccess;
+using SODP.Application.Interfaces;
+using SODP.Application.Services;
 using SODP.Domain.Helpers;
-using SODP.Domain.Services;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -12,16 +12,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Services
+namespace SODP.Infrastructure.Services
 {
     public class LicenseService : ILicenseService
     {
         private readonly IMapper _mapper;
         private readonly IValidator<License> _validator;
-        private readonly SODPDBContext _context;
+        private readonly ISODPDBContext _context;
         private readonly IDesignerService _designerService;
 
-        public LicenseService(IMapper mapper, IValidator<License> validator, SODPDBContext context, IDesignerService designerService)
+        public LicenseService(IMapper mapper, IValidator<License> validator, ISODPDBContext context, IDesignerService designerService)
         {
             _mapper = mapper;
             _validator = validator;
@@ -47,11 +47,9 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServiceResponse<LicenseDTO>> CreateAsync(LicenseDTO newLicense)
+        public async Task<ServiceResponse<LicenseDTO>> CreateAsync(NewLicenseDTO newLicense)
         {
             var serviceResponse = new ServiceResponse<LicenseDTO>();
-
-
 
             var license = await _context.Licenses
                 .Include(x => x.Designer)
@@ -63,6 +61,7 @@ namespace SODP.Application.Services
             }
 
             license = _mapper.Map<License>(newLicense);
+            license.Designer = _context.Designers.FirstOrDefault(x => x.Id == newLicense.DesignerId);
             var validationResult = await _validator.ValidateAsync(license);
             if (!validationResult.IsValid)
             {
@@ -70,7 +69,7 @@ namespace SODP.Application.Services
                 return serviceResponse;
             }
 
-            var entity = await _context.AddAsync(license);
+            var entity = _context.Licenses.Add(license);
             await _context.SaveChangesAsync();
             serviceResponse.SetData(_mapper.Map<LicenseDTO>(entity.Entity));
 
@@ -103,7 +102,7 @@ namespace SODP.Application.Services
                     //return serviceResponse;
                 }
 
-                _context.Entry(license).State = EntityState.Deleted;
+                _context.Licenses.Remove(license);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -233,6 +232,26 @@ namespace SODP.Application.Services
                     await _context.SaveChangesAsync();
                     serviceResponse.StatusCode = 204;
                 }
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServicePageResponse<LicenseDTO>> GetLicensesBranchAsync(int branchId)
+        {
+            var serviceResponse = new ServicePageResponse<LicenseDTO>();
+            try
+            {
+                var licenses = await _context.Licenses
+                    .Include(x => x.Branches)
+                    .ThenInclude(y => y.Branch)
+                    .Include(x => x.Designer)
+                    .ToListAsync();
+                serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(licenses));
             }
             catch (Exception ex)
             {
