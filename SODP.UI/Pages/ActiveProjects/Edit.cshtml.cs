@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using SODP.Model;
+using SODP.Model.Enums;
 using SODP.Shared.DTO;
+using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
@@ -17,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
@@ -29,7 +32,7 @@ namespace SODP.UI.Pages.ActiveProjects
     {
         private readonly IWebAPIProvider _apiProvider;
 
-        const string setDesignerPartialViewName = "_SetRolePartialView";
+        const string technicalRolesPartialViewName = "_TechnicalRolesPartialView";
 
         public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper) : base(logger, mapper)
         {
@@ -38,6 +41,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public ProjectVM Project { get; set; }
         public BranchesVM ProjectBranches { get; set; }
+
         public AvailableBranchesVM AvailableBranches { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
@@ -93,30 +97,61 @@ namespace SODP.UI.Pages.ActiveProjects
             return Page();
         }
 
-        public async Task<IActionResult> OnGetRoleAsync(int projectId, int branchId, int selector)
+        public async Task<IActionResult> OnGetTechnicalRolesAsync(int projectId, int branchId)
         {
 
-            var designer = new SetDesignerVM() { DesignerId = 0 };
+            var apiResponse = await _apiProvider.GetAsync($"active-projects/{projectId}/branches/{branchId}");
+            var responseRoles = await _apiProvider.GetContent<ServicePageResponse<ProjectBranchRoleDTO>>(apiResponse);
 
-            var apiResponse = await _apiProvider.GetAsync($"licenses/branch/{branchId}");
-            var response = await _apiProvider.GetContent<ServicePageResponse<LicenseDTO>>(apiResponse);
-            designer.Designers = response.Data.Collection.Select(x => new SelectListItem
+            var technicalRoles = new TechnicalRolesVM
             {
-                Value = x.Id.ToString(),
-                Text = $"{x.Designer} ({x.Content})"
-            }).ToList();
-            designer.ProjectId = projectId;
-            designer.Selector = selector;
+                ProjectId = projectId,
+                BranchId = branchId,
+                Roles = responseRoles.Data.Collection
+                .Where(y => Enum.TryParse(y.Role, out TechnicalRole role))
+                .Select(x =>
+                {
+                    Enum.TryParse(x.Role, out TechnicalRole role);
+                    return new
+                    {
+                        key = role,
+                        license = new LicenseVM()
+                        {
+                            Content = x.License.Content,
+                            Designer = x.License.Designer.ToString()
+                        }
+                    };
+                }).ToDictionary(t => t.key, t => t.license)
+            };
 
-            return GetPartialView(designer, setDesignerPartialViewName);
+            technicalRoles.AvailableRoles = Enum.GetValues(typeof(TechnicalRole))
+                .Cast<TechnicalRole>()
+                .Select(x => new SelectListItem
+                {
+                    Value = ((int)x).ToString(),
+                    Text = x.ToString()
+                }).ToList();
+
+
+            apiResponse = await _apiProvider.GetAsync($"licenses/branch/{branchId}");
+            var responseLicenses = await _apiProvider.GetContent<ServicePageResponse<LicenseDTO>>(apiResponse);
+
+            technicalRoles.Licenses = responseLicenses.Data.Collection
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = $"{x.Designer}"
+                }).ToList();
+
+            return GetPartialView(technicalRoles, technicalRolesPartialViewName);
         }
 
-        public async Task<IActionResult> OnPostDesignerAsync(SetDesignerVM designer)
-        {
-            var response = await _apiProvider.PutAsync("", new StringContent(""));
+        //public async Task<PartialViewResult> OnPostTechnicalRolesAsync(TechnicalRolesVM designer)
+        //{
+        //    var response = await _apiProvider.PutAsync("", new StringContent(""));
             
-            return GetPartialView(designer, setDesignerPartialViewName);
-        }
+        //    return GetPartialView(designer, technicalRolesPartialViewName);
+        //}
 
         private async Task GetProjectAsync(int id)
         {
@@ -167,24 +202,17 @@ namespace SODP.UI.Pages.ActiveProjects
 
         private async Task<List<SelectListItem>> GetBranchesAsync(IList<ProjectBranchVM> exclusionList)
         {
-            var url = $"branches?activeOnly=true"; 
-            var apiResponse = await _apiProvider.GetAsync(url);
+            var apiResponse = await _apiProvider.GetAsync($"branches?activeOnly=true");
             var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
-            var result = responseBranch.Data.Collection
+            
+            return responseBranch.Data.Collection
+                .Where(y => exclusionList.FirstOrDefault(z => z.Branch.Id.ToString() == y.Id.ToString()) == null)
                 .OrderBy(x => x.Order)
                 .Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),
                     Text = $"{x.Name.Trim()}"
                 }).ToList();
-
-            if (exclusionList != null)
-            {
-                var shortList = result.Where(y => exclusionList.FirstOrDefault(z => z.Branch.Id.ToString() == y.Value) == null).ToList();
-                result = shortList;
-            }
-
-            return result;
         }
     }
 }

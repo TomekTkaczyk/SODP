@@ -17,6 +17,7 @@ namespace SODP.Application.Services
         Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id);
         Task<ServiceResponse> RestoreAsync(int id);
         Task<ServiceResponse> ArchiveAsync(int id);
+        Task<ServicePageResponse<ProjectBranchRoleDTO>> GetBranchRolesAsync(int id, int branchId);
         Task<ServiceResponse> AddBranchAsync(int id, int branchId);
         Task<ServiceResponse> DeleteBranchAsync(int id, int branchId);
         Task<ServiceResponse> SetBranchTechnicalRoleAsync(int id, int branchId, TechnicalRole role, int licenseId);

@@ -177,14 +177,25 @@
                             <input asp-for="ProjectBranches.Branches[i].Branch.Id" type="hidden" value="Project.ApplyBranches[i].Value">
                             <input asp-for="ProjectBranches.Branches[i].Branch.Name" type="hidden" value="Project.ApplyBranches[i].Text">
                             <div class="row">
-                                <div class="btn btn-lg col-1"
-                                     data-toggle="tooltip"
-                                     data-placement="top"
-                                     title="Usuń branżę"
-                                 onclick="RemoveBranch(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id)">
-                                    <i class="fas fa-times text-danger"></i>
-                                </div>
                                 <div class="col my-auto">@Model.ProjectBranches.Branches[i].Branch.Name</div>
+                                <div class="col-1 p-0 m-0">
+                                    <div class="row">
+                                        <div class="btn btn-md"
+                                             data-toggle="tooltip"
+                                             data-placement="top"
+                                             title="Ustaw funkcje techniczne"
+                                             onclick="EditRoles(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id)">
+                                                <i class="fas fa-edit text-success"></i>
+                                        </div>
+                                        <div class="btn btn-md"
+                                             data-toggle="tooltip"
+                                             data-placement="top"
+                                             title="Usuń branżę"
+                                             onclick="RemoveBranch(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id)">
+                                                <i class="fas fa-times text-danger"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             @foreach (var role in Model.ProjectBranches.Branches[i].Roles)
@@ -193,29 +204,6 @@
                                     <div class="col my-auto">@role.Role : @role.Designer (@role.Content)</div>
                                 </div>
                             }
-
-                            <div class="row">
-                                <div class="col my-auto">Projektant:</div>
-                                <div class="col" id="designer-@Model.ProjectBranches.Branches[i].Branch.Id"></div>
-                                <div class="btn btn-lg col-1"
-                                 data-toggle="tooltip"
-                                 data-placement="top"
-                                 title="Wybierz projektanta"
-                                 onclick="SetRole(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id,1)">
-                                    <i class="fas fa-edit text-success"></i>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col my-auto" onclick="">Sprawdzający:</div>
-                                <div class="col" id="checker-@Model.ProjectBranches.Branches[i].Branch.Id"></div>
-                                <div class="btn btn-lg col-1"
-                                 data-toggle="tooltip"
-                                 data-placement="top"
-                                 title="Wybierz sprawdzającego"
-                                 onclick="SetRole(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id,2)">
-                                    <i class="fas fa-edit text-success"></i>
-                                </div>
-                            </div>
                         }
                     </div>
 
@@ -261,15 +249,13 @@
     </script>
 
     <script>
-        function SetRole(projectId, branchId, selector) {
-            console.log(branchId);
+        function EditRoles(projectId, branchId) {
             $.ajax({
                 type: "Get",
-                url: `@Url.Page("Edit","Role")&projectId=`+projectId+`&branchId=`+branchId+`&selector=`+selector,
+                url: `@Url.Page("Edit","TechnicalRoles")&projectId=`+projectId+`&branchId=`+branchId,
                 success: function (data) {
-                    console.log(data);
                     $('#modal-placeholder').html(data);
-                    $('#setRole').modal('show');
+                    $('#technicalRoles').modal('show');
                 }
             })
         }    
@@ -277,8 +263,6 @@
 
     <script>
         function RemoveBranch(projectId, branchId) {
-            console.log(projectId);
-            console.log(branchId);
             $.ajax({
                 type: "Delete",
                 url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${branchId}`,

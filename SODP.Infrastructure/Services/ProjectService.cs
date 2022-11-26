@@ -327,6 +327,27 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
+        public async Task<ServicePageResponse<ProjectBranchRoleDTO>> GetBranchRolesAsync(int id, int branchId)
+        {
+            var serviceResponse = new ServicePageResponse<ProjectBranchRoleDTO>();
+            try 
+            {
+                var projectBranch = await _context.ProjectBranches
+                    .Include(x => x.Roles)
+                    .ThenInclude(x => x.License)
+                    .ThenInclude(x => x.Designer)
+                    .FirstOrDefaultAsync(x => x.Project.Id == id && x.BranchId == branchId);
+                var roles = projectBranch.Roles.ToList();
+                serviceResponse.SetData(_mapper.Map<IList<ProjectBranchRoleDTO>>(projectBranch.Roles));
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse> AddBranchAsync(int id, int branchId)
         {
             var serviceResponse = new ServiceResponse();

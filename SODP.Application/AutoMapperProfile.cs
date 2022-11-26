@@ -29,10 +29,6 @@ namespace SODP.Domain
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles))
                 .PreserveReferences();
 
-            CreateMap<ProjectBranchRole, ProjectBranchRoleDTO>()
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
-                .PreserveReferences();
-
 
             CreateMap<Branch, BranchDTO>()
                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
@@ -42,6 +38,9 @@ namespace SODP.Domain
                .PreserveReferences();
 
 
+            CreateMap<ProjectBranchRole, ProjectBranchRoleDTO>()
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
+                .PreserveReferences();
 
 
             CreateMap<Project, NewProjectDTO>()
@@ -88,7 +87,8 @@ namespace SODP.Domain
                 .PreserveReferences();
 
             CreateMap<License, LicenseDTO>()
-                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s);
+                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
+                .ReverseMap();
 
             CreateMap<NewLicenseDTO, License>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)

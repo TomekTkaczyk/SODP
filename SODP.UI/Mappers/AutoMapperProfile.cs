@@ -25,11 +25,13 @@ namespace SODP.UI.Mappers
 
             CreateMap<BranchDTO, BranchVM>();
 
-
             CreateMap<ProjectBranchDTO, SelectListItem>()
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(x => $"{x.Branch.Name}"))
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(x => $"{x.Branch.Id}"))
                 .PreserveReferences();
+
+            CreateMap<LicenseDTO,LicenseVM>()
+                .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.Designer.ToString()));
         }
     }
 }

@@ -66,6 +66,18 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
+        [HttpGet("{id}/branches/{branchId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> GetBranchRolesesAsync(int id, int branchId)
+        {
+            var serviceResponse = await _projectsService.GetBranchRolesAsync(id, branchId);
+
+            return Ok(serviceResponse);
+        }
+
+
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
