@@ -6,6 +6,7 @@ using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
+using SODP.UI.Services;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace SODP.UI.Pages.Users
     {
         private readonly IWebAPIProvider _apiProvider;
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(logger, mapper)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator)
         {
             ReturnUrl = "/Users";
             _apiProvider = apiProvider;

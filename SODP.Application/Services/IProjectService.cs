@@ -20,7 +20,7 @@ namespace SODP.Application.Services
         Task<ServicePageResponse<ProjectBranchRoleDTO>> GetBranchRolesAsync(int id, int branchId);
         Task<ServiceResponse> AddBranchAsync(int id, int branchId);
         Task<ServiceResponse> DeleteBranchAsync(int id, int branchId);
-        Task<ServiceResponse> SetBranchTechnicalRoleAsync(int id, int branchId, TechnicalRole role, int licenseId);
+        Task<ServiceResponse> SetBranchTechnicalRoleAsync(TechnicalRoleDTO technicalRole);
 
 
 

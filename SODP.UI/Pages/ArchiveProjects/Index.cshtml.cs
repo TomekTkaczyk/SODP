@@ -7,6 +7,7 @@ using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
+using SODP.UI.Services;
 using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace SODP.UI.Pages.ArchiveProjects
     [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(apiProvider, logger, mapper)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/ArchiveProjects";
             _endpoint = "archive-projects";

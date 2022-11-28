@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Pages\ActiveProjects\ViewModels\_NewProjectPartialView.cshtml" />
     <Content Remove="Pages\ArchiveProjects\_ProjectPartialView.cshtml" />
     <Content Remove="stages.json" />
   </ItemGroup>

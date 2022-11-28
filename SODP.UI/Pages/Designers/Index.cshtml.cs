@@ -7,6 +7,7 @@ using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Shared;
+using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -22,7 +23,7 @@ namespace SODP.UI.Pages.Designers
         const string licensesPartialViewName = "_LicensesPartialView";
         const string newLicensePartialViewName = "_NewLicensePartialView";
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper) : base(apiProvider, logger, mapper)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/Designers";
             _endpoint = "designers";

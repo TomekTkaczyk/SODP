@@ -9,20 +9,17 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared;
+using SODP.UI.Services;
 using SODP.UI.ViewModels;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ArchiveProjects
 {
     [Authorize(Roles = "Administrator,ProjectManager,User")]
-    public class EditModel : SODPPageModel
+    public class EditModel : ProjectEditPageModel
     {
-        private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper) : base(logger, mapper)
-        {
-            _apiProvider = apiProvider;
-        }
+        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
 
         public ProjectVM Project { get; set; }
 

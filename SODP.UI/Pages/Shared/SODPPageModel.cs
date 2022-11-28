@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.Response;
+using SODP.UI.Services;
 
 namespace SODP.UI.Pages.Shared
 {
@@ -11,15 +12,15 @@ namespace SODP.UI.Pages.Shared
     {
         protected readonly ILogger<SODPPageModel> _logger;
         protected readonly IMapper _mapper;
-
-        protected string PartialViewName { get; set; }
+        public readonly ITranslator _translator;
 
         public string ReturnUrl { get; protected set; }
 
-        protected SODPPageModel(ILogger<SODPPageModel> logger, IMapper mapper)
+        protected SODPPageModel(ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator)
         {
             _logger = logger;
             _mapper = mapper;
+            _translator = translator;
         }
 
         protected virtual void SetModelErrors(ServiceResponse response)

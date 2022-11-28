@@ -7,7 +7,7 @@ using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Licenses.ViewModels;
 using SODP.UI.Pages.Shared;
-using SODP.UI.ViewModels;
+using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -23,7 +23,7 @@ namespace SODP.UI.Pages.Licenses
     {
         private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(logger, mapper)
+        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator)
         {
             _apiProvider = apiProvider;
             var prev = Request;
@@ -65,7 +65,8 @@ namespace SODP.UI.Pages.Licenses
                 return Page();
             }
 
-            return Redirect("/Designers");
+            return Redirect($"/Designers/index?handler=LicensesPartial&id={License.DesignerId}");
+
         }
 
         public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId, string content)

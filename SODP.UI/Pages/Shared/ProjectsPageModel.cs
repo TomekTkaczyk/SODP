@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
+using SODP.UI.Services;
 using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace SODP.UI.Pages.Shared
 
         public ProjectsListVM ProjectsViewModel { get; set; }
 
-        public ProjectsPageModel(IWebAPIProvider apiProvider, ILogger<ProjectsPageModel> logger, IMapper mapper) : base(apiProvider, logger, mapper) { }
+        public ProjectsPageModel(IWebAPIProvider apiProvider, ILogger<ProjectsPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {

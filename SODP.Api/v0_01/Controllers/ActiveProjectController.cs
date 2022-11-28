@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Services;
+using SODP.Model;
 using SODP.Model.Enums;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
@@ -111,38 +112,18 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(serviceResponse);
         }
 
-
-        [HttpPatch("{id}/branches/{branchId}/designer/{licenseId}")]
+        [HttpPatch("{id}/branch/{branchId}/role/{role}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> SetBranchDesignerAsync(int id, int branchId, int licenseId)
+        public async Task<IActionResult> SetBranchRoleAsync(int id, int branchId, TechnicalRole role, [FromBody] TechnicalRoleDTO technicalRole)
         {
-            var serviceResponse = await _projectsService.SetBranchTechnicalRoleAsync(id, branchId, TechnicalRole.Designer, licenseId);
+            if (id != technicalRole.ProjectId || branchId != technicalRole.BranchId || role != technicalRole.Role)
+            {
+                return BadRequest();
+            }
 
-            return Ok(serviceResponse);
-        }
-
-
-        [HttpPatch("{id}/branches/{branchId}/checker/{licenseId}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> SetBranchCheckerAsync(int id, int branchId, int licenseId)
-        {
-            var serviceResponse = await _projectsService.SetBranchTechnicalRoleAsync(id, branchId, TechnicalRole.Checker, licenseId);
-
-            return Ok(serviceResponse);
-        }
-
-
-        [HttpPatch("{id}/branches/{branchId}/role/{role}/{licenseId}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> SetBranchRoleAsync(int id, int branchId, TechnicalRole role, int licenseId)
-        {
-            var serviceResponse = await _projectsService.SetBranchTechnicalRoleAsync(id, branchId, role, licenseId);
+            var serviceResponse = await _projectsService.SetBranchTechnicalRoleAsync(technicalRole);
 
             return Ok(serviceResponse);
         }

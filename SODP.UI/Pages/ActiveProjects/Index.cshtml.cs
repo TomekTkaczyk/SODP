@@ -10,6 +10,7 @@ using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared;
+using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -22,7 +23,7 @@ namespace SODP.UI.Pages.ActiveProjects
     {
         const string newProjectPartialViewName = "_NewProjectPartialView";
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(apiProvider, logger, mapper)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/ActiveProjects";
             _endpoint = "active-projects";

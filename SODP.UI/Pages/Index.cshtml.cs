@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SODP.UI.Pages.Shared;
+using SODP.UI.Services;
 
 namespace SODP.UI.Pages
 {
     public class IndexModel : SODPPageModel
     {
-        public IndexModel(ILogger<SODPPageModel> logger, IMapper mapper) : base(logger, mapper) { } 
+        public IndexModel(ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator) { } 
     }
 }

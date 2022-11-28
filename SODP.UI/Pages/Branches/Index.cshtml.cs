@@ -9,6 +9,7 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Mappers;
 using SODP.UI.Pages.Branches.ViewModels;
 using SODP.UI.Pages.Shared;
+using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -25,7 +26,7 @@ namespace SODP.UI.Pages.Branches
         
         private readonly IWebAPIProvider _apiProvider;
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(logger, mapper)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator)
         {
             ReturnUrl = "/Branches";
             _apiProvider = apiProvider;

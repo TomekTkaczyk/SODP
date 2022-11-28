@@ -39,7 +39,7 @@
 
             <div class="form-group row">
                 <div class="col-12">
-                    <input asp-for="Project.Title" class="form-control" placeholder="Nazwa" readonly="@(Model.Project.Status.Equals(ProjectStatus.Active) ? false : true)" />
+                    <input asp-for="Project.Name" class="form-control" placeholder="Nazwa" readonly="true" />
                     <span asp-validation-for="Project.Name" style="font-size:14px" class="text-danger"></span>
                 </div>
             </div>

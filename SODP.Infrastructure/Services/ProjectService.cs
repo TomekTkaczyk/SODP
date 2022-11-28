@@ -406,23 +406,23 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse> SetBranchTechnicalRoleAsync(int id, int branchId, TechnicalRole role, int licenseId)
+        public async Task<ServiceResponse> SetBranchTechnicalRoleAsync(TechnicalRoleDTO technicalRole)
         {
             var serviceResponse = new ServiceResponse();
             try
             {
                 var projectBranch = await _context.ProjectBranches
                     .Include(x => x.Roles)
-                    .FirstOrDefaultAsync(x => x.ProjectId == id && x.BranchId == branchId);
+                    .FirstOrDefaultAsync(x => x.ProjectId == technicalRole.ProjectId && x.BranchId == technicalRole.BranchId);
                 if (projectBranch == null)
                 {
                     serviceResponse.SetError("Branża projektu nie odnaleziona", 400);
                     return serviceResponse;
                 }
 
-                var branchRole = projectBranch.Roles.FirstOrDefault(x => x.Role == role);
+                var branchRole = projectBranch.Roles.FirstOrDefault(x => x.Role == technicalRole.Role);
 
-                if (licenseId == 0)
+                if (technicalRole.LicenseId == 0)
                 {
                     if(branchRole != null)
                     {
@@ -433,7 +433,7 @@ namespace SODP.Application.Services
                 {
                     var license = await _context.Licenses
                         .Include(x => x.Branches)
-                        .FirstOrDefaultAsync(x => x.Id == licenseId);
+                        .FirstOrDefaultAsync(x => x.Id == technicalRole.LicenseId);
 
                     if (license == null)
                     {
@@ -441,7 +441,7 @@ namespace SODP.Application.Services
                         return serviceResponse;
                     }
 
-                    if (license.Branches == null || license.Branches.FirstOrDefault(x => x.BranchId == branchId) == null)
+                    if (license.Branches == null || license.Branches.FirstOrDefault(x => x.BranchId == technicalRole.BranchId) == null)
                     {
                         serviceResponse.SetError($"Uprawnienia nie obejmują branży", 400);
                         return serviceResponse;
@@ -449,7 +449,7 @@ namespace SODP.Application.Services
 
                     if(branchRole == null)
                     {
-                        projectBranch.Roles.Add(new ProjectBranchRole() { License = license, Role = role });
+                        projectBranch.Roles.Add(new ProjectBranchRole() { License = license, Role = technicalRole.Role });
                     } 
                     else
                     {

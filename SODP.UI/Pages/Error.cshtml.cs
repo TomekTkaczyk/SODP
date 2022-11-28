@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.UI.Pages.Shared;
+using SODP.UI.Services;
 using System.Diagnostics;
 
 namespace SODP.UI.Pages
@@ -13,7 +14,7 @@ namespace SODP.UI.Pages
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-        public ErrorModel(ILogger<ErrorModel> logger, IMapper mapper) : base(logger, mapper) { }
+        public ErrorModel(ILogger<ErrorModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator) { }
 
         public void OnGet()
         {

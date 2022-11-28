@@ -1,6 +1,7 @@
 ﻿function initModalPlaceHolder(returnUrl) {
     var placeholderElement = $('#modal-placeholder');
     placeholderElement.on('click', '[data-save="modal"]', function (event) {
+        console.log(event);
         event.preventDefault();
         var form = $(this).parents('.modal').find('form');
         var actionUrl = form.attr('action');

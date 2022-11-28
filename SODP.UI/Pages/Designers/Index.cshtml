@@ -1,10 +1,10 @@
 ﻿@page
+@model IndexModel
+
 @using Microsoft.AspNetCore.Identity
 @using SODP.Model
 @using System.Text.Json;
 @using System.Text.Json.Serialization;
-
-@model IndexModel
 
 @{
     ViewData["Title"] = "Projektanci";
@@ -126,7 +126,6 @@ else
     <script src="~/js/designersList.js"></script>
     <script>
         function EditDesigner(id) {
-            console.log(id);
             $.ajax({
                 type: "Get",
                 url: `@Url.Page("Index","EditDesigner")&Id=` + id,
@@ -138,6 +137,7 @@ else
             })
         }
     </script>
+
     <script>
         function handleChange(id, checked) {
 

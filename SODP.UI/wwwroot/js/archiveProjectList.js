@@ -1,9 +1,9 @@
 ﻿// var myTable;
-$(document).ready(function () {
-    $('[data-toggle="tooltip"]').tooltip()
+//$(document).ready(function () {
+//    $('[data-toggle="tooltip"]').tooltip()
 
-    // InitProjectDataTable();
-});
+//    // InitProjectDataTable();
+//});
 
 //function InitProjectDataTable() {
 //    $('#ProjectDataTable').DataTable({
@@ -28,11 +28,11 @@ $(document).ready(function () {
 //    });
 //}
 
-function Reload() {
-    var container = document.getElementById("ProjectTable");
-    var content = container.innerHTML;
-    container.innerHTML = content;
+//function Reload() {
+//    var container = document.getElementById("ProjectTable");
+//    var content = container.innerHTML;
+//    container.innerHTML = content;
 
-    // this line is to watch the result in console , you can remove it later	
-    // window.location.replace("/Projects");
-}
+//    // this line is to watch the result in console , you can remove it later	
+//    // window.location.replace("/Projects");
+//}

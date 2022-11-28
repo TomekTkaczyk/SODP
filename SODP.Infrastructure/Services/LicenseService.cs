@@ -248,8 +248,9 @@ namespace SODP.Infrastructure.Services
             {
                 var licenses = await _context.Licenses
                     .Include(x => x.Branches)
-                    .ThenInclude(y => y.Branch)
+                    .ThenInclude(x => x.Branch)
                     .Include(x => x.Designer)
+                    .Where(x => x.Branches.FirstOrDefault(y => y.BranchId == branchId) != null)
                     .ToListAsync();
                 serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(licenses));
             }

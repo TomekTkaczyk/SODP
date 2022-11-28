@@ -5,13 +5,15 @@ using System.Text;
 
 namespace SODP.Shared.DTO
 {
-    public class TechnicalRoleDTO : BaseDTO
+    public class TechnicalRoleDTO
     {
-        public BranchDTO Branch { get; set; }
+        public int ProjectId { get; set; }
+
+        public int BranchId { get; set; }
 
         public TechnicalRole Role { get; set; }
 
-        public LicenseDTO License { get; set; }
+        public int LicenseId { get; set; }
 
     }
 }

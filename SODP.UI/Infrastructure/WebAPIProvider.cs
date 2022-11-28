@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -42,6 +41,15 @@ namespace SODP.UI.Infrastructure
         public async Task<HttpResponseMessage> PutAsync(string endPoint, StringContent content)
         {
             var apiResponse = await new HttpClient().PutAsync($"{_httpClient.BaseAddress}{endPoint}", content);
+
+            apiResponse.EnsureSuccessStatusCode();
+
+            return apiResponse;
+        }
+
+        public async Task<HttpResponseMessage> PatchAsync(string endPoint, StringContent content)
+        {
+            var apiResponse = await new HttpClient().PatchAsync($"{_httpClient.BaseAddress}{endPoint}", content);
 
             apiResponse.EnsureSuccessStatusCode();
 

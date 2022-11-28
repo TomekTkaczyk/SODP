@@ -13,6 +13,7 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.Pages.Stages.ViewModels;
+using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -31,7 +32,7 @@ namespace SODP.UI.Pages.Stages
 
         public StagesListVM StagesViewModel { get; set; }
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper) : base(apiProvider, logger, mapper)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/Stages";
             _endpoint = "stages";

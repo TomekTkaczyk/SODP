@@ -12,6 +12,7 @@ using SODP.Infrastructure;
 using SODP.Model;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
+using SODP.UI.Services;
 using System;
 using System.IO;
 using System.Linq;
@@ -80,6 +81,8 @@ namespace SODP.UI
                     .AsImplementedInterfaces()
                     .WithTransientLifetime();
             });
+
+            services.AddTransient<ITranslator, Translator>();
 
             services.AddScoped<IWebAPIProvider, WebAPIProvider>();
 

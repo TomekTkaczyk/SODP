@@ -34,6 +34,11 @@ namespace SODP.UI.Pages.ActiveProjects.ViewModels
         public string Description { get; set; }
         
         public ProjectStatus Status { get; set; }
+        
+        public BranchesVM ProjectBranches { get; set; }
+        
+        public AvailableBranchesVM AvailableBranches { get; set; }
+
 
     }
 }

@@ -17,6 +17,7 @@
     </div>
 </div>
 
+
 <div class="container p-0 m-0">
     <form method="post">
         <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
@@ -91,7 +92,7 @@
                         </div>
                         <div>
                             Branże:
-                            @foreach (var item in Model.ProjectBranches.Branches)
+                            @foreach (var item in Model.Project.ProjectBranches.Branches)
                             {
                                 <div class ="col font-weight-bold">
                                     <span class="font-weight-bold" style="white-space: pre-line">@item.Branch.Name</span>
@@ -172,50 +173,52 @@
                 <div class="tab-pane fade" id="branch" role="tabpanel" aria-labelledby="branch-tab">
                     <br />
                     <div class="form-group">
-                        @for (int i = 0; i < Model.ProjectBranches.Branches.Count; i++)
+                        @for (int i = 0; i < Model.Project.ProjectBranches.Branches.Count; i++)
                         {
-                            <input asp-for="ProjectBranches.Branches[i].Branch.Id" type="hidden" value="Project.ApplyBranches[i].Value">
-                            <input asp-for="ProjectBranches.Branches[i].Branch.Name" type="hidden" value="Project.ApplyBranches[i].Text">
+                            <input asp-for="Project.ProjectBranches.Branches[i].Branch.Id" type="hidden" value="Project.ApplyBranches[i].Value">
+                            <input asp-for="Project.ProjectBranches.Branches[i].Branch.Name" type="hidden" value="Project.ApplyBranches[i].Text">
                             <div class="row">
-                                <div class="col my-auto">@Model.ProjectBranches.Branches[i].Branch.Name</div>
+                                <div class="col my-auto">
+                                    <span class="font-weight-bold">@Model.Project.ProjectBranches.Branches[i].Branch.Name</span>
+                                </div>
                                 <div class="col-1 p-0 m-0">
                                     <div class="row">
                                         <div class="btn btn-md"
                                              data-toggle="tooltip"
                                              data-placement="top"
                                              title="Ustaw funkcje techniczne"
-                                             onclick="EditRoles(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id)">
+                                             onclick="EditRoles(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
                                                 <i class="fas fa-edit text-success"></i>
                                         </div>
                                         <div class="btn btn-md"
                                              data-toggle="tooltip"
                                              data-placement="top"
                                              title="Usuń branżę"
-                                             onclick="RemoveBranch(@Model.Project.Id,@Model.ProjectBranches.Branches[i].Branch.Id)">
+                                             onclick="RemoveBranch(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
                                                 <i class="fas fa-times text-danger"></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            @foreach (var role in Model.ProjectBranches.Branches[i].Roles)
+                            @foreach (var role in Model.Project.ProjectBranches.Branches[i].Roles)
                             {
                                 <div class="row">
-                                    <div class="col my-auto">@role.Role : @role.Designer (@role.Content)</div>
+                                    <div class="col my-auto">@Model._translator.Translate(role.Role, Services.Languages.Pl) : @role.Designer (@role.Content)</div>
                                 </div>
                             }
                         }
                     </div>
 
-                    @if (Model.AvailableBranches.Items.Count > 0)
+                    @if (Model.Project.AvailableBranches.Items.Count > 0)
                     {
                         <div class="form-group">
                             <div class="row align-middle">
                                 <div class="col pt-1 pb-1">
-                                    @Html.DropDownListFor(model => model.AvailableBranches.SelectedId, @Model.AvailableBranches.Items, new { @class = "form-control" })
-                                    <span asp-validation-for="AvailableBranches.SelectedId" style="font-size:14px" class="text-danger"></span>
+                                    @Html.DropDownListFor(model => model.Project.AvailableBranches.SelectedId, @Model.Project.AvailableBranches.Items, new { @class = "form-control" })
+                                    <span asp-validation-for="Project.AvailableBranches.SelectedId" style="font-size:14px" class="text-danger"></span>
                                 </div>
-                                <div class="btn btn-lg col-1" onclick="AddBranch(@Model.Project.Id, @Model.AvailableBranches.SelectedId)">
+                                <div class="btn btn-lg col-1" onclick="AddBranch(@Model.Project.Id, @Model.Project.AvailableBranches.SelectedId)">
                                     <i class="fas fa-plus text-success"></i>
                                 </div>
                             </div>
@@ -230,6 +233,9 @@
 
 
 @section Scripts{
+    <script src="~/js/delete.js"></script>
+    <script src="~/js/initModalPlaceholder.js"></script>
+
     <partial name="/Pages/Shared/_ValidationScriptsPartial.cshtml" />
     <script>
         $('#myTab a').click(function (e) {
@@ -252,7 +258,7 @@
         function EditRoles(projectId, branchId) {
             $.ajax({
                 type: "Get",
-                url: `@Url.Page("Edit","TechnicalRoles")&projectId=`+projectId+`&branchId=`+branchId,
+                url: `@Url.Page("Edit","TechnicalRoles")&projectId=${projectId}&branchId=${branchId}`,
                 success: function (data) {
                     $('#modal-placeholder').html(data);
                     $('#technicalRoles').modal('show');
@@ -279,7 +285,7 @@
 
     <script>
         function AddBranch(projectId) {
-            var selectedId = $("#AvailableBranches_SelectedId").val();
+            var selectedId = $("#Project_AvailableBranches_SelectedId").val();
             $.ajax({
                 type: "Put",
                 url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${selectedId}`,
@@ -288,10 +294,49 @@
                         $('input:hidden[name="__RequestVerificationToken"]').val());
                 },
                 success: function (data) {
-                    console.log('success');
                     window.location.reload(true);
                 }
             })
         }
+    </script>
+
+    <script>
+        function initModalPlaceHolder(returnUrl) {
+            var placeholderElement = $('#modal-placeholder');
+            placeholderElement.on('click', '[data-save="modal"]', function (event) {
+                event.preventDefault();
+                var form = $(this).parents('.modal').find('form');
+                var actionUrl = form.attr('action');
+                var dataToSend = form.serialize();
+                $.post(actionUrl, dataToSend).done(function (data) {
+                    var newBody = $('.modal-body', data);
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+                    var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
+                    var url = $(this).data('url');
+                    if (isValid) {
+                        placeholderElement.find('.modal').modal('hide');
+                        window.location.reload(true);
+                    }
+                });
+            });
+        }
+    </script>
+
+    <script>
+          $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $('button[data-toggle="ajax-modal"]').click(function (event) {
+                var url = $(this).data('url');
+                console.log(url);
+                console.log(event);
+                $.get(url).done(function (data) {
+                    var placeholderElement = $('#modal-placeholder');
+                    placeholderElement.html(data);
+                    placeholderElement.find('.modal').modal('show');
+                });
+            });
+            initModalPlaceHolder(window.location.href);
+        });
     </script>
 }
