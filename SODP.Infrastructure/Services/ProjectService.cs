@@ -47,11 +47,6 @@ namespace SODP.Application.Services
             return this;
         }
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync()
-        {
-            return await GetAllAsync(1, 0);
-        }   
-
         public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var serviceResponse = new ServicePageResponse<ProjectDTO>();
@@ -221,6 +216,7 @@ namespace SODP.Application.Services
                 oldProject.LocationUnit = project.LocationUnit;
                 oldProject.BuildingCategory = project.BuildingCategory;
                 oldProject.Investor = project.Investor;
+                oldProject.BuildingPermit = project.BuildingPermit;
                 oldProject.Description = project.Description;
                 oldProject.ModifyTimeStamp = DateTime.UtcNow;
                 _context.Projects.Update(oldProject);

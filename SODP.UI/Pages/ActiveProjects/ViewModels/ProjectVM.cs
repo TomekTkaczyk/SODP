@@ -30,6 +30,8 @@ namespace SODP.UI.Pages.ActiveProjects.ViewModels
         public string BuildingCategory { get; set; }
 
         public string Investor { get; set; }
+
+        public string BuildingPermit { get; set; }
         
         public string Description { get; set; }
         

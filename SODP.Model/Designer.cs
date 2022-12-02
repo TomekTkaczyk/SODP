@@ -1,7 +1,5 @@
 ﻿using SODP.Model.Extensions;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SODP.Model
 {
@@ -20,7 +18,6 @@ namespace SODP.Model
 
         public void Normalize()
         {
-            Title = (Title == null) ? "" : Title;
             Firstname = Firstname.CapitalizeFirstLetter();
             Lastname = Lastname.CapitalizeFirstLetter();
         }

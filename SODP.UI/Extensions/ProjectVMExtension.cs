@@ -41,6 +41,7 @@ namespace SODP.UI.Extensions
                 LocationUnit = project.LocationUnit,
                 BuildingCategory = project.BuildingCategory,
                 Investor = project.Investor,
+                BuildingPermit = project.BuildingPermit,
                 Description = project.Description,
                 Status = project.Status, 
                 Stage = new StageDTO

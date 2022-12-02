@@ -122,13 +122,12 @@ else
 
 @section Scripts{
     <script src="~/js/delete.js"></script>
-    <script src="~/js/initModalPlaceholder.js"></script>
-    <script src="~/js/designersList.js"></script>
+    <script src="~/js/ModalPlaceholder.js"></script>
     <script>
         function EditDesigner(id) {
             $.ajax({
                 type: "Get",
-                url: `@Url.Page("Index","EditDesigner")&Id=` + id,
+                url: `@Url.Page("Index","EditDesigner")&Id=`+id,
                 success: function (data) {
                     console.log(data);
                     $('#modal-placeholder').html(data);
@@ -136,31 +135,7 @@ else
                 }
             })
         }
-    </script>
 
-    <script>
-        function handleChange(id, checked) {
-
-            let c = checked ? 1 : 0;
-            let url = `/api/v0_01/designers/${id}/status/${c}`;
-
-            $.ajax({
-                type: "PUT",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                data: JSON.stringify(c),
-                success: function (response) {
-                },
-                error: function (jqXHR, exception) {
-                    console.log(jqXHR);
-                    console.log(exception);
-                }
-            });
-        }
-    </script>
-
-    <script>
         function NewLicense(designerId, licenseId) {
             $.ajax({
                 type: "Get",
@@ -172,12 +147,27 @@ else
                 }
             })
         }
-    </script>
 
-    <script>
+        function handleChange(id, checked) {
+            let c = checked ? 1 : 0;
+            $.ajax({
+                type: "PUT",
+                url: `/api/v0_01/designers/${id}/status/${c}`,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                data: JSON.stringify(c),
+                success: function (response) {
+                },
+                error: function (jqXHR, exception) {
+                    console.log(jqXHR);
+                    console.log(exception);
+                }
+            });
+        }
+
         function accordionCollapse(id) {
-            var additionalElements = document.getElementsByName('additionalBtn');
-            var inputList = Array.prototype.slice.call(additionalElements);
+            let additionalElements = document.getElementsByName('additionalBtn');
+            let inputList = Array.prototype.slice.call(additionalElements);
             for (let i = 0; i < inputList.length; i++) {
                 inputList[i].hidden = true;
             }
@@ -189,5 +179,11 @@ else
                 $(`#license-${id}`).load(`/Designers/index?handler=LicensesPartial&id=${id}`);
             }
         }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            modalPlaceHolder('/Designers');
+        });
     </script>
 }

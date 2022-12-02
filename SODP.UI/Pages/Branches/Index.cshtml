@@ -116,8 +116,7 @@ else
 
 @section Scripts{
     <script src="~/js/delete.js"></script>
-    <script src="~/js/initModalPlaceholder.js"></script>
-    <script src="~/js/branchesList.js"></script>
+    <script src="~/js/ModalPlaceholder.js"></script>
 
     <script>
         function EditBranch(id) {
@@ -130,17 +129,13 @@ else
                 }
             })
         }
-    </script>
 
-    <script>
         function handleChange(id, checked) {
-
             let c = checked ? 1 : 0;
-            let url = `/api/v0_01/branches/${id}/${c}`;
 
             $.ajax({
                 type: "PUT",
-                url: url,
+                url: `/api/v0_01/branches/${id}/${c}`,
                 contentType: "application/json; charset=utf-8",
                 dataType: 'json',
                 data: JSON.stringify(c),
@@ -152,21 +147,25 @@ else
                 }
             });
         }
-    </script>
 
-    <script>
         function accordionCollapse(self, id) {
-            var additionalElements = document.getElementsByName('additionalBtn');
-            var inputList = Array.prototype.slice.call(additionalElements);
+            let additionalElements = document.getElementsByName('additionalBtn');
+            let inputList = Array.prototype.slice.call(additionalElements);
             for (let i = 0; i < inputList.length; i++) {
                 inputList[i].hidden = true;
             }
-
             if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
                 document.getElementById(`editBranch-${id}`).hidden = false;
                 document.getElementById(`deleteBranch-${id}`).hidden = false;
                 $(`#designer-${id}`).load(`/Branches/index?handler=PartialDesigners&id=${id}`);
             }
         }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            modalPlaceHolder('/Branches');
+        });
+
     </script>
 }

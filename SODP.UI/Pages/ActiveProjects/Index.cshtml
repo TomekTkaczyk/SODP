@@ -53,21 +53,21 @@
                     @foreach (var item in Model.ProjectsViewModel.Projects)
                     {
                     <tr class="m-0 p-0">
-                        <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
+                            <td onclick='window.location.href="/ActiveProjects/Edit?Id=@item.Id"'
                             class="cell clickable col-1"
                             data-toggle="tooltip"
                             title="Edycja"
                             style="vertical-align:middle">
                             @item.Number
                         </td>
-                        <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
+                            <td onclick='window.location.href="/ActiveProjects/Edit?Id=@item.Id"'
                             class="cell clickable col-1"
                             data-toggle="tooltip"
                             title="Edycja"
                             style="vertical-align:middle">
                             @item.Stage.Sign
                         </td>
-                        <td onclick='Edit("/ActiveProjects/Edit?Id=@item.Id")'
+                            <td onclick='window.location.href="/ActiveProjects/Edit?Id=@item.Id"'
                             class="cell clickable col-9"
                             data-toggle="tooltip"
                             title="Edycja"
@@ -77,7 +77,7 @@
                         <td class="cell text-right">
                             <div class="row">
                                 <div>
-                                    <a onclick='Archive("/api/v0_01/active-projects/@item.Id/archive")'
+                                    <a onclick='Archive("/api/v0_01/projects/@item.Id/archive")'
                                         class='col btn btn-md p-0 m-0 border-2 text-success'
                                         data-toggle="tooltip"
                                         data-placement="top"
@@ -86,7 +86,7 @@
                                     </a>
                                 </div>
                                 <div>
-                                    <a onclick='Delete("/api/v0_01/active-projects/@item.Id")'
+                                    <a onclick='Delete("/api/v0_01/projects/@item.Id")'
                                         class='col btn btn-md p-0 m-0 border-2 text-danger'
                                         data-toggle="tooltip"
                                         data-placement="top"
@@ -132,10 +132,39 @@
 </div>
 
 @section Scripts{
-    <script src="~/js/InitModalPlaceholder.js"></script>
     <script src="~/js/delete.js"></script>
-    <script src="~/js/archive.js"></script>
-    <script src="~/js/edit.js"></script>
-    @*<script src="~/js/submitForm.js"></script>*@
-    <script src="~/js/activeProjectList.js"></script>
+    <script src="~/js/ModalPlaceholder.js"></script>
+    <script>
+        function Archive(url) {
+            swal({
+                title: "Czy jesteś pewien?",
+                text: "Przesunięcie projektu do archiwum.",
+                icon: "warning",
+                buttons: true,
+                danegerMode: true
+            }).then((willArchive) => {
+                if (willArchive) {
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                window.location.reload();
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    })
+                }
+            })
+        }
+    </script>
+    
+    <script>
+        $(document).ready(function () {
+            modalPlaceHolder('/ActiveProjects');
+        });
+    </script>
 }

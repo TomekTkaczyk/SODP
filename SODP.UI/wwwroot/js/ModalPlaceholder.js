@@ -1,7 +1,19 @@
-﻿function initModalPlaceHolder(returnUrl) {
+﻿function modalPlaceHolder(returnUrl) {
+    $('[data-toggle="tooltip"]').tooltip();
+    $('button[data-toggle="ajax-modal"]').click(function (event) {
+        var url = $(this).data('url');
+        $.get(url).done(function (data) {
+            var placeholderElement = $('#modal-placeholder');
+            placeholderElement.html(data);
+            placeholderElement.find('.modal').modal('show');
+        });
+    });
+    initModalPlaceHolder(returnUrl)
+}
+
+function initModalPlaceHolder(returnUrl) {
     var placeholderElement = $('#modal-placeholder');
     placeholderElement.on('click', '[data-save="modal"]', function (event) {
-        console.log(event);
         event.preventDefault();
         var form = $(this).parents('.modal').find('form');
         var actionUrl = form.attr('action');

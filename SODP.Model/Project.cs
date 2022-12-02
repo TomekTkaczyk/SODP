@@ -42,6 +42,7 @@ namespace SODP.Model
         public string LocationUnit { get; set; }     // Location record unit
         public string BuildingCategory { get; set; }  
         public string Investor { get; set; }
+        public string BuildingPermit { get; set; }
         public string Description { get; set; }     
         public ProjectStatus Status { get; set; }
         public ICollection<ProjectBranch> Branches { get; set; }

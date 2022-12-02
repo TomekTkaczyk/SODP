@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
+using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
@@ -14,18 +15,18 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Shared
 {
-    public class ProjectsPageModel : ListPageModel
+    public abstract class ProjectsPageModel : ListPageModel
     {
 
         public ProjectsListVM ProjectsViewModel { get; set; }
 
-        public ProjectsPageModel(IWebAPIProvider apiProvider, ILogger<ProjectsPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
+        protected ProjectsPageModel(IWebAPIProvider apiProvider, ILogger<ProjectsPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
 
-        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
+        protected async Task<IActionResult> OnGetAsync(ProjectStatus status, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var url = new StringBuilder();
             url.Append(ReturnUrl);
-            url.Append("?currentPage=:&pageSize=");
+            url.Append($"?status={status}&currentPage=:&pageSize=");
             pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
             url.Append(pageSize.ToString());
 
@@ -36,7 +37,7 @@ namespace SODP.UI.Pages.Shared
 
             ProjectsViewModel = new ProjectsListVM
             {
-                Projects = await GetProjectsAsync(currentPage, pageSize, searchString)
+                Projects = await GetProjectsAsync(status, currentPage, pageSize, searchString)
             };
 
             SearchString = searchString;
@@ -46,9 +47,9 @@ namespace SODP.UI.Pages.Shared
             return Page();
         }
 
-        protected async Task<IList<ProjectDTO>> GetProjectsAsync(int currentPage, int pageSize, string searchString)
+        private async Task<IList<ProjectDTO>> GetProjectsAsync(ProjectStatus status, int currentPage, int pageSize, string searchString)
         {
-            var url = $"{_endpoint}?currentPage={currentPage}&pageSize={pageSize}&searchString={searchString}";
+            var url = $"{_endpoint}?status={status}&currentPage={currentPage}&pageSize={pageSize}&searchString={searchString}";
             var apiResponse = await _apiProvider.GetAsync(url);
             if (apiResponse.IsSuccessStatusCode)
             {

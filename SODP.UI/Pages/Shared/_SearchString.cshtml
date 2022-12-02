@@ -10,7 +10,7 @@
                     Rozmiar strony
                 </div>
                 <div class="col">
-                    @Html.DropDownListFor(model => model.PageSize, @Model.PageSizeList, null, new { @class = "form-control", @id = "pageSize", @onchange = "SubmitForm();"})
+                    @Html.DropDownListFor(model => model.PageSize, @Model.PageSizeList, null, new { @class = "form-control", @id = "pageSize", @onchange = "$('form').submit();"})
                 </div>
             </div>
         </div>

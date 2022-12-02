@@ -23,7 +23,7 @@ namespace SODP.UI.Pages.Shared
 
         protected virtual async Task<ProjectVM> GetProjectAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"active-projects/{id}/branches");
+            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/branches");
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
             if (response.Success)

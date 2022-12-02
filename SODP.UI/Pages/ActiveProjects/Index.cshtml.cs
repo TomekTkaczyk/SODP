@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
+using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
@@ -26,7 +27,12 @@ namespace SODP.UI.Pages.ActiveProjects
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/ActiveProjects";
-            _endpoint = "active-projects";
+            _endpoint = "projects";
+        }
+
+        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
+        {
+            return await base.OnGetAsync(ProjectStatus.Active, currentPage, pageSize, searchString);
         }
 
         public async Task<IActionResult> OnGetNewProjectAsync()

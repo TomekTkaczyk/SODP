@@ -40,21 +40,21 @@
                     @foreach (var item in Model.ProjectsViewModel.Projects)
                     {
                     <tr class="m-0 p-0">
-                        <td onclick='Edit("/ArchiveProjects/Edit?Id=@item.Id")'
+                            <td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
                             class="cell clickable col-1"
                             data-toggle="tooltip"
                             title="Edycja"
                             style="vertical-align:middle">
                             @item.Number
                         </td>
-                        <td onclick='Edit("/ArchiveProjects/Edit?Id=@item.Id")'
+                            <td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
                             class="cell clickable col-1"
                             data-toggle="tooltip"
                             title="Edycja"
                             style="vertical-align:middle">
                             @item.Stage.Sign
                         </td>
-                        <td onclick='Edit("/ArchiveProjects/Edit?Id=@item.Id")'
+                            <td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
                             class="cell clickable col-9"
                             data-toggle="tooltip"
                             title="Edycja"
@@ -64,7 +64,7 @@
                         <td class="cell text-right">
                             <div class="row">
                                 <div>
-                                    <a onclick='Restore("/api/v0_01/archive-projects/@item.Id/restore")'
+                                    <a onclick='Restore("/api/v0_01/projects/@item.Id/restore")'
                                         class='btn btn-md m-0 border-0 p-1 text-success'
                                         data-toggle="tooltip"
                                         data-placement="top"
@@ -108,8 +108,31 @@
 </div>
 
 @section Scripts{
-    <script src="~/js/edit.js"></script>
-    <script src="~/js/restore.js"></script>
-    <script src="~/js/submitForm.js"></script>
-    <script src="~/js/archiveProjectList.js"></script>
+    <script>
+        function Restore(url) {
+            swal({
+                title: "Czy jesteś pewien?",
+                text: "Przywrócenie projektu do aktywnych.",
+                icon: "warning",
+                buttons: true,
+                danegerMode: true
+            }).then((willRestore) => {
+                if (willRestore) {
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                window.location.reload();
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    })
+                }
+            })
+        }
+    </script>
 }

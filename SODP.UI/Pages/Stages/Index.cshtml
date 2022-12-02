@@ -125,9 +125,7 @@
 
 @section Scripts{
     <script src="~/js/delete.js"></script>
-    <script src="~/js/submitForm.js"></script>
-    <script src="~/js/initModalPlaceholder.js"></script>
-    <script src="~/js/stagesList.js"></script>
+    <script src="~/js/ModalPlaceholder.js"></script>
 
     <script>
         function EditStage(id) {
@@ -140,9 +138,7 @@
                 }
             })
         }
-    </script>
 
-    <script>
         function DeleteStage(id) {
             $.ajax({
                 type: "GET",
@@ -153,9 +149,7 @@
                 }
             })
         }
-    </script>
 
-    <script>
         function DeleteStage1(url) {
             swal({
                 title: "Czy jesteś pewien?",
@@ -182,9 +176,7 @@
                 }
             })
         }
-    </script>
 
-    <script>
         function handleChange(id, checked) {
 
             let c = checked ? 1 : 0;
@@ -204,6 +196,12 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            modalPlaceHolder('/Designers');
+        });
     </script>
 
 }

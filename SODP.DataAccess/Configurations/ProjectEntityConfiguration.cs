@@ -20,25 +20,30 @@ namespace SODP.DataAccess.Configurations
 
             builder.Property(p => p.Title)
                 .HasColumnType("nvarchar(256)")
-                .IsRequired();
+                .HasDefaultValue("");
 
             builder.Property(p => p.Address)
                 .HasColumnType("nvarchar(256)")
-                .IsRequired();
+                .HasDefaultValue("");
 
             builder.Property(p => p.LocationUnit)
                 .HasColumnType("nvarchar(256)")
-                .IsRequired();
+                .HasDefaultValue("");
 
             builder.Property(p => p.BuildingCategory)
                 .HasColumnType("nvarchar(256)")
-                .IsRequired();
+                .HasDefaultValue("");
 
             builder.Property(p => p.Investor)
                 .HasColumnType("nvarchar(256)")
-                .IsRequired();
+                .HasDefaultValue("");
+
+            builder.Property(p => p.BuildingPermit)
+                .HasColumnType("nvarchar(256)")
+                .HasDefaultValue("");
 
             builder.Property(p => p.Description)
+                .HasDefaultValue("")
                 .HasColumnType("longtext");
 
             builder.HasIndex(p => new { p.Number, p.StageId })
@@ -54,19 +59,6 @@ namespace SODP.DataAccess.Configurations
                 .WithOne(y => y.Project)
                 .HasForeignKey(z => z.ProjectId)
                 .HasConstraintName("FK_Project");
-
-            //builder.HasOne(x => x.stage)
-            //    .withmany()
-            //    .hasforeignkey(x => x.stageid)
-            //    .hasconstraintname("fk_project_stage")
-            //    .ondelete(deletebehavior.restrict);
-
-            //builder.HasMany(x => x.Branches)
-            //    .WithOne(x => x.Project)
-            //    .HasForeignKey(x => x.ProjectId)
-            //    .HasConstraintName("FK_Project")
-            //    .OnDelete(DeleteBehavior.Restrict);
-
         }
     }
 }

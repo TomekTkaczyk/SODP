@@ -20,17 +20,6 @@ namespace SODP.DataAccess.Configurations
                 .HasName("IX_User");
 
             builder.ToTable("Tokens");
-
-            //builder.HasOne("SODP.Model.User", "User")
-            //    .WithMany()
-            //    .HasForeignKey("UserId")
-            //    .HasConstraintName("FK_User")
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //builder.HasOne("WebSODP.Model.User", null)
-            //    .WithMany("Tokens")
-            //    .HasForeignKey("UserId")
-            //    .HasConstraintName("FK_User");
         }
     }
 }

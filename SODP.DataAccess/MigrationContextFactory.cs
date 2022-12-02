@@ -15,7 +15,7 @@ namespace SODP.DataAccess
         public SODPDBContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<SODPDBContext>();
-            optionsBuilder.UseMySql("Server=localhost;Database=SODP;Uid=sodpdbuser;=sodpdbpassword;", 
+            optionsBuilder.UseMySql("Server=localhost;Database=SODP;Uid=sodpdbuser;Pwd=sodpdbpassword;", 
                 builder => builder.ServerVersion(new ServerVersion(new Version(10,4,6),ServerType.MariaDb)));
 
             return new SODPDBContext(optionsBuilder.Options, new DateTimeService());

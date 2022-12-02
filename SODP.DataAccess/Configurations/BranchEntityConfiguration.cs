@@ -29,12 +29,6 @@ namespace SODP.DataAccess.Configurations
                 .HasName("IX_ORDER");
 
             builder.ToTable("Branches");
-
-            //builder.HasMany(x => x.Licenses)
-            //    .WithOne(x => x.Branch)
-            //    .HasForeignKey(x => x.BranchId)
-            //    .HasConstraintName("FK_Branch_License")
-            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

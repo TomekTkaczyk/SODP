@@ -71,46 +71,6 @@ namespace SODP.DataAccess.Configurations
                 .HasName("IX_NormalizedEmail");
 
             builder.ToTable("Users");
-
-            // The relationships between User and other entity types
-            // Note that these relationships are configured with no navigation properties
-
-            // Each User can have many UserClaims
-            //builder.HasMany<IdentityUserClaim<int>>()
-            //    .WithOne()
-            //    .HasForeignKey(uc => uc.UserId)
-            //    .IsRequired();
-
-            // Each User can have many UserLogins
-            //builder.HasMany</*IdentityUserLogin*/<int>>()
-            //    .WithOne()
-            //    .HasForeignKey(ul => ul.UserId)
-            //    .IsRequired();
-
-            // Each User can have many UserTokens
-            //builder.HasMany<IdentityUserToken<int>>()
-            //    .WithOne()
-            //    .HasForeignKey(ut => ut.UserId)
-            //    .IsRequired();
-
-            // Each User can have many entries in the UserRole join table
-            //builder.HasMany<Role>()
-            //    .WithOne()
-            //    .HasForeignKey(ur => ur.)
-            //    .HasConstraintName("FK_RoleId")
-            //    .IsRequired();
-
-
-            // Each User can have many entries in the Token join table
-            //builder.HasMany<Token>()
-            //    .WithOne()
-            //    .HasForeignKey(ur => ur.UserId)
-            //    .HasConstraintName("FK_User")
-            //    .IsRequired();
-
-            //builder.HasOne("WebSODP.Model.User", null)
-            //    .WithMany("Role")
-            //    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

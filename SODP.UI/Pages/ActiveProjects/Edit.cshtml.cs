@@ -12,9 +12,7 @@ using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -49,7 +47,7 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PutAsync($"active-projects/{project.Id}", project.ToHttpContent());
+                var apiResponse = await _apiProvider.PutAsync($"projects/{project.Id}", project.ToHttpContent());
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     return RedirectToPage("Index");
@@ -71,7 +69,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnPutBranchAsync(int id, int branchId)
         {
-            var apiResponse = await _apiProvider.PutAsync($"active-projects/{id}/branches/{branchId}", new StringContent(
+            var apiResponse = await _apiProvider.PutAsync($"projects/{id}/branches/{branchId}", new StringContent(
                                   JsonSerializer.Serialize(branchId),
                                   Encoding.UTF8,
                                   "application/json"
@@ -84,7 +82,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId)
         {
-            await _apiProvider.DeleteAsync($"active-projects/{id}/branches/{branchId}");
+            await _apiProvider.DeleteAsync($"projects/{id}/branches/{branchId}");
 
             Project = await GetProjectAsync(id);
 
@@ -100,7 +98,7 @@ namespace SODP.UI.Pages.ActiveProjects
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PatchAsync($"active-projects/{role.ProjectId}/branch/{role.BranchId}/role/{role.RoleId}",
+                var apiResponse = await _apiProvider.PatchAsync($"projects/{role.ProjectId}/branch/{role.BranchId}/role/{role.RoleId}",
                     role.ToHttpContent());
 
                 var response = await _apiProvider.GetContent<ServiceResponse<object>>(apiResponse);
@@ -120,7 +118,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         private async Task<PartialViewResult> GetPartialViewAsync(int projectId, int branchId)
         {
-            var apiResponse = await _apiProvider.GetAsync($"active-projects/{projectId}/branches/{branchId}");
+            var apiResponse = await _apiProvider.GetAsync($"projects/{projectId}/branches/{branchId}");
             var responseRoles = await _apiProvider.GetContent<ServicePageResponse<ProjectBranchRoleDTO>>(apiResponse);
 
             var technicalRoles = new TechnicalRoleVM

@@ -25,7 +25,7 @@ namespace SODP.UI.Pages.ArchiveProjects
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"archive-projects/{id}");
+            var apiResponse = await _apiProvider.GetAsync($"projects/{id}");
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
             if (apiResponse.IsSuccessStatusCode && response.Success)

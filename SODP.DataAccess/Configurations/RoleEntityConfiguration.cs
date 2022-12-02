@@ -21,9 +21,6 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("nvarchar(256)")
                 .IsRequired();
 
-            //// Primary key
-            //builder.HasKey(r => r.Id);
-
             // Index for "normalized" role name to allow efficient lookups
             builder.HasIndex(r => r.Name)
                 .HasName("IX_Name")

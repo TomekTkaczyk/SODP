@@ -10,7 +10,7 @@ namespace SODP.DataAccess.Configurations
         {
             builder.Property(x => x.Title)
                 .HasColumnType("nvarchar(20)")
-                .IsRequired();
+                .HasDefaultValue("");
 
             builder.Property(x => x.Firstname)
                 .HasColumnType("nvarchar(50)")
@@ -21,19 +21,6 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.ToTable("Designers");
-
-            //builder.HasMany(x => x.Certificates)
-            //    .WithOne(x => x.Designer)
-            //    .HasForeignKey(x => x.DesignerId)
-            //    .HasConstraintName("FK_Designer_Certificate")
-            //    .OnDelete(DeleteBehavior.Restrict);
-
-            //builder.HasMany(x => x.Licenses)
-            //    .WithOne(x => x.Designer)
-            //    .HasForeignKey(x => x.DesignerId)
-            //    .HasConstraintName("FK_Designer_License")
-            //    .OnDelete(DeleteBehavior.Restrict);
-
         }
     }
 }

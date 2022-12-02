@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
+using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared;
@@ -23,7 +24,12 @@ namespace SODP.UI.Pages.ArchiveProjects
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/ArchiveProjects";
-            _endpoint = "archive-projects";
-        }        
+            _endpoint = "projects";
+        }
+        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
+        {
+            return await base.OnGetAsync(ProjectStatus.Archived, currentPage, pageSize, searchString);
+        }
+
     }
 }

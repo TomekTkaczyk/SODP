@@ -26,6 +26,8 @@ namespace SODP.Shared.DTO
 
         public string Investor { get; set; }
 
+        public string BuildingPermit { get; set; }
+
         public string Description { get; set; }
 
         public ProjectStatus Status { get; set; }
