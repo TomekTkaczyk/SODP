@@ -2,15 +2,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
-using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.Pages.Stages.ViewModels;
 using SODP.UI.Services;
@@ -19,12 +15,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Stages
 {
-    [Authorize(Roles = "Administrator, ProjectManager")]
+    [Authorize(Roles = "User, ProjectManager")]
     public class IndexModel : ListPageModel
     {
         const string editStagePartialViewName = "_EditStagePartialView";

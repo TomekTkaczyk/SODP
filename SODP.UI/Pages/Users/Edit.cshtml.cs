@@ -1,8 +1,13 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
+using SODP.UI.Pages.Shared;
+using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -12,15 +17,16 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Users
 {
-    // [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator")]
     [ValidateAntiForgeryToken()]
-    public class EditModel : PageModel
-    {
+    public class EditModel : SODPPageModel
+	{
         private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IWebAPIProvider apiProvider)
+        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator)
         {
-            _apiProvider = apiProvider;
+            ReturnUrl = "/Users/Edit";
+			_apiProvider = apiProvider;
         }
 
         [BindProperty]
@@ -28,8 +34,6 @@ namespace SODP.UI.Pages.Users
 
         [BindProperty]
         public IDictionary<string,bool> AllRoles { get; set; }
-
-        public string ReturnUrl { get; } = "/Users";
 
         public async Task<IActionResult> OnGet(int id)
         {

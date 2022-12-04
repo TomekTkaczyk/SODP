@@ -1,6 +1,8 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Model.Enums;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -17,7 +19,8 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Designers
 {
-    public class IndexModel : ListPageModel
+	[Authorize(Roles = "ProjectManager")]
+	public class IndexModel : ListPageModel
     {
         const string editDesignerPartialViewName = "_EditDesignerPartialView";
         const string licensesPartialViewName = "_LicensesPartialView";
@@ -33,7 +36,6 @@ namespace SODP.UI.Pages.Designers
 
         public LicensesVM Licenses { get; set; }
 
-        [BindProperty]
         public LicenseVM License { get; set; }
 
         public BranchesVM Branches { get; set; }

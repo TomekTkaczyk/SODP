@@ -16,7 +16,14 @@
             <a class="nav-link text-white-50" asp-area="" asp-page="/ArchiveProjects/Index">Archiwalne</a>
         </li>
     }
-    
+
+    @if (User.IsInRole("User") || User.IsInRole("ProjectManager"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-white-50" asp-area="" asp-page="/Stages/Index">Stadia</a>
+        </li>
+    }
+
     @if (User.IsInRole("ProjectManager"))
     {
         <li class="nav-item dropdown">
@@ -24,7 +31,6 @@
                 Konfiguracja
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" asp-area="" asp-page="/Stages/Index">Stadia</a>
                 <a class="dropdown-item" asp-area="" asp-page="/Designers/Index">Projektanci</a>
                 <a class="dropdown-item" asp-area="" asp-page="/Branches/Index">Branże</a>
             </div>
@@ -37,9 +43,4 @@
             <a class="nav-link text-white-50" asp-area="" asp-page="/Users/Index">Użytkownicy</a>
         </li>
     }
-
-@*    <li class="nav-item">
-        <a class="nav-link text-white-50" href="/swagger/index.html">Swagger</a>
-    </li>
-*@
 </ul>

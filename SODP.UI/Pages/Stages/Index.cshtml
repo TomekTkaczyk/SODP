@@ -7,201 +7,188 @@
 @model IndexModel
 
 @{
-    ViewData["Title"] = "Stadia projektowe";
+	ViewData["Title"] = "Stadia projektowe";
 }
 
 @inject SignInManager<User> SignInManager
 
-<script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
+<div class="row">
+	<div class="col-8 p-0">
+		<h2 class="text-info p-0">@ViewData["Title"]</h2>
+	</div>
 
-<div class="container p-0 m-0">
-    <div class="row">
-        <div class="col-8">
-            <h2 class="text-info">@ViewData["Title"]</h2>
-        </div>
-        @if (SignInManager.IsSignedIn(User))
-        {
-            <div class="col-4 p-0 m-0">
-                <button type="button"
-                    class="btn btn-info form-control text-white float-right"
-                    title="Nowe stadium"
-                    data-toggle="ajax-modal"
-                    data-url="@Url.Page("Index","EditStage")">
-                    <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowe stadium
-                </button>
-            </div>
-        }
-    </div>
-     
-    <partial name="_SearchString" />
- 
-    @if (Model.StagesViewModel.Stages.Count() > 0)
-    {   
-        <div id="StagesTable">
-            <table class="table table-sm table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th class="m-0 p-0 pl-1 pr-1">Symbol</th>
-                        <th class="m-0 p-0 pl-1 pr-1">Opis</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var stage in Model.StagesViewModel.Stages)
-                    {
-                    <tr class="m-0 p-0">
-                        <td onclick='EditStage(@stage.Id)'
-                            class="cell clickable"
-                            data-toggle="tooltip"
-                            title="Edycja stadium"
-                            data-placement="top"
-                            style="vertical-align:middle">
-                            @stage.Sign
-                        </td>
-                        <td onclick='EditStage(@stage.Id)'
-                            class="cell clickable"
-                            data-toggle="tooltip"
-                            title="Edycja stadium"
-                            style="vertical-align:middle">
-                            @stage.Name
-                        </td>
-                        <td class="cell text-right">
-                            <a onclick='DeleteStage(@stage.Id)'
-                               class="btn btn-md m-0 py-0"
-                               data-toggle="tooltip"
-                               data-placement="top"
-                               title="Usuń stadium">
-                                <i class="fas fa-times fa-lg text-danger"></i>
-                            </a>
-                            <style>
-                                .toggle.ios, .toggle-on.ios, .toggle-off.ios {
-                                    border-radius: 20px;
-                                }
-                                .toggle.ios .toggle-handle {
-                                    border-radius: 20px;
-                                }
-                            </style>
-                            <input type="checkbox" asp-for="@stage.ActiveStatus" name="checkbox_@stage.Id"
-                                    onchange="handleChange(@stage.Id,this.checked)"
-                                    id="checkbox_@stage.Id"
-                                    data-toggle="toggle"
-                                    title="Aktywność"
-                                    data-style="ios">
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </tfoot>
-            </table>
-            @if(Model.PageInfo.TotalPages > 1)
-            {
-                <div class="col text-center">
-                    <div 
-                        page-model="@Model.PageInfo"
-                        page-class="btn border"
-                        page-class-normal="btn btn-light"
-                        page-class-selected="btn btn-info"
-                        page-class-prev-next="btn"
-                        class="btn-group">
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <br /> 
-        <p> Lista stadiów jest pusta</p>
-    }
-
+	@if (User.IsInRole("ProjectManager"))
+	{
+		<div class="col-4 p-0">
+			<button type="button"
+				class="btn btn-info form-control text-white float-right h-100"
+				title="Nowe stadium"
+				data-toggle="ajax-modal"
+				data-url="@Url.Page("Index","EditStage")">
+				<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowe stadium
+			</button>
+		</div>
+	}
 </div>
 
+<partial name="_SearchString" />
+
+@if (Model.StagesViewModel.Stages.Count() > 0)
+{
+	<table id="StagesTable" class="table table-sm table-hover">
+		<thead class="thead-light">
+			<tr>
+				<th class="pl-1 pr-1">Symbol</th>
+				<th class="pl-1 pr-1">Opis</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.StagesViewModel.Stages)
+			{
+				<tr class="m-0 p-0">
+					<td onclick='@(User.IsInRole("ProjectManager") ? "EditStage("+@item.Id+")" : "")'
+						class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+						data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+						title='@(User.IsInRole("ProjectManager") ? "Edycja stadium" : "")'
+						data-placement="top"
+						style="vertical-align:middle" >
+						@item.Sign
+					</td>
+					<td onclick='@(User.IsInRole("ProjectManager") ? "EditStage("+@item.Id+")" : "")'
+						class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+						data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+						title='@(User.IsInRole("ProjectManager") ? "Edycja stadium" : "")'
+						style="vertical-align:middle">
+						@item.Name
+					</td>
+					<td class="cell text-right">
+						@if (User.IsInRole("ProjectManager"))
+						{
+							<a onclick='DeleteStage(@item.Id)'
+							   class="btn"
+							   data-toggle="tooltip"
+							   data-placement="top"
+							   title="Usuń stadium">
+								<i class="fas fa-times fa-lg text-danger"></i>
+							</a>
+							<input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
+								onchange="handleChange(@item.Id,this.checked)"
+								id="checkbox_@item.Id"
+								data-toggle="toggle"
+								title="Aktywność"
+								data-style="ios">
+						}
+					</td>
+				</tr>
+			}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</tfoot>
+	</table>
+	@if (Model.PageInfo.TotalPages > 1)
+	{
+		<div class="text-center pb-2">
+			<div page-model="@Model.PageInfo"
+				 page-class="btn border"
+				 page-class-normal="btn btn-light"
+				 page-class-selected="btn btn-info"
+				 page-class-prev-next="btn"
+				 class="btn-group">
+			</div>
+		</div>
+	}
+}
+else
+{
+	<br />
+	<p> Lista stadiów jest pusta</p>
+}
+
 @section Scripts{
-    <script src="~/js/delete.js"></script>
-    <script src="~/js/ModalPlaceholder.js"></script>
+	<script src="~/js/delete.js"></script>
+	<script src="~/js/ModalPlaceholder.js"></script>
 
-    <script>
-        function EditStage(id) {
-            $.ajax({
-                type: "GET",
-                url: `@Url.Page("Index","EditStage")&id=${id}`,
-                success: function (data) {
-                    $('#modal-placeholder').html(data);
-                    $('#editStage').modal('show');
-                }
-            })
-        }
+	<script>
+		function EditStage(id) {
+			$.ajax({
+				type: "GET",
+				url: `@Url.Page("Index","EditStage")&id=${id}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#editStage').modal('show');
+				}
+			})
+		}
 
-        function DeleteStage(id) {
-            $.ajax({
-                type: "GET",
-                url: `@Url.Page("Index","DeleteStage")&id=${id}`,
-                success: function (data) {
-                    $('#modal-placeholder').html(data);
-                    $('#deleteStage').modal('show');
-                }
-            })
-        }
+		function DeleteStage(id) {
+			$.ajax({
+				type: "GET",
+				url: `@Url.Page("Index","DeleteStage")&id=${id}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#deleteStage').modal('show');
+				}
+			})
+		}
 
-        function DeleteStage1(url) {
-            swal({
-                title: "Czy jesteś pewien?",
-                text: "Usunięcie stadium nie może być cofnięte.",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true
-            }).then((willDelete) => {
-                if (willDelete) {
-                    $.ajax({
-                        type: "DELETE",
-                        url: url,
-                        success: function (data) {
-                            console.log(data)
-                            if (data.success) {
-                                toastr.success(data.message);
-                                window.location.reload();
-                            }
-                            else {
-                                toastr.error(data.message);
-                            }
-                        }
-                    })
-                }
-            })
-        }
+		function DeleteStage1(url) {
+			swal({
+				title: "Czy jesteś pewien?",
+				text: "Usunięcie stadium nie może być cofnięte.",
+				icon: "warning",
+				buttons: true,
+				dangerMode: true
+			}).then((willDelete) => {
+				if (willDelete) {
+					$.ajax({
+						type: "DELETE",
+						url: url,
+						success: function (data) {
+							console.log(data)
+							if (data.success) {
+								toastr.success(data.message);
+								window.location.reload();
+							}
+							else {
+								toastr.error(data.message);
+							}
+						}
+					})
+				}
+			})
+		}
 
-        function handleChange(id, checked) {
+		function handleChange(id, checked) {
 
-            let c = checked ? 1 : 0;
-            let url = `/api/v0_01/stages/${id}/status/${c}`;
+			let c = checked ? 1 : 0;
+			let url = `/api/v0_01/stages/${id}/status/${c}`;
 
-            $.ajax({
-                type: "PUT",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                data: JSON.stringify(c),
-                success: function (response) {
-                },
-                error: function (jqXHR, exception) {
-                    console.log(jqXHR);
-                    console.log(exception);
-                }
-            });
-        }
-    </script>
+			$.ajax({
+				type: "PUT",
+				url: url,
+				contentType: "application/json; charset=utf-8",
+				dataType: 'json',
+				data: JSON.stringify(c),
+				success: function (response) {
+				},
+				error: function (jqXHR, exception) {
+					console.log(jqXHR);
+					console.log(exception);
+				}
+			});
+		}
+	</script>
 
-    <script>
-        $(document).ready(function () {
-            modalPlaceHolder('/Designers');
-        });
-    </script>
+	<script>
+		$(document).ready(function () {
+			modalPlaceHolder('/Designers');
+		});
+	</script>
 
 }

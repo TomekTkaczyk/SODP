@@ -7,164 +7,158 @@
 @model IndexModel
 
 @{
-    ViewData["Title"] = "Projekty aktywne";
+	ViewData["Title"] = "Projekty aktywne";
 }
 
 @inject SignInManager<User> SignInManager
 
-<script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
+<div class="row">
+	<div class="col-8 p-0">
+		<h2 class="text-info p-0">@ViewData["Title"]</h2>
+	</div>
 
-<div class="container p-0 m-0">
-    <div class="row">
-        <div class="col-8">
-            <h2 class="text-info">@ViewData["Title"]</h2>
-        </div>
-
-        @if (User.IsInRole("Administrator") || User.IsInRole("ProjectManager"))
-        {
-            <div class="col-4 p-0 m-0">
-                <button type="button"
-                        class="btn btn-info form-control text-white float-right"
-                        title="Nowy projekt"
-                        data-toggle="ajax-modal"
-                        data-url="@Url.Page("Index","NewProject")">
-                        <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projekt
-                </button>
-            </div>
-        }
-    </div>
-
-    <partial name="_SearchString" />
-    
-    @if (Model.ProjectsViewModel.Projects.Count() > 0)
-    {
-        <div id="ProjectTable">
-            <table class="table table-sm table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th class="m-0 p-0 pl-1 pr-1">Numer</th>
-                        <th class="m-0 p-0 pl-1 pr-1">Stadium</th>
-                        <th class="m-0 p-0 pl-1 pr-1">Nazwa</th>
-                        <th class="m-0 p-0 pl-1 pr-1"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.ProjectsViewModel.Projects)
-                    {
-                    <tr class="m-0 p-0">
-                            <td onclick='window.location.href="/ActiveProjects/Edit?Id=@item.Id"'
-                            class="cell clickable col-1"
-                            data-toggle="tooltip"
-                            title="Edycja"
-                            style="vertical-align:middle">
-                            @item.Number
-                        </td>
-                            <td onclick='window.location.href="/ActiveProjects/Edit?Id=@item.Id"'
-                            class="cell clickable col-1"
-                            data-toggle="tooltip"
-                            title="Edycja"
-                            style="vertical-align:middle">
-                            @item.Stage.Sign
-                        </td>
-                            <td onclick='window.location.href="/ActiveProjects/Edit?Id=@item.Id"'
-                            class="cell clickable col-9"
-                            data-toggle="tooltip"
-                            title="Edycja"
-                            style="vertical-align:middle">
-                            @item.Name
-                        </td>
-                        <td class="cell text-right">
-                            <div class="row">
-                                <div>
-                                    <a onclick='Archive("/api/v0_01/projects/@item.Id/archive")'
-                                        class='col btn btn-md p-0 m-0 border-2 text-success'
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Przenieś projekt do archiwum">
-                                        <i class="fas fa-archive fa-lg"></i>
-                                    </a>
-                                </div>
-                                <div>
-                                    <a onclick='Delete("/api/v0_01/projects/@item.Id")'
-                                        class='col btn btn-md p-0 m-0 border-2 text-danger'
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Usuń projekt">
-                                        <i class="fas fa-times fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </tfoot>
-            </table>
-            @if (Model.PageInfo.TotalPages > 1)
-            {
-                <div class="col text-center">
-                    <div 
-                        page-model="@Model.PageInfo"
-                        page-class="btn border"
-                        page-class-normal="btn btn-light"
-                        page-class-selected="btn btn-info"
-                        page-class-prev-next="btn"
-                        class="btn-group">
-                    </div>
-                </div>
-            }
-        </div>        
-    }
-    else
-    {
-        <br />
-        <p> Lista projektów jest pusta</p>
-    }
-
+	@if (User.IsInRole("ProjectManager"))
+	{
+		<div class="col-4 p-0">
+			<button type="button"
+				class="btn btn-info form-control text-white float-right h-100"
+				title="Nowy projekt"
+				data-toggle="ajax-modal"
+				data-url="@Url.Page("Index","NewProject")">
+				<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projekt
+			</button>
+		</div>
+	}
 </div>
 
+<partial name="_SearchString" />
+
+@if (Model.ProjectsViewModel.Projects.Count() > 0)
+{
+	<table id="ProjectTable" class="table table-sm table-hover">
+		<thead class="thead-light">
+			<tr>
+				<th class="pl-1 pr-1">Numer</th>
+				<th class="pl-1 pr-1">Stadium</th>
+				<th class="pl-1 pr-1">Nazwa</th>
+				<th class="pl-1 pr-1"></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.ProjectsViewModel.Projects)
+			{
+				<tr class="m-0 p-0">
+					<td onclick='@(User.IsInRole("ProjectManager") ? "Edit("+item.Id+")" : "")'
+				class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+				data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+				title='@(User.IsInRole("ProjectManager") ? "Szczegóły" : "")'
+				style="vertical-align:middle">
+						@item.Number
+					</td>
+					<td onclick='@(User.IsInRole("ProjectManager") ? "Edit("+item.Id+")" : "")'
+				class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+				data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+				title='@(User.IsInRole("ProjectManager") ? "Szczegóły" : "")'
+				style="vertical-align:middle">
+						@item.Stage.Sign
+					</td>
+					<td onclick='@(User.IsInRole("ProjectManager") ? "Edit("+item.Id+")" : "")'
+				class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+				data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+				title='@(User.IsInRole("ProjectManager") ? "Szczegóły" : "")'
+				style="vertical-align:middle">
+						@item.Name
+					</td>
+					<td class="cell text-right">
+						@if (User.IsInRole("ProjectManager"))
+						{
+							<a onclick='Archive(@item.Id)'
+				   class='btn'
+				   data-toggle="tooltip"
+				   data-placement="top"
+				   title="Przenieś projekt do archiwum">
+								<i class="fas fa-archive fa-lg text-success"></i>
+							</a>
+							<a onclick='Delete("/api/v0_01/projects/@item.Id")'
+				   class='btn'
+				   data-toggle="tooltip"
+				   data-placement="top"
+				   title="Usuń projekt">
+								<i class="fas fa-times fs-lg text-danger"></i>
+							</a>
+						}
+					</td>
+				</tr>
+			}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</tfoot>
+	</table>
+	@if (Model.PageInfo.TotalPages > 1)
+	{
+		<div class="col text-center">
+			<div page-model="@Model.PageInfo"
+		 page-class="btn border"
+		 page-class-normal="btn btn-light"
+		 page-class-selected="btn btn-info"
+		 page-class-prev-next="btn"
+		 class="btn-group">
+			</div>
+		</div>
+	}
+}
+else
+{
+	<br />
+	<p> Lista projektów jest pusta</p>
+}
+
+
 @section Scripts{
-    <script src="~/js/delete.js"></script>
-    <script src="~/js/ModalPlaceholder.js"></script>
-    <script>
-        function Archive(url) {
-            swal({
-                title: "Czy jesteś pewien?",
-                text: "Przesunięcie projektu do archiwum.",
-                icon: "warning",
-                buttons: true,
-                danegerMode: true
-            }).then((willArchive) => {
-                if (willArchive) {
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        success: function (data) {
-                            if (data.success) {
-                                toastr.success(data.message);
-                                window.location.reload();
-                            }
-                            else {
-                                toastr.error(data.message);
-                            }
-                        }
-                    })
-                }
-            })
-        }
-    </script>
-    
-    <script>
-        $(document).ready(function () {
-            modalPlaceHolder('/ActiveProjects');
-        });
-    </script>
+	<script src="~/js/delete.js"></script>
+	<script src="~/js/ModalPlaceholder.js"></script>
+	<script>
+		function Edit(id) {
+			window.location = `/ActiveProjects/Edit?Id=${id}#basic`;
+		}
+
+		function Archive(id) {
+			swal({
+				title: "Czy jesteś pewien?",
+				text: "Przesunięcie projektu do archiwum.",
+				icon: "warning",
+				buttons: true,
+				danegerMode: true
+			}).then((willArchive) => {
+				if (willArchive) {
+					const url = `/api/v0_01/projects/${id}/archive`;
+					$.ajax({
+						type: "GET",
+						url: url,
+						success: function (data) {
+							if (data.success) {
+								toastr.success(data.message);
+								window.location.reload();
+							}
+							else {
+								toastr.error(data.message);
+							}
+						}
+					})
+				}
+			})
+		}
+	</script>
+
+	<script>
+		$(document).ready(function () {
+			modalPlaceHolder('/ActiveProjects');
+		});
+	</script>
 }

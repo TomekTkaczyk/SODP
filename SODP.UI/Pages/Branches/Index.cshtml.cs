@@ -6,7 +6,6 @@ using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Mappers;
 using SODP.UI.Pages.Branches.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.Services;
@@ -18,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Branches
 {
-    [Authorize(Roles = "User, Administrator, ProjectManager")]
+    [Authorize(Roles = "ProjectManager")]
     public class IndexModel : SODPPageModel
     {
         const string editBranchPartialViewName = "_EditBranchPartialView";

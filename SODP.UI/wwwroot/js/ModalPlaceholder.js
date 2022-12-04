@@ -18,6 +18,11 @@ function initModalPlaceHolder(returnUrl) {
         var form = $(this).parents('.modal').find('form');
         var actionUrl = form.attr('action');
         var dataToSend = form.serialize();
+
+        console.log(returnUrl);
+        console.log(actionUrl);
+        console.log(dataToSend);
+
         $.post(actionUrl, dataToSend).done(function (data) {
             var newBody = $('.modal-body', data);
             placeholderElement.find('.modal-body').replaceWith(newBody);

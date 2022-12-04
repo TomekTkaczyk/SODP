@@ -7,132 +7,124 @@
 @model IndexModel
 
 @{
-    ViewData["Title"] = "Projekty zakończone";
+	ViewData["Title"] = "Projekty zakończone";
 }
 
 @inject SignInManager<User> SignInManager
 
-<script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
-
-<div class="container p-0 m-0">
-    <div class="row">
-        <div class="col-8">
-            <h2 class="text-info">@ViewData["Title"]</h2>
-        </div>
-    </div>
-    
-    <partial name="_SearchString" />
-
-    @if (Model.ProjectsViewModel.Projects.Count() > 0)
-    {
-        <div id="ProjectTable">
-            <table class="table table-sm table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th class="m-0 p-0 pl-1 pr-1">Numer</th>
-                        <th class="m-0 p-0 pl-1 pr-1">Stadium</th>
-                        <th class="m-0 p-0 pl-1 pr-1">Nazwa</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.ProjectsViewModel.Projects)
-                    {
-                    <tr class="m-0 p-0">
-                            <td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
-                            class="cell clickable col-1"
-                            data-toggle="tooltip"
-                            title="Edycja"
-                            style="vertical-align:middle">
-                            @item.Number
-                        </td>
-                            <td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
-                            class="cell clickable col-1"
-                            data-toggle="tooltip"
-                            title="Edycja"
-                            style="vertical-align:middle">
-                            @item.Stage.Sign
-                        </td>
-                            <td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
-                            class="cell clickable col-9"
-                            data-toggle="tooltip"
-                            title="Edycja"
-                            style="vertical-align:middle">
-                            @item.Name
-                        </td>
-                        <td class="cell text-right">
-                            <div class="row">
-                                <div>
-                                    <a onclick='Restore("/api/v0_01/projects/@item.Id/restore")'
-                                        class='btn btn-md m-0 border-0 p-1 text-success'
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="Przywróć projekt">
-                                        <i class="fas fa-archive fa-lg"></i>
-                                    </a>
-                                </div>
-                           </div>
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </tfoot>
-            </table>
-            @if (Model.PageInfo.TotalPages > 1)
-            {
-                <div class="col text-center">
-                    <div
-                        page-model="@Model.PageInfo"
-                        page-class="btn border"
-                        page-class-normal="btn-light"
-                        page-class-selected="btn-info"
-                        page-class-prev-next="btn" 
-                        class="btn-group">
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <p> Lista projektów jest pusta</p>
-    }
+<div class="row">
+	<div class="col-8 p-0">
+		<h2 class="text-info p-0">@ViewData["Title"]</h2>
+	</div>
 </div>
 
+<partial name="_SearchString" />
+
+@if (Model.ProjectsViewModel.Projects.Count() > 0)
+{
+	<table id="ProjectTable" class="table table-sm table-hover">
+		<thead class="thead-light">
+			<tr>
+				<th class="pl-1 pr-1">Numer</th>
+				<th class="pl-1 pr-1">Stadium</th>
+				<th class="pl-1 pr-1">Nazwa</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.ProjectsViewModel.Projects)
+			{
+				<tr class="m-0 p-0">
+					<td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
+				class="cell clickable col-1"
+				data-toggle="tooltip"
+				title="Edycja"
+				style="vertical-align:middle">
+						@item.Number
+					</td>
+					<td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
+				class="cell clickable col-1"
+				data-toggle="tooltip"
+				title="Edycja"
+				style="vertical-align:middle">
+						@item.Stage.Sign
+					</td>
+					<td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
+				class="cell clickable col-9"
+				data-toggle="tooltip"
+				title="Edycja"
+				style="vertical-align:middle">
+						@item.Name
+					</td>
+					<td class="cell text-right">
+						<div class="row">
+							<div>
+								<a onclick='Restore("/api/v0_01/projects/@item.Id/restore")'
+						   class='btn btn-md m-0 border-0 p-1 text-success'
+						   data-toggle="tooltip"
+						   data-placement="top"
+						   title="Przywróć projekt">
+									<i class="fas fa-archive fa-lg"></i>
+								</a>
+							</div>
+						</div>
+					</td>
+				</tr>
+			}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</tfoot>
+	</table>
+	@if (Model.PageInfo.TotalPages > 1)
+	{
+		<div class="col text-center">
+			<div page-model="@Model.PageInfo"
+		 page-class="btn border"
+		 page-class-normal="btn-light"
+		 page-class-selected="btn-info"
+		 page-class-prev-next="btn"
+		 class="btn-group">
+			</div>
+		</div>
+	}
+}
+else
+{
+	<p> Lista projektów jest pusta</p>
+}
+
 @section Scripts{
-    <script>
-        function Restore(url) {
-            swal({
-                title: "Czy jesteś pewien?",
-                text: "Przywrócenie projektu do aktywnych.",
-                icon: "warning",
-                buttons: true,
-                danegerMode: true
-            }).then((willRestore) => {
-                if (willRestore) {
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        success: function (data) {
-                            if (data.success) {
-                                toastr.success(data.message);
-                                window.location.reload();
-                            }
-                            else {
-                                toastr.error(data.message);
-                            }
-                        }
-                    })
-                }
-            })
-        }
-    </script>
+	<script>
+		function Restore(url) {
+			swal({
+				title: "Czy jesteś pewien?",
+				text: "Przywrócenie projektu do aktywnych.",
+				icon: "warning",
+				buttons: true,
+				danegerMode: true
+			}).then((willRestore) => {
+				if (willRestore) {
+					$.ajax({
+						type: "GET",
+						url: url,
+						success: function (data) {
+							if (data.success) {
+								toastr.success(data.message);
+								window.location.reload();
+							}
+							else {
+								toastr.error(data.message);
+							}
+						}
+					})
+				}
+			})
+		}
+	</script>
 }

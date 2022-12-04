@@ -6,6 +6,11 @@
     margin: 0px;
 }
 
+.row {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 .cell {
     padding-left: 5px;
     padding-right: 5px;
@@ -15,6 +20,14 @@
 
 .clickable {
     cursor: pointer;
+}
+
+.toggle.ios, .toggle-on.ios, .toggle-off.ios {
+    border-radius: 20px;
+}
+
+.toggle.ios .toggle-handle {
+    border-radius: 20px;
 }
 
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification

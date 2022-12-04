@@ -18,13 +18,6 @@
         <link rel="icon" href="~/interior_architectural_design_house_icon-icons.com_56323.png" />
     </head>
 
-@*    <style>
-        #navbar {
-            position: sticky;
-            top: 0;
-        }
-    </style>*@
-
     <body>
         <header id="navbar">
             <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-dark bg-dark border-bottom box-shadow mb-3">
@@ -44,11 +37,9 @@
 
         <div id="modal-placeholder"></div>
 
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-        </div>
+        <main role="main" class="container">
+            @RenderBody()
+        </main>
 
         <footer class="border-top footer pl-3 text-white-50" style="background-color:#343a40">
             <div class="container">
@@ -58,6 +49,7 @@
 
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/jquery/dist/jquery-ui.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
         <script src="~/lib/toastr/toastr.min.js"></script>
         <script src="~/lib/sweetalert/sweetalert.min.js"></script>

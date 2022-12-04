@@ -7,183 +7,153 @@
 @using System.Text.Json.Serialization;
 
 @{
-    ViewData["Title"] = "Projektanci";
+	ViewData["Title"] = "Projektanci";
 }
 
 @inject SignInManager<User> SignInManager
 
-<script src="~/lib/jquery/dist/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
+<div class="row mb-2">
+	<div class="col-8">
+		<h2 class="text-info p-0">@ViewData["Title"]</h2>
+	</div>
 
-<div class="container p-0 m-0">
-    <div class="row pl-3 pr-3">
-        <div class="col-8">
-            <h2 class="text-info">@ViewData["Title"]</h2>
-        </div>
-        @if (SignInManager.IsSignedIn(User))
-        {
-            <div class="col-4 p-0 m-0">
-                <button type="button"
-                    class="btn btn-info form-control text-white float-right"
-                    title="Nowy projektant"
-                    data-toggle="ajax-modal"
-                    data-url="@Url.Page("Index", "EditDesigner")">
-                    <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
-                </button>
-            </div>
-        }
-    </div>
+	<div class="col-4 p-0">
+		<button type="button"
+				class="btn btn-info form-control text-white float-right h-100"
+				title="Nowy projektant"
+				data-toggle="ajax-modal"
+				data-url="@Url.Page("Index", "EditDesigner")">
+			<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
+		</button>
+	</div>
 </div>
 
 @if (Model.Designers.Designers.Count() > 0)
 {
-    <div id="designersAccordion" class="accordion col-12 p-3 mt-0">
-        @foreach (var item in Model.Designers.Designers)
-        {
-            <div class="button card">
-                <div class="card-header" id="card-header-@item.Id">
-                    <div class="row">
-                        <div class="col font-weight-bold clickable"
-                             onclick="accordionCollapse(@item.Id)"
-                             id="card-head-@item.Id"
-                             data-toggle="collapse"
-                             data-target="#collapse-@item.Id"
-                             aria-expanded="false"
-                             aria-controls="collapse-@item.Id">
-                            @item.Title @item.Firstname @item.Lastname
-                        </div>
+	<div id="designersAccordion" class="accordion">
+		@foreach (var item in Model.Designers.Designers)
+		{
+			<div class="button card">
+				<div class="card-header d-flex align-items-center" id="card-header-@item.Id">
+						<div class="col font-weight-bold clickable"
+							 onclick="accordionCollapse(@item.Id)"
+							 id="card-head-@item.Id"
+							 data-toggle="collapse"
+							 data-target="#collapse-@item.Id"
+							 aria-expanded="false"
+							 aria-controls="collapse-@item.Id">
+							@item.Title @item.Firstname @item.Lastname
+						</div>
+						<div class="colgroup justify-content-end mr-2">
+							<a name="additionalBtn"
+							   id="newLicense-@item.Id"
+							   onclick="NewLicense(@item.Id)"
+							   class="btn btn-lg m-1 p-1"
+							   data-toggle="tooltip"
+							   data-placement="top"
+							   title="Dodaj uprawnienia">
+								<i class="fas fa-plus fa-lg text-success"></i>
+							</a>
 
-                        <div class="colgroup justify-content-end mr-2">
+							<a name="additionalBtn"
+							   id="editDesigner-@item.Id"
+							   onclick='EditDesigner(@item.Id)'
+							   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+							   data-toggle="tooltip"
+							   data-placement="top"
+							   title="Edycja">
+								<i class="fas fa-edit fa-lg text-success"></i>
+							</a>
 
-                            <a name="additionalBtn"
-                               id="newLicense-@item.Id"
-                               onclick="NewLicense(@item.Id)"
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
-                               data-toggle="tooltip"
-                               data-placement="top"
-                               title="Dodaj uprawnienia"
-                               hidden>
-                               <i class="fas fa-plus fa-lg text-success"></i>
-                            </a>
-
-                            <a name="additionalBtn"
-                               id="editDesigner-@item.Id"
-                               onclick='EditDesigner(@item.Id)'
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
-                               data-toggle="tooltip"
-                               data-placement="top"
-                               title="Edycja"
-                               hidden><i class="fas fa-edit fa-lg text-success"></i>
-                            </a>
-
-                            <a name="additionalBtn"
-                               id="deleteDesigner-@item.Id"
-                               onclick='Delete("/api/v0_01/designers/@item.Id")'
-                               class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
-                               data-toggle="tooltip"
-                               data-placement="top"
-                               title="Usuń projektanta"
-                               hidden><i class="fas fa-times fa-lg text-danger"></i>
-                            </a>
-
-                            <style>
-                                .toggle.ios, .toggle-on.ios, .toggle-off.ios {
-                                    border-radius: 20px;
-                                }
-                                .toggle.ios .toggle-handle {
-                                    border-radius: 20px;
-                                }
-                            </style>
-                            <input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
-                                   onchange="handleChange(@item.Id,this.checked)"
-                                   id="checkbox_@item.Id"
-                                   data-toggle="toggle"
-                                   title="Aktywność"
-                                   data-style="ios">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="collapse-@item.Id"
-                 class="collapse hide"
-                 aria-labelledby="heading-@item.Id"
-                 data-parent="#designersAccordion">
-                <div class="card-body" id="license-@item.Id"></div>
-            </div>
-        }
-    </div>
+							<a name="additionalBtn"
+							   id="deleteDesigner-@item.Id"
+							   onclick='Delete("/api/v0_01/designers/@item.Id")'
+							   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+							   data-toggle="tooltip"
+							   data-placement="top"
+							   title="Usuń projektanta">
+								<i class="fas fa-times fa-lg text-danger"></i>
+							</a>
+							<input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
+							   onchange="handleChange(@item.Id,this.checked)"
+							   id="checkbox_@item.Id"
+							   data-toggle="toggle"
+							   title="Aktywność"
+							   data-style="ios">
+						</div>
+				</div>
+			</div>
+			<div id="collapse-@item.Id"
+				 class="collapse hide"
+				 aria-labelledby="heading-@item.Id"
+				 data-parent="#designersAccordion">
+				<div class="card-body" id="license-@item.Id">
+					Coś poszło nie tak z ładowaniem listy uprawnień
+				</div>
+			</div>
+		}
+	</div>
 }
 else
 {
-    <br />
-    <p> Lista projektantów jest pusta</p>
+	<br />
+	<p> Lista projektantów jest pusta</p>
 }
 
 
 @section Scripts{
-    <script src="~/js/delete.js"></script>
-    <script src="~/js/ModalPlaceholder.js"></script>
-    <script>
-        function EditDesigner(id) {
-            $.ajax({
-                type: "Get",
-                url: `@Url.Page("Index","EditDesigner")&Id=`+id,
-                success: function (data) {
-                    console.log(data);
-                    $('#modal-placeholder').html(data);
-                    $('#editDesigner').modal('show');
-                }
-            })
-        }
+	<script src="~/js/delete.js"></script>
+	<script src="~/js/ModalPlaceholder.js"></script>
+	<script>
+		function EditDesigner(id) {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Index","EditDesigner")&Id=${id}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#editDesigner').modal('show');
+				}
+			})
+		}
 
-        function NewLicense(designerId, licenseId) {
-            $.ajax({
-                type: "Get",
-                url: `\Designers?handler=NewLicense&designerId=${designerId}&id=${licenseId}`,
-                success: function (data) {
-                    console.log(data);
-                    $('#modal-placeholder').html(data);
-                    $('#newLicense').modal('show');
-                }
-            })
-        }
+		function NewLicense(designerId) {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Index","NewLicense")&designerId=${designerId}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#newLicense').modal('show');
+				}
+			})
+		}
 
-        function handleChange(id, checked) {
-            let c = checked ? 1 : 0;
-            $.ajax({
-                type: "PUT",
-                url: `/api/v0_01/designers/${id}/status/${c}`,
-                contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                data: JSON.stringify(c),
-                success: function (response) {
-                },
-                error: function (jqXHR, exception) {
-                    console.log(jqXHR);
-                    console.log(exception);
-                }
-            });
-        }
+		function handleChange(id, checked) {
+			let c = checked ? 1 : 0;
+			$.ajax({
+				type: "PUT",
+				url: `/api/v0_01/designers/${id}/status/${c}`,
+				contentType: "application/json; charset=utf-8",
+				dataType: 'json',
+				data: JSON.stringify(c),
+				success: function (response) {
+				},
+				error: function (jqXHR, exception) {
+					console.log(jqXHR);
+					console.log(exception);
+				}
+			});
+		}
 
-        function accordionCollapse(id) {
-            let additionalElements = document.getElementsByName('additionalBtn');
-            let inputList = Array.prototype.slice.call(additionalElements);
-            for (let i = 0; i < inputList.length; i++) {
-                inputList[i].hidden = true;
-            }
+		function accordionCollapse(id) {
+			if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
+				$(`#license-${id}`).load(`/Designers/index?handler=LicensesPartial&id=${id}`);
+			}
+		}
+	</script>
 
-            if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
-                document.getElementById(`newLicense-${id}`).hidden = false;
-                document.getElementById(`editDesigner-${id}`).hidden = false;
-                document.getElementById(`deleteDesigner-${id}`).hidden = false;
-                $(`#license-${id}`).load(`/Designers/index?handler=LicensesPartial&id=${id}`);
-            }
-        }
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            modalPlaceHolder('/Designers');
-        });
-    </script>
+	<script>
+		$(document).ready(function () {
+			modalPlaceHolder('/Designers');
+		});
+	</script>
 }

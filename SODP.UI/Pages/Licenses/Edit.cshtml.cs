@@ -1,7 +1,9 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using SODP.Model.Enums;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
@@ -19,7 +21,8 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Licenses
 {
-    public class EditModel : SODPPageModel
+	[Authorize(Roles = "ProjectManager")]
+	public class EditModel : SODPPageModel
     {
         private readonly IWebAPIProvider _apiProvider;
 
@@ -65,7 +68,7 @@ namespace SODP.UI.Pages.Licenses
                 return Page();
             }
 
-            return Redirect($"/Designers/index?handler=LicensesPartial&id={License.DesignerId}");
+            return Redirect("/Designers/index");
 
         }
 
