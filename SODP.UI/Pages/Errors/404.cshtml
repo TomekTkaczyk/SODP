@@ -1,6 +1,9 @@
 ﻿@page
 @{
-    ViewData["Title"] = "No such page";
+    ViewData["Title"] = "404 Not found";
 }
-<h1>404 Not found</h1>
-<p>Brak tresci pod tym adresem.</p>
+
+<header>
+    <h1 class="text-danger">@ViewData["Title"]</h1>
+    <p class="text-danger">Zasób nie odnaleziony.</p>
+</header>

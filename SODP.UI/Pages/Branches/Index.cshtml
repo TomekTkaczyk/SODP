@@ -108,10 +108,9 @@ else
 
 		function handleChange(id, checked) {
 			let c = checked ? 1 : 0;
-
 			$.ajax({
-				type: "PUT",
-				url: `/api/v0_01/branches/${id}/${c}`,
+				type: "PATCH",
+				url: `/api/v0_01/branches/${id}/status`,
 				contentType: "application/json; charset=utf-8",
 				dataType: 'json',
 				data: JSON.stringify(c),

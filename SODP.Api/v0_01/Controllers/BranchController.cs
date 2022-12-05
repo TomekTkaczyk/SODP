@@ -50,22 +50,6 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(response);
         }
 
-        //[HttpPut("{sign}")]
-        //public async Task<ActionResult<BranchDTO>> Update(string sign, [FromBody] BranchDTO branch)
-        //{
-        //    if (sign != branch.Sign)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    var response = await _service.UpdateAsync(branch);
-        //    if (!response.Success)
-        //    {
-        //        return BadRequest(response);
-        //    }
-
-        //    return Ok(response);
-        //}
-
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -89,7 +73,7 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.DeleteAsync(id));
         }
 
-        [HttpPut("{Id}/{status}")]
+        [HttpPatch("{Id}/{status}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

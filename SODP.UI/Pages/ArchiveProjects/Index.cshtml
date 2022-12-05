@@ -35,39 +35,38 @@
 			@foreach (var item in Model.ProjectsViewModel.Projects)
 			{
 				<tr class="m-0 p-0">
-					<td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
-				class="cell clickable col-1"
-				data-toggle="tooltip"
-				title="Edycja"
+					<td onclick='@(User.IsInRole("ProjectManager") ? "Edit("+item.Id+")" : "")'
+				class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+				data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+				title='@(User.IsInRole("ProjectManager") ? "Szczegóły" : "")'
 				style="vertical-align:middle">
 						@item.Number
 					</td>
-					<td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
-				class="cell clickable col-1"
-				data-toggle="tooltip"
-				title="Edycja"
+					<td onclick='@(User.IsInRole("ProjectManager") ? "Edit("+item.Id+")" : "")'
+				class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+				data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+				title='@(User.IsInRole("ProjectManager") ? "Szczegóły" : "")'
 				style="vertical-align:middle">
 						@item.Stage.Sign
 					</td>
-					<td onclick='window.location.href="/ArchiveProjects/Edit?Id=@item.Id"'
-				class="cell clickable col-9"
-				data-toggle="tooltip"
-				title="Edycja"
-				style="vertical-align:middle">
+					<td onclick='@(User.IsInRole("ProjectManager") ? "Edit("+item.Id+")" : "")'
+						class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+						data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+						title='@(User.IsInRole("ProjectManager") ? "Szczegóły" : "")'
+						style="vertical-align:middle">
 						@item.Name
 					</td>
 					<td class="cell text-right">
-						<div class="row">
-							<div>
-								<a onclick='Restore("/api/v0_01/projects/@item.Id/restore")'
-						   class='btn btn-md m-0 border-0 p-1 text-success'
-						   data-toggle="tooltip"
-						   data-placement="top"
-						   title="Przywróć projekt">
-									<i class="fas fa-archive fa-lg"></i>
-								</a>
-							</div>
-						</div>
+						@if (User.IsInRole("ProjectManager"))
+						{
+							<a onclick='Restore("/api/v0_01/projects/@item.Id/restore")'
+							   class='btn btn-md m-0 border-0 p-1 text-success'
+							   data-toggle="tooltip"
+							   data-placement="top"
+							   title="Przywróć projekt">
+								<i class="fas fa-archive fa-lg"></i>
+							</a>
+						}
 					</td>
 				</tr>
 			}
@@ -85,11 +84,11 @@
 	{
 		<div class="col text-center">
 			<div page-model="@Model.PageInfo"
-		 page-class="btn border"
-		 page-class-normal="btn-light"
-		 page-class-selected="btn-info"
-		 page-class-prev-next="btn"
-		 class="btn-group">
+				 page-class="btn border"
+				 page-class-normal="btn-light"
+				 page-class-selected="btn-info"
+				 page-class-prev-next="btn"
+				 class="btn-group">
 			</div>
 		</div>
 	}
@@ -101,6 +100,10 @@ else
 
 @section Scripts{
 	<script>
+		function Edit(id) {
+			window.location = `/ArchiveProjects/Edit?Id=${id}`;
+		}
+
 		function Restore(url) {
 			swal({
 				title: "Czy jesteś pewien?",

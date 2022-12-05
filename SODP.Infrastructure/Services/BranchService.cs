@@ -43,11 +43,6 @@ namespace SODP.Infrastructure.Services
                     .OrderBy(x => x.Sign);
 
                 serviceResponse.Data.TotalCount = await branches.CountAsync();
-
-                var br = await branches.ToListAsync();
-
-                //serviceResponse.Data.PageNumber = currentPage;
-                //serviceResponse.Data.PageSize = pageSize;
                 serviceResponse.SetData(_mapper.Map<IList<BranchDTO>>(branches));
 
             }

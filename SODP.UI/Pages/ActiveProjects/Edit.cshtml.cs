@@ -37,7 +37,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
             if(Project == null)
             {
-                Redirect("/Error");
+                return Redirect("/Errors/404");
             }
 
             return Page();

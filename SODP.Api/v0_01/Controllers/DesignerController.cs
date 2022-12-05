@@ -70,7 +70,7 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{id}/status/{status}")]
+        [HttpPatch("{id}/status")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
