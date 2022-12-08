@@ -21,7 +21,7 @@ Część serwerwerowa z dostępem przez REST API oraz aplikacja WEB UI
 
 ### DOKUMENTACJA REST API
 - - - 
-https://localhost:44303/swagger/index.html
+* https://localhost:40303/swagger/index.html
 ![](Swagger.png)
 
 ### STATUS
