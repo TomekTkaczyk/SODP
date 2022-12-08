@@ -5,8 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SODP.DataAccess;
 
-//#error version
-
 namespace SODP.UI
 {
     public class Program

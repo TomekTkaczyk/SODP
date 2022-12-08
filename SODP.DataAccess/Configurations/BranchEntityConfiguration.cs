@@ -21,10 +21,6 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("nvarchar(50)")
                 .IsRequired();
 
-            builder.Property(x => x.ActiveStatus)
-                .HasDefaultValue(1)
-                .IsRequired();
-
             builder.HasIndex(x => new { x.Order })
                 .HasName("IX_ORDER");
 
