@@ -50,7 +50,7 @@ namespace SODP.UI
                         //builder.AllowAnyOrigin();                               // mozliwy dowolny origin inny ni¿ w³asny aplikacji
                         //builder.AllowAnyMethod();                               // mozliwy dowolny origin inny ni¿ w³asny aplikacji
                         //builder.AllowAnyHeader();                               // mozliwy dowolny origin inny ni¿ w³asny aplikacji
-                        builder.WithOrigins("https://localhost:40303");           // mozliwy origin 
+                        builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}");           // mozliwy origin 
                     })
             );
 
@@ -163,7 +163,7 @@ namespace SODP.UI
                 //.AllowAnyOrigin()                           //
                 //.AllowAnyMethod()                           //
                 //.AllowAnyHeader()                           //
-                .WithOrigins("https://localhost:40303")     //
+                .WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}") 
             );
 
             app.UseAuthentication();

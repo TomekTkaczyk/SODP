@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Stages
 {
-    [Authorize(Roles = "User, ProjectManager")]
+//    [Authorize(Roles = "User, ProjectManager")]
     public class IndexModel : ListPageModel
     {
         const string editStagePartialViewName = "_EditStagePartialView";

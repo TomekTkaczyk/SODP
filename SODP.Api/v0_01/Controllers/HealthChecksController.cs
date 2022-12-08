@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace SODP.Api.v0_01.Controllers
 {
-    [Route("api/hc")]
     [ApiController]
+    [Route("api/hc")]
     public class HealthChecksController : ControllerBase
     {
         [HttpGet]
