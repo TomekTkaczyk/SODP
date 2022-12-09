@@ -41,9 +41,6 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="basic-tab" data-toggle="tab" href="#basic" role="tab" aria-controls="basic" aria-selected="false">Podstawowe</a>
                 </li>
-@*                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="branch-tab" data-toggle="tab" href="#branch" role="tab" aria-controls="branch" aria-selected="false">Podstawowe</a>
-                </li>*@
             </ul>
 
             <div class="tab-content p-0" id="myTabContent">
@@ -172,15 +169,7 @@
                     </div>
                     
                     <br />
-                    
-                    <div class="row">
-                        <div class="col-12">
-                            <partial name="_SubmitAndBackButtonPartial" />
-                        </div>
-                    </div>
-                    
-                    <br/>
-                    
+
                     <div class="form-group">
                         @for (int i = 0; i < Model.Project.ProjectBranches.Branches.Count; i++)
                         {
@@ -191,79 +180,19 @@
                                     <span class="font-weight-bold">@Model.Project.ProjectBranches.Branches[i].Branch.Name</span>
                                 </div>
                                 <div class="col-2 p-0 m-0">
-                                        <div class="btn btn-md"
-                                         data-toggle="tooltip"
-                                         data-placement="top"
-                                         title="Ustaw funkcje techniczne"
-                                         onclick="EditRoles(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
-                                            <i class="fas fa-edit fa-lg text-success"></i>
-                                        </div>
-                                        <div class="btn btn-md"
-                                         data-toggle="tooltip"
-                                         data-placement="top"
-                                         title="Usuń branżę"
-                                         onclick="RemoveBranch(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
-                                            <i class="fas fa-times fa-lg text-danger"></i>
-                                        </div>
-                                </div>
-                            </div>
-
-                            @foreach (var role in Model.Project.ProjectBranches.Branches[i].Roles)
-                            {
-                                <div class="row">
-                                    <div class="col my-auto">@Model._translator.Translate(role.Role, Services.Languages.Pl) : @role.Designer (@role.Content)</div>
-                                </div>
-                            }
-                        }
-                    </div>
-                    
-                    <br />
-
-                    @if (Model.Project.AvailableBranches.Items.Count > 0)
-                    {
-                        <div class="form-group">
-                            <div class="row align-middle">
-                                <div class="col pt-1 pb-1">
-                                    @Html.DropDownListFor(model => model.Project.AvailableBranches.SelectedId, @Model.Project.AvailableBranches.Items, new { @class = "form-control" })
-                                    <span asp-validation-for="Project.AvailableBranches.SelectedId" style="font-size:14px" class="text-danger"></span>
-                                </div>
-                                <div class="btn btn-lg col-1" onclick="AddBranch(@Model.Project.Id, @Model.Project.AvailableBranches.SelectedId)">
-                                    <i class="fas fa-plus text-success"></i>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    
-                    <br />
-
-                    </div>
-                <div class="tab-pane fade" id="branch" role="tabpanel" aria-labelledby="branch-tab">
-                    <br />
-                    <div class="form-group">
-                        @for (int i = 0; i < Model.Project.ProjectBranches.Branches.Count; i++)
-                        {
-                            <input asp-for="Project.ProjectBranches.Branches[i].Branch.Id" type="hidden">
-                            <input asp-for="Project.ProjectBranches.Branches[i].Branch.Name" type="hidden">
-                            <div class="row">
-                                <div class="col my-auto">
-                                    <span class="font-weight-bold">@Model.Project.ProjectBranches.Branches[i].Branch.Name</span>
-                                </div>
-                                <div class="col-1 p-0 m-0">
-                                    <div class="row">
-                                        <div class="btn btn-md"
-                                             data-toggle="tooltip"
-                                             data-placement="top"
-                                             title="Ustaw funkcje techniczne"
-                                             onclick="EditRoles(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
-                                                <i class="fas fa-edit text-success"></i>
-                                        </div>
-                                        <div class="btn btn-md"
-                                             data-toggle="tooltip"
-                                             data-placement="top"
-                                             title="Usuń branżę"
-                                             onclick="RemoveBranch(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
-                                                <i class="fas fa-times text-danger"></i>
-                                        </div>
+                                    <div class="btn btn-md"
+                                     data-toggle="tooltip"
+                                     data-placement="top"
+                                     title="Ustaw funkcje techniczne"
+                                     onclick="EditRoles(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
+                                        <i class="fas fa-edit fa-lg text-success"></i>
+                                    </div>
+                                    <div class="btn btn-md"
+                                     data-toggle="tooltip"
+                                     data-placement="top"
+                                     title="Usuń branżę"
+                                     onclick="RemoveBranch(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
+                                        <i class="fas fa-times fa-lg text-danger"></i>
                                     </div>
                                 </div>
                             </div>
@@ -277,6 +206,8 @@
                         }
                     </div>
 
+                    <br />
+
                     @if (Model.Project.AvailableBranches.Items.Count > 0)
                     {
                         <div class="form-group">
@@ -291,6 +222,13 @@
                             </div>
                         </div>
                     }
+                    <div class="row">
+                        <div class="col-12">
+                            <partial name="_SubmitAndBackButtonPartial" />
+                        </div>
+                    </div>
+
+                    <br />
                 </div>
             </div>
         </div>
