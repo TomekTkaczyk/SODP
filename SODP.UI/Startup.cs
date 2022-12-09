@@ -126,7 +126,15 @@ namespace SODP.UI
 
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
-            services.AddControllers();
+            // To check : 
+			//services.AddAntiforgery(options =>
+			//{
+			//	options.FormFieldName = $"{Configuration.GetSection($"AntiforgeryFieldname").Value}";
+			//	options.HeaderName = "X-CSRF-TOKEN-HEADERNAME";
+			//	options.SuppressXFrameOptionsHeader = false;
+			//});
+
+			services.AddControllers();
 
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();

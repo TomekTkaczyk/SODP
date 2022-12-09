@@ -48,7 +48,27 @@ namespace SODP.UI.Pages.Users
             return Page();
         }
 
-        private async Task<UserDTO> GetUser(int id)
+		public async Task<IActionResult> OnPost()
+		{
+			if (ModelState.IsValid)
+			{
+				CurrentUser.Roles = AllRoles.Where(x => x.Value).Select(x => x.Key).ToList();
+				var apiResponse = await _apiProvider.PutAsync($"users/{CurrentUser.Id}",
+					new StringContent(
+						JsonSerializer.Serialize(CurrentUser),
+						Encoding.UTF8,
+						"application/json"
+						));
+				if (apiResponse.IsSuccessStatusCode)
+				{
+					return RedirectToPage("Index");
+				}
+			}
+
+			return Page();
+		}
+
+		private async Task<UserDTO> GetUser(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"users/{id}");
             if (apiResponse.IsSuccessStatusCode) 
@@ -75,24 +95,5 @@ namespace SODP.UI.Pages.Users
             return null;
         }
 
-        public async Task<IActionResult> OnPost()
-        {
-            if (ModelState.IsValid)
-            {
-                CurrentUser.Roles = AllRoles.Where(x => x.Value).Select(x => x.Key).ToList();
-                var apiResponse = await _apiProvider.PutAsync($"users/{CurrentUser.Id}", 
-                    new StringContent(
-                        JsonSerializer.Serialize(CurrentUser), 
-                        Encoding.UTF8, 
-                        "application/json"
-                        ));
-                if (apiResponse.IsSuccessStatusCode)
-                {
-                    return RedirectToPage("Index");
-                }
-            }
-
-            return Page();
-        }
     }
 }
