@@ -3,12 +3,13 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "Users/Edit?Id=4",
+      "launchUrl": "Users",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation"
       },
-      "applicationUrl": "http://localhost:5003"
+      "applicationUrl": "http://localhost:5003",
+      "nativeDebugging": false
     },
     "SODP.UI": {
       "commandName": "Project",
@@ -23,7 +24,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:44304"
+      "applicationUrl": "http://localhost:44304",
+      "sslPort": 0
     }
   }
 }

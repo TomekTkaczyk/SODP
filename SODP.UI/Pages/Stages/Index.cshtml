@@ -65,7 +65,7 @@
 					<td class="cell text-right">
 						@if (User.IsInRole("ProjectManager"))
 						{
-							<a onclick='DeleteStage(@item.Id)'
+							<a onclick='Delete("/api/v0_01/stages/@item.Id","Usunięcie stadium. Operacja nie może być cofnięta")'
 							   class="btn"
 							   data-toggle="tooltip"
 							   data-placement="top"

@@ -73,11 +73,11 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _service.DeleteAsync(id));
         }
 
-        [HttpPatch("{Id}/{status}")]
+        [HttpPatch("{id}/{status}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] int status)
+        public async Task<IActionResult> SetActiveAsync(int id, [FromBody] int status)
         {
             return Ok(await _service.SetActiveStatusAsync(id, status == 1));
         }

@@ -15,9 +15,9 @@ namespace SODP.Model
             Name = name;
         }
 
+        public bool ActiveStatus { get; set; }
         public string Sign { get; set; }
         public string Name { get; set; }
-        public bool ActiveStatus { get; set; }
 
         public void Normalize()
         {

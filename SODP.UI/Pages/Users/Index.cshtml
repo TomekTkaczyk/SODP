@@ -1,93 +1,89 @@
 ﻿@page
 @model IndexModel
-@{ ViewData["Title"] = "Użytkownicy"; }
+@{
+	ViewData["Title"] = "Użytkownicy";
+}
 
-<br />
-<div class="container row p-0 m-0">
-    <div class="col-9">
-        <h2 class="text-info">Użytkownicy systemu</h2>
-    </div>
+<div class="col">
+	<h2 class="text-info">Użytkownicy systemu</h2>
+</div>
 
-    <div class="col-3">
-        <a role="button" class="btn btn-info form-control text-white" asp-area="Identity" asp-page="/Account/Register"><i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy użytkownik</a>
-    </div>
-
-    <div id="UsersTable" class="col-12 p-3 mt-3">
-        <form method="post">
-            @if (Model.Users.Data.Collection.Count() > 0)
-            {
-                <table class="table table-sm table-hover">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Login</th>
-                            <th>Imię i nazwisko</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var user in Model.Users.Data.Collection)
-                        {
-                            <tr>
-                                <td>
-                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.Username</a>
-                                </td>
-                                <td>
-                                    <a asp-page="Edit" asp-route-Id="@user.Id" data-toggle="tooltip" title="Edycja" data-placement="top">@user.ToString()</a>
-                                </td>
-                                <td>
-                                    <div class="row group justify-content-end mr-0">
-                                        <div>
-                                            <style>
-                                                .toggle.ios, .toggle-on.ios, .toggle-off.ios {
-                                                    border-radius: 20px;
-                                                }
-                                                .toggle.ios .toggle-handle {
-                                                    border-radius: 20px;
-                                                }
-                                            </style>
-                                            <input type="checkbox" asp-for="@user.ActiveStatus" name="checkbox_@user.Id"
-                                                   onchange="handleChange(@user.Id,this.checked)" 
-                                                   id="checkbox_@user.Id"  
-                                                   data-toggle="toggle" 
-                                                   data-style="ios">
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>}
-                    </tbody>
-                </table> }
-             else
-             {
-                <p> Lista użytkowników jest pusta</p>}
-        </form>
-    </div>
+<div id="UsersTable" class="col-12 p-3 mt-3">
+	<form method="post">
+		@if (Model.Users.Data.Collection.Count() > 0)
+		{
+			<table class="table table-sm table-hover">
+				<thead class="thead-light">
+					<tr>
+						<th>Login</th>
+						<th>Imię i nazwisko</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in Model.Users.Data.Collection)
+					{
+						<tr>
+							<td class="cell clickable" onclick="Edit(@item.Id)" data-toggle="tooltip" title="Edycja" style="vertical-align:middle">
+								@item.Username
+							</td>
+							<td class="cell clickable" onclick="Edit(@item.Id)" data-toggle="tooltip" title="Edycja" style="vertical-align:middle">
+								@item.ToString()
+							</td>
+							<td class="cell text-right">
+								<div class="row group justify-content-end mr-0">
+									@if (!item.Username.Equals("Administrator") && !item.Username.Equals("PManager"))
+									{
+										<a onclick='Delete("/api/v0_01/users/@item.Id","Usunięcie użytkownika nie może być cofnięte")'
+							   class="btn"
+							   data-toggle="tooltip"
+							   data-placement="top"
+							   title="Usuń użytkownika">
+											<i class="fas fa-times fa-lg text-danger"></i>
+										</a>
+									}
+									<input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
+								   onchange="handleChange(@item.Id,this.checked)"
+								   id="checkbox_@item.Id"
+								   data-toggle="toggle"
+								   data-style="ios" disabled="@(item.Username=="Administrator"||item.Username=="PManager")">
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+		else
+		{
+			<p> Lista użytkowników jest pusta</p>
+		}
+	</form>
 </div>
 
 
 @section Scripts{
-    <script src="~/js/usersList.js"></script>
-    <script src="~/js/delete.js"></script>
-    <script>
-        function handleChange(id, checked) {
+	<script src="~/js/delete.js"></script>
+	<script>
+		function Edit(id) {
+			window.location = `/Users/Edit?Id=${id}`;
+		}
 
-            let c = checked ? 1 : 0;
-            let url = `/api/v0_01/users/${id}/${c}`;
-
-            $.ajax({
-                type: "PUT",
-                url: url,
-                contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                data: JSON.stringify(c),
-                success: function (response) {
-                    console.log(response);
-                },
-                error: function (jqXHR, exception) {
-                    console.log(jqXHR);
-                    console.log(exception);
-                }
-            });
-        }
-    </script>
+		function handleChange(id, checked) {
+			let c = checked ? 1 : 0;
+			$.ajax({
+				type: "PATCH",
+				url: `/api/v0_01/users/${id}/status`,
+				contentType: "application/json; charset=utf-8",
+				dataType: 'json',
+				data: JSON.stringify(c),
+				success: function (response) { },
+				error: function (jqXHR, exception) {
+					console.log(jqXHR);
+					console.log(exception);
+				}
+			});
+		}
+	</script>
 }
 

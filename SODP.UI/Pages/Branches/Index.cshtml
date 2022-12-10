@@ -58,7 +58,7 @@
 
 						<a name="additionalBtn"
 						   id="deleteBranch-@item.Id"
-						   onclick='Delete("/api/v0_01/branches/@item.Id")'
+						   onclick='Delete("/api/v0_01/branches/@item.Id","Usunięcie branży. Operacja nie może być cofnięta")'
 						   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
 						   data-toggle="tooltip"
 						   data-placement="top"
@@ -66,10 +66,9 @@
 							<i class="fas fa-times fa-lg text-danger"></i>
 						</a>
 						<input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
-							onchange="handleChange(@item.Id, this.checked)"
+							onchange="handleChange(@item.Id,this.checked)"
 							id="checkbox_@item.Id"
 							data-toggle="toggle"
-							title="Aktywność"
 							data-style="ios">
 					</div>
 				</div>
@@ -114,8 +113,7 @@ else
 				contentType: "application/json; charset=utf-8",
 				dataType: 'json',
 				data: JSON.stringify(c),
-				success: function (response) {
-				},
+				success: function (response) {},
 				error: function (jqXHR, exception) {
 					console.log(jqXHR);
 					console.log(exception);

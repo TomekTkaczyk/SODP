@@ -1,9 +1,13 @@
-﻿function Delete(url) {
-    swal({
+﻿function Delete(url, msg) {
+    console.log(msg);
+    if (msg == null) {
+        msg = "Usunięcie rekordu. Operacja nie może być cofnięta.";
+    }
+    swal({            
         title: "Czy jesteś pewien?",
-        text: "Usunięcie rekordu. Operacja nie może być cofnięta.",
-        icon: "warning",
-        buttons: true,
+        text: msg,
+        icon: "error",
+        buttons: ["Anuluj","Tak"],
         dangerMode: true
     }).then((willDelete) => {
         if (willDelete) {

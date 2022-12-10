@@ -67,13 +67,13 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(await _usersService.UpdateAsync(user));
         }
 
-        [HttpPut("{id}/{enabled}")]
+        [HttpPatch("{id}/status")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> SetEnable(int id, [FromBody]int enabled)
+        public async Task<IActionResult> SetActiveAsync(int id, [FromBody]int status)
         {
-            return Ok(await _usersService.SetActiveStatusAsync(id, enabled==1));
+            return Ok(await _usersService.SetActiveStatusAsync(id, status == 1));
         }
     }
 }

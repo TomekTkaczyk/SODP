@@ -85,7 +85,6 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-
         public async Task<ServiceResponse> UpdateAsync(UserDTO user)
         {
             // required correct validation of user
@@ -152,12 +151,6 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-
-        public Task<ServiceResponse<UserDTO>> CreateAsync(UserDTO entity)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
         {
             var serviceResponse = new ServiceResponse();
@@ -192,9 +185,35 @@ namespace SODP.Infrastructure.Services
         public async Task<ServiceResponse> DeleteAsync(int id)
         {
             var serviceResponse = new ServiceResponse();
-            serviceResponse.SetError("Operacja kasowania nie jest dostępna dla użytkownika", 405);
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id.ToString());
+                if (user == null)
+                {
+                    serviceResponse.SetError($"Użytkownik Id:{id} nie odnaleziony.", 404);
+                    return serviceResponse;
+                }
 
-            return await Task.FromResult(serviceResponse);
+                if(user.UserName.Equals("Administrator") || user.UserName.Equals("PManager"))
+                {
+                    serviceResponse.SetError($"Nie można usunąć żytkownika {user.UserName}");
+                    return serviceResponse;
+                }
+
+                var result = await _userManager.DeleteAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    serviceResponse.IdentityResultErrorProcess(result);
+                    return serviceResponse;
+                }
+            }
+            catch  (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
+
+            return serviceResponse;
         }
     }
 }

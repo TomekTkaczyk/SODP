@@ -58,7 +58,7 @@ namespace SODP.UI.Areas.Identity.Pages.Account
 
             [DataType(DataType.Password)]
             [Display(Name = "Potwierdź hasło")]
-            [Compare("Password", ErrorMessage = "Hasła nie są zgodne.")]
+            [Compare("Password", ErrorMessage = "Hasła nie są zgodne")]
             public string ConfirmPassword { get; set; }
         }
 

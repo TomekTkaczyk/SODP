@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using SODP.Application;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Infrastructure;
+using SODP.Infrastructure.Managers;
 using SODP.Model;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
@@ -88,7 +90,7 @@ namespace SODP.UI
 
             services.AddTransient<IdentityErrorDescriber, CustomIdentityErrorDescriber>();
 
-            services.AddIdentity<User, Role>(options =>   
+            services.AddIdentity<User, Role>(options =>
             {
                 options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._";
                 options.Password.RequiredLength = int.Parse(Configuration.GetSection("PasswordPolicy:RequiredLength").Value);
@@ -100,6 +102,8 @@ namespace SODP.UI
                 .AddEntityFrameworkStores<SODPDBContext>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
+
+            services.AddScoped<UserManager<User>,SODPUserManager>();
 
             //services.ConfigureApplicationCookie(options =>
             //{
@@ -142,10 +146,6 @@ namespace SODP.UI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //app.Run(async context => {
-            //    await context.Response.WriteAsync("Hello world");
-            //});
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
