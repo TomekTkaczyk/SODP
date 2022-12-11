@@ -19,10 +19,13 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
 {
-//    [Authorize(Roles = "User, Administrator, ProjectManager")]
+    [Authorize(Roles = "User, Administrator, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
         const string newProjectPartialViewName = "_NewProjectPartialView";
+        const string projectPartialViewName = "_ProjectPartialView";
+
+        public ProjectVM Project { get; set; }
 
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
@@ -66,6 +69,15 @@ namespace SODP.UI.Pages.ActiveProjects
             return await GetPartialViewAsync(project);
         }
 
+        public async Task<PartialViewResult> OnGetProjectPartialAsync(int id)
+        {
+            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/branches");
+            var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
+            Project = _mapper.Map<ProjectVM>(response.Data);
+
+			return GetPartialView(Project, projectPartialViewName);
+        }
+
         private async Task<PartialViewResult> GetPartialViewAsync(NewProjectVM project)
         {
             var response = await _apiProvider.GetAsync("stages");
@@ -94,5 +106,5 @@ namespace SODP.UI.Pages.ActiveProjects
                 ViewData = new ViewDataDictionary<NewProjectVM>(ViewData, project)
             };
         }
-    }
+	}
 }

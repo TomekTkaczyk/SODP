@@ -3,13 +3,13 @@
 @model ListPageModel
 
 <form>
-    <div class="row justify-content-end">
-        <div class="col-3">
-            <div class=row p-0>
-                <div class=col-5>
+    <div class="row justify-content-end pb-1">
+        <div class="col-5">
+            <div class=row p-0 >
+                <div class="col-5 col-md-4 p-0 d-flex align-items-center">
                     Rozmiar strony
                 </div>
-                <div class="col d-flex align-items-center">
+                <div class="col col-md-6 col-lg-4 col-xl-3 d-flex align-items-center">
                     @Html.DropDownListFor(model => model.PageSize, @Model.PageSizeList, null, new { @class = "form-control", @id = "pageSize", @onchange = "$('form').submit();"})
                 </div>
             </div>

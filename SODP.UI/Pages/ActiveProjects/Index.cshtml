@@ -12,7 +12,7 @@
 
 @inject SignInManager<User> SignInManager
 
-<div class="row">
+<div class="row mb-2">
 	<div class="col-8 p-0">
 		<h2 class="text-info p-0">@ViewData["Title"]</h2>
 	</div>
@@ -35,43 +35,32 @@
 
 @if (Model.ProjectsViewModel.Projects.Count() > 0)
 {
-	<table id="ProjectTable" class="table table-sm table-hover">
-		<thead class="thead-light">
-			<tr>
-				<th class="pl-1 pr-1">Numer</th>
-				<th class="pl-1 pr-1">Stadium</th>
-				<th class="pl-1 pr-1">Nazwa</th>
-				<th class="pl-1 pr-1"></th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model.ProjectsViewModel.Projects)
-			{
-				<tr class="m-0 p-0">
-					<td onclick='@(User.IsInRole("ProjectManager") ? "Edit("+item.Id+")" : "")'
-				class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
-				data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
-				title='@(User.IsInRole("ProjectManager") ? "Szczegóły" : "")'
-				style="vertical-align:middle">
-						@item.Number
-					</td>
-					<td onclick='@(User.IsInRole("ProjectManager") ? "Edit("+item.Id+")" : "")'
-				class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
-				data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
-				title='@(User.IsInRole("ProjectManager") ? "Szczegóły" : "")'
-				style="vertical-align:middle">
-						@item.Stage.Sign
-					</td>
-					<td onclick='@(User.IsInRole("ProjectManager") ? "Edit("+item.Id+")" : "")'
-						class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
-						data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
-						title='@(User.IsInRole("ProjectManager") ? "Szczegóły" : "")'
-						style="vertical-align:middle">
-						@item.Name
-					</td>
-					<td class="cell text-right">
+	<div id="projectsAccordion" class="accordion">
+		@foreach (var item in Model.ProjectsViewModel.Projects)
+		{
+			<div class="button card border-light">
+				<div class="card-header border-light p-0 d-flex align-items-center" style="background-color:white" id="card-header-@item.Id">
+					<div class="col font-weight-bold clickable"
+						 onclick="accordionCollapse(@item.Id)"
+						 id="card-head-@item.Id"
+						 data-toggle="collapse"
+						 data-target="#collapse-@item.Id"
+						 aria-expanded="false"
+						 aria-controls="collapse-@item.Id">
+						@item.Number @item.Stage.Sign @item.Name
+					</div>
+					<div class="colgroup justify-content-end mr-2">
 						@if (User.IsInRole("ProjectManager"))
 						{
+							<a name="additionalBtn"
+							   id="editProject-@item.Id"
+							   onclick='Edit(@item.Id)'
+							   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+							   data-toggle="tooltip"
+							   data-placement="top"
+							   title="Edycja">
+								<i class="fas fa-edit fa-lg text-success"></i>
+							</a>
 							<a onclick='Archive(@item.Id)'
 							   class='btn'
 							   data-toggle="tooltip"
@@ -87,28 +76,29 @@
 								<i class="fas fa-times fa-lg text-danger"></i>
 							</a>
 						}
-					</td>
-				</tr>
-			}
-		</tbody>
-		<tfoot>
-			<tr>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-			</tr>
-		</tfoot>
-	</table>
+					</div>
+				</div>
+			</div>
+			<div id="collapse-@item.Id"
+				 class="collapse hide"
+				 aria-labelledby="heading-@item.Id"
+				 data-parent="#projectsAccordion">
+				<div class="card-body" id="project-@item.Id">
+					Coś poszło nie tak z ładowaniem szczegółów
+				</div>
+			</div>
+		}
+	</div>
+	<br/>
 	@if (Model.PageInfo.TotalPages > 1)
 	{
 		<div class="col text-center">
 			<div page-model="@Model.PageInfo"
-				 page-class="btn border"
-				 page-class-normal="btn btn-light"
-				 page-class-selected="btn btn-info"
-				 page-class-prev-next="btn"
-				 class="btn-group">
+		 page-class="btn border"
+		 page-class-normal="btn btn-light"
+		 page-class-selected="btn btn-info"
+		 page-class-prev-next="btn"
+		 class="btn-group">
 			</div>
 		</div>
 	}
@@ -118,7 +108,6 @@ else
 	<br />
 	<p> Lista projektów jest pusta</p>
 }
-
 
 @section Scripts{
 	<script src="~/js/delete.js"></script>
@@ -153,6 +142,12 @@ else
 					})
 				}
 			})
+		}
+
+		function accordionCollapse(id) {
+			if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
+				$(`#project-${id}`).load(`/ActiveProjects/index?handler=ProjectPartial&id=${id}`);
+			}
 		}
 	</script>
 

@@ -118,7 +118,7 @@ namespace SODP.UI.Pages.Designers
                 };
             }
 
-            return GetPartialView<LicensesVM>(Licenses, licensesPartialViewName);
+            return GetPartialView(Licenses, licensesPartialViewName);
         }
 
         public PartialViewResult OnGetNewLicenseAsync(int designerId)

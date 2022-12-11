@@ -9,15 +9,17 @@ namespace SODP.UI.Mappers
     {
         public AutoMapperProfile()
         {
+            CreateMap<ProjectBranchDTO, ProjectBranchVM>();
+
             CreateMap<ProjectDTO, ProjectVM>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ForMember(dest => dest.Stage, act => act.Ignore())
                 .ForMember(dest => dest.StageId, opt => opt.MapFrom(x => x.Stage.Id))
                 .ForMember(dest => dest.StageSign, opt => opt.MapFrom(x => x.Stage.Sign))
                 .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Name))
+                .ForMember(dest => dest.ProjectBranches, opt => opt.MapFrom(x => new BranchesVM()))
+                .ForPath(dest => dest.ProjectBranches.Branches, opt => opt.MapFrom(x => x.Branches))
                 .PreserveReferences();
-
-            CreateMap<ProjectBranchDTO, ProjectBranchVM>();
 
             CreateMap<ProjectBranchRoleDTO, RoleVM>()
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.License.Designer.ToString()))
