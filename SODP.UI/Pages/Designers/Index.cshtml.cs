@@ -45,7 +45,7 @@ namespace SODP.UI.Pages.Designers
             var url = new StringBuilder();
             url.Append(ReturnUrl);
             url.Append("?currentPage=:&pageSize=");
-            url.Append(pageSize.ToString());
+            url.Append(pageSize);
 
             Designers = new DesignersVM
             {

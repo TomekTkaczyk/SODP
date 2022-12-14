@@ -27,26 +27,27 @@ namespace SODP.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<ServicePageResponse<StageDTO>> GetAllAsync()
+
+        public async Task<ServicePageResponse<StageDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
         {
-            return await GetAllAsync(1, 0, null);
+            return await GetAllAsync(currentPage, pageSize, "");
         }
+
 
         public async Task<ServicePageResponse<StageDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "", bool? active = null)
         {
             var serviceResponse = new ServicePageResponse<StageDTO>();
             IList<Stage> projects = new List<Stage>();
-
-            serviceResponse.Data.TotalCount = await _context.Stages
-                .Where(x => x.ActiveStatus == active && (string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString)))
-                .CountAsync();
-            if (pageSize == 0)
-            {
-                pageSize = serviceResponse.Data.TotalCount;
-            }
-
             try
             {
+                serviceResponse.Data.TotalCount = await _context.Stages
+                    .Where(x => x.ActiveStatus == active && (string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString)))
+                    .CountAsync();
+                if (pageSize == 0)
+                {
+                    pageSize = serviceResponse.Data.TotalCount;
+                }
+
                 var stages = _context.Stages
                     .Where(p => !string.IsNullOrEmpty(p.Sign) && (string.IsNullOrEmpty(searchString) || p.Name.Contains(searchString)))
                     .OrderBy(x => x.Sign);
@@ -64,7 +65,7 @@ namespace SODP.Infrastructure.Services
                 }
 
                 var st = await stages
-                    .Skip((currentPage-1) * pageSize)
+                    .Skip((currentPage - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
 
@@ -80,6 +81,7 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse<StageDTO>> GetAsync(int id)
         {
@@ -125,7 +127,7 @@ namespace SODP.Infrastructure.Services
             try
             {
                 var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Sign.ToUpper() == newStage.Sign.ToUpper());
-                if(stage != null)
+                if (stage != null)
                 {
 
                     serviceResponse.SetError($"Stadium {newStage.Sign.ToUpper()} już istnieje.", 400);
@@ -162,7 +164,7 @@ namespace SODP.Infrastructure.Services
             try
             {
                 var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == updateStage.Id);
-                if(stage == null)
+                if (stage == null)
                 {
                     serviceResponse.SetError($"Stadium {updateStage.Id} nie odnalezione.", 404);
                     serviceResponse.ValidationErrors.Add("Sign", "Stadium nie odnalezione.");
@@ -194,7 +196,7 @@ namespace SODP.Infrastructure.Services
                     return serviceResponse;
                 }
                 var project = await _context.Projects.FirstOrDefaultAsync(x => x.Stage.Id == id);
-                if(project != null)
+                if (project != null)
                 {
                     serviceResponse.SetError($"Stadium {project.Stage.Sign} posiada powiązane projekty.", 400);
                     serviceResponse.ValidationErrors.Add("Id", $"Stadium [{id}] posiada powiązane projekty.");
@@ -224,7 +226,7 @@ namespace SODP.Infrastructure.Services
                     return serviceResponse;
                 }
                 var project = await _context.Projects.FirstOrDefaultAsync(x => x.Stage.Sign == sign);
-                if(project != null)
+                if (project != null)
                 {
                     serviceResponse.SetError($"Stadium {sign} posiada powiązane projekty.", 409);
                     serviceResponse.ValidationErrors.Add("Sign", $"Stadium {sign} posiada powiązane projekty.");

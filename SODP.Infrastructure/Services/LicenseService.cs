@@ -28,24 +28,10 @@ namespace SODP.Infrastructure.Services
             _context = context;
             _designerService = designerService;
         }
-        public async Task<ServicePageResponse<LicenseDTO>> GetAllAsync()
+        public Task<ServiceResponse<LicenseDTO>> CreateAsync(LicenseDTO entity)
         {
-            var serviceResponse = new ServicePageResponse<LicenseDTO>();
-            try
-            {
-                var licenses = await _context.Licenses
-                    .Include(x => x.Designer)
-                    .ToListAsync();
-                serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(licenses));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
+            throw new NotImplementedException();
         }
-
 
         public async Task<ServiceResponse<LicenseDTO>> CreateAsync(NewLicenseDTO newLicense)
         {
@@ -54,7 +40,7 @@ namespace SODP.Infrastructure.Services
             var license = await _context.Licenses
                 .Include(x => x.Designer)
                 .FirstOrDefaultAsync(x => x.Content.Trim().Equals(newLicense.Content.Trim()));
-            if(license != null)
+            if (license != null)
             {
                 serviceResponse.SetError("Nr uprawnień już występuje w bazie", 409);
                 return serviceResponse;
@@ -75,6 +61,26 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
+
+
+        public async Task<ServicePageResponse<LicenseDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        {
+            var serviceResponse = new ServicePageResponse<LicenseDTO>();
+            try
+            {
+                var licenses = await _context.Licenses
+                    .Include(x => x.Designer)
+                    .ToListAsync();
+                serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(licenses));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
+
 
         public async Task<ServiceResponse> DeleteAsync(int id)
         {

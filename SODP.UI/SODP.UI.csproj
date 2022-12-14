@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Content Remove="Pages\ActiveProjects\ViewModels\_NewProjectPartialView.cshtml" />
-    <Content Remove="Pages\ArchiveProjects\_ProjectPartialView.cshtml" />
     <Content Remove="stages.json" />
   </ItemGroup>
 
@@ -56,10 +55,6 @@
     <ProjectReference Include="..\SODP.DataAccess\SODP.DataAccess.csproj" />
     <ProjectReference Include="..\SODP.Infrastructure\SODP.Infrastructure.csproj" />
     <ProjectReference Include="..\SODP.Shared\SODP.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\ArchiveProjects\ViewModels\" />
   </ItemGroup>
 
 </Project>

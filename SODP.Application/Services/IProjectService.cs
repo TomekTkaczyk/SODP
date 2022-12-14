@@ -1,19 +1,15 @@
 ﻿using SODP.Shared.DTO;
-using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public interface IProjectService : IAppService
+    public interface IProjectService : IEntityService<ProjectDTO>
     {
         IProjectService SetArchiveMode();
         IProjectService SetActiveMode();
-        Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "");
         Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO project);
-        Task<ServiceResponse<ProjectDTO>> GetAsync(int id);
-        Task<ServiceResponse> UpdateAsync(ProjectDTO project);
-        Task<ServiceResponse> DeleteAsync(int id);
+        Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "");
         Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id);
         Task<ServiceResponse> RestoreAsync(int id);
         Task<ServiceResponse> ArchiveAsync(int id);

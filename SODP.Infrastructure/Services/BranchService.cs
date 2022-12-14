@@ -27,22 +27,33 @@ namespace SODP.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync()
+        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
         {
-            return await GetAllAsync(null);
+            return await GetAllAsync(currentPage, pageSize, null);
         }
 
-        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(bool? activeOnly = null)
+        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
         {
             var serviceResponse = new ServicePageResponse<BranchDTO>();
-
             try
             {
-                var branches = _context.Branches
-                    .Where(x => (activeOnly == null || !activeOnly.Value) || (x.ActiveStatus == activeOnly))
-                    .OrderBy(x => x.Sign);
+                serviceResponse.Data.TotalCount = await _context.Branches
+                    .Where(x => active == null || (x.ActiveStatus == active))
+                    .CountAsync();
 
-                serviceResponse.Data.TotalCount = await branches.CountAsync();
+                if (pageSize == 0)
+                {
+                    pageSize = serviceResponse.Data.TotalCount;
+                }
+
+                var branches = _context.Branches
+                    .OrderBy(x => x.Sign)
+                    .Where(x => active == null || (x.ActiveStatus == active))
+                    .Skip((currentPage - 1) * pageSize)
+                    .Take(pageSize);
+
+                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageSize = pageSize;
                 serviceResponse.SetData(_mapper.Map<IList<BranchDTO>>(branches));
 
             }
@@ -240,5 +251,6 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
+
     }
 }

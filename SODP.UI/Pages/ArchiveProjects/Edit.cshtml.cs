@@ -54,7 +54,7 @@ namespace SODP.UI.Pages.ArchiveProjects
                 }
                 Project = new ProjectVM
                 {
-                    Status = ProjectStatus.Archived
+                    Status = ProjectStatus.Archival
                 };
             }
 

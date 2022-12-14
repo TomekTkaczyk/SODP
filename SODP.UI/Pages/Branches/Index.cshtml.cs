@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
@@ -13,31 +14,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Branches
 {
     [Authorize(Roles = "ProjectManager")]
-    public class IndexModel : SODPPageModel
+    public class IndexModel : ListPageModel
     {
         const string editBranchPartialViewName = "_EditBranchPartialView";
         const string designersPartialViewName = "_DesignersPartialView";
         
-        private readonly IWebAPIProvider _apiProvider;
-
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/Branches";
-            _apiProvider = apiProvider;
+            _endpoint = "branches";
         }
 
         public BranchesVM Branches { get; set; }
 
         public DesignersVM Designers { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
         {
-            Branches = await GetBranchesAsync();
+            var url = new StringBuilder();
+            url.Append(ReturnUrl);
+            url.Append("?currentPage=:&pageSize=");
+            url.Append(pageSize);
+
+            Branches = new BranchesVM
+            {
+                PageInfo = new PageInfo
+                {
+                    CurrentPage = currentPage,
+                    ItemsPerPage = pageSize,
+                    Url = url.ToString()
+                },
+            };
+
+            Branches = await GetBranchesAsync(Branches.PageInfo);
+
             return Page();
         }
 
@@ -106,14 +122,14 @@ namespace SODP.UI.Pages.Branches
             return GetPartialView<DesignersVM>(Designers, designersPartialViewName);
         } 
 
-        private async Task<BranchesVM> GetBranchesAsync()
+        private async Task<BranchesVM> GetBranchesAsync(PageInfo pageInfo)
         {
             var result = new BranchesVM
             {
                 Branches = new List<BranchDTO>()
             };
 
-            var apiResponse = await _apiProvider.GetAsync($"branches");
+            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
 
             if (apiResponse.IsSuccessStatusCode)
             {

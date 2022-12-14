@@ -22,6 +22,8 @@ namespace SODP.Domain
             CreateMap<Stage, StageDTO>()
                 .ReverseMap();
 
+            CreateMap<SysDictionary, SysDictionaryDTO>()
+                .ReverseMap();
 
             CreateMap<Project, ProjectDTO>();
 

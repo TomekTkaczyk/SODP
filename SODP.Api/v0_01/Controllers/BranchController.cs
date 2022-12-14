@@ -9,79 +9,20 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("/api/v0_01/branches")]
-    public class BranchController : ApiControllerBase
+    public class BranchController : ApiControllerBase<BranchDTO>
     {
-        private readonly IBranchService _service;
-
-        public BranchController(IBranchService service, ILogger<ApiControllerBase> logger) :base(logger)
+        public BranchController(IBranchService service, ILogger<BranchController> logger) :base(service, logger) 
         {
-            _service = service;
+            var aaa = new BranchDTO();
         }
 
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAllAsync(bool? ActiveOnly)
-        {
-            return Ok(await _service.GetAllAsync(ActiveOnly));
-        }
-
-        [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAsync(int id)
-        {
-            return Ok(await _service.GetAsync(id));
-        }
-
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<BranchDTO>> Create([FromBody] BranchDTO branch)
-        {
-            var response = await _service.CreateAsync(branch);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<BranchDTO>> Update(int id, [FromBody] BranchDTO branch)
-        {
-            if (id != branch.Id)
-            {
-                return BadRequest();
-            }
-
-            return Ok(await _service.UpdateAsync(branch));
-        }
-
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult> Delete(int id)
-        {
-            return Ok(await _service.DeleteAsync(id));
-        }
-
-        [HttpPatch("{id}/{status}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> SetActiveAsync(int id, [FromBody] int status)
-        {
-            return Ok(await _service.SetActiveStatusAsync(id, status == 1));
-        }
-
+        //[HttpGet]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
+        //public async Task<IActionResult> GetAllAsync(bool? ActiveOnly)
+        //{
+        //    return Ok(await _service.GetAllAsync(1,0));
+        //}
 
         [HttpGet("{id}/designers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -89,7 +30,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetLicensesAsync(int id)
         {
-            return Ok(await _service.GetLicensesAsync(id));
+            return Ok(await (_service as IBranchService).GetLicensesAsync(id));
         }
     }
 }

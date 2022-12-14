@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
 {
-    [Authorize(Roles = "User, Administrator, ProjectManager")]
+    [Authorize(Roles = "User, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
         const string newProjectPartialViewName = "_NewProjectPartialView";

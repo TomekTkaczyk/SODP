@@ -27,6 +27,11 @@ namespace SODP.Infrastructure.Services
             _context = context;
         }
 
+        public Task<ServiceResponse<UserDTO>> CreateAsync(UserDTO entity)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ServicePageResponse<UserDTO>> GetAllAsync()
         {
             return await GetAllAsync(1, 0);
@@ -215,5 +220,6 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
+
     }
 }

@@ -30,6 +30,7 @@ namespace SODP.UI.Services
                 return Current - (Width - 1) / 2;
             }
         }
+
         public int Right
         {
             get

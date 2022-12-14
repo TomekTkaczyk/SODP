@@ -9,9 +9,10 @@ namespace SODP.Api.v0_01.Controllers
 {
     // [Authorize]
     [ApiController]
-    [Route("api/v0_01/users")]
-    public class UserController : ApiControllerBase<UserDTO>
+    [Route("api/v0_01/investors")]
+    public class InvestorController : ApiControllerBase<InvestorDTO>
     {
-        public UserController(IUserService service, ILogger<UserController> logger) : base(service, logger) { }
+        public InvestorController(IInvestorService service, ILogger<InvestorController> logger) : base(service, logger) { }
+
     }
 }

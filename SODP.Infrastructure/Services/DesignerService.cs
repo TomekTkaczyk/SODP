@@ -10,7 +10,6 @@ using SODP.Shared.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
@@ -28,28 +27,35 @@ namespace SODP.Infrastructure.Services
             _context = context;
         }
 
-        public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync()
+
+        public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
         {
-            return await GetAllAsync(1, 0, null);
+            return await GetAllAsync(currentPage, pageSize, null);
         }
+
 
         public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
         {
             var serviceResponse = new ServicePageResponse<DesignerDTO>();
             try
             {
-                serviceResponse.Data.TotalCount = await _context.Designers.Where(x => active == null || (x.ActiveStatus == active)).CountAsync();
-                if(pageSize == 0)                                                
+                serviceResponse.Data.TotalCount = await _context.Designers
+                    .Where(x => active == null || (x.ActiveStatus == active))
+                    .CountAsync();
+
+                if (pageSize == 0)
                 {
                     pageSize = serviceResponse.Data.TotalCount;
                 }
+
                 var designers = await _context.Designers
                     .OrderBy(x => x.Lastname)
                     .ThenBy(y => y.Firstname)
                     .Where(x => active == null || (x.ActiveStatus == active))
-                    .Skip((currentPage-1) * pageSize)
+                    .Skip((currentPage - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
+
                 serviceResponse.Data.PageNumber = currentPage;
                 serviceResponse.Data.PageSize = pageSize;
                 serviceResponse.SetData(_mapper.Map<IList<DesignerDTO>>(designers));
@@ -61,6 +67,7 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse<DesignerDTO>> GetAsync(int designerId)
         {
@@ -261,9 +268,9 @@ namespace SODP.Infrastructure.Services
         }
 
 
-        public async Task<bool> DesignerExist(int designerId)
+        public async Task<bool> DesignerExist(int id)
         {
-            var result = await _context.Designers.FirstOrDefaultAsync(x => x.Id == designerId);
+            var result = await _context.Designers.FirstOrDefaultAsync(x => x.Id == id);
             return (result != null);
         }
     }

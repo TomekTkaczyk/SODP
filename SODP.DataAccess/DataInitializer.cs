@@ -59,7 +59,7 @@ namespace SODP.DataAccess
             CreateFolders(@"./aktualne.lst", _configuration.GetSection($"{_settingsPrefix}ActiveFolder").Value);
             CreateFolders(@"./zakonczone.lst", _configuration.GetSection($"{_settingsPrefix}ArchiveFolder").Value);
             ImportProjectsFromStore(_configuration.GetSection($"{_settingsPrefix}ActiveFolder").Value, ProjectStatus.Active);
-            ImportProjectsFromStore(_configuration.GetSection($"{_settingsPrefix}ArchiveFolder").Value, ProjectStatus.Archived);
+            ImportProjectsFromStore(_configuration.GetSection($"{_settingsPrefix}ArchiveFolder").Value, ProjectStatus.Archival);
         }
 
         private void CreateFolders(string folderlist, string destination)

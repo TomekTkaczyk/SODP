@@ -61,15 +61,15 @@
 							   title="Edycja">
 								<i class="fas fa-edit fa-lg text-success"></i>
 							</a>
-							<a onclick='Archive(@item.Id)'
-							   class='btn'
+							<a onclick="Archive(@item.Id)"
+							   class="btn"
 							   data-toggle="tooltip"
 							   data-placement="top"
 							   title="Przenieś projekt do archiwum">
 								<i class="fas fa-archive fa-lg text-success"></i>
 							</a>
 							<a onclick='Delete("/api/v0_01/projects/@item.Id","Usinięcie projektu nie może być cofnięte")'
-							   class='btn'
+							   class="btn"
 							   data-toggle="tooltip"
 							   data-placement="top"
 							   title="Usuń projekt">
@@ -126,10 +126,9 @@ else
 				danegerMode: true
 			}).then((willArchive) => {
 				if (willArchive) {
-					const url = `/api/v0_01/projects/${id}/archive`;
 					$.ajax({
 						type: "GET",
-						url: url,
+						url: `/api/v0_01/projects/${id}/archive`,
 						success: function (data) {
 							if (data.success) {
 								toastr.success(data.message);

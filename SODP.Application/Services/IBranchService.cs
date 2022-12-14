@@ -4,12 +4,10 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public interface IBranchService : IEntityService<BranchDTO>
+    public interface IBranchService : IEntityService<BranchDTO>, IActiveStatusService
     {
-        Task<ServicePageResponse<BranchDTO>> GetAllAsync(bool? active = false);
+        Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage, int pageSize, bool? active = false);
         Task<ServiceResponse<BranchDTO>> GetAsync(string sign);
-        Task<ServiceResponse<BranchDTO>> CreateAsync(BranchDTO branch);
-        Task<ServiceResponse> SetActiveStatusAsync(int id, bool status);
         Task<ServicePageResponse<LicenseDTO>> GetLicensesAsync(int id);
     }
 }

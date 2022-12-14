@@ -9,15 +9,18 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/roles")]
-    public class RoleController : ApiControllerBase
+    public class RoleController : ControllerBase
     {
-        private readonly IRoleService _roleService;
-        public RoleController(IRoleService roleService, ILogger<RoleController> logger) : base(logger)
+        private readonly IRoleService _service;
+        protected readonly ILogger<RoleController> _logger;
+
+        public RoleController(IRoleService service, ILogger<RoleController> logger) : base()
         {
-            _roleService = roleService;
+            _service = service;
+            _logger = logger;
         }
 
-        [HttpGet]
+    [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAllAsync()
@@ -26,7 +29,7 @@ namespace SODP.Api.v0_01.Controllers
             int.TryParse(req["page_number"], out int page_number);
             int.TryParse(req["page_size"], out int page_size);
             
-            var result = await _roleService.GetAllAsync(currentPage: page_number, pageSize: page_size);
+            var result = await _service.GetAllAsync(currentPage: page_number, pageSize: page_size);
 
             return Ok(result);
         }

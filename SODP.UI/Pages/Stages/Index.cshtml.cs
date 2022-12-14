@@ -39,7 +39,7 @@ namespace SODP.UI.Pages.Stages
             url.Append(ReturnUrl);
             url.Append("?currentPage=:&pageSize=");
             pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
-            url.Append(pageSize.ToString());
+            url.Append(pageSize);
 
             if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrWhiteSpace(searchString))
             {

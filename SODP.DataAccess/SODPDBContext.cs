@@ -28,6 +28,7 @@ namespace SODP.DataAccess
         public virtual DbSet<License> Licenses { get; set; }
         public virtual DbSet<LicenseBranch> BranchLicenses { get; set; }
         public virtual DbSet<Certificate> Certificates { get; set; }
+        public virtual DbSet<SysDictionary> SysDictionary { get; set; }
 
         public async Task<int> SaveChangesAsync()
         {
@@ -68,6 +69,8 @@ namespace SODP.DataAccess
             new LicenseEntityConfiguration().Configure(modelBuilder.Entity<License>());
             new LicenseBranchEntityConfiguration().Configure(modelBuilder.Entity<LicenseBranch>());
             new CertificateEntityConfiguration().Configure(modelBuilder.Entity<Certificate>());
+            new SysDictionaryEntityConfiguration().Configure(modelBuilder.Entity<SysDictionary>());
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

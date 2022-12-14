@@ -1,0 +1,59 @@
+﻿@using SODP.UI.Pages.ArchiveProjects.ViewModels
+@using SODP.UI.Services;
+
+@model ProjectVM
+@inject ITranslator _translator;
+
+<div>
+	<div>
+		Nazwa zamierzenia budowlanego:<br />
+		<div class="row font-weight-bold">
+			<span style="white-space: pre-line">@Model.Title</span>
+		</div>
+	</div>
+	<div>
+		Adres:<br />
+		<div class="row font-weight-bold">
+			<span style="white-space: pre-line">@Model.Address</span>
+		</div>
+	</div>
+	<div>
+		Jednostka ewidencyjna:<br />
+		<div class="row font-weight-bold">
+			<span style="white-space: pre-line">@Model.LocationUnit</span>
+		</div>
+	</div>
+	<div>
+		Kategoria obiektu budowlanego:<br />
+		<div class="row font-weight-bold">
+			<span style="white-space: pre-line">@Model.BuildingCategory</span>
+		</div>
+	</div>
+	<div>
+		Inwestor:<br />
+		<div class="row font-weight-bold">
+			<span style="white-space: pre-line">@Model.Investor</span>
+		</div>
+	</div>
+	<div>
+		Opis:<br />
+		<div class="row font-weight-bold">
+			<span style="white-space: pre-line">@Model.Description</span>
+		</div>
+	</div>
+	<div>
+		Branże:
+		@foreach (var item in Model.ProjectBranches.Branches)
+		{
+			<div class="row">
+				<span class="font-weight-bold" style="white-space: pre-line">@item.Branch.Name</span>
+			</div>
+			@foreach (var role in item.Roles)
+			{
+				<div class="row">
+					<div class="col my-auto">@_translator.Translate(role.Role, Services.Languages.Pl) : @role.Designer (@role.Content)</div>
+				</div>
+			}
+		}
+	</div>
+</div>

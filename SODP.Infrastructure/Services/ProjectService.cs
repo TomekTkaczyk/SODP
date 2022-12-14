@@ -42,9 +42,66 @@ namespace SODP.Application.Services
 
         public IProjectService SetArchiveMode()
         {
-            _mode = ProjectStatus.Archived;
+            _mode = ProjectStatus.Archival;
 
             return this;
+        }
+
+        public Task<ServiceResponse<ProjectDTO>> CreateAsync(ProjectDTO entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO newProject)
+        {
+            var serviceResponse = new ServiceResponse<ProjectDTO>();
+            try
+            {
+                var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
+                if (exist != null)
+                {
+                    serviceResponse.SetError($"Błąd: Projekt {exist.Symbol} już istnieje.", 400);
+                    return serviceResponse;
+                }
+
+                var project = _mapper.Map<Project>(newProject);
+                var validationResult = await _validator.ValidateAsync(project);
+                if (!validationResult.IsValid)
+                {
+                    serviceResponse.ValidationErrorProcess(validationResult);
+                    return serviceResponse;
+                }
+
+                project.Normalize();
+                project.Stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == project.StageId);
+                project.Title = "";
+                project.Address = "";
+                project.LocationUnit = "";
+                project.BuildingCategory = "";
+                project.Investor = "";
+                project.Description = "";
+                var (Success, Message) = await _folderManager.CreateFolderAsync(project);
+                if (!Success)
+                {
+                    throw new ApplicationException($"Error: {Message}");
+                }
+
+                var entity = _context.Projects.Add(project);
+                await _context.SaveChangesAsync();
+                serviceResponse.SetData(_mapper.Map<ProjectDTO>(entity.Entity));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
+
+
+        public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        {
+            return await GetAllAsync(currentPage, pageSize, "");
         }
 
         public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
@@ -119,7 +176,6 @@ namespace SODP.Application.Services
                     .ThenInclude(s => s.Roles)
                     .ThenInclude(s => s.License)
                     .ThenInclude(s => s.Designer)
-                    .Where(t => t.Status == _mode)
                     .FirstOrDefaultAsync(x => x.Id == id);
                 if (project == null)
                 {
@@ -132,52 +188,6 @@ namespace SODP.Application.Services
                 serviceResponse.SetError(ex.Message, 500);
             }
 
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO newProject)
-        {
-            var serviceResponse = new ServiceResponse<ProjectDTO>();
-            try
-            {
-                var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
-                if(exist != null)
-                {
-                    serviceResponse.SetError($"Błąd: Projekt {exist.Symbol} już istnieje.", 400);
-                    return serviceResponse;
-                }
-
-                var project = _mapper.Map<Project>(newProject);
-                var validationResult = await _validator.ValidateAsync(project);
-                if (!validationResult.IsValid)
-                {
-                    serviceResponse.ValidationErrorProcess(validationResult);
-                    return serviceResponse;
-                }
-
-                project.Normalize();
-                project.Stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == project.StageId);
-                project.Title = "";
-                project.Address = "";
-                project.LocationUnit = "";
-                project.BuildingCategory = "";
-                project.Investor = "";
-                project.Description = "";
-                var (Success, Message) = await _folderManager.CreateFolderAsync(project);
-                if (!Success)
-                {
-                    throw new ApplicationException($"Error: {Message}");
-                }
-
-                var entity =_context.Projects.Add(project);
-                await _context.SaveChangesAsync();
-                serviceResponse.SetData(_mapper.Map<ProjectDTO>(entity.Entity));
-            }
-            catch(Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-        
             return serviceResponse;
         }
 
@@ -253,7 +263,7 @@ namespace SODP.Application.Services
                     throw new ApplicationException($"Błąd: {Message}");
                 }
                 
-                project.Status = ProjectStatus.Archived;
+                project.Status = ProjectStatus.Archival;
                 project.ModifyTimeStamp = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
@@ -462,5 +472,6 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
     }
 }
