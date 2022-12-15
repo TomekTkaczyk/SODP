@@ -18,11 +18,11 @@ namespace SODP.UI.TagHelpers
         public string PageClassPrevNext { get; set; }
         public string PageClassNormal { get; set; }                                           
         public string PageClassSelected { get; set; }
-        public string PageClassjakisniewiadomo_znacznik { get; set; }
+        public int NavMargin { get; set; } = 2;
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            var _paginationCalculator = new PaginationCalculator(PageModel.TotalPages, 5, PageModel.CurrentPage);
+            var _paginationCalculator = new PaginationCalculator(PageModel.TotalPages, NavMargin, PageModel.CurrentPage);
             
             var tagBuilder = new TagBuilder("div");
 
@@ -31,7 +31,10 @@ namespace SODP.UI.TagHelpers
                 tagBuilder.InnerHtml.AppendHtml(GetTag(PageModel.CurrentPage - 1, "Poprzednia", PageClassPrevNext));
             }
 
-            tagBuilder.InnerHtml.AppendHtml(GetTag(1, 1.ToString(), 1 == PageModel.CurrentPage ? PageClassSelected : PageClassNormal));
+            if(PageModel.TotalPages > 0)
+            {
+                tagBuilder.InnerHtml.AppendHtml(GetTag(1, 1.ToString(), PageModel.CurrentPage == 1 ? PageClassSelected : PageClassNormal));
+            }
 
             if (_paginationCalculator.Left > 3)
             {
@@ -40,7 +43,7 @@ namespace SODP.UI.TagHelpers
 
             for (int i= _paginationCalculator.Left; i<= _paginationCalculator.Right; i++)
             {
-                tagBuilder.InnerHtml.AppendHtml(GetTag(i, i.ToString(), i == PageModel.CurrentPage ? PageClassSelected : PageClassNormal));
+                tagBuilder.InnerHtml.AppendHtml(GetTag(i, i.ToString(), PageModel.CurrentPage == i ? PageClassSelected : PageClassNormal));
             }
 
             if (_paginationCalculator.Right < PageModel.TotalPages - 2)
@@ -48,9 +51,12 @@ namespace SODP.UI.TagHelpers
                 tagBuilder.InnerHtml.AppendHtml(GetTag(0, "...", PageClassPrevNext));
             }
 
-            tagBuilder.InnerHtml.AppendHtml(GetTag(PageModel.TotalPages, PageModel.TotalPages.ToString(), PageModel.TotalPages == PageModel.CurrentPage ? PageClassSelected : PageClassNormal));
+			if (PageModel.TotalPages > 1)
+			{
+				tagBuilder.InnerHtml.AppendHtml(GetTag(PageModel.TotalPages, PageModel.TotalPages.ToString(), PageModel.CurrentPage == PageModel.TotalPages ? PageClassSelected : PageClassNormal));
+			}
 
-            if (PageModel.CurrentPage < PageModel.TotalPages)
+			if (PageModel.CurrentPage < PageModel.TotalPages)
             {
                 tagBuilder.InnerHtml.AppendHtml(GetTag(PageModel.CurrentPage + 1, "Następna", PageClassPrevNext));
             }

@@ -5,13 +5,13 @@ namespace SODP.UI.Services
     public class PaginationCalculator : IPaginationCalculator
     {
         public int Total { get; set; }
-        public int Width { get; set; }
+        public int Margin { get; set; }
         public int Current { get; set; }
 
-        public PaginationCalculator(int total, int width, int current)
+        public PaginationCalculator(int total, int margin, int current)
         {
             Total = total;
-            Width = width;
+            Margin = margin;
             Current = current;
         }
 
@@ -19,15 +19,12 @@ namespace SODP.UI.Services
         {
             get
             {
-                if ((Total < Width + 5) || (Current <= Width))
+                if(Current - Margin > 3)
                 {
-                    return 2;
-                }
-                else if(Current > Total - Width)
-                {
-                    return Total - Width - 1;
-                }
-                return Current - (Width - 1) / 2;
+                    return Current - Margin;
+				}
+
+                return 2;
             }
         }
 
@@ -35,15 +32,12 @@ namespace SODP.UI.Services
         {
             get
             {
-                if ((Total < Width + 5) || (Current < Width))
+                if (Current + Margin < Total - 2)
                 {
-                    return Math.Min(Width + 2, Total - 1);
-                } 
-                else if(Current > Total - Width)
-                {
-                    return Total - 1;
+                    return Current + Margin;  
                 }
-                return Current + (Width - 1) / 2;
+
+                return Total - 1;
             }
         }
     }

@@ -12,14 +12,5 @@ namespace SODP.Shared.Response
         public int TotalPages => (int)Math.Ceiling(decimal.Divide(TotalItems, ItemsPerPage));
         public string RequestParameters => $"CurrentPage={CurrentPage}&PageSize={ItemsPerPage}";
         public string Url { get; set; }
-
-        //public string GetRequestParameters()
-        //{
-        //    return $"CurrentPage={CurrentPage}&PageSize={ItemsPerPage}";
-        //    if (!String.IsNullOrEmpty(SearchString) && !String.IsNullOrWhiteSpace(SearchString))
-        //    {
-        //        url += $"&SearchString={SearchString}";
-        //    }
-        //}
     }
 }

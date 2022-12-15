@@ -6,6 +6,6 @@
         int Left { get; }
         int Right { get; }
         int Total { get; set; }
-        int Width { get; set; }
+        int Margin { get; set; }
     }
 }
