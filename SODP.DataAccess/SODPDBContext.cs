@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System;
 using SODP.Application.Interfaces;
+using System.Security.Cryptography;
 
 namespace SODP.DataAccess
 {
