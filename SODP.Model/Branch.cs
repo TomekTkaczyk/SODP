@@ -1,9 +1,10 @@
 ﻿using SODP.Model.Extensions;
+using SODP.Model.Interfaces;
 using System.Collections.Generic;
 
 namespace SODP.Model
 {
-    public class Branch : BaseEntity
+    public class Branch : BaseEntity, IActiveStatus
     {
         public int Order { get; set; }
         public string Sign { get; set; }

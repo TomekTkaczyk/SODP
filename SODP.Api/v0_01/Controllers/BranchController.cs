@@ -11,18 +11,7 @@ namespace SODP.Api.v0_01.Controllers
     [Route("/api/v0_01/branches")]
     public class BranchController : ApiControllerBase<BranchDTO>
     {
-        public BranchController(IBranchService service, ILogger<BranchController> logger) :base(service, logger) 
-        {
-            var aaa = new BranchDTO();
-        }
-
-        //[HttpGet]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //public async Task<IActionResult> GetAllAsync(bool? ActiveOnly)
-        //{
-        //    return Ok(await _service.GetAllAsync(1,0));
-        //}
+        public BranchController(IBranchService service, ILogger<BranchController> logger) : base(service, logger) { }
 
         [HttpGet("{id}/designers")]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SODP.Application.Interfaces;
 using SODP.Application.Services;
+using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
@@ -14,77 +14,10 @@ using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-    public class BranchService : IBranchService
+    public class BranchService : AppService<Branch, BranchDTO>, IBranchService
     {
-        private readonly IMapper _mapper;
-        private readonly IValidator<Branch> _validator;
-        private readonly ISODPDBContext _context;
 
-        public BranchService(IMapper mapper, IValidator<Branch> validator, ISODPDBContext context)
-        {
-            _mapper = mapper;
-            _validator = validator;
-            _context = context;
-        }
-
-        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
-        {
-            return await GetAllAsync(currentPage, pageSize, null);
-        }
-
-        public async Task<ServicePageResponse<BranchDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
-        {
-            var serviceResponse = new ServicePageResponse<BranchDTO>();
-            try
-            {
-                serviceResponse.Data.TotalCount = await _context.Branches
-                    .Where(x => active == null || (x.ActiveStatus == active))
-                    .CountAsync();
-
-                if (pageSize == 0)
-                {
-                    pageSize = serviceResponse.Data.TotalCount;
-                }
-
-                var branches = _context.Branches
-                    .OrderBy(x => x.Sign)
-                    .Where(x => active == null || (x.ActiveStatus == active))
-                    .Skip((currentPage - 1) * pageSize)
-                    .Take(pageSize);
-
-                serviceResponse.Data.PageNumber = currentPage;
-                serviceResponse.Data.PageSize = pageSize;
-                serviceResponse.SetData(_mapper.Map<IList<BranchDTO>>(branches));
-
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<BranchDTO>> GetAsync(int id)
-        {
-            var serviceResponse = new ServiceResponse<BranchDTO>();
-            try
-            {
-                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == id);
-                if(branch == null)
-                {
-                    serviceResponse.SetError($"Błąd: Branża Id:{id} nie odnaleziona.", 401);
-                    return serviceResponse;
-                }
-                serviceResponse.SetData(_mapper.Map<BranchDTO>(branch));
-            }                                                                 
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
+		public BranchService(IMapper mapper, IValidator<Branch> validator, SODPDBContext context, IActiveStatusService<Branch> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
         public async Task<ServiceResponse<BranchDTO>> GetAsync(string sign)
         {
@@ -106,6 +39,7 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse<BranchDTO>> CreateAsync(BranchDTO newBranch)
         {
@@ -141,6 +75,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
+
         public async Task<ServiceResponse> UpdateAsync(BranchDTO updateBranch)
         {
             var serviceResponse = new ServiceResponse();
@@ -173,62 +108,6 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse> DeleteAsync(int id)
-        {
-            var serviceResponse = new ServiceResponse();
-
-            try
-            {
-                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == id);
-                if(branch == null)
-                {
-                    serviceResponse.SetError($"Błąd: Branża Id:{id} nie odnaleziona.", 401);
-                    return serviceResponse;
-                }
-
-                //var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.BranchId == id);
-                //if(projectBranch != null)
-                //{
-                //    serviceResponse.SetError($"Błąd: Branża {projectBranch.Branch.Sign} posiada powiązane projekty.", 400);
-                //    return serviceResponse;
-                //}
-
-                _context.Branches.Remove(branch);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
-        {
-            var serviceResponse = new ServiceResponse();
-            try
-            {
-                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == id);
-
-                if (branch == null)
-                {
-                    serviceResponse.SetError($"Branża Id:{id} nie odnaleziona.", 404);
-
-                    return serviceResponse;
-                }
-
-                branch.ActiveStatus = status;
-                _context.Branches.Update(branch);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
 
         public async Task<ServicePageResponse<LicenseDTO>> GetLicensesAsync(int id)
         {
@@ -251,6 +130,5 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
-
-    }
+	}
 }

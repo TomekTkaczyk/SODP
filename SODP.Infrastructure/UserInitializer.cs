@@ -3,7 +3,7 @@ using SODP.Model;
 using System;
 using System.Threading.Tasks;
 
-namespace SODP.DataAccess
+namespace SODP.Infrastructure
 {
     public class UserInitializer : IDisposable
     {

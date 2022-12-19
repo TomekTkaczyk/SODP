@@ -1,9 +1,10 @@
 ﻿using SODP.Model.Extensions;
+using SODP.Model.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace SODP.Model
 {
-    public class Stage : BaseEntity
+    public class Stage : BaseEntity, IActiveStatus
     {
         public Stage(): this("","") { }
 

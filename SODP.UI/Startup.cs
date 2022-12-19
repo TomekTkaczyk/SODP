@@ -82,6 +82,12 @@ namespace SODP.UI
                     .AddClasses(classes => classes.AssignableTo(typeof(IValidator)))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime();
+
+                //scan
+                //    .FromAssemblies(app)
+                //    .AddClasses(classes => classes.AssignableTo(typeof(IActiveStatusService)))
+                //    .AsImplementedInterfaces()
+                //    .WithScopedLifetime();
             });
 
             services.AddTransient<ITranslator, Translator>();

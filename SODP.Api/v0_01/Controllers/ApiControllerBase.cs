@@ -23,9 +23,9 @@ namespace SODP.Api.v0_01.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public virtual async Task<IActionResult> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public virtual async Task<IActionResult> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
-            return Ok(await _service.GetAllAsync(currentPage, pageSize));
+            return Ok(await _service.GetPageAsync(currentPage, pageSize));
         }
 
 
@@ -88,7 +88,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> SetActiveStatusAsync(int id, [FromBody] int status)
         {
-            if(_service is IActiveStatusService)
+            if (_service is IActiveStatusService)
             {
                 return Ok(await (_service as IActiveStatusService).SetActiveStatusAsync(id, status == 1));
             }

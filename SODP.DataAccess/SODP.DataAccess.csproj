@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SODP.Infrastructure\SODP.Infrastructure.csproj" />
+    <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
     <ProjectReference Include="..\SODP.Model\SODP.Model.csproj" />
   </ItemGroup>
 

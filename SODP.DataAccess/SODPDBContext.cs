@@ -6,12 +6,12 @@ using SODP.Model;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-using SODP.Application.Interfaces;
 using System.Security.Cryptography;
+using SODP.Shared.Interfaces;
 
 namespace SODP.DataAccess
 {
-    public class SODPDBContext : IdentityDbContext<User, Role, int>, ISODPDBContext
+    public class SODPDBContext : IdentityDbContext<User, Role, int>
     {
         private readonly IDateTime _dateTime;
 

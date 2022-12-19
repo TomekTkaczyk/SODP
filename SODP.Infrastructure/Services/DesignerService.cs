@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SODP.Application.Interfaces;
 using SODP.Application.Services;
+using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
@@ -14,44 +14,27 @@ using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-    public class DesignerService : IDesignerService
+    public class DesignerService : AppService<Designer, DesignerDTO>, IDesignerService
     {
-        private readonly IMapper _mapper;
-        private readonly IValidator<Designer> _validator;
-        private readonly ISODPDBContext _context;
+        public DesignerService(IMapper mapper, IValidator<Designer> validator, SODPDBContext context, IActiveStatusService<Designer> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
-        public DesignerService(IMapper mapper, IValidator<Designer> validator, ISODPDBContext context)
+        public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
         {
-            _mapper = mapper;
-            _validator = validator;
-            _context = context;
-        }
+            var query = SetActiveStatus(active)
+                .GetQuery()
+                .OrderBy(x => x.Lastname)
+                .ThenBy(x => x.Firstname);
 
-
-        public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
-        {
-            return await GetAllAsync(currentPage, pageSize, null);
-        }
-
-
-        public async Task<ServicePageResponse<DesignerDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
-        {
             var serviceResponse = new ServicePageResponse<DesignerDTO>();
             try
             {
-                serviceResponse.Data.TotalCount = await _context.Designers
-                    .Where(x => active == null || (x.ActiveStatus == active))
-                    .CountAsync();
-
+                serviceResponse.Data.TotalCount = await GetQuery().CountAsync();
                 if (pageSize == 0)
                 {
                     pageSize = serviceResponse.Data.TotalCount;
                 }
 
-                var designers = await _context.Designers
-                    .OrderBy(x => x.Lastname)
-                    .ThenBy(y => y.Firstname)
-                    .Where(x => active == null || (x.ActiveStatus == active))
+                var designers = await query
                     .Skip((currentPage - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
@@ -69,31 +52,12 @@ namespace SODP.Infrastructure.Services
         }
 
 
-        public async Task<ServiceResponse<DesignerDTO>> GetAsync(int designerId)
-        {
-            var serviceResponse = new ServiceResponse<DesignerDTO>();
-            try
-            {
-                var designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == designerId);
-                if (designer == null)
-                {
-                    serviceResponse.SetError($"Błąd: Projektant Id:{designerId} nie odnaleziony.", 404);
-                }
-                serviceResponse.SetData(_mapper.Map<DesignerDTO>(designer));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
-
         public async Task<int> GetAsync(DesignerDTO designer)
         {
             var result = await _context.Designers.FirstOrDefaultAsync(x => x.Firstname.Trim().Equals(designer.Firstname.Trim()) && x.Lastname.Trim().Equals(designer.Lastname.Trim()));
             return (result == null ? 0 : result.Id);
         }
+
 
         public async Task<ServiceResponse<DesignerDTO>> CreateAsync(DesignerDTO createDesigner)
         {
@@ -130,6 +94,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
 
         }
+
 
         public async Task<ServiceResponse> UpdateAsync(DesignerDTO updateDesigner)
         {
@@ -168,54 +133,6 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse> DeleteAsync(int id)
-        {
-            var serviceResponse = new ServiceResponse();
-            try
-            {
-                var designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == id);
-                if(designer == null)
-                {
-                    serviceResponse.SetError($"Błąd: Projektant Id:{id} nie odnaleziony.", 401);
-                    return serviceResponse;
-                }
-
-                _context.Designers.Remove(designer);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
-        {
-            var serviceResponse = new ServiceResponse();
-            try
-            {
-                var designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == id);
-
-                if (designer == null)
-                {
-                    serviceResponse.SetError($"Projektant Id:{id} nie odnaleziony.", 404);
-
-                    return serviceResponse;
-                }
-
-                designer.ActiveStatus = status;
-                _context.Designers.Update(designer);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
 
         public async Task<ServicePageResponse<LicenseWithBranchesDTO>> GetLicensesAsync(int id)
         {
@@ -239,6 +156,7 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse> AddLicenceAsync(int id, LicenseDTO newLicense)
         {
@@ -267,11 +185,5 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-
-        public async Task<bool> DesignerExist(int id)
-        {
-            var result = await _context.Designers.FirstOrDefaultAsync(x => x.Id == id);
-            return (result != null);
-        }
-    }
+	}
 }

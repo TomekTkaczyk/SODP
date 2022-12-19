@@ -1,9 +1,10 @@
 ﻿using SODP.Model.Extensions;
+using SODP.Model.Interfaces;
 using System.Collections.Generic;
 
 namespace SODP.Model
 {
-    public class Designer : BaseEntity
+    public class Designer : BaseEntity, IActiveStatus
     {
         public string Title { get; set; }
         public string Firstname { get; set; }

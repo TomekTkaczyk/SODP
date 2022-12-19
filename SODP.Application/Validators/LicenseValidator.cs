@@ -20,7 +20,7 @@ namespace SODP.Application.Validators
             RuleFor(u => u.Designer)
                 .NotNull()
                 .WithMessage("Projektant jest wymagany")
-                .MustAsync((designer, cancellation) => _designerService.DesignerExist(designer.Id))
+                .MustAsync((designer, cancellation) => _designerService.ExistAsync(designer.Id))
                 .When(u => u.Designer != null, ApplyConditionTo.CurrentValidator)
                 .WithMessage(u => $"Projektant:{u.Designer.Id} nie występuje w bazie.")
                 .WithName("Projektant");

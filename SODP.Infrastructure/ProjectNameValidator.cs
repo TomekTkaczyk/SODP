@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace SODP.DataAccess
+namespace SODP.Infrastructure
 {
     public class ProjectNameValidator
     {

@@ -41,7 +41,7 @@ namespace SODP.Api.v0_01.Controllers
                 default:
                     return BadRequest();
             }
-            var response = await (_service as IProjectService).GetAllAsync(currentPage, pageSize, searchString);
+            var response = await (_service as IProjectService).GetPageAsync(currentPage, pageSize, searchString);
 
             return StatusCode(response.StatusCode, response);
         }

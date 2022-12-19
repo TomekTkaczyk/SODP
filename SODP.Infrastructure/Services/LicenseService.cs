@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Interfaces;
 using SODP.Application.Services;
+using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
@@ -18,10 +19,10 @@ namespace SODP.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IValidator<License> _validator;
-        private readonly ISODPDBContext _context;
+        private readonly SODPDBContext _context;
         private readonly IDesignerService _designerService;
 
-        public LicenseService(IMapper mapper, IValidator<License> validator, ISODPDBContext context, IDesignerService designerService)
+        public LicenseService(IMapper mapper, IValidator<License> validator, SODPDBContext context, IDesignerService designerService)
         {
             _mapper = mapper;
             _validator = validator;
@@ -63,7 +64,7 @@ namespace SODP.Infrastructure.Services
         }
 
 
-        public async Task<ServicePageResponse<LicenseDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<LicenseDTO>();
             try
@@ -267,5 +268,10 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
-    }
+
+		public Task<bool> ExistAsync(int id)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

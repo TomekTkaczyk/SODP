@@ -1,18 +1,49 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using SODP.Application.Interfaces;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
+using SODP.Application.Services;
+using SODP.DataAccess;
 using SODP.Domain.Managers;
 using SODP.Infrastructure.Managers;
 using SODP.Infrastructure.Services;
+using SODP.Shared.Interfaces;
+using SODP.Shared.Services;
 using System;
 
 namespace SODP.Infrastructure
 {
     public static class DependecyInjection
     {
-        public static void UseMySwagger(this IApplicationBuilder app)
+		public static void AddDataAccessDI(this IServiceCollection services, IConfiguration configuration)
+		{
+			services.AddDbContext<SODPDBContext>(options =>
+			{
+				options.EnableDetailedErrors();
+				options.UseMySql(
+					configuration.GetConnectionString("DefaultDbConnection"),
+					b =>
+					{
+						b.CharSetBehavior(CharSetBehavior.NeverAppend);
+						b.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MariaDb));
+					});
+			});
+
+			services.AddScoped<SODPDBContext>();
+
+			services.AddScoped<UserInitializer>();
+
+			services.AddScoped<DataInitializer>();
+
+			services.AddScoped<DataInitializer>();
+
+            services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
+		}
+
+		public static void UseMySwagger(this IApplicationBuilder app)
         {
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SODP.API"));

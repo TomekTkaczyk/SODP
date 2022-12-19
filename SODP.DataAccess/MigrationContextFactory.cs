@@ -1,12 +1,9 @@
-﻿using AutoMapper.Configuration.Annotations;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
-using SODP.Application.Interfaces;
-using SODP.Infrastructure.Services;
+using SODP.Shared.Services;
 using System;
-using System.Globalization;
 
 namespace SODP.DataAccess
 {

@@ -29,7 +29,7 @@ namespace SODP.Api.v0_01.Controllers
             int.TryParse(req["page_number"], out int page_number);
             int.TryParse(req["page_size"], out int page_size);
             
-            var result = await _service.GetAllAsync(currentPage: page_number, pageSize: page_size);
+            var result = await _service.GetPageAsync(currentPage: page_number, pageSize: page_size);
 
             return Ok(result);
         }

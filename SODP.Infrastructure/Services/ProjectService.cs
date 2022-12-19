@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Interfaces;
+using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Domain.Managers;
 using SODP.Model;
@@ -22,10 +23,10 @@ namespace SODP.Application.Services
         private readonly IMapper _mapper;
         private readonly IFolderManager _folderManager;
         private readonly IValidator<Project> _validator;
-        private readonly ISODPDBContext _context;
+        private readonly SODPDBContext _context;
         private ProjectStatus _mode = ProjectStatus.Active;
 
-        public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, ISODPDBContext context)
+        public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context)
         {
             _mapper = mapper;
             _folderManager = folderManager;
@@ -99,12 +100,12 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
-            return await GetAllAsync(currentPage, pageSize, "");
+            return await GetPageAsync(currentPage, pageSize, "");
         }
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
+        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var serviceResponse = new ServicePageResponse<ProjectDTO>();
             IList<Project> projects = new List<Project>();
@@ -473,5 +474,9 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
-    }
+		public Task<bool> ExistAsync(int id)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

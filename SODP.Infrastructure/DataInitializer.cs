@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using SODP.DataAccess;
 using SODP.Domain.Managers;
 using SODP.Model;
 using SODP.Model.Enums;
@@ -11,7 +12,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SODP.DataAccess
+namespace SODP.Infrastructure
 {
     public class DataInitializer
     {

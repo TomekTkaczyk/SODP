@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Interfaces;
 using SODP.Application.Services;
+using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
@@ -18,9 +19,9 @@ namespace SODP.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
-        private readonly ISODPDBContext _context;
+        private readonly SODPDBContext _context;
 
-        public UserService(IMapper mapper, UserManager<User> userManager, ISODPDBContext context)
+        public UserService(IMapper mapper, UserManager<User> userManager, SODPDBContext context)
         {
             _mapper = mapper;
             _userManager = userManager;
@@ -32,12 +33,12 @@ namespace SODP.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ServicePageResponse<UserDTO>> GetAllAsync()
+        public async Task<ServicePageResponse<UserDTO>> GetPageAsync()
         {
-            return await GetAllAsync(1, 0);
+            return await GetPageAsync(1, 0);
         }
 
-        public async Task<ServicePageResponse<UserDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<UserDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<UserDTO>();
 
@@ -221,5 +222,9 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-    }
+		public Task<bool> ExistAsync(int id)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

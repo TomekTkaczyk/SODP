@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SODP.Application.Interfaces;
 using SODP.Application.Services;
+using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
@@ -14,21 +14,12 @@ using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-    public class StageService : IStageService
+    public class StageService : AppService<Stage, StageDTO>, IStageService
     {
-        private readonly IMapper _mapper;
-        private readonly IValidator<Stage> _validator;
-        private readonly ISODPDBContext _context;
 
-        public StageService(IMapper mapper, IValidator<Stage> validator, ISODPDBContext context)
-        {
-            _mapper = mapper;
-            _validator = validator;
-            _context = context;
-        }
+        public StageService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context, IActiveStatusService<Stage> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
-
-        public async Task<ServicePageResponse<StageDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<StageDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
             return await GetAllAsync(currentPage, pageSize, "");
         }
@@ -83,26 +74,6 @@ namespace SODP.Infrastructure.Services
         }
 
 
-        public async Task<ServiceResponse<StageDTO>> GetAsync(int id)
-        {
-            var serviceResponse = new ServiceResponse<StageDTO>();
-            try
-            {
-                var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == id);
-                if (stage == null)
-                {
-                    serviceResponse.SetError($"Błąd: Stadium Id:{id} nie odnalezione.", 401);
-                    return serviceResponse;
-                }
-                serviceResponse.SetData(_mapper.Map<StageDTO>(stage));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
 
         public async Task<ServiceResponse<StageDTO>> GetAsync(string sign)
         {
@@ -182,7 +153,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse> DeleteAsync(int id)
+        public override async Task<ServiceResponse> DeleteAsync(int id)
         {
             var serviceResponse = new ServiceResponse();
             try
@@ -190,7 +161,7 @@ namespace SODP.Infrastructure.Services
                 var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == id);
                 if (stage == null)
                 {
-                    serviceResponse.SetError($"Stadium [{id}] nie odnalezione.", 404);
+                    serviceResponse.SetError($"Błąd: Stadium [{id}] nie odnalezione.", 404);
                     serviceResponse.ValidationErrors.Add("Id", $"Stadium [{id}] nie odnalezione.");
 
                     return serviceResponse;
@@ -198,18 +169,19 @@ namespace SODP.Infrastructure.Services
                 var project = await _context.Projects.FirstOrDefaultAsync(x => x.Stage.Id == id);
                 if (project != null)
                 {
-                    serviceResponse.SetError($"Stadium {project.Stage.Sign} posiada powiązane projekty.", 400);
+					serviceResponse.SetError($"Błąd: Stadium {project.Stage.Sign} posiada powiązane projekty.", 400);
                     serviceResponse.ValidationErrors.Add("Id", $"Stadium [{id}] posiada powiązane projekty.");
+                    
                     return serviceResponse;
                 }
-                _context.Stages.Remove(stage);
-                await _context.SaveChangesAsync();
+                
+                serviceResponse = await base.DeleteAsync(stage.Id);
             }
             catch (Exception ex)
             {
                 serviceResponse.SetError(ex.Message);
             }
-
+                
             return serviceResponse;
         }
 
@@ -246,42 +218,8 @@ namespace SODP.Infrastructure.Services
 
         public async Task<bool> ExistAsync(string sign)
         {
-            var result = await _context.Stages.FirstOrDefaultAsync(x => x.Sign == sign);
-
-            return result != null;
+            return ( await _context.Stages.FirstOrDefaultAsync(x => x.Sign == sign) != null);
         }
 
-        public async Task<bool> ExistAsync(int id)
-        {
-            var result = await _context.Stages.FirstOrDefaultAsync(x => x.Id == id);
-
-            return result != null;
-        }
-
-        public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
-        {
-            var serviceResponse = new ServiceResponse();
-            try
-            {
-                var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == id);
-
-                if (stage == null)
-                {
-                    serviceResponse.SetError($"Stadium Id:{id} nie odnalezione.", 404);
-
-                    return serviceResponse;
-                }
-
-                stage.ActiveStatus = status;
-                _context.Stages.Update(stage);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
     }
 }

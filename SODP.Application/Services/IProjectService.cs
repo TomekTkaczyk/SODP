@@ -9,7 +9,7 @@ namespace SODP.Application.Services
         IProjectService SetArchiveMode();
         IProjectService SetActiveMode();
         Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO project);
-        Task<ServicePageResponse<ProjectDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "");
+        Task<ServicePageResponse<ProjectDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0, string searchString = "");
         Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id);
         Task<ServiceResponse> RestoreAsync(int id);
         Task<ServiceResponse> ArchiveAsync(int id);

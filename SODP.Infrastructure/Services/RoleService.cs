@@ -23,12 +23,12 @@ namespace SODP.Infrastructure.Services
             _roleManager = roleManager;
         }
 
-        public async Task<ServicePageResponse<RoleDTO>> GetAllAsync()
+        public async Task<ServicePageResponse<RoleDTO>> GetPageAsync()
         {
-            return await GetAllAsync(1, 0);
+            return await GetPageAsync(1, 0);
         }
 
-        public async Task<ServicePageResponse<RoleDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<RoleDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<RoleDTO>();
 
@@ -67,5 +67,10 @@ namespace SODP.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
-    }
+
+		public Task<bool> ExistAsync(int id)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

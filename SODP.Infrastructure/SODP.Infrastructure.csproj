@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SODP.Application\SODP.Application.csproj" />
+    <ProjectReference Include="..\SODP.DataAccess\SODP.DataAccess.csproj" />
     <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
   </ItemGroup>
 
