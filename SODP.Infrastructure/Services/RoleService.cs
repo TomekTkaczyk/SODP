@@ -23,12 +23,12 @@ namespace SODP.Infrastructure.Services
             _roleManager = roleManager;
         }
 
-        public async Task<ServicePageResponse<RoleDTO>> GetPageAsync()
+        public async Task<ServicePageResponse<RoleDTO>> GetPageAsync(bool? active)
         {
-            return await GetPageAsync(1, 0);
+            return await GetPageAsync(active, 1, 0);
         }
 
-        public async Task<ServicePageResponse<RoleDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<RoleDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<RoleDTO>();
 

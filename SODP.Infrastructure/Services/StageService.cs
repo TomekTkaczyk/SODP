@@ -19,13 +19,8 @@ namespace SODP.Infrastructure.Services
 
         public StageService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context, IActiveStatusService<Stage> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
-        public async Task<ServicePageResponse<StageDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
-        {
-            return await GetAllAsync(currentPage, pageSize, "");
-        }
 
-
-        public async Task<ServicePageResponse<StageDTO>> GetAllAsync(int currentPage = 1, int pageSize = 0, string searchString = "", bool? active = null)
+		public async Task<ServicePageResponse<StageDTO>> GetAllAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var serviceResponse = new ServicePageResponse<StageDTO>();
             IList<Stage> projects = new List<Stage>();
@@ -74,7 +69,6 @@ namespace SODP.Infrastructure.Services
         }
 
 
-
         public async Task<ServiceResponse<StageDTO>> GetAsync(string sign)
         {
             var serviceResponse = new ServiceResponse<StageDTO>();
@@ -91,6 +85,7 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse<StageDTO>> CreateAsync(StageDTO newStage)
         {
@@ -129,6 +124,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
+
         public async Task<ServiceResponse> UpdateAsync(StageDTO updateStage)
         {
             var serviceResponse = new ServiceResponse();
@@ -152,6 +148,7 @@ namespace SODP.Infrastructure.Services
             }
             return serviceResponse;
         }
+
 
         public override async Task<ServiceResponse> DeleteAsync(int id)
         {
@@ -185,6 +182,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
+
         public async Task<ServiceResponse> DeleteAsync(string sign)
         {
             var serviceResponse = new ServiceResponse();
@@ -216,10 +214,10 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
+
         public async Task<bool> ExistAsync(string sign)
         {
             return ( await _context.Stages.FirstOrDefaultAsync(x => x.Sign == sign) != null);
         }
-
-    }
+	}
 }

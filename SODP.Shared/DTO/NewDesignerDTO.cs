@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SODP.Shared.DTO
+﻿namespace SODP.Shared.DTO
 {
     public class NewDesignerDTO
     {
-        public string Title { get; set; }
-        public string Firstname { get; set; }
-        public string Lastname { get; set; }
+        public string Name { get; set; }
     }
 }

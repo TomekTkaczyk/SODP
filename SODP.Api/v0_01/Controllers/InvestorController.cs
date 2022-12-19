@@ -14,5 +14,5 @@ namespace SODP.Api.v0_01.Controllers
     {
         public InvestorController(IInvestorService service, ILogger<InvestorController> logger) : base(service, logger) { }
 
-    }
+	}
 }

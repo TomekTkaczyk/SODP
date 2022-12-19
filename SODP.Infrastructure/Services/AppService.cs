@@ -34,10 +34,12 @@ namespace SODP.Infrastructure.Services
 			query = _context.Set<TEntity>().AsQueryable();
 		}
 
+
 		public IQueryable<TEntity> GetQuery()
 		{
 			return query;
 		}
+
 
 		public virtual async Task<ServiceResponse<TDto>> GetAsync(int id)
 		{
@@ -60,15 +62,17 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-		protected AppService<TEntity, TDto> SetActiveStatus(bool? active)
+
+		protected AppService<TEntity, TDto> SetActiveFilter(bool? active)
 		{
-			if (typeof(TEntity) is IActiveStatus)
+			if (typeof(IActiveStatus).IsAssignableFrom(typeof(TEntity)))
 			{
-				query = query.Where(x => (active == null) || (((IActiveStatus)x).ActiveStatus == active));
+				query = query.Where(x => (active == null) || ((IActiveStatus)x).ActiveStatus == active);
 			}
 
 			return this;
 		}
+
 
 		protected IQueryable<TEntity> PageQuery(int currentPage = 1, int pageSize = 0)
 		{
@@ -81,15 +85,9 @@ namespace SODP.Infrastructure.Services
 		}
 
 
-		public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+		public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
 		{
-			return await GetPageAsync(currentPage, pageSize, null);
-		}
-
-
-		public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
-		{
-			SetActiveStatus(active);
+			SetActiveFilter(active);
 			
 			var serviceResponse = new ServicePageResponse<TDto>();
 			try

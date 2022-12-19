@@ -35,10 +35,10 @@ namespace SODP.Infrastructure.Services
 
         public async Task<ServicePageResponse<UserDTO>> GetPageAsync()
         {
-            return await GetPageAsync(1, 0);
+            return await GetPageAsync(false, 1, 0);
         }
 
-        public async Task<ServicePageResponse<UserDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<UserDTO>();
 

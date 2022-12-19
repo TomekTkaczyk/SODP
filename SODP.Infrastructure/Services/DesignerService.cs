@@ -18,9 +18,9 @@ namespace SODP.Infrastructure.Services
     {
         public DesignerService(IMapper mapper, IValidator<Designer> validator, SODPDBContext context, IActiveStatusService<Designer> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
-        public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0, bool? active = null)
+        public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
         {
-            var query = SetActiveStatus(active)
+            var query = SetActiveFilter(active)
                 .GetQuery()
                 .OrderBy(x => x.Lastname)
                 .ThenBy(x => x.Firstname);

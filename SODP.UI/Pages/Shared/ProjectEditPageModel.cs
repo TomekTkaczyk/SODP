@@ -73,7 +73,7 @@ namespace SODP.UI.Pages.Shared
 
         private async Task<List<SelectListItem>> GetBranchesAsync(IList<ProjectBranchVM> exclusionList)
         {
-            var apiResponse = await _apiProvider.GetAsync($"branches?activeOnly=true");
+            var apiResponse = await _apiProvider.GetAsync($"branches?active=true");
             var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
 
             return responseBranch.Data.Collection
@@ -85,6 +85,5 @@ namespace SODP.UI.Pages.Shared
                     Text = $"{x.Name.Trim()}"
                 }).ToList();
         }
-
     }
 }

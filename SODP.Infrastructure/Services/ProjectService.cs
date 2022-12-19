@@ -34,12 +34,14 @@ namespace SODP.Application.Services
             _context = context;
         }
 
+
         public IProjectService SetActiveMode()
         {
             _mode = ProjectStatus.Active;
 
             return this;
         }
+
 
         public IProjectService SetArchiveMode()
         {
@@ -48,10 +50,12 @@ namespace SODP.Application.Services
             return this;
         }
 
+
         public Task<ServiceResponse<ProjectDTO>> CreateAsync(ProjectDTO entity)
         {
             throw new NotImplementedException();
         }
+
 
         public async Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO newProject)
         {
@@ -100,12 +104,13 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
         {
-            return await GetPageAsync(currentPage, pageSize, "");
+            return await GetPageAsync(active, currentPage, pageSize, "");
         }
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
+
+        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var serviceResponse = new ServicePageResponse<ProjectDTO>();
             IList<Project> projects = new List<Project>();
@@ -163,6 +168,7 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+         
 
         public async Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id)
         {
@@ -191,6 +197,7 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse> UpdateAsync(ProjectDTO updateProject)
         {
@@ -241,6 +248,7 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
+
         public async Task<ServiceResponse> ArchiveAsync(int id)
         {
             var serviceResponse = new ServiceResponse();
@@ -276,6 +284,7 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
+
         public async Task<ServiceResponse> DeleteAsync(int id)
         {
             var serviceResponse = new ServiceResponse();
@@ -302,6 +311,7 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse> RestoreAsync(int id)
         {
@@ -334,6 +344,7 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
+
         public async Task<ServicePageResponse<ProjectBranchRoleDTO>> GetBranchRolesAsync(int id, int branchId)
         {
             var serviceResponse = new ServicePageResponse<ProjectBranchRoleDTO>();
@@ -354,6 +365,7 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse> AddBranchAsync(int id, int branchId)
         {
@@ -393,6 +405,7 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
+
         public async Task<ServiceResponse> DeleteBranchAsync(int id, int branchId)
         {
             var serviceResponse = new ServiceResponse();
@@ -412,6 +425,7 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse> SetBranchTechnicalRoleAsync(TechnicalRoleDTO technicalRole)
         {
@@ -473,6 +487,7 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
 
 		public Task<bool> ExistAsync(int id)
 		{

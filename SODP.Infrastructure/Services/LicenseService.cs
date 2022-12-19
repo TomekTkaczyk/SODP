@@ -273,5 +273,10 @@ namespace SODP.Infrastructure.Services
 		{
 			throw new NotImplementedException();
 		}
+
+		public Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
