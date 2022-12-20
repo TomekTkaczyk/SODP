@@ -2,6 +2,8 @@
 {
     public class InvestorDTO : BaseDTO
     {
-        public string Name { get; set; }    
-    }
+        public string Name { get; set; } 
+        public bool ActiveStatus { get; set; }
+
+	}
 }

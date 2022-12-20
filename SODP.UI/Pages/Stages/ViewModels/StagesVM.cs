@@ -1,13 +1,12 @@
-﻿using SODP.Shared.DTO;
-using SODP.Shared.Response;
+﻿using SODP.Shared.Response;
 using System.Collections.Generic;
 
 namespace SODP.UI.Pages.Stages.ViewModels
 {
-    public class StagesListVM
+    public class StagesVM
     {
         public string SearchString { get; set; }
-        public IList<StageDTO> Stages { get; set; }
+        public List<StageVM> Stages { get; set; }
         public PageInfo PageInfo { get; set; }
     }
 }

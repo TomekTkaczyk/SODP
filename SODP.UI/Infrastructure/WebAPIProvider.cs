@@ -26,14 +26,7 @@ namespace SODP.UI.Infrastructure
         {
             var apiResponse = await new HttpClient().PostAsync($"{_httpClient.BaseAddress}{endPoint}", content);
 
-            try
-            {
-                apiResponse.EnsureSuccessStatusCode();
-            }
-            catch( Exception ex)
-            {
-                var aaa = ex;
-            }
+            apiResponse.EnsureSuccessStatusCode();
 
             return apiResponse;
         }

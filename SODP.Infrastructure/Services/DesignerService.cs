@@ -158,7 +158,7 @@ namespace SODP.Infrastructure.Services
         }
 
 
-        public async Task<ServiceResponse> AddLicenceAsync(int id, LicenseDTO newLicense)
+        public async Task<ServiceResponse> AddLicenseAsync(int id, LicenseDTO newLicense)
         {
             var serviceResponse = new ServiceResponse<LicenseDTO>();
 
@@ -171,9 +171,9 @@ namespace SODP.Infrastructure.Services
                     return serviceResponse;
                 }
 
-                var licence = _mapper.Map<License>(newLicense);
-                licence.Designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == licence.DesignerId);
-                var entity = _context.Licenses.Add(licence);
+                license = _mapper.Map<License>(newLicense);
+                license.Designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == license.DesignerId);
+                var entity = _context.Licenses.Add(license);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<LicenseDTO>(entity.Entity));
             }

@@ -33,7 +33,7 @@
 
 <partial name="_SearchString" />
 
-@if (Model.StagesViewModel.Stages.Count() > 0)
+@if (Model.Stages.Stages.Count() > 0)
 {
 	<table id="StagesTable" class="table table-sm table-hover">
 		<thead class="thead-light">
@@ -44,7 +44,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var item in Model.StagesViewModel.Stages)
+			@foreach (var item in Model.Stages.Stages)
 			{
 				<tr class="m-0 p-0">
 					<td onclick='@(User.IsInRole("ProjectManager") ? "EditStage("+@item.Id+")" : "")'
@@ -126,44 +126,6 @@ else
 			})
 		}
 
-		function DeleteStage(id) {
-			$.ajax({
-				type: "GET",
-				url: `@Url.Page("Index","DeleteStage")&id=${id}`,
-				success: function (data) {
-					$('#modal-placeholder').html(data);
-					$('#deleteStage').modal('show');
-				}
-			})
-		}
-
-		function DeleteStage1(url) {
-			swal({
-				title: "Czy jesteś pewien?",
-				text: "Usunięcie stadium nie może być cofnięte.",
-				icon: "warning",
-				buttons: true,
-				dangerMode: true
-			}).then((willDelete) => {
-				if (willDelete) {
-					$.ajax({
-						type: "DELETE",
-						url: url,
-						success: function (data) {
-							console.log(data)
-							if (data.success) {
-								toastr.success(data.message);
-								window.location.reload();
-							}
-							else {
-								toastr.error(data.message);
-							}
-						}
-					})
-				}
-			})
-		}
-
 		function handleChange(id, checked) {
 			let c = checked ? 1 : 0;
 			$.ajax({
@@ -184,7 +146,7 @@ else
 
 	<script>
 		$(document).ready(function () {
-			modalPlaceHolder('/Designers');
+			modalPlaceHolder('/Stages');
 		});
 	</script>
 

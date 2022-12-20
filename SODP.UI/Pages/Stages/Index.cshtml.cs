@@ -19,19 +19,20 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Stages
 {
-//    [Authorize(Roles = "User, ProjectManager")]
+    [Authorize(Roles = "ProjectManager")]
     public class IndexModel : ListPageModel
     {
         const string editStagePartialViewName = "_EditStagePartialView";
-        const string deleteStagePartialViewName = "_DeleteStagePartialView";
 
-        public StagesListVM StagesViewModel { get; set; }
 
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/Stages";
             _endpoint = "stages";
         }
+
+        public StagesVM Stages { get; set; }
+
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
@@ -46,44 +47,20 @@ namespace SODP.UI.Pages.Stages
                 url.Append($"&searchString={searchString}");
             }
 
-            StagesViewModel = new StagesListVM
+            Stages = new StagesVM
             {
-                Stages = await GetStagesAsync(currentPage, pageSize, searchString)
+				PageInfo = new PageInfo
+				{
+					CurrentPage = currentPage,
+					ItemsPerPage = pageSize,
+					Url = url.ToString()
+				},
+                SearchString = searchString
             };
-
-            SearchString = searchString;
-            PageInfo.ItemsPerPage = pageSize;
-            PageInfo.Url = url.ToString();
+            this.PageInfo = Stages.PageInfo;
+            Stages.Stages = await GetStagesAsync(Stages.PageInfo, searchString);
 
             return Page();
-        }
-
-        public PartialViewResult OnGetDeleteStage(int? id)
-        {
-            return GetPartialView(id, deleteStagePartialViewName);
-        }
-
-        public async Task<PartialViewResult> OnPostDeleteStageAsync(int id)
-        {
-            if (id != 0)
-            {
-                var apiResponse = await _apiProvider.DeleteAsync($"stages/{id}");
-                switch (apiResponse.StatusCode)
-                {
-                    case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<ServiceResponse<int>>(apiResponse);
-                        if (!response.Success)
-                        {
-                            SetModelErrors(response);
-                        }
-                        break;
-                    default:
-                        // redirect to ErrorPage
-                        break;
-                }
-            }
-
-            return GetPartialView(id, deleteStagePartialViewName);
         }
 
         public async Task<PartialViewResult> OnGetEditStageAsync(int? id)
@@ -98,7 +75,6 @@ namespace SODP.UI.Pages.Stages
                     return GetPartialView(response.Data.ToViewModel(), editStagePartialViewName);
                 }
 
-                // Cos posz³o nie tak !!!
                 RedirectToPage("Errors/404");
             }
 
@@ -130,20 +106,26 @@ namespace SODP.UI.Pages.Stages
             return  GetPartialView(stage, editStagePartialViewName);
         }
 
-        private async Task<IList<StageDTO>> GetStagesAsync(int currentPage, int pageSize, string searchString)
+        private async Task<List<StageVM>> GetStagesAsync(PageInfo pageInfo, string searchString)
         {
-            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={currentPage}&pageSize={pageSize}&searchString={searchString}");
+            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}&searchString={searchString}");
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<StageDTO>>();
-                PageInfo.TotalItems = result.Data.TotalCount;
-                PageInfo.CurrentPage = result.Data.PageNumber;
+                var response = await _apiProvider.GetContent<ServicePageResponse<StageDTO>>(apiResponse);
+                PageInfo.TotalItems = response.Data.TotalCount;
+                PageInfo.CurrentPage = response.Data.PageNumber;
 
-                return result.Data.Collection.ToList();
+                return response.Data.Collection
+                    .Select(x => new StageVM
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        ActiveStatus = x.ActiveStatus
+                    }).ToList();
             }
 
-            return new List<StageDTO>();
+            return new List<StageVM>();
         }
     }
 }

@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace SODP.Api.v0_01.Controllers
 {
-    // [Authorize]
     [ApiController]
     [Route("api/v0_01/designers")]
-    //[EnableCors("SODPOriginsSpecification")]
     public class DesignerController : ApiControllerBase<DesignerDTO>
     {
         public DesignerController(IDesignerService service, ILogger<DesignerController> logger) : base(service, logger) { }
@@ -26,13 +24,13 @@ namespace SODP.Api.v0_01.Controllers
             return Ok(response);
         }
 
-        [HttpPost("{id}/licences")]
+        [HttpPost("{id}/licenses")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> AddLicence(int id, [FromBody] LicenseDTO licence)
+        public async Task<IActionResult> AddLicense(int id, [FromBody] LicenseDTO license)
         {
-            return Ok(await (_service as IDesignerService).AddLicenceAsync(id, licence));
+            return Ok(await (_service as IDesignerService).AddLicenseAsync(id, license));
         }
     }
 }

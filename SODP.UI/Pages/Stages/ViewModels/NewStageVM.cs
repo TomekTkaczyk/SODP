@@ -10,7 +10,6 @@ namespace SODP.UI.Pages.Stages.ViewModels
         [Required(ErrorMessage = "Nazwa jest wymagana")]
         public string Name { get; set; }
 
-        public bool ActiveStatus { get; set; }
 
 
     }

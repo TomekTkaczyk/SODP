@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Model.Enums;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -19,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Designers
 {
-	[Authorize(Roles = "ProjectManager")]
+    [Authorize(Roles = "ProjectManager")]
 	public class IndexModel : ListPageModel
     {
         const string editDesignerPartialViewName = "_EditDesignerPartialView";
@@ -45,7 +44,8 @@ namespace SODP.UI.Pages.Designers
             var url = new StringBuilder();
             url.Append(ReturnUrl);
             url.Append("?currentPage=:&pageSize=");
-            url.Append(pageSize);
+			pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
+			url.Append(pageSize);
 
             Designers = new DesignersVM
             {
@@ -56,7 +56,6 @@ namespace SODP.UI.Pages.Designers
                     Url = url.ToString()
                 },
             };
-
             Designers.Designers = await GetDesignersAsync(Designers.PageInfo);
 
             return Page();
@@ -71,13 +70,13 @@ namespace SODP.UI.Pages.Designers
                 {
                     var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
 
-                    var result = GetPartialView(response.Data.ToViewModel(), editDesignerPartialViewName);
-
-                    return result;
+                    return GetPartialView(response.Data.ToViewModel(), editDesignerPartialViewName);
                 }
-            }
 
-            return GetPartialView(new DesignerVM(), editDesignerPartialViewName);
+				RedirectToPage("Errors/404");
+			}
+
+			return GetPartialView(new DesignerVM(), editDesignerPartialViewName);
         }
 
         public async Task<PartialViewResult> OnPostEditDesignerAsync(DesignerVM designer)
@@ -135,7 +134,7 @@ namespace SODP.UI.Pages.Designers
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PostAsync($"designers/{license.DesignerId}/licences", license.ToHttpContent());
+                var apiResponse = await _apiProvider.PostAsync($"designers/{license.DesignerId}/licenses", license.ToHttpContent());
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
@@ -157,11 +156,12 @@ namespace SODP.UI.Pages.Designers
         private async Task<List<DesignerVM>> GetDesignersAsync(PageInfo pageInfo)
         {
             var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
+            
             if (apiResponse.IsSuccessStatusCode)
             {
                 var response = await _apiProvider.GetContent<ServicePageResponse<DesignerDTO>>(apiResponse);
-                //pageInfo.TotalItems = response.Data.TotalCount;
-                //pageInfo.CurrentPage = response.Data.PageNumber;
+                pageInfo.TotalItems = response.Data.TotalCount;
+                pageInfo.CurrentPage = response.Data.PageNumber;
 
                 return response.Data.Collection
                     .Select(x => new DesignerVM

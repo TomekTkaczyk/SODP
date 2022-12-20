@@ -62,6 +62,7 @@ namespace SODP.UI.Pages.Shared
             }
 
             var apiResponse = await _apiProvider.GetAsync(url.ToString());
+
             if (apiResponse.IsSuccessStatusCode)
             {
                 var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();

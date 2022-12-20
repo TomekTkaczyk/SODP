@@ -38,7 +38,7 @@ namespace SODP.UI.Pages.Licenses
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            await GetLicenceAsync(id);
+            await GetLicenseAsync(id);
 
             return Page();
         }
@@ -76,7 +76,7 @@ namespace SODP.UI.Pages.Licenses
         {
             await _apiProvider.DeleteAsync($"licenses/{id}/branches/{branchId}");
 
-            await GetLicenceAsync(id);
+            await GetLicenseAsync(id);
 
             License.Content = content;
 
@@ -92,12 +92,12 @@ namespace SODP.UI.Pages.Licenses
                                   "application/json"
                               ));
 
-            await GetLicenceAsync(id);
+            await GetLicenseAsync(id);
 
             return Page();
         }
 
-        private async Task GetLicenceAsync(int id)
+        private async Task GetLicenseAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"licenses/{id}/branches");
             var response = await _apiProvider.GetContent<ServiceResponse<LicenseWithBranchesDTO>>(apiResponse);

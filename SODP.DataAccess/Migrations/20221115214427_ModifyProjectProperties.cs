@@ -132,7 +132,7 @@ namespace SODP.DataAccess.Migrations
                 table: "Licenses",
                 column: "DesignerId");
 
-            migrationBuilder.Sql("REPLACE INTO `Licenses` (Id, DesignerId, Content, CreateTimeStamp, ModifyTimeStamp) SELECT Id, DesignerId, Contents, CURDATE(), CURDATE() FROM `Licences`;");
+            migrationBuilder.Sql("REPLACE INTO `Licenses` (Id, DesignerId, Content, CreateTimeStamp, ModifyTimeStamp) SELECT Id, DesignerId, Contents, CURDATE(), CURDATE() FROM `Licenses`;");
 
             #endregion
 
@@ -321,11 +321,11 @@ namespace SODP.DataAccess.Migrations
             #region ProjectBranches
 
             migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBranches_Licences_CheckingLicenceId",
+                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
                 table: "ProjectBranches");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_ProjectBranches_Licences_DesignerLicenceId",
+                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
                 table: "ProjectBranches");
 
             migrationBuilder.DropForeignKey(
@@ -345,20 +345,20 @@ namespace SODP.DataAccess.Migrations
                 table: "ProjectBranches");
 
             migrationBuilder.DropColumn(
-                name: "CheckingLicenceId",
+                name: "CheckingLicenseId",
                 table: "ProjectBranches");
 
             migrationBuilder.DropColumn(
-                name: "DesignerLicenceId",
+                name: "DesignerLicenseId",
                 table: "ProjectBranches");
 
             //migrationBuilder.RenameColumn(
-            //    name: "DesignerLicenceId",
+            //    name: "DesignerLicenseId",
             //    newName: "DesignerLicenseId",
             //    table: "ProjectBranches");
 
             //migrationBuilder.RenameColumn(
-            //    name: "CheckingLicenceId",
+            //    name: "CheckingLicenseId",
             //    newName: "CheckingLicenseId",
             //    table: "ProjectBranches");
 
@@ -434,10 +434,10 @@ namespace SODP.DataAccess.Migrations
                 });
             #endregion
 
-            #region Licences
+            #region Licenses
 
             migrationBuilder.DropTable(
-                name: "Licences");
+                name: "Licenses");
 
             #endregion
         }
@@ -445,10 +445,10 @@ namespace SODP.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
 
-            #region Licences
+            #region Licenses
 
             migrationBuilder.CreateTable(
-                name: "Licences",
+                name: "Licenses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -459,31 +459,31 @@ namespace SODP.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Licences", x => x.Id);
+                    table.PrimaryKey("PK_Licenses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Licences_Branches_BranchId",
+                        name: "FK_Licenses_Branches_BranchId",
                         column: x => x.BranchId,
                         principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Licences_Designers_DesignerId",
+                        name: "FK_Licenses_Designers_DesignerId",
                         column: x => x.DesignerId,
                         principalTable: "Designers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.Sql("REPLACE INTO `Licences` (Id, DesignerId, Contents, BranchId) SELECT Licenses.Id,Licenses.DesignerId,Content,LicenseBranches.BranchId FROM Licenses,Branches,LicenseBranches WHERE LicenseBranches.BranchId=Branches.Id AND LicenseBranches.LicenseId=Licenses.Id GROUP BY Id;");
+            migrationBuilder.Sql("REPLACE INTO `Licenses` (Id, DesignerId, Contents, BranchId) SELECT Licenses.Id,Licenses.DesignerId,Content,LicenseBranches.BranchId FROM Licenses,Branches,LicenseBranches WHERE LicenseBranches.BranchId=Branches.Id AND LicenseBranches.LicenseId=Licenses.Id GROUP BY Id;");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Branch",
-                table: "Licences",
+                table: "Licenses",
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Designer",
-                table: "Licences",
+                table: "Licenses",
                 column: "DesignerId");
 
             #endregion
@@ -711,50 +711,50 @@ namespace SODP.DataAccess.Migrations
             //    table: "ProjectBranches");
 
             migrationBuilder.AddColumn<int>(
-                name: "CheckingLicenceId",
+                name: "CheckingLicenseId",
                 table: "ProjectBranches",
                 type: "int",
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "DesignerLicenceId",
+                name: "DesignerLicenseId",
                 table: "ProjectBranches",
                 type: "int",
                 nullable: true);
 
             //migrationBuilder.RenameColumn(
             //    name: "CheckingLicenseId",
-            //    newName: "CheckingLicenceId",
+            //    newName: "CheckingLicenseId",
             //    table: "ProjectBranches");
 
             //migrationBuilder.RenameColumn(
             //    name: "DesignerLicenseId",
-            //    newName: "DesignerLicenceId",
+            //    newName: "DesignerLicenseId",
             //    table: "ProjectBranches");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Checking",
                 table: "ProjectBranches",
-                column: "CheckingLicenceId");
+                column: "CheckingLicenseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Designer",
                 table: "ProjectBranches",
-                column: "DesignerLicenceId");
+                column: "DesignerLicenseId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBranches_Licences_CheckingLicenceId",
+                name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
                 table: "ProjectBranches",
-                column: "CheckingLicenceId",
-                principalTable: "Licences",
+                column: "CheckingLicenseId",
+                principalTable: "Licenses",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_ProjectBranches_Licences_DesignerLicenceId",
+                name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
                 table: "ProjectBranches",
-                column: "DesignerLicenceId",
-                principalTable: "Licences",
+                column: "DesignerLicenseId",
+                principalTable: "Licenses",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 

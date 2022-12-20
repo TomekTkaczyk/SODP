@@ -117,7 +117,7 @@ namespace SODP.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Licences",
+                name: "Licenses",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -128,15 +128,15 @@ namespace SODP.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Licences", x => x.Id);
+                    table.PrimaryKey("PK_Licenses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Licences_Branches_BranchId",
+                        name: "FK_Licenses_Branches_BranchId",
                         column: x => x.BranchId,
                         principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Licences_Designers_DesignerId",
+                        name: "FK_Licenses_Designers_DesignerId",
                         column: x => x.DesignerId,
                         principalTable: "Designers",
                         principalColumn: "Id",
@@ -302,8 +302,8 @@ namespace SODP.DataAccess.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     ProjectId = table.Column<int>(nullable: false),
                     BranchId = table.Column<int>(nullable: false),
-                    DesignerLicenceId = table.Column<int>(nullable: true),
-                    CheckingLicenceId = table.Column<int>(nullable: true)
+                    DesignerLicenseId = table.Column<int>(nullable: true),
+                    CheckingLicenseId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -315,15 +315,15 @@ namespace SODP.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectBranches_Licences_CheckingLicenceId",
-                        column: x => x.CheckingLicenceId,
-                        principalTable: "Licences",
+                        name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
+                        column: x => x.CheckingLicenseId,
+                        principalTable: "Licenses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ProjectBranches_Licences_DesignerLicenceId",
-                        column: x => x.DesignerLicenceId,
-                        principalTable: "Licences",
+                        name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
+                        column: x => x.DesignerLicenseId,
+                        principalTable: "Licenses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -361,12 +361,12 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Branch",
-                table: "Licences",
+                table: "Licenses",
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Designer",
-                table: "Licences",
+                table: "Licenses",
                 column: "DesignerId");
 
             migrationBuilder.CreateIndex(
@@ -377,12 +377,12 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Checking",
                 table: "ProjectBranches",
-                column: "CheckingLicenceId");
+                column: "CheckingLicenseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Designer",
                 table: "ProjectBranches",
-                column: "DesignerLicenceId");
+                column: "DesignerLicenseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Project",
@@ -470,7 +470,7 @@ namespace SODP.DataAccess.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Licences");
+                name: "Licenses");
 
             migrationBuilder.DropTable(
                 name: "Projects");

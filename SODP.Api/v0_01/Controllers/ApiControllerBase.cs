@@ -45,13 +45,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> CreateAsync([FromBody] T entity)
         {
-            var response = await _service.CreateAsync(entity);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return Ok(await _service.CreateAsync(entity));
         }
 
 
@@ -76,9 +70,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            var response = await _service.DeleteAsync(id);
-
-            return Ok(response);
+            return Ok(await _service.DeleteAsync(id));
         }
 
 
