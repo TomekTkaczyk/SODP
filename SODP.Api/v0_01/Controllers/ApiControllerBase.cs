@@ -53,7 +53,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] T entity)
+        public virtual async Task<IActionResult> UpdateAsync(int id, [FromBody] T entity)
         {
             if (id != entity.Id)
             {

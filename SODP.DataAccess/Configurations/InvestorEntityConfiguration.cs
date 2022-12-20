@@ -12,6 +12,13 @@ namespace SODP.DataAccess.Configurations
 				.HasColumnType("nvarchar(256)")
 				.IsRequired();
 
+			builder.Property(x => x.ActiveStatus)
+				.HasColumnType("tinyint(1)")
+				.HasDefaultValue(true)
+				.IsRequired();
+			
+			builder.HasKey(u => u.Id);
+
 			builder.HasIndex(x => new { x.Name })
 				.HasName("IX_NAME");
 

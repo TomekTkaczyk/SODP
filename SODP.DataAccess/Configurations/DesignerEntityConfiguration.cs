@@ -20,7 +20,12 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("nvarchar(50)")
                 .IsRequired();
 
-            builder.ToTable("Designers");
+			builder.Property(x => x.ActiveStatus)
+	            .HasColumnType("tinyint(1)")
+	            .HasDefaultValue(true)
+	            .IsRequired();
+
+			builder.ToTable("Designers");
         }
     }
 }

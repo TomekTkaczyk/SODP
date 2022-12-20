@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -16,15 +15,17 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Investors
 {
-    public class IndexModel : ListPageModel
+	public class IndexModel : ListPageModel
     {
+		const string editInvestorPartialViewName = "_EditInvestorPartialView";
+
 		public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
 		{
 			ReturnUrl = "/Investors";
 			_endpoint = "investors";
 		}
 
-		public InvestorsVM InvestorsViewModel { get; set; }
+		public InvestorsVM Investors { get; set; }
 
 		public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
         {
@@ -33,7 +34,7 @@ namespace SODP.UI.Pages.Investors
 			url.Append("?currentPage=:&pageSize=");
 			url.Append(pageSize);
 
-			InvestorsViewModel = new InvestorsVM
+			Investors = new InvestorsVM
 			{
 				PageInfo = new PageInfo
 				{
@@ -43,7 +44,9 @@ namespace SODP.UI.Pages.Investors
 				},
 			};
 
-			InvestorsViewModel = await GetInvestorsAsync(InvestorsViewModel.PageInfo);
+			PageInfo = Investors.PageInfo;
+
+			Investors = await GetInvestorsAsync(Investors.PageInfo);
 
 			return Page();
 		}

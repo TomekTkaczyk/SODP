@@ -21,7 +21,14 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("nvarchar(50)")
                 .IsRequired();
 
-            builder.HasIndex(x => new { x.Order })
+            builder.Property(x => x.ActiveStatus)
+                .HasColumnType("tinyint(1)")
+                .HasDefaultValue(true)
+                .IsRequired();
+
+			builder.HasKey(u => u.Id);
+
+			builder.HasIndex(x => new { x.Order })
                 .HasName("IX_ORDER");
 
             builder.ToTable("Branches");

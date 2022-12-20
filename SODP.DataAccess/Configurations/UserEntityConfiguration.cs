@@ -1,11 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SODP.Model;
 
 namespace SODP.DataAccess.Configurations
@@ -54,7 +48,7 @@ namespace SODP.DataAccess.Configurations
             builder.Property(u => u.SecurityStamp)
                 .HasColumnType("varchar(256)");
 
-            builder.HasKey(u => u.Id);
+			builder.HasKey(u => u.Id);
 
             builder.HasIndex(u => u.UserName)
                 .HasName("IX_UserName")
@@ -69,6 +63,7 @@ namespace SODP.DataAccess.Configurations
 
             builder.HasIndex(u => u.NormalizedEmail)
                 .HasName("IX_NormalizedEmail");
+
 
             builder.ToTable("Users");
         }

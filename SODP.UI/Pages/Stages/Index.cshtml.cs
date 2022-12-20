@@ -24,7 +24,6 @@ namespace SODP.UI.Pages.Stages
     {
         const string editStagePartialViewName = "_EditStagePartialView";
 
-
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/Stages";
@@ -86,8 +85,8 @@ namespace SODP.UI.Pages.Stages
             if (ModelState.IsValid)
             {
                 var apiResponse = stage.Id == 0
-                    ? await _apiProvider.PostAsync($"stages/{stage.Sign}", stage.ToHttpContent())
-                    : await _apiProvider.PutAsync($"stages/{stage.Sign}", stage.ToHttpContent());
+                    ? await _apiProvider.PostAsync($"stages", stage.ToHttpContent())
+                    : await _apiProvider.PutAsync($"stages/{stage.Id}", stage.ToHttpContent());
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
@@ -120,6 +119,7 @@ namespace SODP.UI.Pages.Stages
                     .Select(x => new StageVM
                     {
                         Id = x.Id,
+                        Sign = x.Sign,
                         Name = x.Name,
                         ActiveStatus = x.ActiveStatus
                     }).ToList();

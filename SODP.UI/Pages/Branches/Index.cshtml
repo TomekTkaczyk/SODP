@@ -97,10 +97,10 @@ else
 		function EditBranch(id) {
 			$.ajax({
 				type: "Get",
-				url: `@Url.Page("Index","UpdateBranch")&Id=` + id,
+				url: `@Url.Page("Index","EditBranch")&Id=` + id,
 				success: function (data) {
 					$('#modal-placeholder').html(data);
-					$('#updateBranch').modal('show');
+					$('#editBranch').modal('show');
 				}
 			})
 		}

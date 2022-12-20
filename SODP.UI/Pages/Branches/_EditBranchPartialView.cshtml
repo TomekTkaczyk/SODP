@@ -1,11 +1,11 @@
 ﻿@using SODP.UI.Pages.Branches.ViewModels
 @model BranchVM
 <!-- Modal -->
-<div class="modal fade" id="updateBranch" tabindex="-1" role="dialog" aria-labelledby="updateBranchLabel" aria-hidden="true">
+<div class="modal fade" id="editBranch" tabindex="-1" role="dialog" aria-labelledby="editBranchLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="text-info" id="updateBranchLabel">@(Model.Id == 0 ? "Nowa branża" : "Edycja branży")</h5>
+                <h5 class="text-info" id="editBranchLabel">@(Model.Id == 0 ? "Nowa branża" : "Edycja branży")</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -13,7 +13,7 @@
             <div class="modal-body">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div id="error-placeholder"></div>
-                <form asp-page-handler="updateBranch">
+                <form asp-page-handler="editBranch">
                     <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <input asp-for="Id" type="hidden" value="@Model.Id" />
                     <div class="form-group">

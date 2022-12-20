@@ -57,7 +57,7 @@ namespace SODP.UI.Pages.Branches
             return Page();
         }
 
-        public async Task<PartialViewResult> OnGetUpdateBranchAsync(int? id)
+        public async Task<PartialViewResult> OnGetEditBranchAsync(int? id)
         {
             if (id != null)
             {
@@ -73,7 +73,7 @@ namespace SODP.UI.Pages.Branches
             return GetPartialView(new BranchVM(), editBranchPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnPostUpdateBranchAsync(BranchVM branch)
+        public async Task<PartialViewResult> OnPostEditBranchAsync(BranchVM branch)
         {
             if (ModelState.IsValid)
             {
