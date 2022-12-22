@@ -27,21 +27,25 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public ProjectVM Project { get; set; }
 
+
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/ActiveProjects";
             _endpoint = "projects";
         }
 
+
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             return await base.OnGetAsync(ProjectStatus.Active, currentPage, pageSize, searchString);
         }
 
+
         public async Task<IActionResult> OnGetNewProjectAsync()
         {
-            return await GetPartialViewAsync(new NewProjectVM());
+            return await GetNewProjectPartialViewAsync(new NewProjectVM());
         }
+
 
         public async Task<PartialViewResult> OnPostNewProjectAsync(NewProjectVM project)
         {
@@ -53,7 +57,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
                 if (apiResponse.IsSuccessStatusCode && response.Success)
                 {
-                    return await GetPartialViewAsync(new NewProjectVM
+                    return await GetNewProjectPartialViewAsync(new NewProjectVM
                     {
                         Id = response.Data.Id,
                         Number = response.Data.Number,
@@ -66,8 +70,9 @@ namespace SODP.UI.Pages.ActiveProjects
                 }
             }
 
-            return await GetPartialViewAsync(project);
+            return await GetNewProjectPartialViewAsync(project);
         }
+
 
         public async Task<PartialViewResult> OnGetProjectPartialAsync(int id)
         {
@@ -78,33 +83,23 @@ namespace SODP.UI.Pages.ActiveProjects
 			return GetPartialView(Project, projectPartialViewName);
         }
 
-        private async Task<PartialViewResult> GetPartialViewAsync(NewProjectVM project)
+
+        private async Task<PartialViewResult> GetNewProjectPartialViewAsync(NewProjectVM project)
         {
-            var response = await _apiProvider.GetAsync("stages");
-            List<SelectListItem> stagesItems = new List<SelectListItem>();
-            if (response.IsSuccessStatusCode)
+            var apiResponse = await _apiProvider.GetAsync("stages");
+            if (apiResponse.IsSuccessStatusCode)
             {
-                var stages = await response.Content.ReadAsAsync<ServicePageResponse<StageDTO>>();
-                stagesItems = stages.Data.Collection
+                var stages = await _apiProvider.GetContent<ServicePageResponse<StageDTO>>(apiResponse);
+                project.Stages = stages.Data.Collection
                     .Where(x => x.ActiveStatus)
                     .Select(x => new SelectListItem
                     {
                         Value = x.Id.ToString(),
                         Text = x.ToString()
                     }).ToList();
-
-                if (project.StageId != 0)
-                {
-                    var currentStage = stages.Data.Collection.FirstOrDefault(x => x.Id == project.StageId);
-                }
             }
-            project.Stages = stagesItems;
 
-            return new PartialViewResult
-            {
-                ViewName = newProjectPartialViewName,
-                ViewData = new ViewDataDictionary<NewProjectVM>(ViewData, project)
-            };
+			return GetPartialView(project, newProjectPartialViewName);
         }
 	}
 }

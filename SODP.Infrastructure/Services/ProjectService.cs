@@ -411,12 +411,9 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var projectBranch = await _context.ProjectBranches.FirstOrDefaultAsync(x => x.ProjectId == id && x.BranchId == branchId);
-                if(projectBranch != null)
-                {
-                    _context.ProjectBranches.Remove(projectBranch);
-                    await _context.SaveChangesAsync();
-                }
+                var projectBranch = await _context.ProjectBranches.FirstAsync(x => x.ProjectId == id && x.BranchId == branchId);
+                _context.ProjectBranches.Remove(projectBranch);
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -487,6 +484,25 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
+
+		public async Task<ServiceResponse> SetInvestorAsync(int id, string investor)
+		{
+            var serviceResponse = new ServiceResponse();
+            try
+            {
+                var project = await _context.Projects.FirstAsync(x => x.Id == id);
+				project.Investor = investor;
+				_context.Projects.Update(project);
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500); 
+            }
+
+            return serviceResponse;
+		}
 
 
 		public Task<bool> ExistAsync(int id)

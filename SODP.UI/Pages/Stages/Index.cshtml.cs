@@ -30,8 +30,7 @@ namespace SODP.UI.Pages.Stages
             _endpoint = "stages";
         }
 
-        public StagesVM Stages { get; set; }
-
+        public List<StageVM> Stages { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
@@ -46,18 +45,13 @@ namespace SODP.UI.Pages.Stages
                 url.Append($"&searchString={searchString}");
             }
 
-            Stages = new StagesVM
-            {
-				PageInfo = new PageInfo
-				{
-					CurrentPage = currentPage,
-					ItemsPerPage = pageSize,
-					Url = url.ToString()
-				},
-                SearchString = searchString
-            };
-            this.PageInfo = Stages.PageInfo;
-            Stages.Stages = await GetStagesAsync(Stages.PageInfo, searchString);
+            SearchString = searchString;
+            
+            PageInfo.CurrentPage = currentPage;
+            PageInfo.ItemsPerPage= pageSize;
+            PageInfo.Url = url.ToString();
+            
+            Stages = await GetStagesAsync();
 
             return Page();
         }
@@ -105,9 +99,9 @@ namespace SODP.UI.Pages.Stages
             return  GetPartialView(stage, editStagePartialViewName);
         }
 
-        private async Task<List<StageVM>> GetStagesAsync(PageInfo pageInfo, string searchString)
+        private async Task<List<StageVM>> GetStagesAsync()
         {
-            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}&searchString={searchString}");
+            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={PageInfo.CurrentPage}&pageSize={PageInfo.ItemsPerPage}&searchString={SearchString}");
 
             if (apiResponse.IsSuccessStatusCode)
             {

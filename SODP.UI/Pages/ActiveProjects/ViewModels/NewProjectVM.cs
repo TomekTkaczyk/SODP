@@ -18,6 +18,6 @@ namespace SODP.UI.Pages.ActiveProjects.ViewModels
         [RegularExpression(@"^([a-zA-Z]{1,1})([1-9a-zA-Z_ ]{0,})$", ErrorMessage = "Nazwa musi zaczynać się literą, może zawierać podkreślenie, spacje, cyfry oraz litery bez polskich znaków diakrytycznych")]
         public string Name { get; set; }
 
-        public IEnumerable<SelectListItem> Stages { get; set; }
+        public IEnumerable<SelectListItem> Stages { get; set; } = new List<SelectListItem>();
     }
 }

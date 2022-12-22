@@ -55,7 +55,7 @@ namespace SODP.Infrastructure.Services
 					serviceResponse.ValidationErrors.Add("Sign", "Inwestor nie odnaleziony.");
 					return serviceResponse;
 				}
-				investor.Name = investor.Name;
+				investor.Name = updateInvestor.Name;
 				_context.Investors.Update(investor);
 				await _context.SaveChangesAsync();
 			}

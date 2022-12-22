@@ -44,6 +44,9 @@ namespace SODP.UI.Mappers
 
 			CreateMap<BranchDTO, Pages.ArchiveProjects.ViewModels.BranchVM>();
 
+            CreateMap<InvestorDTO, Pages.ActiveProjects.ViewModels.InvestorVM>()
+                .ReverseMap();
+
 			CreateMap<ProjectBranchDTO, SelectListItem>()
                 .ForMember(dest => dest.Text, opt => opt.MapFrom(x => $"{x.Branch.Name}"))
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(x => $"{x.Branch.Id}"))

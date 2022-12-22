@@ -20,45 +20,27 @@ namespace SODP.Infrastructure.Services
         public StageService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context, IActiveStatusService<Stage> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
 
-		public async Task<ServicePageResponse<StageDTO>> GetAllAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+		public async Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var serviceResponse = new ServicePageResponse<StageDTO>();
-            IList<Stage> projects = new List<Stage>();
+            if(active != null)
+            {
+                SetActiveFilter(active);
+            }
+            var query = GetQuery().Where(x => string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.Sign.Contains(searchString));
+
             try
             {
-                serviceResponse.Data.TotalCount = await _context.Stages
-                    .Where(x => x.ActiveStatus == active && (string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString)))
-                    .CountAsync();
-                if (pageSize == 0)
-                {
-                    pageSize = serviceResponse.Data.TotalCount;
-                }
-
-                var stages = _context.Stages
-                    .Where(p => !string.IsNullOrEmpty(p.Sign) && (string.IsNullOrEmpty(searchString) || p.Name.Contains(searchString)))
-                    .OrderBy(x => x.Sign);
-
-                serviceResponse.Data.TotalCount = await stages.CountAsync();
-
-                if (pageSize == 0)
-                {
-                    currentPage = 1;
-                    pageSize = serviceResponse.Data.TotalCount;
-                }
-                else
-                {
-                    currentPage = Math.Min(currentPage, (int)Math.Ceiling(decimal.Divide(serviceResponse.Data.TotalCount, pageSize)));
-                }
-
-                var st = await stages
+                var stages = await query
+                    .OrderBy(x => x.Sign)
                     .Skip((currentPage - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
 
-                serviceResponse.Data.TotalCount = stages.Count();
+                serviceResponse.Data.TotalCount = await query.CountAsync();
                 serviceResponse.Data.PageNumber = currentPage;
                 serviceResponse.Data.PageSize = pageSize;
-                serviceResponse.SetData(_mapper.Map<IList<StageDTO>>(st));
+                serviceResponse.SetData(_mapper.Map<IList<StageDTO>>(stages));
             }
             catch (Exception ex)
             {

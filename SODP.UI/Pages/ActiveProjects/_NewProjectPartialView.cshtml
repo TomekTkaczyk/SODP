@@ -13,7 +13,7 @@
             <div class="modal-body">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div id="error-placeholder"></div>
-                <form asp-page-handler="NewProject">
+                <form asp-page-handler="newProject">
                     <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <input asp-for="Id" id="id" type="hidden" value="@Model.Id" />
 

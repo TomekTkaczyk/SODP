@@ -14,9 +14,12 @@ namespace SODP.UI.Pages.Shared
         protected string _endpoint;
 
         public string SearchString { get; set; }
-        public int PageSize { get; set; }
+        
         public PageInfo PageInfo { get; set; } = new PageInfo();
+
         public List<SelectListItem> PageSizeList { get; set; } = new List<SelectListItem> { };
+
+        public int PageSize { get; set; }
 
         protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator) 
         { 
@@ -25,7 +28,6 @@ namespace SODP.UI.Pages.Shared
             {
                 PageSizeList.Add(new SelectListItem(item.ToString(), item.ToString()));
             }
-            PageSize = PageSizeSelectList.PageSizeList[0];
         }
     }
 }

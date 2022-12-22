@@ -1,4 +1,4 @@
-﻿namespace SODP.UI.Pages.Investors.ViewModel
+﻿namespace SODP.UI.Pages.Investors.ViewModels
 {
 	public class InvestorVM	: NewInvestorVM
 	{

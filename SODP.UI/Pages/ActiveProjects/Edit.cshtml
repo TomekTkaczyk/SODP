@@ -45,14 +45,14 @@
 		<div class="form-group row">
 			<div class="col-lg-7">
 				<label>Nazwa zamierzenia budowlanego:</label>
-				<textarea asp-for="Project.Title" class="form-control" placeholder="Nazwa zamierzenia budowlanego"></textarea>
+				<textarea asp-for="Project.Title" class="form-control" placeholder="Nazwa zamierzenia budowlanego" rows="4"></textarea>
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<div class="col-lg-7">
 				<label>Adres:</label>
-				<textarea asp-for="Project.Address" class="form-control" placeholder="Adres inwestycji"></textarea>
+				<textarea asp-for="Project.Address" class="form-control" placeholder="Adres inwestycji" rows="3"></textarea>
 			</div>
 		</div>
 
@@ -72,24 +72,36 @@
 			</div>
 		</div>
 
+		<div class="row">
+			<label class="col">Inwestor:</label>
+		</div>
+
 		<div class="form-group row">
-			<div class="col-lg-7">
-				<label>Inwestor:</label>
-				<textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor"></textarea>
+			<div class="col-lg-6">
+				<textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor" rows="4"></textarea>
+			</div>
+			<div class="col-lg-1">
+				<button type="button"
+						class="col btn btn-info form-control text-white float-right h-100"
+						title="Pobierz inwestora z bazy"
+						data-toggle="ajax-modal"
+						data-url="@Url.Page("Edit","InvestorsList")&projectId=@Model.Project.Id">
+					...
+				</button>
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<div class="col-lg-7">
 				<label>Pozwolenie na budowę:</label>
-				<textarea asp-for="Project.BuildingPermit" class="form-control" placeholder="Nr pozwolenia na budowę"></textarea>
+				<textarea asp-for="Project.BuildingPermit" class="form-control" placeholder="Nr pozwolenia na budowę" rows="2"></textarea>
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<div class="col-lg-7">
 				<label>Opis:</label>
-				<textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)"></textarea>
+				<textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)" rows="2"></textarea>
 			</div>
 		</div>
 
@@ -147,6 +159,7 @@
 				</div>
 			</div>
 		}
+
 		<div class="row">
 			<div class="col-sm-7">
 				<partial name="_SubmitAndBackButtonPartial" />
@@ -229,11 +242,19 @@
 				var form = $(this).parents('.modal').find('form');
 				var actionUrl = form.attr('action');
 				var dataToSend = form.serialize();
+
+				// console.log("Data to send:")
+				// console.log(dataToSend);
+
 				$.post(actionUrl, dataToSend).done(function (data) {
 					var newBody = $('.modal-body', data);
 					placeholderElement.find('.modal-body').replaceWith(newBody);
 					var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
 					var url = $(this).data('url');
+
+					// console.log("Response partial view:")
+					// console.log(data);
+
 					if (isValid) {
 						placeholderElement.find('.modal').modal('hide');
 						window.location.reload(true);
@@ -249,8 +270,6 @@
 
 			$('button[data-toggle="ajax-modal"]').click(function (event) {
 				var url = $(this).data('url');
-				console.log(url);
-				console.log(event);
 				$.get(url).done(function (data) {
 					var placeholderElement = $('#modal-placeholder');
 					placeholderElement.html(data);

@@ -12,18 +12,18 @@ namespace SODP.Api.v0_01.Controllers
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _service;
-        protected readonly ILogger<RoleController> _logger;
+        private readonly ILogger<RoleController> _logger;
 
-        public RoleController(IRoleService service, ILogger<RoleController> logger) : base()
+        public RoleController(IRoleService service, ILogger<RoleController> logger)
         {
             _service = service;
             _logger = logger;
         }
 
-    [HttpGet]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAllAsync(bool? active, int currentPage=1, int pageSize=0)
+        public async Task<IActionResult> GetPageAsync(bool? active, int currentPage=1, int pageSize=0)
         {
             //var req = HttpContext.Request.Query;
             //int.TryParse(req["page_number"], out int page_number);

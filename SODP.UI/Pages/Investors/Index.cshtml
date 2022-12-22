@@ -122,7 +122,7 @@ else
 			let c = checked ? 1 : 0;
 			$.ajax({
 				type: "PATCH",
-				url: `/api/v0_01/stages/${id}/status`,
+				url: `/api/v0_01/investors/${id}/status`,
 				contentType: "application/json; charset=utf-8",
 				dataType: 'json',
 				data: JSON.stringify(c),
@@ -138,7 +138,7 @@ else
 
 	<script>
 		$(document).ready(function () {
-			modalPlaceHolder('/Designers');
+			modalPlaceHolder('/Investors');
 		});
 	</script>
 

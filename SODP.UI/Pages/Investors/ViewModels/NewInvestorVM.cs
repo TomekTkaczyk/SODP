@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SODP.UI.Pages.Investors.ViewModel
+namespace SODP.UI.Pages.Investors.ViewModels
 {
 	public class NewInvestorVM
 	{

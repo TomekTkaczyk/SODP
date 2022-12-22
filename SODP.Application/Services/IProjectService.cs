@@ -17,6 +17,7 @@ namespace SODP.Application.Services
         Task<ServiceResponse> AddBranchAsync(int id, int branchId);
         Task<ServiceResponse> DeleteBranchAsync(int id, int branchId);
         Task<ServiceResponse> SetBranchTechnicalRoleAsync(TechnicalRoleDTO technicalRole);
+        Task<ServiceResponse> SetInvestorAsync(int id, string investor);
 
 
 

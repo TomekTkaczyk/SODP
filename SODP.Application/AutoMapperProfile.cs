@@ -23,6 +23,10 @@ namespace SODP.Domain
                 .ReverseMap();
 
 
+            CreateMap<Investor, InvestorDTO>()
+                .ReverseMap();
+
+
             CreateMap<Project, ProjectDTO>();
 
 
