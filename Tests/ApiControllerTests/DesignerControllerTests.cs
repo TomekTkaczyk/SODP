@@ -19,7 +19,7 @@ namespace Tests.ApiControllerTests
             var controller = new DesignerController(service, logger);
 
             // Act
-            var result = await controller.GetPageAsync();
+            var result = await controller.GetPageAsync(true);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);

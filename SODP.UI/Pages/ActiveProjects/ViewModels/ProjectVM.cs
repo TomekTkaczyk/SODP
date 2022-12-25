@@ -1,4 +1,5 @@
 ﻿using SODP.Shared.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SODP.UI.Pages.ActiveProjects.ViewModels
@@ -34,13 +35,14 @@ namespace SODP.UI.Pages.ActiveProjects.ViewModels
         public string BuildingPermit { get; set; }
         
         public string Description { get; set; }
-        
-        public ProjectStatus Status { get; set; }
+
+		public string DevelopmentDate { get; set; }
+
+		public ProjectStatus Status { get; set; }
         
         public BranchesVM ProjectBranches { get; set; }
         
         public AvailableBranchesVM AvailableBranches { get; set; }
-
 
     }
 }

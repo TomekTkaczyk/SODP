@@ -25,6 +25,11 @@ namespace SODP.DataAccess.Migrations
                 oldClrType: typeof(bool),
                 oldType: "tinyint(1)");
 
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DevelopmentDate",
+                table: "Projects",
+                nullable: true);
+
             migrationBuilder.AlterColumn<bool>(
                 name: "ActiveStatus",
                 table: "Designers",
@@ -60,6 +65,10 @@ namespace SODP.DataAccess.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Investors");
+
+            migrationBuilder.DropColumn(
+                name: "DevelopmentDate",
+                table: "Projects");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Sign",

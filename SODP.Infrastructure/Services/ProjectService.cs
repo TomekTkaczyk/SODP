@@ -237,6 +237,7 @@ namespace SODP.Application.Services
                 oldProject.BuildingPermit = project.BuildingPermit;
                 oldProject.Description = project.Description;
                 oldProject.ModifyTimeStamp = DateTime.UtcNow;
+                oldProject.DevelopmentDate = project.DevelopmentDate;
                 _context.Projects.Update(oldProject);
                 await _context.SaveChangesAsync();
             }

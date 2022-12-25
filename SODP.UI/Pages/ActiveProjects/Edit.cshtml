@@ -72,12 +72,9 @@
 			</div>
 		</div>
 
-		<div class="row">
-			<label class="col">Inwestor:</label>
-		</div>
-
 		<div class="form-group row">
 			<div class="col-lg-6">
+				<label>Inwestor:</label>
 				<textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor" rows="4"></textarea>
 			</div>
 			<div class="col-lg-1">
@@ -105,6 +102,15 @@
 			</div>
 		</div>
 
+		<div class="form-group row">
+			<div class="col-lg-7">
+				<label>Data opracowania:</label>
+				<div class="input-group-append" data-date-format="dd/mm/yyyy">
+					<input asp-for="Project.DevelopmentDate" class="form-control col" type="date"/>
+				</div>
+			</div>
+		</div>
+
 		<br />
 
 		<div class="col-lg-7 form-group">
@@ -113,10 +119,10 @@
 				<input asp-for="Project.ProjectBranches.Branches[i].Branch.Id" type="hidden">
 				<input asp-for="Project.ProjectBranches.Branches[i].Branch.Name" type="hidden">
 				<div class="row">
-					<div class="col my-auto">
-						<span class="font-weight-bold">@Model.Project.ProjectBranches.Branches[i].Branch.Name</span>
+					<div class="col my-auto font-weight-bold">
+						@Model.Project.ProjectBranches.Branches[i].Branch.Name
 					</div>
-					<div class="col-2 p-0 m-0">
+					<div class="col-3 p-0 m-0">
 						<div class="btn btn-md"
 						 data-toggle="tooltip"
 						 data-placement="top"
@@ -161,7 +167,7 @@
 		}
 
 		<div class="row">
-			<div class="col-sm-7">
+			<div class="col-lg-7">
 				<partial name="_SubmitAndBackButtonPartial" />
 			</div>
 		</div>
@@ -199,9 +205,7 @@
 				}
 			})
 		}
-	</script>
 
-	<script>
 		function RemoveBranch(projectId, branchId) {
 			$.ajax({
 				type: "Delete",
@@ -215,9 +219,7 @@
 				}
 			})
 		}
-	</script>
 
-	<script>
 		function AddBranch(projectId) {
 			var selectedId = $("#Project_AvailableBranches_SelectedId").val();
 			$.ajax({
@@ -232,9 +234,7 @@
 				}
 			})
 		}
-	</script>
 
-	<script>
 		function initModalPlaceHolder(returnUrl) {
 			var placeholderElement = $('#modal-placeholder');
 			placeholderElement.on('click', '[data-save="modal"]', function (event) {
@@ -242,19 +242,11 @@
 				var form = $(this).parents('.modal').find('form');
 				var actionUrl = form.attr('action');
 				var dataToSend = form.serialize();
-
-				// console.log("Data to send:")
-				// console.log(dataToSend);
-
 				$.post(actionUrl, dataToSend).done(function (data) {
 					var newBody = $('.modal-body', data);
 					placeholderElement.find('.modal-body').replaceWith(newBody);
 					var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
 					var url = $(this).data('url');
-
-					// console.log("Response partial view:")
-					// console.log(data);
-
 					if (isValid) {
 						placeholderElement.find('.modal').modal('hide');
 						window.location.reload(true);

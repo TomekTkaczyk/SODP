@@ -46,7 +46,7 @@ namespace SODP.DataAccess.Configurations
                 .HasDefaultValue("")
                 .HasColumnType("longtext");
 
-            builder.HasIndex(p => new { p.Number, p.StageId })
+			builder.HasIndex(p => new { p.Number, p.StageId })
                 .IsUnique()
                 .HasName("IX_NumberStage");
 

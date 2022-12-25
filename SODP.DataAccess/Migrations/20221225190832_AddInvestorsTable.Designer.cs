@@ -9,7 +9,7 @@ using SODP.DataAccess;
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    [Migration("20221220115608_AddInvestorsTable")]
+    [Migration("20221225190832_AddInvestorsTable")]
     partial class AddInvestorsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -336,6 +336,9 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("longtext")
                         .HasDefaultValue("");
+
+                    b.Property<DateTime?>("DevelopmentDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Investor")
                         .ValueGeneratedOnAdd()

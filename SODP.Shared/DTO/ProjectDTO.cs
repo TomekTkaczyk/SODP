@@ -1,4 +1,5 @@
 ﻿using SODP.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -29,8 +30,10 @@ namespace SODP.Shared.DTO
         public string BuildingPermit { get; set; }
 
         public string Description { get; set; }
+        
+        public DateTime? DevelopmentDate { get; set; }
 
-        public ProjectStatus Status { get; set; }
+		public ProjectStatus Status { get; set; }
 
         public ICollection<ProjectBranchDTO> Branches { get; set; }
 

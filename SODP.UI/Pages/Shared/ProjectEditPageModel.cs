@@ -6,6 +6,7 @@ using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,6 +43,7 @@ namespace SODP.UI.Pages.Shared
                     BuildingCategory = response.Data.BuildingCategory,
                     Investor = response.Data.Investor,
                     Description = response.Data.Description,
+                    DevelopmentDate = response.Data.DevelopmentDate == null ? null : ((DateTime)response.Data.DevelopmentDate).Date.ToShortDateString(),
                     Status = response.Data.Status,
                     ProjectBranches = new BranchesVM
                     {

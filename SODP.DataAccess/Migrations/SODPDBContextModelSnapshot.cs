@@ -335,6 +335,9 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("longtext")
                         .HasDefaultValue("");
 
+                    b.Property<DateTime?>("DevelopmentDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Investor")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(256)")

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Microsoft.VisualBasic;
 using SODP.Model.Extensions;
 using SODP.Shared.Enums;
 
@@ -19,7 +21,7 @@ namespace SODP.Model
         {
             var sign = foldername.GetUntilOrEmpty("_");
             RequiredPropertiesInit(
-                sign.Substring(0, 4),
+                sign[..4],
                 sign[4..],
                 foldername[(sign.Length + 1)..]);
             EmptyPropertiesInit();
@@ -44,6 +46,7 @@ namespace SODP.Model
         public string Investor { get; set; }
         public string BuildingPermit { get; set; }
         public string Description { get; set; }     
+        public DateTime? DevelopmentDate { get; set; }
         public ProjectStatus Status { get; set; }
         public ICollection<ProjectBranch> Branches { get; set; }
 

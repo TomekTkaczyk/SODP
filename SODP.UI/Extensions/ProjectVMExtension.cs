@@ -43,6 +43,7 @@ namespace SODP.UI.Extensions
                 Investor = project.Investor,
                 BuildingPermit = project.BuildingPermit,
                 Description = project.Description,
+                DevelopmentDate = project.DevelopmentDate == null ? null : DateTime.Parse(project.DevelopmentDate),
                 Status = project.Status, 
                 Stage = new StageDTO
                 {

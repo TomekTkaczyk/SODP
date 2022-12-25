@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SODP.Shared.DTO;
+using System;
 
 namespace SODP.UI.Mappers
 {
@@ -18,6 +19,7 @@ namespace SODP.UI.Mappers
                 .ForMember(dest => dest.StageId, opt => opt.MapFrom(x => x.Stage.Id))
                 .ForMember(dest => dest.StageSign, opt => opt.MapFrom(x => x.Stage.Sign))
                 .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Name))
+                .ForMember(dest => dest.DevelopmentDate, opt => opt.MapFrom(x => x.DevelopmentDate == null ? null : ((DateTime)x.DevelopmentDate).Date.ToShortDateString()))
                 .ForMember(dest => dest.ProjectBranches, opt => opt.MapFrom(x => new Pages.ActiveProjects.ViewModels.BranchesVM()))
                 .ForPath(dest => dest.ProjectBranches.Branches, opt => opt.MapFrom(x => x.Branches))
                 .PreserveReferences();
@@ -28,7 +30,8 @@ namespace SODP.UI.Mappers
 	            .ForMember(dest => dest.StageId, opt => opt.MapFrom(x => x.Stage.Id))
 	            .ForMember(dest => dest.StageSign, opt => opt.MapFrom(x => x.Stage.Sign))
 	            .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Name))
-	            .ForMember(dest => dest.ProjectBranches, opt => opt.MapFrom(x => new Pages.ArchiveProjects.ViewModels.BranchesVM()))
+                .ForMember(dest => dest.DevelopmentDate, opt => opt.MapFrom(x => x.DevelopmentDate == null ? null : ((DateTime)x.DevelopmentDate).Date.ToShortDateString()))
+				.ForMember(dest => dest.ProjectBranches, opt => opt.MapFrom(x => new Pages.ArchiveProjects.ViewModels.BranchesVM()))
 	            .ForPath(dest => dest.ProjectBranches.Branches, opt => opt.MapFrom(x => x.Branches))
 	            .PreserveReferences();
 
