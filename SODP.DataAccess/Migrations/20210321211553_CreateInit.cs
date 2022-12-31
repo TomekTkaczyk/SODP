@@ -8,6 +8,8 @@ namespace SODP.DataAccess.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            #region Branches
+
             migrationBuilder.CreateTable(
                 name: "Branches",
                 columns: table => new
@@ -21,6 +23,10 @@ namespace SODP.DataAccess.Migrations
                 {
                     table.PrimaryKey("PK_Branches", x => x.Id);
                 });
+
+            #endregion
+
+            #region Designers
 
             migrationBuilder.CreateTable(
                 name: "Designers",
@@ -37,6 +43,10 @@ namespace SODP.DataAccess.Migrations
                     table.PrimaryKey("PK_Designers", x => x.Id);
                 });
 
+            #endregion
+
+            #region Roles
+
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -52,6 +62,10 @@ namespace SODP.DataAccess.Migrations
                     table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
+            #endregion
+
+            #region Stages
+
             migrationBuilder.CreateTable(
                 name: "Stages",
                 columns: table => new
@@ -65,6 +79,10 @@ namespace SODP.DataAccess.Migrations
                 {
                     table.PrimaryKey("PK_Stages", x => x.Id);
                 });
+
+            #endregion
+
+            #region Users
 
             migrationBuilder.CreateTable(
                 name: "Users",
@@ -94,6 +112,10 @@ namespace SODP.DataAccess.Migrations
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
+            #endregion
+
+            #region Certicates
+
             migrationBuilder.CreateTable(
                 name: "Certificates",
                 columns: table => new
@@ -116,8 +138,12 @@ namespace SODP.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            #endregion
+
+            #region Licences
+
             migrationBuilder.CreateTable(
-                name: "Licenses",
+                name: "Licences",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -128,41 +154,24 @@ namespace SODP.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Licenses", x => x.Id);
+                    table.PrimaryKey("PK_Licences", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Licenses_Branches_BranchId",
+                        name: "FK_Licences_Branches_BranchId",
                         column: x => x.BranchId,
                         principalTable: "Branches",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Licenses_Designers_DesignerId",
+                        name: "FK_Licences_Designers_DesignerId",
                         column: x => x.DesignerId,
                         principalTable: "Designers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<int>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            #endregion
+
+            #region Projects
 
             migrationBuilder.CreateTable(
                 name: "Projects",
@@ -188,6 +197,35 @@ namespace SODP.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            #endregion
+
+            #region AspNetRoleClaims
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RoleId = table.Column<int>(nullable: false),
+                    ClaimType = table.Column<string>(nullable: true),
+                    ClaimValue = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            #endregion
+
+            #region AspNetUserClaims
+
             migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
@@ -209,6 +247,10 @@ namespace SODP.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            #endregion
+
+            #region AspNetUserLogins
+
             migrationBuilder.CreateTable(
                 name: "AspNetUserLogins",
                 columns: table => new
@@ -228,6 +270,10 @@ namespace SODP.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            #endregion
+
+            #region AspNetUserRoles
 
             migrationBuilder.CreateTable(
                 name: "AspNetUserRoles",
@@ -253,6 +299,10 @@ namespace SODP.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            #endregion
+
+            #region AspNetUserTokens
+
             migrationBuilder.CreateTable(
                 name: "AspNetUserTokens",
                 columns: table => new
@@ -272,6 +322,10 @@ namespace SODP.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            #endregion
+
+            #region Tokens
 
             migrationBuilder.CreateTable(
                 name: "Tokens",
@@ -293,6 +347,10 @@ namespace SODP.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            #endregion
+
+            #region ProjectBranches
 
             migrationBuilder.CreateTable(
                 name: "ProjectBranches",
@@ -317,13 +375,13 @@ namespace SODP.DataAccess.Migrations
                     table.ForeignKey(
                         name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
                         column: x => x.CheckingLicenseId,
-                        principalTable: "Licenses",
+                        principalTable: "Licences",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
                         column: x => x.DesignerLicenseId,
-                        principalTable: "Licenses",
+                        principalTable: "Licences",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -333,6 +391,10 @@ namespace SODP.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            #endregion
+
+            #region Indexs
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -361,12 +423,12 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Branch",
-                table: "Licenses",
+                table: "Licences",
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Designer",
-                table: "Licenses",
+                table: "Licences",
                 column: "DesignerId");
 
             migrationBuilder.CreateIndex(
@@ -438,6 +500,7 @@ namespace SODP.DataAccess.Migrations
                 table: "Users",
                 column: "UserName",
                 unique: true);
+            #endregion
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -470,7 +533,7 @@ namespace SODP.DataAccess.Migrations
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Licenses");
+                name: "Licences");
 
             migrationBuilder.DropTable(
                 name: "Projects");

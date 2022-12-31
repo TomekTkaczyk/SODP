@@ -132,7 +132,7 @@ namespace SODP.DataAccess.Migrations
                 table: "Licenses",
                 column: "DesignerId");
 
-            migrationBuilder.Sql("REPLACE INTO `Licenses` (Id, DesignerId, Content, CreateTimeStamp, ModifyTimeStamp) SELECT Id, DesignerId, Contents, CURDATE(), CURDATE() FROM `Licenses`;");
+            migrationBuilder.Sql("REPLACE INTO `Licenses` (Id, DesignerId, Content, CreateTimeStamp, ModifyTimeStamp) SELECT Id, DesignerId, Contents, CURDATE(), CURDATE() FROM `Licences`;");
 
             #endregion
 
@@ -434,10 +434,10 @@ namespace SODP.DataAccess.Migrations
                 });
             #endregion
 
-            #region Licenses
+            #region Licences
 
             migrationBuilder.DropTable(
-                name: "Licenses");
+                name: "Licences");
 
             #endregion
         }
@@ -448,7 +448,7 @@ namespace SODP.DataAccess.Migrations
             #region Licenses
 
             migrationBuilder.CreateTable(
-                name: "Licenses",
+                name: "Licences",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -474,16 +474,16 @@ namespace SODP.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.Sql("REPLACE INTO `Licenses` (Id, DesignerId, Contents, BranchId) SELECT Licenses.Id,Licenses.DesignerId,Content,LicenseBranches.BranchId FROM Licenses,Branches,LicenseBranches WHERE LicenseBranches.BranchId=Branches.Id AND LicenseBranches.LicenseId=Licenses.Id GROUP BY Id;");
+            migrationBuilder.Sql("REPLACE INTO `Licences` (Id, DesignerId, Contents, BranchId) SELECT Licenses.Id,Licenses.DesignerId,Content,LicenseBranches.BranchId FROM Licenses,Branches,LicenseBranches WHERE LicenseBranches.BranchId=Branches.Id AND LicenseBranches.LicenseId=Licenses.Id GROUP BY Id;");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Branch",
-                table: "Licenses",
+                table: "Licences",
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Designer",
-                table: "Licenses",
+                table: "Licences",
                 column: "DesignerId");
 
             #endregion

@@ -240,10 +240,10 @@ namespace SODP.DataAccess.Migrations
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id");
-
                     b.HasIndex("DesignerId")
                         .HasName("IX_Designer");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Licenses");
                 });

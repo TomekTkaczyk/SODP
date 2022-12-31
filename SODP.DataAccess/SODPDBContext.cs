@@ -72,7 +72,7 @@ namespace SODP.DataAccess
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.EnableSensitiveDataLogging(false);
+            optionsBuilder.EnableSensitiveDataLogging(true);
         }
     }
 }

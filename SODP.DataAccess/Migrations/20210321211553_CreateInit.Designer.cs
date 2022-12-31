@@ -211,7 +211,7 @@ namespace SODP.DataAccess.Migrations
                 b.HasIndex("DesignerId")
                     .HasName("IX_Designer");
 
-                b.ToTable("Licenses");
+                b.ToTable("Licences");
             });
 
             modelBuilder.Entity("SODP.Model.Project", b =>

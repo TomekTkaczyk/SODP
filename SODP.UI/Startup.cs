@@ -148,6 +148,8 @@ namespace SODP.UI
 
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
+
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

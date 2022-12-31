@@ -3,14 +3,12 @@ using SODP.DataAccess;
 using SODP.Domain.Managers;
 using SODP.Model;
 using SODP.Model.Enums;
-using SODP.Model.Extensions;
 using SODP.Shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure
 {
@@ -31,11 +29,11 @@ namespace SODP.Infrastructure
 
         public void LoadData()
         {
-            if (_context.Stages.Count() == 0)
+            if (!_context.Stages.Any())
             {
                 LoadStagesFromJSON();
             }
-            if(_context.Projects.Count() == 0)
+            if(!_context.Projects.Any())
             {
                 ImportProjectsFromStore();
             }
@@ -57,8 +55,14 @@ namespace SODP.Infrastructure
         private void ImportProjectsFromStore()
         {
             var _settingsPrefix = $"{Environment.OSVersion.Platform}Settings:";
-            CreateFolders(@"./aktualne.lst", _configuration.GetSection($"{_settingsPrefix}ActiveFolder").Value);
-            CreateFolders(@"./zakonczone.lst", _configuration.GetSection($"{_settingsPrefix}ArchiveFolder").Value);
+            if (File.Exists(@"./aktualne.lst"))
+            {
+                CreateFolders(@"./aktualne.lst", _configuration.GetSection($"{_settingsPrefix}ActiveFolder").Value);
+            }
+            if (File.Exists(@"./zakonczone.lst"))
+            {
+                CreateFolders(@"./zakonczone.lst", _configuration.GetSection($"{_settingsPrefix}ArchiveFolder").Value);
+            }
             ImportProjectsFromStore(_configuration.GetSection($"{_settingsPrefix}ActiveFolder").Value, ProjectStatus.Active);
             ImportProjectsFromStore(_configuration.GetSection($"{_settingsPrefix}ArchiveFolder").Value, ProjectStatus.Archival);
         }
@@ -76,6 +80,10 @@ namespace SODP.Infrastructure
 
         private void ImportProjectsFromStore(string projectsFolder, ProjectStatus status)
         {
+            if(!Directory.Exists(projectsFolder))
+            {
+                Directory.CreateDirectory(projectsFolder);
+            }
             var directory = Directory.EnumerateDirectories(projectsFolder);
             var validator = new ProjectNameValidator();
             foreach (var item in directory)
