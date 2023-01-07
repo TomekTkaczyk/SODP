@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SODP.Application.Interfaces;
 using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Domain.Managers;

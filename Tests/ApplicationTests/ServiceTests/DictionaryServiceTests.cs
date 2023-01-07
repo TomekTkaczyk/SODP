@@ -4,7 +4,6 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Moq;
-using SODP.Application.Interfaces;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Infrastructure.Services;
@@ -21,14 +20,14 @@ using Xunit;
 
 namespace Tests.ApplicationTests.ServiceTests
 {
-    public class DictionaryTests
+    public class DictionaryServiceTests
     {
         private readonly DbContextOptions<SODPDBContext> _contextOptions;
         private readonly Mock<IActiveStatusService<AppDictionary>> _activeStatusService = new();
         private readonly IMapper _mapper;
         private readonly Mock<IValidator<AppDictionary>> _validator = new();
 
-        public DictionaryTests()
+        public DictionaryServiceTests()
         {
             _contextOptions = new DbContextOptionsBuilder<SODPDBContext>()
             .UseInMemoryDatabase("FakeSODPContext")

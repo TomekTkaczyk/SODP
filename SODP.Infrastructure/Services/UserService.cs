@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SODP.Application.Interfaces;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Domain.Helpers;

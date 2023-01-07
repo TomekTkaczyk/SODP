@@ -18,17 +18,17 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.HasIndex(x => x.ProjectId)
-                .HasName("IX_Project");
+                .HasName("ProjectBranchesIX_Project");
 
             builder.HasIndex(x => x.BranchId)
-                .HasName("IX_Branch");
+                .HasName("ProjectBranchesIX_Branch");
 
             builder.ToTable("ProjectBranches");
 
             builder.HasMany(x => x.Roles)
                 .WithOne(y => y.ProjectBranch)
-                .HasForeignKey(z => z.ProjectBranchId)
-                .HasConstraintName("FK_ProjectBranch");
+                .HasForeignKey(z => z.ProjectBranchId);
+                //.HasConstraintName("FK_ProjectBranch");
         }
     }
 }

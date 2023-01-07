@@ -29,7 +29,7 @@ namespace SODP.DataAccess.Configurations
 			builder.HasKey(u => u.Id);
 
 			builder.HasIndex(x => new { x.Order })
-                .HasName("IX_ORDER");
+                .HasName("BranchesIX_Order");
 
             builder.ToTable("Branches");
         }
