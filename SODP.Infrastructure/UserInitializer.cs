@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SODP.Model;
-using System;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure
 {

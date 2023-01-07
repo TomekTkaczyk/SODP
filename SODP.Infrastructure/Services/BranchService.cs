@@ -7,10 +7,6 @@ using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
@@ -18,6 +14,7 @@ namespace SODP.Infrastructure.Services
     {
 
 		public BranchService(IMapper mapper, IValidator<Branch> validator, SODPDBContext context, IActiveStatusService<Branch> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
+
 
         public async Task<ServiceResponse<BranchDTO>> GetAsync(string sign)
         {

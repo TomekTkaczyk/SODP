@@ -4,9 +4,9 @@ using SODP.Model;
 
 namespace SODP.DataAccess.Configurations
 {
-    public class LicenseBranchEntityConfiguration : IEntityTypeConfiguration<LicenseBranch>
+    public class LicenseBranchEntityConfiguration : IEntityTypeConfiguration<BranchLicense>
     {
-        public void Configure(EntityTypeBuilder<LicenseBranch> builder)
+        public void Configure(EntityTypeBuilder<BranchLicense> builder)
         {
             builder.Property(x => x.BranchId)
                 .IsRequired();

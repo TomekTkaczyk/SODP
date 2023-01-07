@@ -210,7 +210,7 @@ namespace SODP.Infrastructure.Services
                     return result;
                 }
 
-                license.Branches.Add(new LicenseBranch
+                license.Branches.Add(new BranchLicense
                 {                              
                     BranchId = branchId,
                     LicenseId = id

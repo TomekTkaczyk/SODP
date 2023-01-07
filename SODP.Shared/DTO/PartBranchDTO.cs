@@ -4,9 +4,8 @@ using System.Text;
 
 namespace SODP.Shared.DTO
 {
-    public class ProjectBranchDTO
+    public class PartBranchDTO : BaseDTO
     {
-        public int Id { get; set; }
         public PartDTO Part { get; set; }
 
         public ICollection<PartBranchRoleDTO> Roles { get; set; }

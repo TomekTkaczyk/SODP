@@ -18,6 +18,7 @@ namespace SODP.Infrastructure.Services
     {
         public DesignerService(IMapper mapper, IValidator<Designer> validator, SODPDBContext context, IActiveStatusService<Designer> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
+
         public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
         {
             var query = SetActiveFilter(active)

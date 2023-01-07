@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SODP.Model
+namespace SODP.Model;
+
+public class UserToken : IdentityUserToken<int>
 {
-    public class UserToken : IdentityUserToken<int>
-    {
-        public UserToken() : base() { }
-    }
+    public UserToken() : base() { }
 }

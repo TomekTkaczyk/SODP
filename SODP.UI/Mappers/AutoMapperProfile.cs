@@ -9,9 +9,19 @@ namespace SODP.UI.Mappers
     {
         public AutoMapperProfile()
         {
-			CreateMap<ProjectBranchDTO, Pages.ActiveProjects.ViewModels.ProjectBranchVM>();
-			
-            CreateMap<ProjectBranchDTO, Pages.ArchiveProjects.ViewModels.ProjectBranchVM>();
+            CreateMap<ProjectBranchDTO, Pages.ActiveProjects.ViewModels.ProjectBranchVM>()
+                .ForMember(dest => dest.Branch, act => act.Ignore())
+                .ForMember(dest => dest.Roles, act => act.Ignore());
+
+            CreateMap<Pages.ActiveProjects.ViewModels.ProjectBranchVM, ProjectBranchDTO>()
+                .ForMember(dest => dest.Roles, act => act.Ignore())
+                .ForMember(dest => dest.Part, act => act.Ignore());
+
+
+            CreateMap<ProjectBranchDTO, Pages.ArchiveProjects.ViewModels.ProjectBranchVM>()
+                .ForMember(dest => dest.Branch, act => act.Ignore())
+                .ForMember(dest => dest.Roles, act => act.Ignore());
+
 
             CreateMap<ProjectDTO, Pages.ActiveProjects.ViewModels.ProjectVM>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
@@ -21,7 +31,7 @@ namespace SODP.UI.Mappers
                 .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Name))
                 .ForMember(dest => dest.DevelopmentDate, opt => opt.MapFrom(x => x.DevelopmentDate == null ? null : ((DateTime)x.DevelopmentDate).Date.ToShortDateString()))
                 .ForMember(dest => dest.ProjectBranches, opt => opt.MapFrom(x => new Pages.ActiveProjects.ViewModels.BranchesVM()))
-                .ForPath(dest => dest.ProjectBranches.Branches, opt => opt.MapFrom(x => x.Branches))
+                .ForMember(dest => dest.AvailableBranches, act => act.Ignore())
                 .PreserveReferences();
 
 			CreateMap<ProjectDTO, Pages.ArchiveProjects.ViewModels.ProjectVM>()
@@ -32,8 +42,8 @@ namespace SODP.UI.Mappers
 	            .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Name))
                 .ForMember(dest => dest.DevelopmentDate, opt => opt.MapFrom(x => x.DevelopmentDate == null ? null : ((DateTime)x.DevelopmentDate).Date.ToShortDateString()))
 				.ForMember(dest => dest.ProjectBranches, opt => opt.MapFrom(x => new Pages.ArchiveProjects.ViewModels.BranchesVM()))
-	            .ForPath(dest => dest.ProjectBranches.Branches, opt => opt.MapFrom(x => x.Branches))
-	            .PreserveReferences();
+                .ForMember(dest => dest.AvailableBranches, act => act.Ignore())
+                .PreserveReferences();
 
 			CreateMap<ProjectBranchRoleDTO, Pages.ActiveProjects.ViewModels.RoleVM>()
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.License.Designer.ToString()))
@@ -51,8 +61,11 @@ namespace SODP.UI.Mappers
                 .ReverseMap();
 
 			CreateMap<ProjectBranchDTO, SelectListItem>()
-                .ForMember(dest => dest.Text, opt => opt.MapFrom(x => $"{x.Branch.Name}"))
-                .ForMember(dest => dest.Value, opt => opt.MapFrom(x => $"{x.Branch.Id}"))
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(x => $"{x.Part.Name}"))
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(x => $"{x.Part.Id}"))
+                .ForMember(dest => dest.Disabled, act => act.Ignore())
+                .ForMember(dest => dest.Group, act => act.Ignore())
+                .ForMember(dest => dest.Selected, act => act.Ignore())
                 .PreserveReferences();
 
             CreateMap<LicenseDTO, Pages.ActiveProjects.ViewModels.LicenseVM>()

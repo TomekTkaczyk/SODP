@@ -35,7 +35,7 @@ namespace SODP.Shared.DTO
 
 		public ProjectStatus Status { get; set; }
 
-        public ICollection<ProjectBranchDTO> Branches { get; set; }
+        public ICollection<ProjectPartDTO> Parts { get; set; }
 
         public override string ToString()
         {

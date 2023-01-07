@@ -2,15 +2,14 @@
 
 namespace SODP.Model;
 
-public class ProjectBranch
+public class PartBranch : BaseEntity
 {
-    public int Id { get; set; }
-    public int ProjectId { get; set; }
-    public virtual Project Project { get; set; }
+    public int ProjectPartId { get; set; }
+    public virtual ProjectPart ProjectPart { get; set; }
     public int BranchId { get; set; }
     public virtual Branch Branch { get; set; }
 
-    public ICollection<ProjectBranchRole> Roles { get; set; }
+    public ICollection<PartBranchRole> Roles { get; set; }
 
     public override string ToString()
     {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SODP.Shared.Response
 {
-    public class PageResponse<T>
+    public class Page<T>
     {
         public ICollection<T> Collection { get; set; }
         public int PageNumber { get; set; }

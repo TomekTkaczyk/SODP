@@ -23,9 +23,9 @@ namespace SODP.Application.Mappers
                     BuildingCategory = project.BuildingCategory,
                     Investor = project.Investor,
                     Description = project.Description,
-                    Branches = (from branch in project.Branches select new ProjectBranchDTO()
+                    Parts = (from part in project.Parts select new ProjectPartDTO()
                     {
-                       Id = branch.Id,
+                       Id = part.Id,
                     }).ToList()
                 };
 

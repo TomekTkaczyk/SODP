@@ -2,13 +2,11 @@
 
 namespace SODP.Model;
 
-public class ProjectBranchRole
+public class PartBranchRole : BaseEntity
 {
-    public int Id { get; set; }  // to do remove !!!
+    public int PartBranchId { get; set; }
 
-    public int ProjectBranchId { get; set; }
-
-    public virtual ProjectBranch ProjectBranch { get; set; }
+    public virtual PartBranch PartBranch { get; set; }
 
     public TechnicalRole Role { get; set; }
 

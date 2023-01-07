@@ -19,7 +19,11 @@ namespace SODP.Domain
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Name));
 
 
-            CreateMap<Stage, StageDTO>()
+			CreateMap<AppDictionary, DictionaryDTO>()
+				.ReverseMap();
+
+
+			CreateMap<Stage, StageDTO>()
                 .ReverseMap();
 
 
@@ -30,9 +34,31 @@ namespace SODP.Domain
             CreateMap<Project, ProjectDTO>();
 
 
-            CreateMap<ProjectBranch, ProjectBranchDTO>()
-                .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch))
-                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles))
+            CreateMap<PartBranch, PartBranchDTO>()
+                .ForMember(dest => dest.Part, act => act.Ignore())
+                .ForMember(dest => dest.Roles, act => act.Ignore());
+
+            CreateMap<PartBranchDTO, PartBranch>()
+                .ForMember(dest => dest.ProjectPartId, act => act.Ignore())
+                .ForMember(dest => dest.ProjectPart, act => act.Ignore())
+                .ForMember(dest => dest.BranchId, act => act.Ignore())
+                .ForMember(dest => dest.Branch, act => act.Ignore())
+                .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+                .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
+                .ForMember(dest => dest.Roles, act => act.Ignore());
+
+
+            CreateMap<ProjectPart, ProjectPartDTO>()
+                .ForMember(dest => dest.Branches, opt => opt.MapFrom(src => src.Branches))
+                .ForMember(dest => dest.Part, act => act.Ignore())
+                .PreserveReferences();
+
+            CreateMap<ProjectPartDTO, ProjectPart>()
+                .ForMember(dest => dest.Branches, opt => opt.MapFrom(src => src.Branches))
+                .ForMember(dest => dest.Sign, act => act.Ignore())
+                .ForMember(dest => dest.Name, act => act.Ignore())
+                .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+                .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
                 .PreserveReferences();
 
 
@@ -54,7 +80,7 @@ namespace SODP.Domain
 
             CreateMap<ProjectDTO, Project>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-                .ForMember(dest => dest.Branches, act => act.Ignore())
+                .ForMember(dest => dest.Parts, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.Stage, act => act.Ignore())
@@ -64,13 +90,19 @@ namespace SODP.Domain
             CreateMap<NewProjectDTO, Project>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ForMember(dest => dest.Status, act => act.Ignore())
-                .ForMember(dest => dest.Branches, act => act.Ignore())
+                .ForMember(dest => dest.Parts, act => act.Ignore())
                 .ForMember(dest => dest.Stage, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.Address, act => act.Ignore())
                 .ForMember(dest => dest.Investor, act => act.Ignore())
                 .ForMember(dest => dest.Investor, act => act.Ignore())
+                .ForMember(dest => dest.Title, act => act.Ignore())
+                .ForMember(dest => dest.LocationUnit, act => act.Ignore())
+                .ForMember(dest => dest.BuildingCategory, act => act.Ignore())
+                .ForMember(dest => dest.BuildingPermit, act => act.Ignore())
+                .ForMember(dest => dest.Description, act => act.Ignore())
+                .ForMember(dest => dest.DevelopmentDate, act => act.Ignore())
                 .PreserveReferences();
 
 
@@ -100,6 +132,11 @@ namespace SODP.Domain
 
 
             CreateMap<NewLicenseDTO, License>()
+                .ForMember(dest => dest.Id, act => act.Ignore())
+                .ForMember(dest => dest.Designer, act => act.Ignore())
+                .ForMember(dest => dest.Branches, act => act.Ignore())
+                .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+                .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .PreserveReferences();
         }

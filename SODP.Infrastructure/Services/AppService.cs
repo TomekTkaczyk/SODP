@@ -17,7 +17,7 @@ namespace SODP.Infrastructure.Services
 {
 	public class AppService<TEntity,TDto> where TEntity : BaseEntity where TDto : BaseDTO
     {
-		private IQueryable<TEntity> query;
+		private IQueryable<TEntity> _query;
 
 		protected readonly IMapper _mapper;
 		protected readonly IValidator<TEntity> _validator;
@@ -31,13 +31,13 @@ namespace SODP.Infrastructure.Services
 			_context = context;
 			_activeStatusService = activeStatusService;
 
-			query = _context.Set<TEntity>().AsQueryable();
+			_query = _context.Set<TEntity>().AsQueryable();
 		}
 
 
 		public IQueryable<TEntity> GetQuery()
 		{
-			return query;
+			return _query;
 		}
 
 
@@ -49,7 +49,7 @@ namespace SODP.Infrastructure.Services
 				var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
 				if (entity == null)
 				{
-					serviceResponse.SetError($"Błąd: Encja Id:{id} nie odnaleziona.", 401);
+					serviceResponse.SetError($"Error: Entity Id:{id} not found.", 401);
 					return serviceResponse;
 				}
 				serviceResponse.SetData(_mapper.Map<TDto>(entity));
@@ -65,9 +65,10 @@ namespace SODP.Infrastructure.Services
 
 		protected AppService<TEntity, TDto> SetActiveFilter(bool? active)
 		{
-			if (typeof(IActiveStatus).IsAssignableFrom(typeof(TEntity)))
+            _query = _context.Set<TEntity>().AsQueryable();
+            if (typeof(IActiveStatus).IsAssignableFrom(typeof(TEntity)))
 			{
-				query = query.Where(x => (active == null) || ((IActiveStatus)x).ActiveStatus == active);
+				_query = _query.Where(x => (active == null) || ((IActiveStatus)x).ActiveStatus == active);
 			}
 
 			return this;
@@ -78,10 +79,10 @@ namespace SODP.Infrastructure.Services
 		{
 			if (pageSize > 0)
 			{
-				query = query.Skip((currentPage - 1) * pageSize).Take(pageSize);
+				_query = _query.Skip((currentPage - 1) * pageSize).Take(pageSize);
 			}
 
-			return query;
+			return _query;
 		}
 
 
@@ -92,7 +93,7 @@ namespace SODP.Infrastructure.Services
 			var serviceResponse = new ServicePageResponse<TDto>();
 			try
 			{
-				serviceResponse.Data.TotalCount = await query.CountAsync();
+				serviceResponse.Data.TotalCount = await _query.CountAsync();
 				serviceResponse.Data.PageNumber= currentPage;
 				serviceResponse.Data.PageSize= pageSize;
 				serviceResponse.SetData(_mapper.Map<IList<TDto>>(await PageQuery(currentPage, pageSize).ToListAsync()));
@@ -124,15 +125,23 @@ namespace SODP.Infrastructure.Services
 
 			try
 			{
-				var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
-				if (entity == null)
-				{
-					serviceResponse.SetError($"Błąd: Encja Id:{id} nie odnaleziona.", 401);
-					return serviceResponse;
-				}
+				TEntity entity = (TEntity)Activator.CreateInstance(typeof(TEntity));
+				entity.Id = id;
 
-				_context.Set<TEntity>().Remove(entity);
-				await _context.SaveChangesAsync();
+				_context.Entry(entity).State = EntityState.Deleted;
+
+				// var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
+				//if (entity == null)
+				//{
+				//	serviceResponse.SetError($"Błąd: Encja Id:{id} nie odnaleziona.", 401);
+				//	return serviceResponse;
+				//}
+
+				//_context.Set<TEntity>().Remove(entity);
+				if (await _context.SaveChangesAsync() == 0)
+				{
+					serviceResponse.SetError($"Error: Entity Id:{id} not found.", 401);
+				}
 			}
 			catch (Exception ex)
 			{

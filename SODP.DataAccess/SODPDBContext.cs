@@ -16,6 +16,7 @@ namespace SODP.DataAccess
             _dateTime = dateTime;
         }
 
+        public virtual DbSet<AppDictionary> AppDictionary { get; set; }
         public virtual DbSet<Stage> Stages { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
@@ -23,7 +24,7 @@ namespace SODP.DataAccess
         public virtual DbSet<ProjectBranchRole> ProjectBranchRole { get; set; }
         public virtual DbSet<Designer> Designers { get; set; }
         public virtual DbSet<License> Licenses { get; set; }
-        public virtual DbSet<LicenseBranch> BranchLicenses { get; set; }
+        public virtual DbSet<BranchLicense> BranchLicenses { get; set; }
         public virtual DbSet<Certificate> Certificates { get; set; }
         public virtual DbSet<Investor> Investors { get; set; }
 
@@ -57,6 +58,7 @@ namespace SODP.DataAccess
 
             new TokenEntityConfiguration().Configure(modelBuilder.Entity<Token>());
 
+            new AppDictionaryEntityConfiguration().Configure(modelBuilder.Entity<AppDictionary>());
             new StageEntityConfiguration().Configure(modelBuilder.Entity<Stage>());
             new BranchEntityConfiguration().Configure(modelBuilder.Entity<Branch>());
             new ProjectEntityConfiguration().Configure(modelBuilder.Entity<Project>());
@@ -64,7 +66,7 @@ namespace SODP.DataAccess
             new ProjectBranchRoleEntityConfiguration().Configure(modelBuilder.Entity<ProjectBranchRole>());
             new DesignerEntityConfiguration().Configure(modelBuilder.Entity<Designer>());
             new LicenseEntityConfiguration().Configure(modelBuilder.Entity<License>());
-            new LicenseBranchEntityConfiguration().Configure(modelBuilder.Entity<LicenseBranch>());
+            new LicenseBranchEntityConfiguration().Configure(modelBuilder.Entity<BranchLicense>());
             new CertificateEntityConfiguration().Configure(modelBuilder.Entity<Certificate>());
             new InvestorEntityConfiguration().Configure(modelBuilder.Entity<Investor>());
       

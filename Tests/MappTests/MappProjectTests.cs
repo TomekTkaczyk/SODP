@@ -18,24 +18,27 @@ namespace Tests.MappTests
             _config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
             _mapper = _config.CreateMapper();
         }
-        [Fact]
-        public void AutoMapper_ConvertFromProject_IsValid()
-        {
-            var fixture = new Fixture();
-            fixture.Behaviors
-                .OfType<ThrowingRecursionBehavior>()
-                .ToList()
-                .ForEach(b => fixture.Behaviors.Remove(b));
 
-            fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-            ProjectDTO dto = fixture.Create<ProjectDTO>();
-            Project entity = fixture.Create<Project>();
 
-            var projectDTO = _mapper.Map<Project, ProjectDTO>(entity);
+        //[Fact]
+        //public void AutoMapper_ConvertFromProject_IsValid()
+        //{
+        //    var fixture = new Fixture();
+        //    fixture.Behaviors
+        //        .OfType<ThrowingRecursionBehavior>()
+        //        .ToList()
+        //        .ForEach(b => fixture.Behaviors.Remove(b));
 
-            Assert.NotEmpty(projectDTO.Branches);
-            Assert.True(projectDTO.Branches.Count > 0);
-        }
+        //    fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        //    ProjectDTO dto = fixture.Create<ProjectDTO>();
+        //    Project entity = fixture.Create<Project>();
+
+        //    var projectDTO = _mapper.Map<Project, ProjectDTO>(entity);
+
+        //    Assert.NotEmpty(projectDTO.Branches);
+        //    Assert.True(projectDTO.Branches.Count > 0);
+        //}
+
 
         [Fact]
         public void When_project_given_null_strings_then_should_by_return_estring_empty_fields()

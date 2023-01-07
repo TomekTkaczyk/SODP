@@ -45,11 +45,6 @@ namespace SODP.UI.Pages.Shared
                     Description = response.Data.Description,
                     DevelopmentDate = response.Data.DevelopmentDate == null ? null : ((DateTime)response.Data.DevelopmentDate).Date.ToShortDateString(),
                     Status = response.Data.Status,
-                    ProjectBranches = new BranchesVM
-                    {
-                        Branches = _mapper.Map<IList<ProjectBranchVM>>(response.Data.Branches)
-                    },
-
                 };
                 project.AvailableBranches = new AvailableBranchesVM
                 {

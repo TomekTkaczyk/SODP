@@ -9,16 +9,9 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("/api/v0_01/branches")]
-    public class BranchController : ControllerBase
+    public class BranchController : ApiControllerBase<BranchDTO>
     {
-        private readonly IBranchService _service;
-        private readonly ILogger<BranchController> _logger;
-
-        public BranchController(IBranchService service, ILogger<BranchController> logger)
-        {
-            _service = service;
-            _logger = logger;
-        }
+        public BranchController(IBranchService service, ILogger<BranchController> logger) : base(service, logger) { }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]

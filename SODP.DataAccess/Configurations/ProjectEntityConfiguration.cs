@@ -55,7 +55,7 @@ namespace SODP.DataAccess.Configurations
 
             builder.ToTable("Projects");
 
-            builder.HasMany(x => x.Branches)
+            builder.HasMany(x => x.Parts)
                 .WithOne(y => y.Project)
                 .HasForeignKey(z => z.ProjectId)
                 .HasConstraintName("FK_Project");

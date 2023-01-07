@@ -131,6 +131,7 @@ namespace SODP.Application.Services
                     .Where(x => x.Status == _mode && (string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.Number.Contains(searchString) || x.Title.Contains(searchString) || x.Description.Contains(searchString)))
                     .Skip((currentPage-1) * pageSize)
                     .Take(pageSize)
+                    .AsNoTracking()
                     .ToListAsync();
 
                 serviceResponse.Data.PageNumber = currentPage;
@@ -170,33 +171,33 @@ namespace SODP.Application.Services
         }
          
 
-        public async Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id)
-        {
-            var serviceResponse = new ServiceResponse<ProjectDTO>();
-            try
-            {
-                var project = await _context.Projects
-                    .Include(s => s.Stage)
-                    .Include(s => s.Branches)
-                    .ThenInclude(s => s.Branch)
-                    .Include(s => s.Branches)
-                    .ThenInclude(s => s.Roles)
-                    .ThenInclude(s => s.License)
-                    .ThenInclude(s => s.Designer)
-                    .FirstOrDefaultAsync(x => x.Id == id);
-                if (project == null)
-                {
-                    serviceResponse.SetError($"Błąd: Projekt Id:{id} nie odnaleziony.", 404);
-                }
-                serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
+        //public async Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id)
+        //{
+        //    var serviceResponse = new ServiceResponse<ProjectDTO>();
+        //    try
+        //    {
+        //        var project = await _context.Projects
+        //            .Include(s => s.Stage)
+        //            .Include(s => s.Branches)
+        //            .ThenInclude(s => s.Branch)
+        //            .Include(s => s.Branches)
+        //            .ThenInclude(s => s.Roles)
+        //            .ThenInclude(s => s.License)
+        //            .ThenInclude(s => s.Designer)
+        //            .FirstOrDefaultAsync(x => x.Id == id);
+        //        if (project == null)
+        //        {
+        //            serviceResponse.SetError($"Błąd: Projekt Id:{id} nie odnaleziony.", 404);
+        //        }
+        //        serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        serviceResponse.SetError(ex.Message, 500);
+        //    }
 
-            return serviceResponse;
-        }
+        //    return serviceResponse;
+        //}
 
 
         public async Task<ServiceResponse> UpdateAsync(ProjectDTO updateProject)
@@ -368,43 +369,43 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServiceResponse> AddBranchAsync(int id, int branchId)
-        {
-            var serviceResponse = new ServiceResponse();
-            try
-            {
-                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == branchId);
-                if (branch == null)
-                {
-                    serviceResponse.SetError($"Błąd: Branża Id:{branchId} nie odnaleziona", 404);
-                    return serviceResponse;
-                }
+        //public async Task<ServiceResponse> AddBranchAsync(int id, int branchId)
+        //{
+        //    var serviceResponse = new ServiceResponse();
+        //    try
+        //    {
+        //        var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == branchId);
+        //        if (branch == null)
+        //        {
+        //            serviceResponse.SetError($"Błąd: Branża Id:{branchId} nie odnaleziona", 404);
+        //            return serviceResponse;
+        //        }
 
-                var project = await _context.Projects.Include(b => b.Branches).FirstOrDefaultAsync(x => x.Id == id);
-                if (project == null)
-                {
-                    serviceResponse.SetError($"Błąd: Projekt Id:{branchId} nie odnaleziony", 404);
-                    return serviceResponse;
-                }
+        //        var project = await _context.Projects.Include(b => b.Branches).FirstOrDefaultAsync(x => x.Id == id);
+        //        if (project == null)
+        //        {
+        //            serviceResponse.SetError($"Błąd: Projekt Id:{branchId} nie odnaleziony", 404);
+        //            return serviceResponse;
+        //        }
 
-                if(project.Branches == null || (project.Branches.FirstOrDefault(x => x.BranchId == branchId) == null))
-                {
-                    var projectBranch = new ProjectBranch
-                    {
-                        Project = project,
-                        Branch = branch
-                    };
-                    var result = await _context.ProjectBranches.AddAsync(projectBranch);
-                    await _context.SaveChangesAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
+        //        if(project.Branches == null || (project.Branches.FirstOrDefault(x => x.BranchId == branchId) == null))
+        //        {
+        //            var projectBranch = new ProjectBranch
+        //            {
+        //                Project = project,
+        //                Branch = branch
+        //            };
+        //            var result = await _context.ProjectBranches.AddAsync(projectBranch);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        serviceResponse.SetError(ex.Message, 500);
+        //    }
 
-            return serviceResponse;
-        }
+        //    return serviceResponse;
+        //}
 
 
         public async Task<ServiceResponse> DeleteBranchAsync(int id, int branchId)
@@ -507,6 +508,26 @@ namespace SODP.Application.Services
 
 
 		public Task<bool> ExistAsync(int id)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<ServiceResponse> AddPartAsync(int id, int partId)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<ServiceResponse> DeletePartAsync(int id, int partId)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<ServicePageResponse<ProjectPartDTO>> GetPartsAsync(int id)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id)
 		{
 			throw new NotImplementedException();
 		}
