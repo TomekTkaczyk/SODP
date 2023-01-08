@@ -1,18 +1,11 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Model;
-using SODP.Model.Interfaces;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
@@ -83,29 +76,43 @@ namespace SODP.Infrastructure.Services
 
         public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            SetActiveFilter(active);
-
-            _query = _query.Where(x => String.IsNullOrEmpty(x.Master) && (active == null || x.ActiveStatus == active));
-
-            var serviceResponse = new ServicePageResponse<DictionaryDTO>();
-			try
-			{
-                serviceResponse.Data.TotalCount = await _context.Set<AppDictionary>().CountAsync();
-				serviceResponse.Data.PageNumber = currentPage;
-				serviceResponse.Data.PageSize = pageSize;
-				serviceResponse.SetData(_mapper.Map<IList<DictionaryDTO>>(await PageQuery(currentPage, pageSize).ToListAsync()));
-            }
-			catch (Exception ex)
-			{
-                serviceResponse.SetError(ex.Message);
-			}
-
-			return serviceResponse;
+			return await GetPageAsync(null, active, currentPage, pageSize, searchString);
         }
 
-        public Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(string masterSign, bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(string masterSign, bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            throw new NotImplementedException();
+            SetActiveFilter(active);
+
+            _query = _query.Where(x => active == null || x.ActiveStatus == active);
+
+            if (string.IsNullOrEmpty(masterSign))
+			{
+				_query = _query.Where(x => string.IsNullOrEmpty(x.Master));
+            }
+            else
+			{
+                _query = _query.Where(x => x.Master.ToUpper().Equals(masterSign.ToUpper()));
+            }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                _query = _query.Where(x => x.Name.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            var serviceResponse = new ServicePageResponse<DictionaryDTO>();
+            try
+            {
+                serviceResponse.Data.TotalCount = await _context.Set<AppDictionary>().CountAsync();
+                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageSize = pageSize;
+                serviceResponse.SetData(_mapper.Map<IList<DictionaryDTO>>(await PageQuery(currentPage, pageSize).ToListAsync()));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
+
+            return serviceResponse;
         }
 
         public Task<ServiceResponse<DictionaryDTO>> DeleteAsync(string masterSign, string slaveSign)

@@ -19,12 +19,11 @@ namespace SODP.DataAccess.Configurations
 
 			builder.Property(p => p.Name)
 				.HasColumnType("nvarchar(50)")
-				.HasDefaultValue("Cos tam costam")
                 .IsRequired();
 
 			builder.Property(x => x.ActiveStatus)
 				.HasColumnType("tinyint(1)")
-				//.HasDefaultValue(true)
+				.HasDefaultValue(true)
 				.IsRequired();
 
 			builder.HasKey(u => u.Id);
