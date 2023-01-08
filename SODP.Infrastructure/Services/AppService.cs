@@ -17,7 +17,7 @@ namespace SODP.Infrastructure.Services
 {
 	public class AppService<TEntity,TDto> where TEntity : BaseEntity where TDto : BaseDTO
     {
-		private IQueryable<TEntity> _query;
+		protected IQueryable<TEntity> _query;
 
 		protected readonly IMapper _mapper;
 		protected readonly IValidator<TEntity> _validator;

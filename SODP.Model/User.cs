@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SODP.Model.Interfaces;
 
 namespace SODP.Model;
 
@@ -6,8 +7,6 @@ public class User : IdentityUser<int>
 {
     public User() : base() { }
     public User(string userName) : base(userName) { }
-
-//        public bool ActiveStatus { get ; set; }
     public string Firstname { get; set; }
     public string Lastname { get; set; }
 

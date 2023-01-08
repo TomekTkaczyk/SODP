@@ -85,6 +85,8 @@ namespace SODP.Infrastructure.Services
         {
             SetActiveFilter(active);
 
+            _query = _query.Where(x => String.IsNullOrEmpty(x.Master) && (active == null || x.ActiveStatus == active));
+
             var serviceResponse = new ServicePageResponse<DictionaryDTO>();
 			try
 			{

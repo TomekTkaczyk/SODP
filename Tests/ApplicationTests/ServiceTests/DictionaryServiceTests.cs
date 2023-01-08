@@ -1,76 +1,78 @@
-﻿using AutoMapper;
-using DocumentFormat.OpenXml.Wordprocessing;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿using Microsoft.EntityFrameworkCore;
 using Moq;
-using SODP.Application.Services;
+using SODP.Application.Validators;
 using SODP.DataAccess;
 using SODP.Infrastructure.Services;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.Shared.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Tests.ApplicationTests.ServiceTests
 {
-    public class DictionaryServiceTests
+    public class DictionaryServiceTests : ServiceTest<AppDictionary>, IDisposable
     {
-        private readonly DbContextOptions<SODPDBContext> _contextOptions;
-        private readonly Mock<IActiveStatusService<AppDictionary>> _activeStatusService = new();
-        private readonly IMapper _mapper;
-        private readonly Mock<IValidator<AppDictionary>> _validator = new();
+        public DictionaryServiceTests() : base(new DictionaryValidator()) { }
 
-        public DictionaryServiceTests()
+
+        [Fact]
+        public void when_add_AppDictionary_entity_to_sqlight_memory_database_ActiveStatus_should_by_false()
         {
-            _contextOptions = new DbContextOptionsBuilder<SODPDBContext>()
-            .UseInMemoryDatabase("FakeSODPContext")
-            .ConfigureWarnings(b => b.Ignore(InMemoryEventId.TransactionIgnoredWarning))
-            .Options;
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
 
-            var mapperConfig = new MapperConfiguration(cfg => 
-            { 
-                cfg.AddProfile(new SODP.Domain.AutoMapperProfile()); 
-            });
-            _mapper = new Mapper(mapperConfig);
+            var dictionary = new AppDictionary()
+            {
+                Sign = "PARTS",
+                Name = "CZĘŚCI PROJEKTU"
+            };
+
+            var entity = _context.AppDictionary.Add(dictionary);
+            _context.SaveChanges();
+
+            Assert.False(entity.Entity.ActiveStatus);
 
         }
 
         [Fact]
-        public void all_methods_do_not_execute_exceptions()
+        public void CreateAsync_whent_created_new_item_default_value_ActiveStatus_is_true()
+        {
+            var item = new AppDictionary();
+
+            Assert.True(item.ActiveStatus);
+        }
+
+        [Fact]
+        public void all_methods_not_execute_exceptions()
         {
 
-            var _context = new SODPDBContext(_contextOptions, new DateTimeService());
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
             _context.SaveChanges();
 
-            var dictionaryService = new DictionaryService(_mapper, _validator.Object, _context, _activeStatusService.Object);
+            var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
 
             Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.CreateAsync(new DictionaryDTO())));
             Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.DeleteAsync(1)));
-            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.DeleteAsync("","")));
+            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.DeleteAsync("", "")));
             Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.ExistAsync(1)));
             Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.GetAsync(1)));
-            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.GetAsync("","")));
-            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.GetPageAsync(true,1,1)));
-            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.GetPageAsync(true, 1, 1,"")));
-            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.GetPageAsync("",true,1,1,"")));
-            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.SetActiveStatusAsync(1,true)));
+            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.GetAsync("", "")));
+            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.GetPageAsync(true, 1, 1)));
+            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.GetPageAsync(true, 1, 1, "")));
+            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.GetPageAsync("", true, 1, 1, "")));
+            Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.SetActiveStatusAsync(1, true)));
             Assert.NotNull(Record.ExceptionAsync(() => dictionaryService.UpdateAsync(new DictionaryDTO())));
         }
-
 
         [Fact]
         public async Task GetPageAsync_with_active_without_master_and_search_should_return_some_master_elements()
         {
-            var _context = new SODPDBContext(_contextOptions, new DateTimeService());
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
             _context.AppDictionary.AddRange(
@@ -87,7 +89,10 @@ namespace Tests.ApplicationTests.ServiceTests
 
             _context.SaveChanges();
 
-            var dictionaryService = new DictionaryService(_mapper, _validator.Object, _context, _activeStatusService.Object);
+            _context.Database.ExecuteSqlCommand("UPDATE AppDictionary SET ActiveStatus=0");
+
+
+            var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
             ServicePageResponse<DictionaryDTO> result;
 
             result = await dictionaryService.GetPageAsync(null, currentPage: 1, pageSize: 0);
@@ -95,28 +100,26 @@ namespace Tests.ApplicationTests.ServiceTests
             Assert.NotNull(result);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(result);
             Assert.True(result.Success);
-            Assert.True(result.Data.Collection.Count == 10);
+            Assert.True(result.Data.Collection.Count == 3);
 
             result = await dictionaryService.GetPageAsync(true, currentPage: 1, pageSize: 0);
 
             Assert.NotNull(result);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(result);
             Assert.True(result.Success);
-            Assert.True(result.Data.Collection.Count == 8);
+            Assert.True(result.Data.Collection.Count == 2);
 
             result = await dictionaryService.GetPageAsync(false, currentPage: 1, pageSize: 0);
 
             Assert.NotNull(result);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(result);
             Assert.True(result.Success);
-            Assert.True(result.Data.Collection.Count == 2);
+            Assert.True(result.Data.Collection.Count == 1);
         }
-
 
         [Fact]
         public async Task GetPageAsync_with_active_with_master_without_search_should_return_some_master_elements()
         {
-            var _context = new SODPDBContext(_contextOptions, new DateTimeService());
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
             _context.AppDictionary.AddRange(
@@ -133,7 +136,7 @@ namespace Tests.ApplicationTests.ServiceTests
 
             _context.SaveChanges();
 
-            var dictionaryService = new DictionaryService(_mapper, _validator.Object, _context, _activeStatusService.Object);
+            var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
             ServicePageResponse<DictionaryDTO> result;
 
             result = await dictionaryService.GetPageAsync("", null, currentPage: 1, pageSize: 0);
@@ -200,7 +203,6 @@ namespace Tests.ApplicationTests.ServiceTests
             Assert.True(result.Success);
             Assert.True(result.Data.Collection.Count == 1);
         }
-
 
         private Mock<SODPDBContext> CreateDbContext()
         {
