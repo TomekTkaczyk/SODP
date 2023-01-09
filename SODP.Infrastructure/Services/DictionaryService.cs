@@ -37,7 +37,7 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-		public async Task<ServiceResponse<DictionaryDTO>> CreateAsync(DictionaryDTO item)
+        public async Task<ServiceResponse<DictionaryDTO>> CreateAsync(DictionaryDTO item)
 		{
 			var serviceResponse = new ServiceResponse<DictionaryDTO>();
 			try
@@ -115,7 +115,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public Task<ServiceResponse<DictionaryDTO>> DeleteAsync(string masterSign, string slaveSign)
+        public Task<ServiceResponse<DictionaryDTO>> DeleteAsync(string masterSign, string slaveSign = "")
         {
             throw new NotImplementedException();
         }
@@ -124,5 +124,6 @@ namespace SODP.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
+
     }
 }

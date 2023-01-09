@@ -50,28 +50,42 @@ namespace Tests
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
             _context.AppDictionary.AddRange(
-                new AppDictionary { Id = 1, Sign = "OTHER1", Name = "INNY SŁOWNIK GŁÓWNY 1", ActiveStatus = true },
-                new AppDictionary { Id = 2, Sign = "OTHER2", Name = "INNY SŁOWNIK GŁÓWNY 2", ActiveStatus = false },
-                new AppDictionary { Id = 3, Sign = "PARTS", Name = "CZĘŚCI PROJEKTU", ActiveStatus = true },
+                new AppDictionary { Id = 1, Sign = "EXIST", Name = "EXISTING MASTER ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 2, Sign = "EXIST1", Name = "ANOTHER MASTER ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 3, Sign = "EXIST2", Name = "ANOTHER MASTER ITEM", ActiveStatus = false },
+                new AppDictionary { Id = 4, Sign = "EXIST3", Name = "EMPTY MASTER ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 5, Sign = "EXIST4", Name = "EMPTY ANOTHER MASTER ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 6, Sign = "EXIST5", Name = "EMPTY ANOTHER MASTER ITEM", ActiveStatus = false },
 
-                new AppDictionary { Id = 4, Master = "PARTS", Sign = "PZT", Name = "PROJEKT ZAGOSPODAROWANIA TERENU", ActiveStatus = true },
-                new AppDictionary { Id = 5, Master = "PARTS", Sign = "PAB", Name = "PROJEKT ARCHITEKTONICZNO-BUDOWLANY", ActiveStatus = false },
-                new AppDictionary { Id = 6, Master = "PARTS", Sign = "PT", Name = "PROJEKT TECHNICZNY", ActiveStatus = true },
-                new AppDictionary { Id = 10, Master = "PARTS", Sign = "PW", Name = "PROJEKT WYKONAWCZY", ActiveStatus = true },
-                new AppDictionary { Id = 11, Master = "PARTS", Sign = "PW", Name = "PROJEKT WYKONAWCZY", ActiveStatus = true },
-                new AppDictionary { Id = 12, Master = "PARTS", Sign = "PW", Name = "PROJEKT WYKONAWCZY", ActiveStatus = false },
-                new AppDictionary { Id = 13, Master = "PARTS", Sign = "PW", Name = "PROJEKT WYKONAWCZY", ActiveStatus = true },
+                new AppDictionary { Id = 7, Master = "EXIST", Sign = "EXIST1", Name = "EXIST SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 8, Master = "EXIST", Sign = "EXIST2", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = false },
+                new AppDictionary { Id = 9, Master = "EXIST", Sign = "EXIST3", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 10, Master = "EXIST", Sign = "EXIST4", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
 
-                new AppDictionary { Id = 7, Master = "OTHER1", Sign = "PT", Name = "PROJEKT TECHNICZNY", ActiveStatus = true },
-                new AppDictionary { Id = 8, Master = "OTHER2", Sign = "PT", Name = "PROJEKT TECHNICZNY", ActiveStatus = true },
-                new AppDictionary { Id = 9, Master = "OTHER3", Sign = "PT", Name = "PROJEKT TECHNICZNY", ActiveStatus = true }
+                new AppDictionary { Id = 11, Master = "EXIST1", Sign = "EXIST1", Name = "EXIST1 SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 12, Master = "EXIST1", Sign = "EXIST2", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
+                new AppDictionary { Id = 13, Master = "EXIST1", Sign = "EXIST3", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 14, Master = "EXIST1", Sign = "EXIST4", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
+
+                new AppDictionary { Id = 15, Master = "EXIST2", Sign = "EXIST1", Name = "EXIST2 SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 16, Master = "EXIST2", Sign = "EXIST2", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = false },
+                new AppDictionary { Id = 17, Master = "EXIST2", Sign = "EXIST3", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 18, Master = "EXIST2", Sign = "EXIST4", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
+
+                new AppDictionary { Id = 19, Master = "ORPHANED", Sign = "EXIST1", Name = "ORPHANED SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 20, Master = "ORPHANED", Sign = "EXIST2", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 21, Master = "ORPHANED", Sign = "EXIST3", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = false }
                 );
 
             _context.SaveChanges();
 
-            _context.AppDictionary.First(x => x.Id == 2).ActiveStatus = false;
-            _context.AppDictionary.First(x => x.Id == 5).ActiveStatus = false;
+            _context.AppDictionary.First(x => x.Id == 3).ActiveStatus = false;
+            _context.AppDictionary.First(x => x.Id == 6).ActiveStatus = false;
+            _context.AppDictionary.First(x => x.Id == 8).ActiveStatus = false;
             _context.AppDictionary.First(x => x.Id == 12).ActiveStatus = false;
+            _context.AppDictionary.First(x => x.Id == 14).ActiveStatus = false;
+            _context.AppDictionary.First(x => x.Id == 16).ActiveStatus = false;
+            _context.AppDictionary.First(x => x.Id == 21).ActiveStatus = false;
             _context.SaveChanges();
         }
 

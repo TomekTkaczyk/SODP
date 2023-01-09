@@ -1,18 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SODP.DataAccess.Configurations
 {
-	public class AppDictionaryEntityConfiguration : IEntityTypeConfiguration<AppDictionary>
+	public class DictionaryEntityConfiguration : IEntityTypeConfiguration<AppDictionary>
 	{
 		public void Configure(EntityTypeBuilder<AppDictionary> builder)
 		{
+			builder.Property(x => x.Master)
+				.HasColumnType("nvarchar(10)")
+				.HasDefaultValue("");
+			
 			builder.Property(x => x.Sign)
 				.HasColumnType("nvarchar(10)")
 				.IsRequired();
