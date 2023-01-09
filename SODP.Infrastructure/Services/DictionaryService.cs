@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.EMMA;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Services;
@@ -6,6 +7,7 @@ using SODP.DataAccess;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Linq;
 
 namespace SODP.Infrastructure.Services
 {
@@ -13,18 +15,18 @@ namespace SODP.Infrastructure.Services
 	{
 		public DictionaryService(IMapper mapper, IValidator<AppDictionary> validator, SODPDBContext context, IActiveStatusService<AppDictionary> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
-		public async Task<ServiceResponse<DictionaryDTO>> GetAsync(string masterSign, string slaveSign = "")
+		public async Task<ServiceResponse<DictionaryDTO>> GetAsync(string master, string sign = "")
 		{
-			ArgumentNullException.ThrowIfNull(masterSign, nameof(masterSign));
+			ArgumentNullException.ThrowIfNull(master, nameof(master));
 			var serviceResponse = new ServiceResponse<DictionaryDTO>();
 			try
 			{
 				var item = await _context.AppDictionary
 					.Include(x => x.Slaves)
-					.FirstOrDefaultAsync(x => (slaveSign == "" ? x.Sign == masterSign : (x.Master == masterSign && x.Sign == slaveSign)));
+					.FirstOrDefaultAsync(x => (sign == "" ? x.Sign == master : (x.Master == master && x.Sign == sign)));
 				if (item == null)
 				{
-					serviceResponse.SetError($"Error: Dictionary item {masterSign}:{slaveSign} not found.", 401);
+					serviceResponse.SetError($"Error: Dictionary item {master}:{sign} not found.", 404);
 					return serviceResponse;
 				}
 				serviceResponse.SetData(_mapper.Map<DictionaryDTO>(item));
@@ -44,21 +46,11 @@ namespace SODP.Infrastructure.Services
 			{
 				var dictItem = await _context.AppDictionary
 				   .Include(x => x.Slaves)
-				   .FirstOrDefaultAsync(x => (item.Sign == "" ? x.Sign == item.Master : (x.Master == item.Master && x.Sign == item.Sign)));
+				   .FirstOrDefaultAsync(x => x.Master.Equals(item.Master) && x.Sign.Equals(item.Sign));
 				if (dictItem != null)
 				{
-					serviceResponse.SetError($"Error: Dictionary item {item.Master}:{item.Sign} exist.");
+					serviceResponse.SetError($"Error: Dictionary item {item.Master}:{item.Sign} exist.",409);
 					return serviceResponse;
-				}
-
-				if (!string.IsNullOrEmpty(item.Master))
-				{
-					dictItem = await _context.AppDictionary.FirstOrDefaultAsync(x => x.Master == item.Master);
-					if (dictItem == null)
-					{
-						serviceResponse.SetError($"Error: Dictionary item {item.Master} not exist.");
-						return serviceResponse;
-					}
 				}
 
 				dictItem = _mapper.Map<AppDictionary>(item);
@@ -79,19 +71,19 @@ namespace SODP.Infrastructure.Services
 			return await GetPageAsync(null, active, currentPage, pageSize, searchString);
         }
 
-        public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(string masterSign, bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(string master, bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             SetActiveFilter(active);
 
             _query = _query.Where(x => active == null || x.ActiveStatus == active);
 
-            if (string.IsNullOrEmpty(masterSign))
+            if (string.IsNullOrEmpty(master))
 			{
 				_query = _query.Where(x => string.IsNullOrEmpty(x.Master));
             }
             else
 			{
-                _query = _query.Where(x => x.Master.ToUpper().Equals(masterSign.ToUpper()));
+                _query = _query.Where(x => x.Master.ToUpper().Equals(master.ToUpper()));
             }
 
             if (!string.IsNullOrEmpty(searchString))
@@ -115,9 +107,33 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public Task<ServiceResponse<DictionaryDTO>> DeleteAsync(string masterSign, string slaveSign = "")
+        public async Task<ServiceResponse> DeleteAsync(string master, string sign = "")
         {
-            throw new NotImplementedException();
+			var serviceResponse = new ServiceResponse();
+			try
+			{
+				IEnumerable<AppDictionary> collection = null;
+				if (string.IsNullOrEmpty(sign))
+				{
+					collection = _context.AppDictionary.Where(x => x.Master.Equals(master)).AsEnumerable();
+                    _context.AppDictionary.RemoveRange(collection);
+					var item = _context.AppDictionary.FirstOrDefault(x => string.IsNullOrEmpty(x.Master) && x.Sign.Equals(master));
+                    if (item == null)
+                    {
+                        serviceResponse.SetError($"Error: Dictionary item {master}:{sign} not found", 404);
+                        return serviceResponse;
+                    }
+                    _context.AppDictionary.Remove(item);
+                }
+				
+				_context.SaveChanges();
+            }
+            catch (Exception ex)
+			{
+                serviceResponse.SetError(ex.Message);
+            }
+
+			return serviceResponse;
         }
 
         public Task<ServiceResponse> UpdateAsync(DictionaryDTO entity)

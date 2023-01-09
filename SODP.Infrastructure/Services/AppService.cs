@@ -49,7 +49,7 @@ namespace SODP.Infrastructure.Services
 				var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
 				if (entity == null)
 				{
-					serviceResponse.SetError($"Error: Entity Id:{id} not found.", 401);
+					serviceResponse.SetError($"Error: Entity Id:{id} not found.", 404);
 					return serviceResponse;
 				}
 				serviceResponse.SetData(_mapper.Map<TDto>(entity));
