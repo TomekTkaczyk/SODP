@@ -60,7 +60,7 @@ namespace Tests.ApplicationTests.ServiceTests
             ServicePageResponse<DictionaryDTO> response;
             var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
 
-            response = await dictionaryService.GetPageAsync(null);
+            response = await dictionaryService.GetPageAsync();
 
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 6);
@@ -150,7 +150,7 @@ namespace Tests.ApplicationTests.ServiceTests
             ServicePageResponse<DictionaryDTO> response;
             var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
 
-            response = await dictionaryService.GetPageAsync(null, searchString: "OTH");
+            response = await dictionaryService.GetPageAsync(searchString: "OTH");
 
             Assert.NotNull(response);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(response);
@@ -179,7 +179,7 @@ namespace Tests.ApplicationTests.ServiceTests
             ServicePageResponse<DictionaryDTO> response;
             var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
 
-            response = await dictionaryService.GetPageAsync("EXIST", null, searchString: "OTH");
+            response = await dictionaryService.GetPageAsync("EXIST", searchString: "OTH");
 
             Assert.NotNull(response);
             Assert.True(response.Success);
@@ -211,11 +211,24 @@ namespace Tests.ApplicationTests.ServiceTests
 
             response = await dictionaryService.GetAsync("NOTEXIST", "EXIST1");
 
-            Assert.Equal(401, response.StatusCode);
+            Assert.Equal(404, response.StatusCode);
 
             response = await dictionaryService.GetAsync("EXIST", "NOTEXIST");
 
-            Assert.Equal(401, response.StatusCode);
+            Assert.Equal(404, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task when_call_GetMasterAsync_should_return_master_with_slaves()
+        {
+            CreateFakeDictionaryData();
+            ServiceResponse<DictionaryDTO> response;
+            var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
+
+            response = await dictionaryService.GetMasterAsync("EXIST");
+
+            Assert.Equal("EXIST", response.Data.Sign);
+            Assert.Equal(4, response.Data.Slaves.Count);
         }
 
         [Fact]
@@ -271,27 +284,7 @@ namespace Tests.ApplicationTests.ServiceTests
         }
 
         [Fact]
-        public async Task when_call_DeleteAsync_with_specified_not_exist_masterSign_should_return_not_found()
-        {
-            CreateFakeDictionaryData();
-            ServiceResponse response;
-            var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
-
-            response = await dictionaryService.DeleteAsync("NOTEXIST");
-
-            Assert.Equal(401, response.StatusCode);
-
-            response = await dictionaryService.DeleteAsync("NOTEXIST", "EXIST1");
-
-            Assert.Equal(401, response.StatusCode);
-
-            response = await dictionaryService.DeleteAsync("NOTEXIST", "NOTEXIST");
-
-            Assert.Equal(401, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task when_call_DeleteAsync_masterSign_with_slave_should_return_no_content()
+        public async Task when_call_DeleteAsync_master_with_slave_should_return_no_content()
         {
             CreateFakeDictionaryData();
             ServiceResponse response;
@@ -304,15 +297,48 @@ namespace Tests.ApplicationTests.ServiceTests
             Assert.Equal(204, response.StatusCode);
         }
 
+        [Fact]
+        public async Task when_call_DeleteAsync_master_without_slave_should_return_no_content()
+        {
+            CreateFakeDictionaryData();
+            ServiceResponse response;
+            var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
+
+            response = await dictionaryService.DeleteAsync("EXIST4");
+            var count = await _context.Set<AppDictionary>().CountAsync();
+
+            Assert.Equal(20, count);
+            Assert.Equal(204, response.StatusCode);
+        }
 
         [Fact]
-        public async Task when_call_DeleteAsync_with_specified_exist_masterSign_and_not_exist_slaveSign_should_return_not_found()
+        public async Task when_call_DeleteAsync_with_specified_exist_master_and_not_exist_slave_should_return_not_found()
         {
             CreateFakeDictionaryData();
             ServiceResponse response;
             var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
 
             response = await dictionaryService.DeleteAsync("EXIST", "NOTEXIST");
+
+            Assert.Equal(404, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task when_call_DeleteAsync_with_specified_not_exist_master_should_return_not_found()
+        {
+            CreateFakeDictionaryData();
+            ServiceResponse response;
+            var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
+
+            response = await dictionaryService.DeleteAsync("NOTEXIST");
+
+            Assert.Equal(404, response.StatusCode);
+
+            response = await dictionaryService.DeleteAsync("NOTEXIST", "EXIST1");
+
+            Assert.Equal(404, response.StatusCode);
+
+            response = await dictionaryService.DeleteAsync("NOTEXIST", "NOTEXIST");
 
             Assert.Equal(404, response.StatusCode);
         }
@@ -421,13 +447,12 @@ namespace Tests.ApplicationTests.ServiceTests
 
             var item = new DictionaryDTO()
             {
-                Id = 21,
+                Id = 22,
                 Master = "NEWMASTER",
                 Sign = "NEWSIGN",
                 Name = "NEWNAME"
             };
             response = await dictionaryService.UpdateAsync(item);
-            var entity = await _context.AppDictionary.FirstAsync(x => x.Id == item.Id);
 
             Assert.Equal(404, response.StatusCode);
         }

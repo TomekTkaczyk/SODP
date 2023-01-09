@@ -8,36 +8,13 @@ using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace SODP.Infrastructure.Services
 {
 	public class DictionaryService : AppService<AppDictionary, DictionaryDTO>, IDictionaryService
 	{
 		public DictionaryService(IMapper mapper, IValidator<AppDictionary> validator, SODPDBContext context, IActiveStatusService<AppDictionary> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
-
-		public async Task<ServiceResponse<DictionaryDTO>> GetAsync(string master, string sign = "")
-		{
-			ArgumentNullException.ThrowIfNull(master, nameof(master));
-			var serviceResponse = new ServiceResponse<DictionaryDTO>();
-			try
-			{
-				var item = await _context.AppDictionary
-					.Include(x => x.Slaves)
-					.FirstOrDefaultAsync(x => (sign == "" ? x.Sign == master : (x.Master == master && x.Sign == sign)));
-				if (item == null)
-				{
-					serviceResponse.SetError($"Error: Dictionary item {master}:{sign} not found.", 404);
-					return serviceResponse;
-				}
-				serviceResponse.SetData(_mapper.Map<DictionaryDTO>(item));
-			}
-			catch (Exception ex)
-			{
-				serviceResponse.SetError(ex.Message);
-			}
-
-			return serviceResponse;
-		}
 
         public async Task<ServiceResponse<DictionaryDTO>> CreateAsync(DictionaryDTO item)
 		{
@@ -66,12 +43,12 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-        public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(bool? active = null, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
 			return await GetPageAsync(null, active, currentPage, pageSize, searchString);
         }
 
-        public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(string master, bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(string master, bool? active = null, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             SetActiveFilter(active);
 
@@ -115,7 +92,7 @@ namespace SODP.Infrastructure.Services
 				IEnumerable<AppDictionary> collection = null;
 				if (string.IsNullOrEmpty(sign))
 				{
-					collection = _context.AppDictionary.Where(x => x.Master.Equals(master)).AsEnumerable();
+					collection = _context.AppDictionary.Where(x => x.Master.Equals(master));
                     _context.AppDictionary.RemoveRange(collection);
 					var item = _context.AppDictionary.FirstOrDefault(x => string.IsNullOrEmpty(x.Master) && x.Sign.Equals(master));
                     if (item == null)
@@ -125,8 +102,16 @@ namespace SODP.Infrastructure.Services
                     }
                     _context.AppDictionary.Remove(item);
                 }
-				
-				_context.SaveChanges();
+				else
+				{
+					var item = _context.AppDictionary.FirstOrDefault(x => x.Master.Equals(master) && x.Sign.Equals(sign));
+					if(item == null)
+					{
+						serviceResponse.SetError($"Error: Dictionary item {master}:{sign} not found.",404);
+						return serviceResponse;
+					}
+				}
+				await _context.SaveChangesAsync();
             }
             catch (Exception ex)
 			{
@@ -136,9 +121,73 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
         }
 
-        public Task<ServiceResponse> UpdateAsync(DictionaryDTO entity)
+        public async Task<ServiceResponse> UpdateAsync(DictionaryDTO entity)
+        {
+            var serviceResponse = new ServiceResponse();
+            var item = await _context.AppDictionary.FirstOrDefaultAsync(x => x.Id == entity.Id);
+			if (item == null)
+			{
+				serviceResponse.SetError($"Error: Entity {entity.Id} not found", 404);
+				return serviceResponse;
+			}
+			item.Name = entity.Name;
+			_context.Entry(item).State = EntityState.Modified;
+			await _context.SaveChangesAsync();
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<DictionaryDTO>> GetMasterAsync(string master, bool? active = null)
+        {
+            ArgumentNullException.ThrowIfNull(master, nameof(master));
+            var serviceResponse = new ServiceResponse<DictionaryDTO>();
+            try
+            {
+                var item = await _context.AppDictionary.FirstOrDefaultAsync(x => string.IsNullOrEmpty(x.Master) && x.Sign.Equals(master));
+                if (item == null)
+                {
+                    serviceResponse.SetError($"", 404);
+                    return serviceResponse;
+                }
+                item.Slaves = await _context.AppDictionary.Where(x => x.Master.Equals(master) && (active == null || x.ActiveStatus == active)).ToListAsync();
+                serviceResponse.SetData(_mapper.Map<DictionaryDTO>(item));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+                return serviceResponse;
+            }
+
+            return serviceResponse;
+        }
+
+        public Task<ServiceResponse<DictionaryDTO>> GetSlaveAsync(string master, string sign)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResponse<DictionaryDTO>> GetAsync(string master, string sign = "")
+        {
+            ArgumentNullException.ThrowIfNull(master, nameof(master));
+            var serviceResponse = new ServiceResponse<DictionaryDTO>();
+            try
+            {
+                var item = await _context.AppDictionary
+                    .Include(x => x.Slaves)
+                    .FirstOrDefaultAsync(x => (sign == "" ? x.Sign == master : (x.Master == master && x.Sign == sign)));
+                if (item == null)
+                {
+                    serviceResponse.SetError($"Error: Dictionary item {master}:{sign} not found.", 404);
+                    return serviceResponse;
+                }
+                serviceResponse.SetData(_mapper.Map<DictionaryDTO>(item));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
+
+            return serviceResponse;
         }
 
     }
