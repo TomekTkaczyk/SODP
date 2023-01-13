@@ -81,23 +81,6 @@ namespace SODP.DataAccess.Migrations
                  principalColumn: "Id",
                  onDelete: ReferentialAction.Cascade);
 
-            //migrationBuilder.DropForeignKey(
-            //    name: "FK_ProjectBranchRoles_Licenses_LicenseId",
-            //    table: "ProjectBranchRoles");
-
-            //migrationBuilder.RenameIndex(
-            //    name: "FK_ProjectBranchRoles_Licenses_LicenseId",
-            //    table: "ProjectBranchRoles",
-            //    newName: "ProjectBranchRolesIX_License");
-
-            //migrationBuilder.AddForeignKey(
-            //     name: "FK_ProjectBranchRoles_Licenses_LicenseId",
-            //     table: "ProjectBranchRoles",
-            //     column: "LicenseId",
-            //     principalTable: "Licenses",
-            //     principalColumn: "Id",
-            //     onDelete: ReferentialAction.Cascade);
-
             migrationBuilder.RenameIndex(
                 name: "IX_Project",
                 table: "ProjectBranches",
@@ -482,23 +465,6 @@ namespace SODP.DataAccess.Migrations
                  principalTable: "Stages",
                  principalColumn: "Id",
                  onDelete: ReferentialAction.Cascade);
-
-            //migrationBuilder.DropForeignKey(
-            //   name: "FK_ProjectBranchRoles_Licenses_LicenseId",
-            //   table: "ProjectBranchRoles");
-
-            //migrationBuilder.RenameIndex(
-            //    name: "ProjectBranchRolesIX_License",
-            //    table: "ProjectBranchRoles",
-            //    newName: "FK_ProjectBranchRoles_Licenses_LicenseId");
-
-            //migrationBuilder.AddForeignKey(
-            //     name: "FK_ProjectBranchRoles_Licenses_LicenseId",
-            //     table: "ProjectBranchRoles",
-            //     column: "LicenseId",
-            //     principalTable: "Licenses",
-            //     principalColumn: "Id",
-            //     onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.RenameIndex(
                 name: "ProjectBranchesIX_Project",
