@@ -15,5 +15,7 @@ namespace SODP.Api.v0_01.Controllers
     public class DictionaryController : ApiControllerBase<DictionaryDTO>
     {
 		public DictionaryController(IDictionaryService service, ILogger<DictionaryController> logger) : base(service, logger) { }
+
+
 	}
 }

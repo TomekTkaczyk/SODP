@@ -18,7 +18,11 @@ public class AppDictionary : BaseEntity, IActiveStatus, IEquatable<AppDictionary
 	public string Sign { get; set; }
 	public string Name { get; set; }
 	public bool ActiveStatus { get; set; }
-	public	ICollection<AppDictionary> Slaves { get; set; }
+
+	public int MasterId { get; set; }
+	public AppDictionary MasterDictionary { get; set; }
+	public	virtual ICollection<AppDictionary> Slaves { get; set; }
+
     public bool Equals(AppDictionary other)
     {
         return this.Sign.Equals(other.Sign) && this.Master.Equals(other.Master);

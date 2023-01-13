@@ -7,10 +7,6 @@ using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
@@ -62,7 +58,6 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-
         public async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<LicenseDTO>();
@@ -80,7 +75,6 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
-
 
         public async Task<ServiceResponse> DeleteAsync(int id)
         {

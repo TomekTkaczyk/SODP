@@ -9,8 +9,8 @@ using SODP.DataAccess;
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    [Migration("20230107191510_ChangeIndexNames")]
-    partial class ChangeIndexNames
+    [Migration("20230110174800_AddDictionary")]
+    partial class AddDictionary
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -136,7 +136,9 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Master")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(10)")
+                        .HasDefaultValue("");
 
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
@@ -146,7 +148,8 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Sign")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("Id");
 

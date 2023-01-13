@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.EMMA;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Services;
@@ -7,12 +6,10 @@ using SODP.DataAccess;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace SODP.Infrastructure.Services
 {
-	public class DictionaryService : AppService<AppDictionary, DictionaryDTO>, IDictionaryService
+    public class DictionaryService : AppService<AppDictionary, DictionaryDTO>, IDictionaryService
 	{
 		public DictionaryService(IMapper mapper, IValidator<AppDictionary> validator, SODPDBContext context, IActiveStatusService<AppDictionary> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
@@ -146,7 +143,7 @@ namespace SODP.Infrastructure.Services
                 var item = await _context.AppDictionary.FirstOrDefaultAsync(x => string.IsNullOrEmpty(x.Master) && x.Sign.Equals(master));
                 if (item == null)
                 {
-                    serviceResponse.SetError($"", 404);
+                    serviceResponse.SetError($"Dictionary item {master} not found", 404);
                     return serviceResponse;
                 }
                 item.Slaves = await _context.AppDictionary.Where(x => x.Master.Equals(master) && (active == null || x.ActiveStatus == active)).ToListAsync();
@@ -155,15 +152,33 @@ namespace SODP.Infrastructure.Services
             catch (Exception ex)
             {
                 serviceResponse.SetError(ex.Message);
-                return serviceResponse;
             }
 
             return serviceResponse;
         }
 
-        public Task<ServiceResponse<DictionaryDTO>> GetSlaveAsync(string master, string sign)
+        public async Task<ServiceResponse<DictionaryDTO>> GetSlaveAsync(string master, string sign)
         {
-            throw new NotImplementedException();
+            ArgumentNullException.ThrowIfNull(master, nameof(master));
+            ArgumentNullException.ThrowIfNull(sign, nameof(sign));
+            var serviceResponce = new ServiceResponse<DictionaryDTO>();
+
+            try
+            {
+                var item = await _context.AppDictionary.FirstOrDefaultAsync(x => x.Master.Equals(master) && x.Sign.Equals(sign));
+                if(item == null)
+                {
+                    serviceResponce.SetError($"Error: Dictionary item {master}:{sign} not found", 404);
+                    return serviceResponce;
+                }
+                serviceResponce.SetData(_mapper.Map<DictionaryDTO>(item));
+            }
+            catch (Exception ex)
+            {
+                serviceResponce.SetError(ex.Message);
+            }
+
+            return serviceResponce;
         }
 
         public async Task<ServiceResponse<DictionaryDTO>> GetAsync(string master, string sign = "")
@@ -189,6 +204,5 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
-
     }
 }

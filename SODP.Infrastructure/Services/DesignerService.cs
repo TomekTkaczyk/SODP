@@ -19,12 +19,13 @@ namespace SODP.Infrastructure.Services
         public DesignerService(IMapper mapper, IValidator<Designer> validator, SODPDBContext context, IActiveStatusService<Designer> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
 
-        public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var query = SetActiveFilter(active)
                 .GetQuery()
                 .OrderBy(x => x.Lastname)
-                .ThenBy(x => x.Firstname);
+                .ThenBy(x => x.Firstname)
+                .Where(x => string.IsNullOrEmpty(searchString) || x.Firstname.Contains(searchString) || x.Lastname.Contains(searchString));
 
             var serviceResponse = new ServicePageResponse<DesignerDTO>();
             try

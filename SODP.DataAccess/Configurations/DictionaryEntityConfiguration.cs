@@ -27,7 +27,12 @@ namespace SODP.DataAccess.Configurations
 
 			builder.HasKey(u => u.Id);
 
-			builder.ToTable("Dictionary");
+            builder.HasMany(x => x.Slaves)
+				.WithOne(y => y.MasterDictionary)
+				.HasForeignKey(z => z.MasterId)
+                .HasConstraintName("FK_Dictionary_Dictionary_MasterId");
+
+            builder.ToTable("Dictionary");
 		}
 	}
 }

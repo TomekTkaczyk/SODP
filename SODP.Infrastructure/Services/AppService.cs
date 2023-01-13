@@ -88,8 +88,6 @@ namespace SODP.Infrastructure.Services
 
 		public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
 		{
-			SetActiveFilter(active);
-			
 			var serviceResponse = new ServicePageResponse<TDto>();
 			try
 			{

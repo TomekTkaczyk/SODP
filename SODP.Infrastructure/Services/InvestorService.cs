@@ -34,7 +34,27 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-		public async Task<ServiceResponse> UpdateAsync(InvestorDTO updateInvestor)
+        public async Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        {
+            var serviceResponse = new ServicePageResponse<InvestorDTO>();
+            try
+            {
+				_query = _query.Where(x => x.Name.Contains(searchString));
+
+                serviceResponse.Data.TotalCount = await _query.CountAsync();
+                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageSize = pageSize;
+                serviceResponse.SetData(_mapper.Map<IList<InvestorDTO>>(await PageQuery(currentPage, pageSize).ToListAsync()));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse> UpdateAsync(InvestorDTO updateInvestor)
 		{
 			var serviceResponse = new ServiceResponse();
 			try

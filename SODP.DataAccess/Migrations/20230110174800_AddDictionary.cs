@@ -4,14 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SODP.DataAccess.Migrations
 {
-    public partial class ChangeIndexNames : Migration
+    public partial class AddDictionary : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Project",
-                table: "ProjectBranches");
-
             migrationBuilder.DropForeignKey(
                 name: "FK_ProjectBranch",
                 table: "ProjectBranchRoles");
@@ -36,10 +32,22 @@ namespace SODP.DataAccess.Migrations
                 table: "Users",
                 newName: "UsersIX_Email");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Tokens_Users_UserId",
+                table: "Tokens");
+
             migrationBuilder.RenameIndex(
                 name: "IX_User",
                 table: "Tokens",
                 newName: "TokensIX_User");
+
+            migrationBuilder.AddForeignKey(
+                 name: "FK_Tokens_Users_UserId",
+                 table: "Tokens",
+                 column: "UserId",
+                 principalTable: "Users",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.RenameIndex(
                 name: "IX_NormalizedName",
@@ -56,15 +64,39 @@ namespace SODP.DataAccess.Migrations
                 table: "Projects",
                 newName: "ProjectsIX_NumberStage");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Projects_Stages_StageId",
+                table: "Projects");
+
             migrationBuilder.RenameIndex(
                 name: "IX_Stage",
                 table: "Projects",
                 newName: "ProjectsIX_Stage");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_License",
-                table: "ProjectBranchRoles",
-                newName: "ProjectBranchRolesIX_License");
+            migrationBuilder.AddForeignKey(
+                 name: "FK_Projects_Stages_StageId",
+                 table: "Projects",
+                 column: "StageId",
+                 principalTable: "Stages",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ProjectBranchRoles_Licenses_LicenseId",
+            //    table: "ProjectBranchRoles");
+
+            //migrationBuilder.RenameIndex(
+            //    name: "FK_ProjectBranchRoles_Licenses_LicenseId",
+            //    table: "ProjectBranchRoles",
+            //    newName: "ProjectBranchRolesIX_License");
+
+            //migrationBuilder.AddForeignKey(
+            //     name: "FK_ProjectBranchRoles_Licenses_LicenseId",
+            //     table: "ProjectBranchRoles",
+            //     column: "LicenseId",
+            //     principalTable: "Licenses",
+            //     principalColumn: "Id",
+            //     onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.RenameIndex(
                 name: "IX_Project",
@@ -76,10 +108,30 @@ namespace SODP.DataAccess.Migrations
                 table: "ProjectBranches",
                 newName: "ProjectBranchesIX_Branch");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Licenses_Designers_DesignerId",
+                table: "Licenses");
+
             migrationBuilder.RenameIndex(
                 name: "IX_Designer",
                 table: "Licenses",
                 newName: "LicensesIX_Designer");
+
+            migrationBuilder.AddForeignKey(
+                 name: "FK_Licenses_Designers_DesignerId",
+                 table: "Licenses",
+                 column: "DesignerId",
+                 principalTable: "Designers",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_LicenseBranches_Branches_BranchId",
+                table: "LicenseBranches");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_LicenseBranches_Licenses_LicenseId",
+                table: "LicenseBranches");
 
             migrationBuilder.RenameIndex(
                 name: "IX_License",
@@ -91,20 +143,74 @@ namespace SODP.DataAccess.Migrations
                 table: "LicenseBranches",
                 newName: "LicenseBranchesIX_Branch");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_NAME",
-                table: "Investors",
-                newName: "InvestorsIX_Name");
+            migrationBuilder.AddForeignKey(
+                 name: "FK_LicenseBranches_Branches_BranchId",
+                 table: "LicenseBranches",
+                 column: "BranchId",
+                 principalTable: "Branches",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                 name: "FK_LicenseBranches_Licenses_LicenseId",
+                 table: "LicenseBranches",
+                 column: "LicenseId",
+                 principalTable: "Licenses",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Certificates_Designers_DesignerId",
+                table: "Certificates");
 
             migrationBuilder.RenameIndex(
                 name: "IX_Designer",
                 table: "Certificates",
                 newName: "CertificatesIX_Designer");
 
+            migrationBuilder.AddForeignKey(
+                 name: "FK_Certificates_Designers_DesignerId",
+                 table: "Certificates",
+                 column: "DesignerId",
+                 principalTable: "Designers",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
             migrationBuilder.RenameIndex(
                 name: "IX_ORDER",
                 table: "Branches",
                 newName: "BranchesIX_Order");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Sign",
+                table: "Stages",
+                type: "nvarchar(10)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "varchar(10)");
+
+            migrationBuilder.AlterColumn<bool>(
+                name: "ActiveStatus",
+                table: "Stages",
+                type: "tinyint(1)",
+                nullable: false,
+                defaultValue: true,
+                oldClrType: typeof(bool),
+                oldType: "tinyint(1)");
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "DevelopmentDate",
+                table: "Projects",
+                nullable: true);
+
+            migrationBuilder.AlterColumn<bool>(
+                name: "ActiveStatus",
+                table: "Designers",
+                type: "tinyint(1)",
+                nullable: false,
+                defaultValue: true,
+                oldClrType: typeof(bool),
+                oldType: "tinyint(1)");
 
             migrationBuilder.CreateTable(
                 name: "Dictionary",
@@ -114,21 +220,37 @@ namespace SODP.DataAccess.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     CreateTimeStamp = table.Column<DateTime>(nullable: false),
                     ModifyTimeStamp = table.Column<DateTime>(nullable: false),
-                    Master = table.Column<string>(nullable: true),
-                    Sign = table.Column<string>(nullable: true),
+                    Master = table.Column<string>(type: "nvarchar(10)", nullable: true, defaultValue: ""),
+                    Sign = table.Column<string>(type: "nvarchar(10)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     ActiveStatus = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: true),
-                    AppDictionaryId = table.Column<int>(nullable: true)
+                    DictionaryId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Dictionary", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Dictionary_Dictionary_AppDictionaryId",
-                        column: x => x.AppDictionaryId,
+                        name: "FK_Dictionary_Dictionary_MasterId",
+                        column: x => x.DictionaryId,
                         principalTable: "Dictionary",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Investors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreateTimeStamp = table.Column<DateTime>(nullable: false),
+                    ModifyTimeStamp = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(256)", nullable: false),
+                    ActiveStatus = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Investors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -212,32 +334,37 @@ namespace SODP.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dictionary_AppDictionaryId",
+                name: "DictionaryIX_DictionaryId",
                 table: "Dictionary",
-                column: "AppDictionaryId");
+                column: "DictionaryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PartBranch_BranchId",
+                name: "InvestorsIX_Name",
+                table: "Investors",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "PartBranchIX_BranchId",
                 table: "PartBranch",
                 column: "BranchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PartBranch_ProjectPartId",
+                name: "PartBranchIX_ProjectPartId",
                 table: "PartBranch",
                 column: "ProjectPartId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PartBranchRole_LicenseId",
+                name: "PartBranchRoleIX_LicenseId",
                 table: "PartBranchRole",
                 column: "LicenseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PartBranchRole_PartBranchId",
+                name: "PartBranchRoleIX_PartBranchId",
                 table: "PartBranchRole",
                 column: "PartBranchId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectPart_ProjectId",
+                name: "ProjectPartIX_ProjectId",
                 table: "ProjectPart",
                 column: "ProjectId");
 
@@ -272,6 +399,9 @@ namespace SODP.DataAccess.Migrations
                 name: "Dictionary");
 
             migrationBuilder.DropTable(
+                name: "Investors");
+
+            migrationBuilder.DropTable(
                 name: "PartBranchRole");
 
             migrationBuilder.DropTable(
@@ -279,6 +409,10 @@ namespace SODP.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProjectPart");
+
+            migrationBuilder.DropColumn(
+                name: "DevelopmentDate",
+                table: "Projects");
 
             migrationBuilder.RenameIndex(
                 name: "UsersIX_UserName",
@@ -300,10 +434,22 @@ namespace SODP.DataAccess.Migrations
                 table: "Users",
                 newName: "IX_Email");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Tokens_Users_UserId",
+                table: "Tokens");
+
             migrationBuilder.RenameIndex(
                 name: "TokensIX_User",
                 table: "Tokens",
                 newName: "IX_User");
+
+            migrationBuilder.AddForeignKey(
+                 name: "FK_Tokens_Users_UserId",
+                 table: "Tokens",
+                 column: "UserId",
+                 principalTable: "Users",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.RenameIndex(
                 name: "RolesIX_NormalizedName",
@@ -320,15 +466,39 @@ namespace SODP.DataAccess.Migrations
                 table: "Projects",
                 newName: "IX_NumberStage");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_Projects_Stages_StageId",
+                table: "Projects");
+
             migrationBuilder.RenameIndex(
                 name: "ProjectsIX_Stage",
                 table: "Projects",
                 newName: "IX_Stage");
 
-            migrationBuilder.RenameIndex(
-                name: "ProjectBranchRolesIX_License",
-                table: "ProjectBranchRoles",
-                newName: "IX_License");
+            migrationBuilder.AddForeignKey(
+                 name: "FK_Projects_Stages_StageId",
+                 table: "Projects",
+                 column: "StageId",
+                 principalTable: "Stages",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
+            //migrationBuilder.DropForeignKey(
+            //   name: "FK_ProjectBranchRoles_Licenses_LicenseId",
+            //   table: "ProjectBranchRoles");
+
+            //migrationBuilder.RenameIndex(
+            //    name: "ProjectBranchRolesIX_License",
+            //    table: "ProjectBranchRoles",
+            //    newName: "FK_ProjectBranchRoles_Licenses_LicenseId");
+
+            //migrationBuilder.AddForeignKey(
+            //     name: "FK_ProjectBranchRoles_Licenses_LicenseId",
+            //     table: "ProjectBranchRoles",
+            //     column: "LicenseId",
+            //     principalTable: "Licenses",
+            //     principalColumn: "Id",
+            //     onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.RenameIndex(
                 name: "ProjectBranchesIX_Project",
@@ -340,10 +510,30 @@ namespace SODP.DataAccess.Migrations
                 table: "ProjectBranches",
                 newName: "IX_Branch");
 
+            migrationBuilder.DropForeignKey(
+               name: "FK_Licenses_Designers_DesignerId",
+               table: "Licenses");
+
             migrationBuilder.RenameIndex(
                 name: "LicensesIX_Designer",
                 table: "Licenses",
                 newName: "IX_Designer");
+
+            migrationBuilder.AddForeignKey(
+                 name: "FK_Licenses_Designers_DesignerId",
+                 table: "Licenses",
+                 column: "DesignerId",
+                 principalTable: "Designers",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_LicenseBranches_Branches_BranchId",
+                table: "LicenseBranches");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_LicenseBranches_Licenses_LicenseId",
+                table: "LicenseBranches");
 
             migrationBuilder.RenameIndex(
                 name: "LicenseBranchesIX_License",
@@ -355,28 +545,69 @@ namespace SODP.DataAccess.Migrations
                 table: "LicenseBranches",
                 newName: "IX_Branch");
 
-            migrationBuilder.RenameIndex(
-                name: "InvestorsIX_Name",
-                table: "Investors",
-                newName: "IX_NAME");
+            migrationBuilder.AddForeignKey(
+                 name: "FK_LicenseBranches_Branches_BranchId",
+                 table: "LicenseBranches",
+                 column: "BranchId",
+                 principalTable: "Branches",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                 name: "FK_LicenseBranches_Licenses_LicenseId",
+                 table: "LicenseBranches",
+                 column: "LicenseId",
+                 principalTable: "Licenses",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Certificates_Designers_DesignerId",
+                table: "Certificates");
 
             migrationBuilder.RenameIndex(
                 name: "CertificatesIX_Designer",
                 table: "Certificates",
                 newName: "IX_Designer");
 
+            migrationBuilder.AddForeignKey(
+                 name: "FK_Certificates_Designers_DesignerId",
+                 table: "Certificates",
+                 column: "DesignerId",
+                 principalTable: "Designers",
+                 principalColumn: "Id",
+                 onDelete: ReferentialAction.Cascade);
+
             migrationBuilder.RenameIndex(
                 name: "BranchesIX_Order",
                 table: "Branches",
                 newName: "IX_ORDER");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Project",
-                table: "ProjectBranches",
-                column: "ProjectId",
-                principalTable: "Projects",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.AlterColumn<string>(
+                name: "Sign",
+                table: "Stages",
+                type: "varchar(10)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(10)");
+
+            migrationBuilder.AlterColumn<bool>(
+                name: "ActiveStatus",
+                table: "Stages",
+                type: "tinyint(1)",
+                nullable: false,
+                oldClrType: typeof(bool),
+                oldType: "tinyint(1)",
+                oldDefaultValue: true);
+
+            migrationBuilder.AlterColumn<bool>(
+                name: "ActiveStatus",
+                table: "Designers",
+                type: "tinyint(1)",
+                nullable: false,
+                oldClrType: typeof(bool),
+                oldType: "tinyint(1)",
+                oldDefaultValue: true);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ProjectBranch",

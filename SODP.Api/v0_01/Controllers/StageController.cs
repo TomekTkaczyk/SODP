@@ -9,15 +9,9 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("api/v0_01/stages")]
-    public class StageController : ControllerBase
+    public class StageController : ApiControllerBase<StageDTO>
     {
-        private readonly IStageService _service;
-        private readonly ILogger<StageController> _logger;
-        public StageController(IStageService service, ILogger<StageController> logger) 
-        {
-            _service = service;
-            _logger = logger;
-        }
+        public StageController(IStageService service, ILogger<StageController> logger) : base(service, logger) { }
 
 
         [HttpGet]
@@ -25,7 +19,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            return Ok(await _service.GetPageAsync(active, currentPage, pageSize, searchString));
+            return Ok(await ((IStageService)_service).GetPageAsync(active, currentPage, pageSize, searchString));
         }
 
 
