@@ -128,7 +128,7 @@ else
 			}).then((willArchive) => {
 				if (willArchive) {
 					$.ajax({
-						type: "GET",
+						type: "PATCH",
 						url: `/api/v0_01/projects/${id}/archive`,
 						success: function (data) {
 							if (data.success) {
