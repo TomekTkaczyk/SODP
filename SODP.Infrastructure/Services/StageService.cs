@@ -28,6 +28,7 @@ namespace SODP.Infrastructure.Services
                 SetActiveFilter(active);
             }
             var query = GetQuery().Where(x => string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.Sign.Contains(searchString));
+            pageSize = pageSize == 0 ? await query.CountAsync() : pageSize;
 
             try
             {
