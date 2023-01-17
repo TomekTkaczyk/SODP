@@ -129,16 +129,11 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true);
 
-                    b.Property<int?>("AppDictionaryId")
+                    b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Master")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(10)")
-                        .HasDefaultValue("");
 
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
@@ -153,9 +148,9 @@ namespace SODP.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppDictionaryId");
+                    b.HasIndex("ParentId");
 
-                    b.ToTable("Dictionary");
+                    b.ToTable("AppDictionary");
                 });
 
             modelBuilder.Entity("SODP.Model.Branch", b =>

@@ -56,21 +56,24 @@ namespace Tests.ApplicationTests.ServiceTests
         [Fact]
         public async Task when_call_GetPageAsync_with_specified_active_without_master_should_return_some_master_elements()
         {
-            CreateFakeDictionaryData();
-            ServicePageResponse<DictionaryDTO> response;
             var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
+            ServicePageResponse<DictionaryDTO> response;
 
+            CreateFakeDictionaryData();
             response = await dictionaryService.GetPageAsync();
 
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 6);
 
-            response = await dictionaryService.GetPageAsync(true);
+            CreateFakeDictionaryData();
+            response = await dictionaryService.GetActive(true).GetPageAsync();
 
+            CreateFakeDictionaryData();
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 4);
 
-            response = await dictionaryService.GetPageAsync(false);
+            CreateFakeDictionaryData();
+            response = await dictionaryService.GetActive(false).GetPageAsync();
 
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 2);
@@ -83,32 +86,27 @@ namespace Tests.ApplicationTests.ServiceTests
             ServicePageResponse<DictionaryDTO> response;
             var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
 
-            response = await dictionaryService.GetPageAsync("", null);
+            response = await dictionaryService.GetPageAsync();
 
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 6);
 
-            response = await dictionaryService.GetPageAsync("", true);
+            response = await dictionaryService.GetActive(true).GetPageAsync();
 
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 4);
 
-            response = await dictionaryService.GetPageAsync("", false);
+            response = await dictionaryService.GetActive(false).GetPageAsync();
 
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 2);
 
-            response = await dictionaryService.GetPageAsync(null, null);
-
-            Assert.True(response.Success);
-            Assert.True(response.Data.Collection.Count == 6);
-
-            response = await dictionaryService.GetPageAsync(null, true);
+            response = await dictionaryService.Parent("EXIST").GetPageAsync();
 
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 4);
 
-            response = await dictionaryService.GetPageAsync(null, false);
+            response = await dictionaryService.Parent("EXIST").GetPageAsync();
 
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 2);
@@ -121,21 +119,21 @@ namespace Tests.ApplicationTests.ServiceTests
             ServicePageResponse<DictionaryDTO> response;
             var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
 
-            response = await dictionaryService.GetPageAsync("EXIST", null);
+            response = await dictionaryService.Parent("EXIST").GetPageAsync();
 
             Assert.NotNull(response);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(response);
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 4);
 
-            response = await dictionaryService.GetPageAsync("EXIST", true);
+            response = await dictionaryService.Parent("EXIST").GetPageAsync();
 
             Assert.NotNull(response);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(response);
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 3);
 
-            response = await dictionaryService.GetPageAsync("EXIST", false);
+            response = await dictionaryService.Parent("EXIST").GetActive(false).GetPageAsync();
 
             Assert.NotNull(response);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(response);
@@ -150,21 +148,21 @@ namespace Tests.ApplicationTests.ServiceTests
             ServicePageResponse<DictionaryDTO> response;
             var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
 
-            response = await dictionaryService.GetPageAsync(searchString: "OTH");
+            response = await dictionaryService.SearchFilter("OTH").GetPageAsync();
 
             Assert.NotNull(response);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(response);
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 4);
 
-            response = await dictionaryService.GetPageAsync(true, searchString: "OTH");
+            response = await dictionaryService.SearchFilter("OTH").GetActive(true).GetPageAsync();
 
             Assert.NotNull(response);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(response);
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 2);
 
-            response = await dictionaryService.GetPageAsync(false, searchString: "OTH");
+            response = await dictionaryService.SearchFilter("OTH").GetActive(false).GetPageAsync();
 
             Assert.NotNull(response);
             Assert.IsType<ServicePageResponse<DictionaryDTO>>(response);
@@ -179,19 +177,19 @@ namespace Tests.ApplicationTests.ServiceTests
             ServicePageResponse<DictionaryDTO> response;
             var dictionaryService = new DictionaryService(_mapper, _validator, _context, _activeStatusServiceMock.Object);
 
-            response = await dictionaryService.GetPageAsync("EXIST", searchString: "OTH");
+            response = await dictionaryService.Parent("EXIST").SearchFilter("OTH").GetPageAsync();
 
             Assert.NotNull(response);
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 3);
 
-            response = await dictionaryService.GetPageAsync("EXIST", true, searchString: "OTH");
+            response = await dictionaryService.Parent("EXIST").GetActive(true).GetPageAsync();
 
             Assert.NotNull(response);
             Assert.True(response.Success);
             Assert.True(response.Data.Collection.Count == 2);
 
-            response = await dictionaryService.GetPageAsync("EXIST", false, searchString: "OTH");
+            response = await dictionaryService.Parent("EXIST").GetActive(false).SearchFilter("OTH").GetPageAsync();
 
             Assert.NotNull(response);
             Assert.True(response.Success);
@@ -228,7 +226,7 @@ namespace Tests.ApplicationTests.ServiceTests
             response = await dictionaryService.GetMasterAsync("EXIST");
 
             Assert.Equal("EXIST", response.Data.Sign);
-            Assert.Equal(4, response.Data.Slaves.Count);
+            Assert.Equal(4, response.Data.Children.Count);
         }
 
         [Fact]
@@ -240,7 +238,7 @@ namespace Tests.ApplicationTests.ServiceTests
 
             response = await dictionaryService.GetAsync("EXIST");
 
-            Assert.True(response.Data.Sign.Equals("EXIST") && response.Data.Master.Equals(""));
+            Assert.True(response.Data.Sign.Equals("EXIST") && response.Data.ParentId.Equals(1));
         }
 
         [Fact]
@@ -252,7 +250,7 @@ namespace Tests.ApplicationTests.ServiceTests
 
             response = await dictionaryService.GetAsync("EXIST","EXIST1");
 
-            Assert.True(response.Data.Sign.Equals("EXIST1") && response.Data.Master.Equals("EXIST"));
+            Assert.True(response.Data.Sign.Equals("EXIST1") && response.Data.ParentId.Equals(1));
         }
 
         [Fact]
@@ -264,11 +262,11 @@ namespace Tests.ApplicationTests.ServiceTests
 
             response = await dictionaryService.GetAsync(3);
 
-            Assert.True(response.Data.Sign.Equals("EXIST2") && response.Data.Master.Equals("") && response.Data.Name.Equals("ANOTHER MASTER ITEM"));
+            Assert.True(response.Data.Sign.Equals("EXIST2") && response.Data.ParentId.Equals(0) && response.Data.Name.Equals("ANOTHER MASTER ITEM"));
             
             response = await dictionaryService.GetAsync(15);
 
-            Assert.True(response.Data.Sign.Equals("EXIST1") && response.Data.Master.Equals("EXIST2") && response.Data.Name.Equals("EXIST2 SLAVE ITEM"));
+            Assert.True(response.Data.Sign.Equals("EXIST1") && response.Data.ParentId.Equals(3) && response.Data.Name.Equals("EXIST2 SLAVE ITEM"));
         }
 
         [Fact]
@@ -352,7 +350,6 @@ namespace Tests.ApplicationTests.ServiceTests
 
             var item = new DictionaryDTO()
             {
-                Master = "",
                 Sign = "NEWSIGN",
                 Name = "NEWNAME"
             };
@@ -364,14 +361,14 @@ namespace Tests.ApplicationTests.ServiceTests
 
             item = new DictionaryDTO()
             {
-                Master = "EXIST",
+                ParentId = 1,
                 Sign = "NEWSIGN",
                 Name = "NEWNAME"
             };
 
             response = await dictionaryService.CreateAsync(item);
 
-            Assert.Equal(response.Data.Master, item.Master);
+            Assert.Equal(response.Data.ParentId, item.ParentId);
             Assert.Equal(response.Data.Sign, item.Sign);
             Assert.Equal(response.Data.Name, item.Name);
         }
@@ -385,7 +382,6 @@ namespace Tests.ApplicationTests.ServiceTests
 
             var item = new DictionaryDTO()
             {
-                Master = "",
                 Sign = "EXIST",
                 Name = "SOME TEXT"
             };
@@ -396,7 +392,7 @@ namespace Tests.ApplicationTests.ServiceTests
 
             item = new DictionaryDTO()
             {
-                Master = "EXIST",
+                ParentId = 1,
                 Sign = "EXIST2",
                 Name = "SOME TEXT"
             };
@@ -416,14 +412,13 @@ namespace Tests.ApplicationTests.ServiceTests
             var item = new DictionaryDTO()
             {
                 Id = 1,
-                Master = "NEWMASTER",
                 Sign = "NEWSIGN",
                 Name = "NEWNAME"
             };
             response = await dictionaryService.UpdateAsync(item);
             var entity = await _context.AppDictionary.FirstAsync(x => x.Id == item.Id);
 
-            Assert.Equal("", entity.Master);
+            Assert.Equal(0, entity.ParentId);
             Assert.Equal("EXIST", entity.Sign);
             Assert.Equal("NEWNAME", entity.Name);
             Assert.Equal(204, response.StatusCode);
@@ -432,7 +427,7 @@ namespace Tests.ApplicationTests.ServiceTests
             response = await dictionaryService.UpdateAsync(item);
             entity = await _context.AppDictionary.FirstAsync(x => x.Id == item.Id);
 
-            Assert.Equal("EXIST1", entity.Master);
+            Assert.Equal("EXIST1", entity.Parent.Sign);
             Assert.Equal("EXIST3", entity.Sign);
             Assert.Equal("NEWNAME", entity.Name);
             Assert.Equal(204, response.StatusCode);
@@ -448,7 +443,6 @@ namespace Tests.ApplicationTests.ServiceTests
             var item = new DictionaryDTO()
             {
                 Id = 22,
-                Master = "NEWMASTER",
                 Sign = "NEWSIGN",
                 Name = "NEWNAME"
             };

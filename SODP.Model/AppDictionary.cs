@@ -8,23 +8,23 @@ public class AppDictionary : BaseEntity, IActiveStatus, IEquatable<AppDictionary
 {
 	public AppDictionary()
 	{
-		Master = "";
 		Sign = "";
 		Name = "";
 		ActiveStatus = true;
 	}
 
-	public string Master { get; set; }
-	public string Sign { get; set; }
-	public string Name { get; set; }
-	public bool ActiveStatus { get; set; }
+    public int? ParentId { get; set; }
+    public AppDictionary Parent { get; set; }
 
-	public int MasterId { get; set; }
-	public AppDictionary MasterDictionary { get; set; }
-	public	virtual ICollection<AppDictionary> Slaves { get; set; }
+
+    public string Sign { get; set; }
+    public string Name { get; set; }
+    public bool ActiveStatus { get; set; }
+
+    public virtual ICollection<AppDictionary> Children { get; set; }
 
     public bool Equals(AppDictionary other)
     {
-        return this.Sign.Equals(other.Sign) && this.Master.Equals(other.Master);
+        return this.Sign.Equals(other.Sign) && this.ParentId.Equals(other.ParentId);
     }
 }

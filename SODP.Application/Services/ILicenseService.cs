@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public interface ILicenseService : IEntityService<LicenseDTO>
+    public interface ILicenseService : IEntityService<LicenseDTO>, IActiveStatusService
     {
         Task<ServiceResponse<LicenseWithBranchesDTO>> GetBranchesAsync(int id);
 

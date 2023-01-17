@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-	public class AppService<TEntity,TDto> where TEntity : BaseEntity where TDto : BaseDTO
+	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity where TDto : BaseDTO
     {
 		protected IQueryable<TEntity> _query;
 
@@ -63,19 +63,23 @@ namespace SODP.Infrastructure.Services
 		}
 
 
-		protected AppService<TEntity, TDto> SetActiveFilter(bool? active)
+		public AppService<TEntity, TDto> GetActive(bool active)
 		{
-            _query = _context.Set<TEntity>().AsQueryable();
             if (typeof(IActiveStatus).IsAssignableFrom(typeof(TEntity)))
 			{
-				_query = _query.Where(x => (active == null) || ((IActiveStatus)x).ActiveStatus == active);
+				_query = _query.Where(x => ((IActiveStatus)x).ActiveStatus == active);
 			}
 
 			return this;
 		}
 
+		public virtual AppService<TEntity, TDto> SearchFilter(string searchString)
+		{
+			return this;
+		}
 
-		protected IQueryable<TEntity> PageQuery(int currentPage = 1, int pageSize = 0)
+
+        protected IQueryable<TEntity> PageQuery(int currentPage, int pageSize)
 		{
 			if (pageSize > 0)
 			{
@@ -86,7 +90,7 @@ namespace SODP.Infrastructure.Services
 		}
 
 
-		public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
+		public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(int currentPage = 1, int pageSize = 0)
 		{
 			var serviceResponse = new ServicePageResponse<TDto>();
 			try

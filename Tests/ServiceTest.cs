@@ -28,6 +28,7 @@ namespace Tests
             });
             _mapper = new Mapper(mapperConfig);
             _connection = new SqliteConnection("DataSource=:memory:");
+            //_connection = new SqliteConnection("Filename=data.sqlite");
             _connection.Open();
 
             var options = new DbContextOptionsBuilder<SODPDBContext>().UseSqlite(_connection).Options;
@@ -57,36 +58,36 @@ namespace Tests
                 new AppDictionary { Id = 5, Sign = "EXIST4", Name = "EMPTY ANOTHER MASTER ITEM", ActiveStatus = true },
                 new AppDictionary { Id = 6, Sign = "EXIST5", Name = "EMPTY ANOTHER MASTER ITEM", ActiveStatus = false },
 
-                new AppDictionary { Id = 7, Master = "EXIST", Sign = "EXIST1", Name = "EXIST SLAVE ITEM", ActiveStatus = true },
-                new AppDictionary { Id = 8, Master = "EXIST", Sign = "EXIST2", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = false },
-                new AppDictionary { Id = 9, Master = "EXIST", Sign = "EXIST3", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
-                new AppDictionary { Id = 10, Master = "EXIST", Sign = "EXIST4", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 7, ParentId = 1, Sign = "EXIST1", Name = "EXIST SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 8, ParentId = 1, Sign = "EXIST2", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = false },
+                new AppDictionary { Id = 9, ParentId = 1, Sign = "EXIST3", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 10, ParentId = 1, Sign = "EXIST4", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
 
-                new AppDictionary { Id = 11, Master = "EXIST1", Sign = "EXIST1", Name = "EXIST1 SLAVE ITEM", ActiveStatus = true },
-                new AppDictionary { Id = 12, Master = "EXIST1", Sign = "EXIST2", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
-                new AppDictionary { Id = 13, Master = "EXIST1", Sign = "EXIST3", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = true },
-                new AppDictionary { Id = 14, Master = "EXIST1", Sign = "EXIST4", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
+                new AppDictionary { Id = 11, ParentId = 2, Sign = "EXIST1", Name = "EXIST1 SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 12, ParentId = 2, Sign = "EXIST2", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
+                new AppDictionary { Id = 13, ParentId = 2, Sign = "EXIST3", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 14, ParentId = 2, Sign = "EXIST4", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
 
-                new AppDictionary { Id = 15, Master = "EXIST2", Sign = "EXIST1", Name = "EXIST2 SLAVE ITEM", ActiveStatus = true },
-                new AppDictionary { Id = 16, Master = "EXIST2", Sign = "EXIST2", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = false },
-                new AppDictionary { Id = 17, Master = "EXIST2", Sign = "EXIST3", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
-                new AppDictionary { Id = 18, Master = "EXIST2", Sign = "EXIST4", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 15, ParentId = 3, Sign = "EXIST1", Name = "EXIST2 SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 16, ParentId = 3, Sign = "EXIST2", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = false },
+                new AppDictionary { Id = 17, ParentId = 3, Sign = "EXIST3", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 18, ParentId = 3, Sign = "EXIST4", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
 
-                new AppDictionary { Id = 19, Master = "ORPHANED", Sign = "EXIST1", Name = "ORPHANED SLAVE ITEM", ActiveStatus = true },
-                new AppDictionary { Id = 20, Master = "ORPHANED", Sign = "EXIST2", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = true },
-                new AppDictionary { Id = 21, Master = "ORPHANED", Sign = "EXIST3", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = false }
+                new AppDictionary { Id = 19, ParentId = 100, Sign = "EXIST1", Name = "ORPHANED SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 20, ParentId = 100, Sign = "EXIST2", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = true },
+                new AppDictionary { Id = 21, ParentId = 100, Sign = "EXIST3", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = false }
                 );
 
             _context.SaveChanges();
 
-            _context.AppDictionary.First(x => x.Id == 3).ActiveStatus = false;
-            _context.AppDictionary.First(x => x.Id == 6).ActiveStatus = false;
-            _context.AppDictionary.First(x => x.Id == 8).ActiveStatus = false;
-            _context.AppDictionary.First(x => x.Id == 12).ActiveStatus = false;
-            _context.AppDictionary.First(x => x.Id == 14).ActiveStatus = false;
-            _context.AppDictionary.First(x => x.Id == 16).ActiveStatus = false;
-            _context.AppDictionary.First(x => x.Id == 21).ActiveStatus = false;
-            _context.SaveChanges();
+            //_context.AppDictionary.First(x => x.Id == 3).ActiveStatus = false;
+            //_context.AppDictionary.First(x => x.Id == 6).ActiveStatus = false;
+            //_context.AppDictionary.First(x => x.Id == 8).ActiveStatus = false;
+            //_context.AppDictionary.First(x => x.Id == 12).ActiveStatus = false;
+            //_context.AppDictionary.First(x => x.Id == 14).ActiveStatus = false;
+            //_context.AppDictionary.First(x => x.Id == 16).ActiveStatus = false;
+            //_context.AppDictionary.First(x => x.Id == 21).ActiveStatus = false;
+            //_context.SaveChanges();
         }
 
 

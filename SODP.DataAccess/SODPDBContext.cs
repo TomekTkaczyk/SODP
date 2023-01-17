@@ -53,10 +53,10 @@ namespace SODP.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
+            //new DictionaryEntityConfiguration().Configure(modelBuilder.Entity<AppDictionary>());
             new UserEntityConfiguration().Configure(modelBuilder.Entity<User>());
             new RoleEntityConfiguration().Configure(modelBuilder.Entity<Role>());
             new TokenEntityConfiguration().Configure(modelBuilder.Entity<Token>());
-            new DictionaryEntityConfiguration().Configure(modelBuilder.Entity<AppDictionary>());
             new StageEntityConfiguration().Configure(modelBuilder.Entity<Stage>());
             new BranchEntityConfiguration().Configure(modelBuilder.Entity<Branch>());
             new ProjectEntityConfiguration().Configure(modelBuilder.Entity<Project>());

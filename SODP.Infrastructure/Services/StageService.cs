@@ -25,7 +25,7 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServicePageResponse<StageDTO>();
             if(active != null)
             {
-                SetActiveFilter(active);
+                ActiveFilter(active);
             }
             var query = GetQuery().Where(x => string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.Sign.Contains(searchString));
 

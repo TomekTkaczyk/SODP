@@ -25,7 +25,11 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
         {
-            return Ok(await _service.GetPageAsync(active, currentPage, pageSize));
+            if (active.HasValue)
+            {
+                ((IDesignerService)_service).GetActiveStatus(active.Value);
+            }
+            return Ok(await _service.GetPageAsync(currentPage, pageSize));
         }
 
 

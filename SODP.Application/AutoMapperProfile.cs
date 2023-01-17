@@ -20,10 +20,14 @@ namespace SODP.Domain
 
 
 			CreateMap<AppDictionary, DictionaryDTO>()
-				.ReverseMap();
+                .ReverseMap();
+
+            CreateMap<DictionaryDTO, AppDictionary>()
+                .ForMember(dest => dest.Parent, act => act.Ignore())
+                .ReverseMap();
 
 
-			CreateMap<Stage, StageDTO>()
+            CreateMap<Stage, StageDTO>()
                 .ReverseMap();
 
 

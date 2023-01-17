@@ -8,10 +8,6 @@ namespace SODP.DataAccess.Configurations
 	{
 		public void Configure(EntityTypeBuilder<AppDictionary> builder)
 		{
-			builder.Property(x => x.Master)
-				.HasColumnType("nvarchar(10)")
-				.HasDefaultValue("");
-			
 			builder.Property(x => x.Sign)
 				.HasColumnType("nvarchar(10)")
 				.IsRequired();
@@ -20,17 +16,17 @@ namespace SODP.DataAccess.Configurations
 				.HasColumnType("nvarchar(50)")
                 .IsRequired();
 
-			builder.Property(x => x.ActiveStatus)
-				.HasColumnType("tinyint(1)")
-				.HasDefaultValue(true)
-				.IsRequired();
+			//builder.Property(x => x.ActiveStatus)
+			//	.HasColumnType("tinyint(1)")
+			//	.HasDefaultValue(true)
+			//	.IsRequired();
 
 			builder.HasKey(u => u.Id);
 
-            builder.HasMany(x => x.Slaves)
-				.WithOne(y => y.MasterDictionary)
-				.HasForeignKey(z => z.MasterId)
-                .HasConstraintName("FK_Dictionary_Dictionary_MasterId");
+            builder.HasMany(x => x.Children)
+				.WithOne(y => y.Parent)
+				.HasForeignKey(z => z.ParentId)
+                .HasConstraintName("FK_Dictionary_Dictionary_ParentId");
 
             builder.ToTable("Dictionary");
 		}

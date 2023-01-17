@@ -203,21 +203,20 @@ namespace SODP.DataAccess.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     CreateTimeStamp = table.Column<DateTime>(nullable: false),
                     ModifyTimeStamp = table.Column<DateTime>(nullable: false),
-                    Master = table.Column<string>(type: "nvarchar(10)", nullable: true, defaultValue: ""),
-                    Sign = table.Column<string>(type: "nvarchar(10)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
-                    ActiveStatus = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: true),
-                    DictionaryId = table.Column<int>(nullable: true)
+                    ParentId = table.Column<int>(nullable: false),
+                    Sign = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    ActiveStatus = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Dictionary", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Dictionary_Dictionary_MasterId",
-                        column: x => x.DictionaryId,
+                        name: "FK_Dictionary_Dictionary_ParentId",
+                        column: x => x.ParentId,
                         principalTable: "Dictionary",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -319,7 +318,7 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "DictionaryIX_DictionaryId",
                 table: "Dictionary",
-                column: "DictionaryId");
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "InvestorsIX_Name",

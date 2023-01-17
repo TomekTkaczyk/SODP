@@ -2,7 +2,5 @@
 
 namespace SODP.Application.Services
 {
-    public interface IInvestorService : IEntityService<InvestorDTO>
-    {
-	}
+    public interface IInvestorService : IEntityService<InvestorDTO>, IActiveStatusService { }
 }

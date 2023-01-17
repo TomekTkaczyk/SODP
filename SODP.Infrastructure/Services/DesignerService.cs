@@ -21,7 +21,7 @@ namespace SODP.Infrastructure.Services
 
         public async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            var query = SetActiveFilter(active)
+            var query = ActiveFilter(active)
                 .GetQuery()
                 .OrderBy(x => x.Lastname)
                 .ThenBy(x => x.Firstname)
