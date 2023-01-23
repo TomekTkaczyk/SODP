@@ -7,56 +7,17 @@ using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-    public class DesignerService : AppService<Designer, DesignerDTO>, IDesignerService
+    public class DesignerService : FilteredPageService<Designer, DesignerDTO>, IDesignerService
     {
         public DesignerService(IMapper mapper, IValidator<Designer> validator, SODPDBContext context, IActiveStatusService<Designer> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
-
-
-        public async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
-        {
-            var query = ActiveFilter(active)
-                .GetQuery()
-                .OrderBy(x => x.Lastname)
-                .ThenBy(x => x.Firstname)
-                .Where(x => string.IsNullOrEmpty(searchString) || x.Firstname.Contains(searchString) || x.Lastname.Contains(searchString));
-
-            var serviceResponse = new ServicePageResponse<DesignerDTO>();
-            try
-            {
-                serviceResponse.Data.TotalCount = await GetQuery().CountAsync();
-                if (pageSize == 0)
-                {
-                    pageSize = serviceResponse.Data.TotalCount;
-                }
-
-                var designers = await query
-                    .Skip((currentPage - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
-
-                serviceResponse.Data.PageNumber = currentPage;
-                serviceResponse.Data.PageSize = pageSize;
-                serviceResponse.SetData(_mapper.Map<IList<DesignerDTO>>(designers));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
-
 
         public async Task<int> GetAsync(DesignerDTO designer)
         {
             var result = await _context.Designers.FirstOrDefaultAsync(x => x.Firstname.Trim().Equals(designer.Firstname.Trim()) && x.Lastname.Trim().Equals(designer.Lastname.Trim()));
+            
             return (result == null ? 0 : result.Id);
         }
 
@@ -187,5 +148,17 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
+
+		protected override DesignerService WithSearchString(string searchString)
+		{
+            searchString = searchString.Trim();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+			    _query = _query.Where(x => x.Firstname.Contains(searchString) || x.Lastname.Contains(searchString));
+			    _totalCount = _query.Count();
+            }
+
+			return this;
+		}
 	}
 }

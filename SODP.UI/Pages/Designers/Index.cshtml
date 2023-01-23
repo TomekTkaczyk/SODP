@@ -28,6 +28,8 @@
 	</div>
 </div>
 
+<partial name="_SearchString" />
+
 @if (Model.Designers.Designers.Count() > 0)
 {
 	<div id="designersAccordion" class="accordion">
@@ -135,8 +137,7 @@ else
 				contentType: "application/json; charset=utf-8",
 				dataType: 'json',
 				data: JSON.stringify(c),
-				success: function (response) {
-				},
+				success: function (response) {},
 				error: function (jqXHR, exception) {
 					console.log(jqXHR);
 					console.log(exception);

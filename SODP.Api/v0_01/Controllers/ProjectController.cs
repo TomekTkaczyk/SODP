@@ -12,15 +12,13 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/projects")]
-    public class ProjectController : ControllerBase
+    public class ProjectController : ApiControllerBase
     {
         private readonly IProjectService _service;
-        private readonly ILogger<ProjectController> _logger;
 
-        public ProjectController(IProjectService service, ILogger<ProjectController> logger) : base()
+        public ProjectController(IProjectService service, ILogger<ProjectController> logger) : base(logger) 
         {
             _service = service;
-            _logger = logger;
         }
 
 
@@ -28,22 +26,9 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetPageAsync(int currentPage = 1, int pageSize = 0, ProjectStatus status = ProjectStatus.Active, string searchString = "")
+        public async Task<IActionResult> GetPageAsync(ProjectStatus status = ProjectStatus.Active, int currentPage = 1, int pageSize = 0,  string searchString = "")
         {
-            switch (status)
-            {
-                case ProjectStatus.Active:
-                    _service.SetActiveMode();
-                    break;
-                case ProjectStatus.Archival:
-                    _service.SetArchiveMode();
-                    break;
-                default:
-                    return BadRequest();
-            }
-            var response = await _service.GetPageAsync(null, currentPage, pageSize, searchString);
-
-            return StatusCode(response.StatusCode, response);
+            return Ok( await ((IProjectService)_service).GetPageAsync(status, currentPage, pageSize, searchString));
         }
 
 
@@ -91,7 +76,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetWithBranchesAsync(int id)
         {
-            return Ok(await _service.GetWithBranchesAsync(id));
+            return Ok(await ((IProjectService)_service).GetWithBranchesAsync(id));
         }
 
 
@@ -166,7 +151,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Archive(int id)
         {
-            return Ok(await _service.ArchiveAsync(id));
+            return Ok(await ((IProjectService)_service).ArchiveAsync(id));
         }
 
 
@@ -176,7 +161,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Restore(int id)
         {
-            return Ok(await _service.RestoreAsync(id));
+            return Ok(await ((IProjectService)_service).RestoreAsync(id));
         }
 
 
@@ -186,7 +171,7 @@ namespace SODP.Api.v0_01.Controllers
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		public async Task<IActionResult> SetInvestorAsync(int id, [FromBody] string investor)
 		{
-			return Ok(await _service.SetInvestorAsync(id, investor));
+			return Ok(await ((IProjectService)_service).SetInvestorAsync(id, investor));
 		}
 	}
 }

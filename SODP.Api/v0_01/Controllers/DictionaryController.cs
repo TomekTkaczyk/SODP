@@ -12,10 +12,12 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("/api/v0_01/dictionary")]
-    public class DictionaryController : ApiControllerBase<DictionaryDTO>
+    public class DictionaryController : ApiControllerBase
     {
-		public DictionaryController(IDictionaryService service, ILogger<DictionaryController> logger) : base(service, logger) { }
-
-
+        private readonly IDictionaryService _service;
+        public DictionaryController(IDictionaryService service, ILogger<DictionaryController> logger) : base(logger) 
+        {
+            _service = service;
+        }
 	}
 }

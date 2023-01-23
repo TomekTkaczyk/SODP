@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
@@ -12,9 +11,7 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.Services;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects

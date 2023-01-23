@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Domain.Managers;
+using SODP.Infrastructure.Services;
 using SODP.Model;
 using SODP.Model.Enums;
 using SODP.Shared.DTO;
@@ -17,42 +18,13 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public class ProjectService : IProjectService
+    public class ProjectService : AppService<Project, ProjectDTO>, IProjectService
     {
-        private readonly IMapper _mapper;
         private readonly IFolderManager _folderManager;
-        private readonly IValidator<Project> _validator;
-        private readonly SODPDBContext _context;
-        private ProjectStatus _mode = ProjectStatus.Active;
 
-        public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context)
+        public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context) : base(mapper, validator, context)
         {
-            _mapper = mapper;
             _folderManager = folderManager;
-            _validator = validator;
-            _context = context;
-        }
-
-
-        public IProjectService SetActiveMode()
-        {
-            _mode = ProjectStatus.Active;
-
-            return this;
-        }
-
-
-        public IProjectService SetArchiveMode()
-        {
-            _mode = ProjectStatus.Archival;
-
-            return this;
-        }
-
-
-        public Task<ServiceResponse<ProjectDTO>> CreateAsync(ProjectDTO entity)
-        {
-            throw new NotImplementedException();
         }
 
 
@@ -103,70 +75,29 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status = ProjectStatus.Active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            return await GetPageAsync(active, currentPage, pageSize, "");
+            _query = _query
+                .Include(x => x.Stage)
+                .Where(x => x.Status == status);
+            if(!string.IsNullOrEmpty(searchString))
+            {
+                _query = _query.Where(x => x.Name.Contains(searchString) || x.Number.Contains(searchString) || x.Title.Contains(searchString) || x.Description.Contains(searchString));
+            }
+            _query = _query
+                .OrderBy(x => x.Number)
+                .ThenBy(x => x.Stage.Sign)
+                .AsNoTracking();
+
+            return await GetPageAsync(currentPage, pageSize);
         }
 
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public override async Task<ServiceResponse<ProjectDTO>> GetAsync(int id)
         {
-            var serviceResponse = new ServicePageResponse<ProjectDTO>();
-            IList<Project> projects = new List<Project>();
+            _query = _query.Include(s => s.Stage);
 
-            serviceResponse.Data.TotalCount = await _context.Projects
-                .Where(x => x.Status == _mode && (string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.Number.Contains(searchString) || x.Title.Contains(searchString) || x.Description.Contains(searchString)))
-                .CountAsync();
-            if (pageSize == 0)
-            {
-                pageSize = serviceResponse.Data.TotalCount;
-            }
-
-            try
-            {
-                projects = await _context.Projects.Include(s => s.Stage)
-                    .OrderBy(x => x.Number)
-                    .ThenBy(y => y.Stage.Sign)
-                    .Where(x => x.Status == _mode && (string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.Number.Contains(searchString) || x.Title.Contains(searchString) || x.Description.Contains(searchString)))
-                    .Skip((currentPage-1) * pageSize)
-                    .Take(pageSize)
-                    .AsNoTracking()
-                    .ToListAsync();
-
-                serviceResponse.Data.PageNumber = currentPage;
-                serviceResponse.Data.PageSize = pageSize;
-                serviceResponse.SetData(_mapper.Map<IList<ProjectDTO>>(projects));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<ProjectDTO>> GetAsync(int id)
-        {
-            var serviceResponse = new ServiceResponse<ProjectDTO>();
-            try
-            {
-                var project = await _context.Projects
-                    .Include(s => s.Stage)
-                    .FirstOrDefaultAsync(x => x.Id == id);
-                if (project == null)
-                {
-                    serviceResponse.SetError($"Error: Project Id:{id} not found.", 404);
-                } else
-                {
-                    serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
-                }
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
+            return await base.GetAsync(id);
         }
          
 
@@ -286,7 +217,7 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServiceResponse> DeleteAsync(int id)
+        public override async Task<ServiceResponse> DeleteAsync(int id)
         {
             var serviceResponse = new ServiceResponse();
             try
@@ -506,11 +437,6 @@ namespace SODP.Application.Services
 		}
 
 
-		public Task<bool> ExistAsync(int id)
-		{
-			throw new NotImplementedException();
-		}
-
 		public Task<ServiceResponse> AddPartAsync(int id, int partId)
 		{
 			throw new NotImplementedException();
@@ -530,5 +456,5 @@ namespace SODP.Application.Services
 		{
 			throw new NotImplementedException();
 		}
-	}
+    }
 }

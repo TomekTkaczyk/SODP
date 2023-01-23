@@ -10,15 +10,13 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/licenses")]
-    public class LicenseController : ControllerBase
+    public class LicenseController : ApiControllerBase
     {
         private readonly ILicenseService _service;
-        private readonly ILogger<LicenseController> _logger;
 
-        public LicenseController(ILicenseService service, ILogger<LicenseController> logger)
+        public LicenseController(ILicenseService service, ILogger<LicenseController> logger) : base(logger)
         {
-            _service = service;
-            _logger = logger;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
 
@@ -27,11 +25,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public virtual async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
         {
-            if (active.HasValue)
-            {
-                ((ILicenseService)_service).GetActiveStatus(active.Value);
-            }
-            return Ok(await _service.GetPageAsync(currentPage, pageSize));
+            return Ok(await _service.GetPageAsync(active, currentPage, pageSize, ""));
         }
 
 
@@ -49,7 +43,7 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateAsync([FromBody] LicenseDTO entity)
+        public async Task<IActionResult> CreateAsync([FromBody] NewLicenseDTO entity)
         {
             return Ok(await _service.CreateAsync(entity));
         }
@@ -93,16 +87,6 @@ namespace SODP.Api.v0_01.Controllers
 
             return BadRequest();
         }
-
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateAsync([FromBody] NewLicenseDTO license)
-        {
-            return Ok(await _service.CreateAsync(license));
-        }
-
 
         [HttpGet("{id}/branches")]
         [ProducesResponseType(StatusCodes.Status200OK)]

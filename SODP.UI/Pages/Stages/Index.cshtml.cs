@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.Stages
 {
     [Authorize(Roles = "ProjectManager")]
-    public class IndexModel : ListPageModel
+    public class IndexModel : ListPageModel<StageDTO>
     {
         const string editStagePartialViewName = "_EditStagePartialView";
 
@@ -30,31 +30,19 @@ namespace SODP.UI.Pages.Stages
             _endpoint = "stages";
         }
 
-        public List<StageVM> Stages { get; set; }
+        public StagesVM Stages { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            var url = new StringBuilder();
-            url.Append(ReturnUrl);
-            url.Append("?currentPage=:&pageSize=");
-            pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
-            url.Append(pageSize);
+            var collection = await GetCollectionAsync(currentPage, pageSize, searchString);
+            Stages = new StagesVM();
+            Stages.Stages = collection;
+            Stages.PageInfo = PageInfo;
 
-            if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrWhiteSpace(searchString))
-            {
-                url.Append($"&searchString={searchString}");
-            }
+			SearchString = searchString;
 
-            SearchString = searchString;
-            
-            PageInfo.CurrentPage = currentPage;
-            PageInfo.ItemsPerPage= pageSize;
-            PageInfo.Url = url.ToString();
-            
-            Stages = await GetStagesAsync();
-
-            return Page();
-        }
+			return Page();
+		}
 
         public async Task<PartialViewResult> OnGetEditStageAsync(int? id)
         {
@@ -97,29 +85,6 @@ namespace SODP.UI.Pages.Stages
             }
 
             return  GetPartialView(stage, editStagePartialViewName);
-        }
-
-        private async Task<List<StageVM>> GetStagesAsync()
-        {
-            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={PageInfo.CurrentPage}&pageSize={PageInfo.ItemsPerPage}&searchString={SearchString}");
-
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                var response = await _apiProvider.GetContent<ServicePageResponse<StageDTO>>(apiResponse);
-                PageInfo.TotalItems = response.Data.TotalCount;
-                PageInfo.CurrentPage = response.Data.PageNumber;
-
-                return response.Data.Collection
-                    .Select(x => new StageVM
-                    {
-                        Id = x.Id,
-                        Sign = x.Sign,
-                        Name = x.Name,
-                        ActiveStatus = x.ActiveStatus
-                    }).ToList();
-            }
-
-            return new List<StageVM>();
         }
     }
 }

@@ -11,11 +11,16 @@ using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-	public class InvestorService : AppService<Investor, InvestorDTO>, IInvestorService
+	public class InvestorService : FilteredPageService<Investor, InvestorDTO>, IInvestorService
 	{
 		public InvestorService(IMapper mapper, IValidator<Investor> validator, SODPDBContext context, IActiveStatusService<Investor> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
-		public async Task<ServiceResponse<InvestorDTO>> CreateAsync(InvestorDTO newInvestor)
+        protected override FilteredPageService<Investor, InvestorDTO> WithSearchString(string searchString)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResponse<InvestorDTO>> CreateAsync(InvestorDTO newInvestor)
 		{
 			var serviceResponse = new ServiceResponse<InvestorDTO>();
 			try
@@ -33,26 +38,6 @@ namespace SODP.Infrastructure.Services
 
 			return serviceResponse;
 		}
-
-        public async Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
-        {
-            var serviceResponse = new ServicePageResponse<InvestorDTO>();
-            try
-            {
-				_query = _query.Where(x => x.Name.Contains(searchString));
-
-                serviceResponse.Data.TotalCount = await _query.CountAsync();
-                serviceResponse.Data.PageNumber = currentPage;
-                serviceResponse.Data.PageSize = pageSize;
-                serviceResponse.SetData(_mapper.Map<IList<InvestorDTO>>(await PageQuery(currentPage, pageSize).ToListAsync()));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
 
         public async Task<ServiceResponse> UpdateAsync(InvestorDTO updateInvestor)
 		{
@@ -85,5 +70,5 @@ namespace SODP.Infrastructure.Services
 			}
 			return serviceResponse;
 		}
-	}
+    }
 }

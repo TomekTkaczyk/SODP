@@ -14,40 +14,12 @@ using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-    public class StageService : AppService<Stage, StageDTO>, IStageService
+    public class StageService : FilteredPageService<Stage, StageDTO>, IStageService
     {
 
-        public StageService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context, IActiveStatusService<Stage> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
-
-
-		public async Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public StageService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context, IActiveStatusService<Stage> activeStatusService) : base(mapper, validator, context, activeStatusService) 
         {
-            var serviceResponse = new ServicePageResponse<StageDTO>();
-            if(active != null)
-            {
-                ActiveFilter(active);
-            }
-            var query = GetQuery().Where(x => string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.Sign.Contains(searchString));
-
-            try
-            {
-                var stages = await query
-                    .OrderBy(x => x.Sign)
-                    .Skip((currentPage - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
-
-                serviceResponse.Data.TotalCount = await query.CountAsync();
-                serviceResponse.Data.PageNumber = currentPage;
-                serviceResponse.Data.PageSize = pageSize;
-                serviceResponse.SetData(_mapper.Map<IList<StageDTO>>(stages));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
+            _query = _query.OrderBy(x => x.Name);
         }
 
 
@@ -201,5 +173,13 @@ namespace SODP.Infrastructure.Services
         {
             return ( await _context.Stages.FirstOrDefaultAsync(x => x.Sign == sign) != null);
         }
-	}
+
+
+        protected override FilteredPageService<Stage, StageDTO> WithSearchString(string searchString)
+        {
+            _query = _query.Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString));
+
+            return this;
+        }
+    }
 }

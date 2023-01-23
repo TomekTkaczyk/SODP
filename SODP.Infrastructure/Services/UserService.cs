@@ -225,5 +225,15 @@ namespace SODP.Infrastructure.Services
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        public Task<ServicePageResponse<UserDTO>> GetPageAsync(int currentPage, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

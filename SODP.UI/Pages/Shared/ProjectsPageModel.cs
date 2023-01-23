@@ -10,13 +10,12 @@ using SODP.UI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Shared
 {
-    public abstract class ProjectsPageModel : ListPageModel
+    public abstract class ProjectsPageModel : ListPageModel<ProjectDTO>
     {
 
         public ProjectsListVM ProjectsViewModel { get; set; }
@@ -25,25 +24,11 @@ namespace SODP.UI.Pages.Shared
 
         protected async Task<IActionResult> OnGetAsync(ProjectStatus status, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-			var url = new StringBuilder();
-			url.Append(ReturnUrl);
-			url.Append("?currentPage=:&pageSize=");
-			pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
-			url.Append(pageSize);
-
-			if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrWhiteSpace(searchString))
-			{
-				url.Append($"&searchString={searchString}");
-			}
-
 			ProjectsViewModel = new ProjectsListVM
             {
                 Projects = await GetProjectsAsync(status, currentPage, pageSize, searchString)
             };
-
 			SearchString = searchString;
-			PageInfo.ItemsPerPage = pageSize;
-			PageInfo.Url = url.ToString();
 
 			return Page();
         }
@@ -68,6 +53,7 @@ namespace SODP.UI.Pages.Shared
                 var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<ProjectDTO>>();
                 PageInfo.TotalItems = response.Data.TotalCount;
                 PageInfo.CurrentPage = response.Data.PageNumber;
+                PageInfo.Url = url.ToString();
 
                 return response.Data.Collection.ToList();
             }

@@ -10,18 +10,12 @@ using SODP.Shared.Response;
 
 namespace SODP.Infrastructure.Services
 {
-    public class LicenseService : ILicenseService
+    public class LicenseService : FilteredPageService<License, LicenseDTO>, ILicenseService
     {
-        private readonly IMapper _mapper;
-        private readonly IValidator<License> _validator;
-        private readonly SODPDBContext _context;
         private readonly IDesignerService _designerService;
 
-        public LicenseService(IMapper mapper, IValidator<License> validator, SODPDBContext context, IDesignerService designerService)
+        public LicenseService(IMapper mapper, IValidator<License> validator, SODPDBContext context, IDesignerService designerService, IActiveStatusService<License> activeStatusService) : base(mapper, validator, context, activeStatusService)
         {
-            _mapper = mapper;
-            _validator = validator;
-            _context = context;
             _designerService = designerService;
         }
         public Task<ServiceResponse<LicenseDTO>> CreateAsync(LicenseDTO entity)
@@ -58,7 +52,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<LicenseDTO>();
             try
@@ -76,7 +70,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse> DeleteAsync(int id)
+        public override async Task<ServiceResponse> DeleteAsync(int id)
         {
             var serviceResponse = new ServiceResponse();
             try
@@ -113,7 +107,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<LicenseDTO>> GetAsync(int id)
+        public override async Task<ServiceResponse<LicenseDTO>> GetAsync(int id)
         {
             var serviceResponse = new ServiceResponse<LicenseDTO>();
 
@@ -262,14 +256,14 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-		public Task<bool> ExistAsync(int id)
-		{
-			throw new NotImplementedException();
-		}
-
 		public Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        protected override FilteredPageService<License, LicenseDTO> WithSearchString(string searchString)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

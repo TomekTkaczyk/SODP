@@ -4,13 +4,8 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public interface IEntityService<T> : IAppService where T : BaseDTO
+    public interface IEntityService<T> : IGetEntityService<T> where T : BaseDTO
     {
         Task<ServiceResponse<T>> CreateAsync(T entity);
-        Task<ServicePageResponse<T>> GetPageAsync(int currentPage, int pageSize);
-        Task<ServiceResponse<T>> GetAsync(int id);
-        Task<ServiceResponse> UpdateAsync(T entity);
-        Task<ServiceResponse> DeleteAsync(int id);
-		Task<bool> ExistAsync(int id);
-	}
+    }
 }

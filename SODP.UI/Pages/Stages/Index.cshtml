@@ -33,7 +33,7 @@
 
 <partial name="_SearchString" />
 
-@if (Model.Stages.Count > 0)
+@if (Model.Stages.Stages.Count > 0)
 {
 	<table id="StagesTable" class="table table-sm table-hover">
 		<thead class="thead-light">
@@ -44,7 +44,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var item in Model.Stages)
+			@foreach (var item in Model.Stages.Stages)
 			{
 				<tr class="m-0 p-0">
 					<td onclick='@(User.IsInRole("ProjectManager") ? "EditStage("+@item.Id+")" : "")'

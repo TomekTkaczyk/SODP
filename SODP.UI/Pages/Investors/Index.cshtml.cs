@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Investors
 {
-	public class IndexModel : ListPageModel
+	public class IndexModel : ListPageModel<InvestorDTO>
     {
 		const string editInvestorPartialViewName = "_EditInvestorPartialView";
 

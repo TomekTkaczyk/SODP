@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Services;
@@ -10,9 +9,10 @@ using SODP.Shared.Response;
 
 namespace SODP.Infrastructure.Services
 {
-    public class DictionaryService : AppService<AppDictionary, DictionaryDTO>, IDictionaryService
+    public class DictionaryService : FilteredPageService<AppDictionary, DictionaryDTO>, IDictionaryService
     {
         public DictionaryService(IMapper mapper, IValidator<AppDictionary> validator, SODPDBContext context, IActiveStatusService<AppDictionary> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
+
 
         public Task<ServiceResponse> DeleteAsync(string master, string sign = "")
         {
@@ -82,17 +82,17 @@ namespace SODP.Infrastructure.Services
         //    return await GetResponse(currentPage,pageSize);
         //}
 
-        public override AppService<AppDictionary, DictionaryDTO> SearchFilter(string searchString)
-        {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                _query = _query.Where(x => x.Name.ToUpper().Contains(searchString.ToUpper()));
-            }
+        //public override DictionaryService WithSearchString(string searchString)
+        //{
+        //    if (!string.IsNullOrEmpty(searchString))
+        //    {
+        //        _query = _query.Where(x => x.Name.ToUpper().Contains(searchString.ToUpper()));
+        //    }
 
-            return this;
-        }
+        //    return this;
+        //}
 
-        public AppService<AppDictionary, DictionaryDTO> Parent(string sign)
+        public DictionaryService Parent(string sign)
         {
             if (string.IsNullOrEmpty(sign))
             {
@@ -106,14 +106,14 @@ namespace SODP.Infrastructure.Services
             return this;
         }
 
-        public AppService<AppDictionary, DictionaryDTO> Parent(int? id)
+        public DictionaryService Parent(int? id)
         {
             _query = _query.Where(x => x.ParentId == id);
 
             return this;
         }
 
-        public IAppService GetActiveStatus(bool status)
+        protected override FilteredPageService<AppDictionary, DictionaryDTO> WithSearchString(string searchString)
         {
             throw new NotImplementedException();
         }

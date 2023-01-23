@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.Designers
 {
     [Authorize(Roles = "ProjectManager")]
-	public class IndexModel : ListPageModel
+	public class IndexModel : ListPageModel<DesignerDTO>
     {
         const string editDesignerPartialViewName = "_EditDesignerPartialView";
         const string licensesPartialViewName = "_LicensesPartialView";
@@ -39,26 +39,15 @@ namespace SODP.UI.Pages.Designers
 
         public BranchesVM Branches { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            var url = new StringBuilder();
-            url.Append(ReturnUrl);
-            url.Append("?currentPage=:&pageSize=");
-			pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
-			url.Append(pageSize);
-
             Designers = new DesignersVM
             {
-                PageInfo = new PageInfo
-                {
-                    CurrentPage = currentPage,
-                    ItemsPerPage = pageSize,
-                    Url = url.ToString()
-                },
+                Designers = await GetCollectionAsync(currentPage, pageSize, searchString)
             };
-            Designers.Designers = await GetDesignersAsync(Designers.PageInfo);
+			SearchString = searchString;
 
-            return Page();
+			return Page();
         }
 
         public async Task<PartialViewResult> OnGetEditDesignerAsync(int? id)
@@ -151,30 +140,6 @@ namespace SODP.UI.Pages.Designers
             }
 
             return GetPartialView<NewLicenseVM>(license, newLicensePartialViewName);
-        }
-
-        private async Task<List<DesignerVM>> GetDesignersAsync(PageInfo pageInfo)
-        {
-            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
-            
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                var response = await _apiProvider.GetContent<ServicePageResponse<DesignerDTO>>(apiResponse);
-                pageInfo.TotalItems = response.Data.TotalCount;
-                pageInfo.CurrentPage = response.Data.PageNumber;
-
-                return response.Data.Collection
-                    .Select(x => new DesignerVM
-                    {
-                        Id = x.Id,
-                        Title = x.Title,
-                        Firstname = x.Firstname,
-                        Lastname = x.Lastname,
-                        ActiveStatus = x.ActiveStatus
-                    }).ToList();
-            }
-
-            return new List<DesignerVM>();
         }
     }
 }

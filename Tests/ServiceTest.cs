@@ -8,7 +8,6 @@ using SODP.DataAccess;
 using SODP.Model;
 using SODP.Shared.Services;
 using System;
-using System.Linq;
 
 namespace Tests
 {
@@ -90,6 +89,18 @@ namespace Tests
             //_context.SaveChanges();
         }
 
+        protected void CreateFakeBranchData()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
+            _context.Branches.AddRange(
+                new Branch { Id = 1, Sign = "PB", Name = "PROJEKT BUDOWLANY", ActiveStatus = true },
+                new Branch { Id = 1, Sign = "PAB", Name = "PROJEKT ARCHITEKTONICZNO-BUDOWLANY", ActiveStatus = true },
+                new Branch { Id = 1, Sign = "PT", Name = "PROJEKT TECHNICZY", ActiveStatus = true },
+                new Branch { Id = 1, Sign = "PW", Name = "PROJEKT WYKONAWCZY", ActiveStatus = false }
+                );
 
+            _context.SaveChanges();
+        }
     }
 }
