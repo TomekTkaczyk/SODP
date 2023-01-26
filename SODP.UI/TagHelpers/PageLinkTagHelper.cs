@@ -64,14 +64,14 @@ namespace SODP.UI.TagHelpers
             output.Content.AppendHtml(tagBuilder.InnerHtml);
         }
 
-        private TagBuilder GetTag(int page, string label, string css = "")                       
+        private TagBuilder GetTag(int pageNumber, string label, string css = "")                       
         {
-            if(page < 1)
+            if(pageNumber < 1)
             {
-                page = 1;
+                pageNumber = 1;
             }
             var tag = new TagBuilder("a");
-            var url = PageModel.Url.Replace(":", page.ToString());
+            var url = PageModel.Url.Replace(":", pageNumber.ToString());
             tag.Attributes["href"] = url;
             tag.AddCssClass(PageClass);
             tag.AddCssClass(css);

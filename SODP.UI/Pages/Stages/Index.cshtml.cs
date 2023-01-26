@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,12 +35,15 @@ namespace SODP.UI.Pages.Stages
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            var collection = await GetCollectionAsync(currentPage, pageSize, searchString);
-            Stages = new StagesVM();
-            Stages.Stages = collection;
-            Stages.PageInfo = PageInfo;
-
-			SearchString = searchString;
+            var endpoint = GetUrl(currentPage, pageSize, searchString);
+            var apiResponse = await GetApiResponse(endpoint);
+            
+            PageInfo = GetPageInfo(apiResponse, searchString);
+			Stages = new StagesVM
+			{
+				Stages = apiResponse.Data.Collection.ToList(),
+                PageInfo = PageInfo
+			};
 
 			return Page();
 		}

@@ -28,7 +28,6 @@ namespace SODP.UI.Pages.ActiveProjects
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
         {
             ReturnUrl = "/ActiveProjects";
-            _endpoint = "projects";
         }
 
 

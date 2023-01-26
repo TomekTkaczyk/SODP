@@ -36,11 +36,15 @@ namespace SODP.UI.Pages.Branches
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
+            var endpoint = GetUrl(currentPage, pageSize, searchString);
+			var apiResponse = await GetApiResponse(endpoint);
+			
+            PageInfo = GetPageInfo(apiResponse, searchString);
             Branches = new BranchesVM
             {
-                Branches = await GetCollectionAsync(currentPage, pageSize, searchString)
+                Branches = apiResponse.Data.Collection.ToList(),
+                PageInfo = PageInfo
             };
-            SearchString = searchString;
 
             return Page();
         }

@@ -41,13 +41,17 @@ namespace SODP.UI.Pages.Designers
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
+			var endpoint = GetUrl(currentPage, pageSize, searchString);
+			var apiResponse = await GetApiResponse(endpoint);
+			
+            PageInfo = GetPageInfo(apiResponse, searchString);
             Designers = new DesignersVM
             {
-                Designers = await GetCollectionAsync(currentPage, pageSize, searchString)
-            };
-			SearchString = searchString;
+                Designers = apiResponse.Data.Collection.ToList(),
+                PageInfo = PageInfo
+			};
 
-			return Page();
+            return Page();
         }
 
         public async Task<PartialViewResult> OnGetEditDesignerAsync(int? id)

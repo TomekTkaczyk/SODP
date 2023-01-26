@@ -18,7 +18,14 @@ namespace SODP.UI.Pages.Shared
 	{
 		protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
 
-		protected async Task<IList<T>> GetCollectionAsync(int currentPage, int pageSize, string searchString)
+		protected void SetPageProperty(StringBuilder url, int pageSize, string searchString)
+		{
+			PageInfo.Url = url.ToString();
+			PageInfo.ItemsPerPage = pageSize;
+			SearchString= searchString;
+		}
+
+		protected string GetUrl(int currentPage, int pageSize, string searchString)
 		{
 			var url = new StringBuilder();
 			url.Append(_endpoint);
@@ -30,15 +37,47 @@ namespace SODP.UI.Pages.Shared
 				url.Append($"&searchString={searchString}");
 			}
 
-			var apiResponse = await _apiProvider.GetAsync(url.ToString());
+			return url.ToString();
+		}
+
+		protected async Task<ServicePageResponse<T>> GetApiResponse(string url) 
+		{
+			var apiResponse = await _apiProvider.GetAsync(url);
+
+			return await apiResponse.Content.ReadAsAsync<ServicePageResponse<T>>();
+		}
+
+
+		protected PageInfo GetPageInfo(ServicePageResponse<T> response, string searchString = "")
+		{
+			var pageInfo = new PageInfo
+			{
+				TotalItems = response.Data.TotalCount,
+				CurrentPage = response.Data.PageNumber,
+				ItemsPerPage = response.Data.PageSize,
+				Url = $"{ReturnUrl}?currentPage=:&pageSize={response.Data.PageSize}"
+			};
+			if (!string.IsNullOrEmpty(searchString))
+			{
+				pageInfo.Url += $"&searchString={searchString}";
+			}
+
+			return pageInfo;
+		}
+
+
+		protected async Task<IList<T>> GetCollectionAsync(string url)
+		{
+
+			var apiResponse = await _apiProvider.GetAsync(url);
 
 			if (apiResponse.IsSuccessStatusCode)
 			{
 				var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<T>>();
-				PageInfo.TotalItems = response.Data.TotalCount;
-				PageInfo.CurrentPage = response.Data.PageNumber;
-				PageInfo.ItemsPerPage = pageSize;
-				PageInfo.Url= url.ToString();
+				//PageInfo.TotalItems = response.Data.TotalCount;
+				//PageInfo.CurrentPage = response.Data.PageNumber;
+				//PageInfo.ItemsPerPage = response.Data.PageSize;
+				//PageInfo.Url = GetUrl(ReturnUrl,response.Data.PageSize,response.Data.;
 
 				return response.Data.Collection.ToList();
 			}
