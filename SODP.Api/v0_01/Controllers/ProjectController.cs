@@ -70,13 +70,13 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
-        [HttpGet("{id}/branches")]
+        [HttpGet("{id}/parts")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetWithBranchesAsync(int id)
+        public async Task<IActionResult> GetWithPartsAsync(int id)
         {
-            return Ok(await ((IProjectService)_service).GetWithBranchesAsync(id));
+            return Ok(await ((IProjectService)_service).GetWithPartsAsync(id));
         }
 
 

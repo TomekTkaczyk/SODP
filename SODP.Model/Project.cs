@@ -34,6 +34,7 @@ public class Project : BaseEntity
         }
     }
 
+
     public string Number { get; set; }           // Project number
     public int StageId { get; set; }             // Project stage Id
     public virtual Stage Stage { get; set; }     // Stage object

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Model;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity where TDto : BaseDTO
+	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity, new() where TDto : BaseDTO
     {
 		protected IQueryable<TEntity> _query;
 		protected int _totalCount;
@@ -95,14 +96,12 @@ namespace SODP.Infrastructure.Services
 
 			try
 			{
-				TEntity entity = (TEntity)Activator.CreateInstance(typeof(TEntity));
-				entity.Id = id;
-
+				var entity = new TEntity() { Id = id };
 				_context.Entry(entity).State = EntityState.Deleted;
 
 				if (await _context.SaveChangesAsync() == 0)
 				{
-					serviceResponse.SetError($"Error: Entity Id:{id} not found.", 401);
+					serviceResponse.SetError($"Error: Entity Id:{id} not found.", 404);
 				}
 			}
 			catch (Exception ex)

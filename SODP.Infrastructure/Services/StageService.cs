@@ -109,24 +109,17 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == id);
-                if (stage == null)
-                {
-                    serviceResponse.SetError($"Błąd: Stadium [{id}] nie odnalezione.", 404);
-                    serviceResponse.ValidationErrors.Add("Id", $"Stadium [{id}] nie odnalezione.");
-
-                    return serviceResponse;
-                }
-                var project = await _context.Projects.FirstOrDefaultAsync(x => x.Stage.Id == id);
+                var project = await _context.Projects
+                    .Include(x => x.Stage)
+                    .FirstOrDefaultAsync(x => x.Stage.Id == id);
                 if (project != null)
                 {
-					serviceResponse.SetError($"Błąd: Stadium {project.Stage.Sign} posiada powiązane projekty.", 400);
-                    serviceResponse.ValidationErrors.Add("Id", $"Stadium [{id}] posiada powiązane projekty.");
+					serviceResponse.SetError($"Error: Stage '{project.Stage.Sign}' has subsidiary projects.", 400);
                     
                     return serviceResponse;
                 }
                 
-                serviceResponse = await base.DeleteAsync(stage.Id);
+                serviceResponse = await base.DeleteAsync(id);
             }
             catch (Exception ex)
             {
@@ -162,7 +155,6 @@ namespace SODP.Infrastructure.Services
             catch (Exception ex)
             {
                 serviceResponse.SetError(ex.Message);
-                return serviceResponse;
             }
 
             return serviceResponse;

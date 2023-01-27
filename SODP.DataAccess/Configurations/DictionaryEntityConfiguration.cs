@@ -16,11 +16,6 @@ namespace SODP.DataAccess.Configurations
 				.HasColumnType("nvarchar(50)")
                 .IsRequired();
 
-			//builder.Property(x => x.ActiveStatus)
-			//	.HasColumnType("tinyint(1)")
-			//	.HasDefaultValue(true)
-			//	.IsRequired();
-
 			builder.HasKey(u => u.Id);
 
             builder.HasMany(x => x.Children)

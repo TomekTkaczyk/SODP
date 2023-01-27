@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using SODP.Model;
+using System.Collections.Generic;
+using System.Security.Policy;
+using System.Text.RegularExpressions;
 
 namespace SODP.UI.Services
 {
@@ -11,9 +14,13 @@ namespace SODP.UI.Services
     {
         public string Translate(string source, Languages lang)
         {
-            GetDictionary(lang).TryGetValue(source, out string translation);
+			//var regex = new Regex("'(.*?)'");
+			//var regex = new Regex("'(.*?[^\\])'")
+			//var matches = regex.Match(source);
 
-            return translation ?? "";
+			GetDictionary(lang).TryGetValue(source, out string translation);
+
+			return translation ?? "";
         }
 
         private Dictionary<string, string> GetDictionary(Languages lang)

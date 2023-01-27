@@ -282,13 +282,13 @@ namespace SODP.Application.Services
             var serviceResponse = new ServicePageResponse<ProjectBranchRoleDTO>();
             try 
             {
-                var projectBranch = await _context.ProjectBranches
-                    .Include(x => x.Roles)
-                    .ThenInclude(x => x.License)
-                    .ThenInclude(x => x.Designer)
-                    .FirstOrDefaultAsync(x => x.Project.Id == id && x.BranchId == branchId);
-                var roles = projectBranch.Roles.ToList();
-                serviceResponse.SetData(_mapper.Map<IList<ProjectBranchRoleDTO>>(projectBranch.Roles));
+                //var projectBranch = await _context.PartBranch
+                //    .Include(x => x.Branches)
+                //    .ThenInclude(x => x.License)
+                //    .ThenInclude(x => x.Designer)
+                //    .FirstOrDefaultAsync(x => x.Project.Id == id && x.BranchId == branchId);
+                //var roles = projectBranch.Roles.ToList();
+                //serviceResponse.SetData(_mapper.Map<IList<ProjectBranchRoleDTO>>(projectBranch.Roles));
             }
             catch(Exception ex)
             {
@@ -343,9 +343,9 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var projectBranch = await _context.ProjectBranches.FirstAsync(x => x.ProjectId == id && x.BranchId == branchId);
-                _context.ProjectBranches.Remove(projectBranch);
-                await _context.SaveChangesAsync();
+                //var projectBranch = await _context.ProjectBranches.FirstAsync(x => x.ProjectId == id && x.BranchId == branchId);
+                //_context.ProjectBranches.Remove(projectBranch);
+                //await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -361,53 +361,53 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var projectBranch = await _context.ProjectBranches
-                    .Include(x => x.Roles)
-                    .FirstOrDefaultAsync(x => x.ProjectId == technicalRole.ProjectId && x.BranchId == technicalRole.BranchId);
-                if (projectBranch == null)
-                {
-                    serviceResponse.SetError("Branża projektu nie odnaleziona", 400);
-                    return serviceResponse;
-                }
+                //var partBranch = await _context.PartBranch
+                //    .Include(x => x.Branches)
+                //    .FirstOrDefaultAsync(x => x.PartBranchId == technicalRole.ProjectId && x.BranchId == technicalRole.BranchId);
+                //if (projectBranch == null)
+                //{
+                //    serviceResponse.SetError("Branża projektu nie odnaleziona", 400);
+                //    return serviceResponse;
+                //}
 
-                var branchRole = projectBranch.Roles.FirstOrDefault(x => x.Role == technicalRole.Role);
+                //var branchRole = projectBranch.Roles.FirstOrDefault(x => x.Role == technicalRole.Role);
 
-                if (technicalRole.LicenseId == 0)
-                {
-                    if(branchRole != null)
-                    {
-                        projectBranch.Roles.Remove(branchRole);
-                    }
-                }
-                else
-                {
-                    var license = await _context.Licenses
-                        .Include(x => x.Branches)
-                        .FirstOrDefaultAsync(x => x.Id == technicalRole.LicenseId);
+                //if (technicalRole.LicenseId == 0)
+                //{
+                //    if(branchRole != null)
+                //    {
+                //        projectBranch.Roles.Remove(branchRole);
+                //    }
+                //}
+                //else
+                //{
+                //    var license = await _context.Licenses
+                //        .Include(x => x.Branches)
+                //        .FirstOrDefaultAsync(x => x.Id == technicalRole.LicenseId);
 
-                    if (license == null)
-                    {
-                        serviceResponse.SetError("Uprawnienia nie odnalezione", 400);
-                        return serviceResponse;
-                    }
+                //    if (license == null)
+                //    {
+                //        serviceResponse.SetError("Uprawnienia nie odnalezione", 400);
+                //        return serviceResponse;
+                //    }
 
-                    if (license.Branches == null || license.Branches.FirstOrDefault(x => x.BranchId == technicalRole.BranchId) == null)
-                    {
-                        serviceResponse.SetError($"Uprawnienia nie obejmują branży", 400);
-                        return serviceResponse;
-                    }
+                //    if (license.Branches == null || license.Branches.FirstOrDefault(x => x.BranchId == technicalRole.BranchId) == null)
+                //    {
+                //        serviceResponse.SetError($"Uprawnienia nie obejmują branży", 400);
+                //        return serviceResponse;
+                //    }
 
-                    if(branchRole == null)
-                    {
-                        projectBranch.Roles.Add(new ProjectBranchRole() { License = license, Role = technicalRole.Role });
-                    } 
-                    else
-                    {
-                        branchRole.License = license;
-                    }
-                }
-                _context.ProjectBranches.Update(projectBranch);
-                await _context.SaveChangesAsync();
+                //    if(branchRole == null)
+                //    {
+                //        projectBranch.Roles.Add(new ProjectBranchRole() { License = license, Role = technicalRole.Role });
+                //    } 
+                //    else
+                //    {
+                //        branchRole.License = license;
+                //    }
+                //}
+                //_context.ProjectBranches.Update(projectBranch);
+                //await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -452,9 +452,28 @@ namespace SODP.Application.Services
 			throw new NotImplementedException();
 		}
 
-		public Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id)
+		public async Task<ServiceResponse<ProjectDTO>> GetWithPartsAsync(int id)
 		{
-			throw new NotImplementedException();
-		}
-    }
+            var serviceResponse = new ServiceResponse<ProjectDTO>();
+            try
+            {
+                var project = await _context.Projects
+                    .Include(s => s.Stage)
+                    .Include(s => s.Parts)
+                    //.ThenInclude(s => s.Branches)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+                if (project == null)
+                {
+                    serviceResponse.SetError($"Error: Project Id:{id} not found", 404);
+                }
+                serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
+	}
 }

@@ -16,8 +16,8 @@
                 url: url,
                 success: function (data) {
                     if (data.success) {
-                        toastr.success(data.message);
                         window.location.reload();
+                        toastr.success(data.message);
                     }
                     else {
                         toastr.error(data.message);

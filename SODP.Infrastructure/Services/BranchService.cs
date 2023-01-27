@@ -93,7 +93,7 @@ namespace SODP.Infrastructure.Services
                 var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Sign == sign);
                 if (branch == null)
                 {
-                    serviceResponse.SetError($"Błąd: Branża {sign} nie odnaleziona.", 401);
+                    serviceResponse.SetError($"Error: Branch {sign} not found.", 404);
                     return serviceResponse;
                 }
                 serviceResponse.SetData(_mapper.Map<BranchDTO>(branch));

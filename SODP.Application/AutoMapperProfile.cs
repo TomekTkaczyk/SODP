@@ -42,14 +42,14 @@ namespace SODP.Domain
                 .ForMember(dest => dest.Part, act => act.Ignore())
                 .ForMember(dest => dest.Roles, act => act.Ignore());
 
-            CreateMap<PartBranchDTO, PartBranch>()
-                .ForMember(dest => dest.ProjectPartId, act => act.Ignore())
-                .ForMember(dest => dest.ProjectPart, act => act.Ignore())
-                .ForMember(dest => dest.BranchId, act => act.Ignore())
-                .ForMember(dest => dest.Branch, act => act.Ignore())
-                .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
-                .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
-                .ForMember(dest => dest.Roles, act => act.Ignore());
+            //CreateMap<PartBranchDTO, PartBranch>()
+            //    .ForMember(dest => dest.ProjectPartId, act => act.Ignore())
+            //    .ForMember(dest => dest.ProjectPart, act => act.Ignore())
+            //    .ForMember(dest => dest.BranchId, act => act.Ignore())
+            //    .ForMember(dest => dest.Branch, act => act.Ignore())
+            //    .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+            //    .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
+            //    .ForMember(dest => dest.Roles, act => act.Ignore());
 
 
             CreateMap<ProjectPart, ProjectPartDTO>()
@@ -59,8 +59,6 @@ namespace SODP.Domain
 
             CreateMap<ProjectPartDTO, ProjectPart>()
                 .ForMember(dest => dest.Branches, opt => opt.MapFrom(src => src.Branches))
-                .ForMember(dest => dest.Sign, act => act.Ignore())
-                .ForMember(dest => dest.Name, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
                 .PreserveReferences();
@@ -73,9 +71,9 @@ namespace SODP.Domain
                .PreserveReferences();
 
 
-            CreateMap<ProjectBranchRole, ProjectBranchRoleDTO>()
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
-                .PreserveReferences();
+            //CreateMap<ProjectBranchRole, ProjectBranchRoleDTO>()
+            //    .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
+            //    .PreserveReferences();
 
 
             CreateMap<Project, NewProjectDTO>()

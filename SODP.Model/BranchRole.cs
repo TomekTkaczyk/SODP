@@ -2,7 +2,7 @@
 
 namespace SODP.Model;
 
-public class PartBranchRole : BaseEntity
+public class BranchRole : BaseEntity
 {
     public int PartBranchId { get; set; }
 

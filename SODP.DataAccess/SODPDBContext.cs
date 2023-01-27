@@ -18,10 +18,12 @@ namespace SODP.DataAccess
 
         public virtual DbSet<AppDictionary> AppDictionary { get; set; }
         public virtual DbSet<Stage> Stages { get; set; }
+        public virtual DbSet<Part> Parts { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
-        public virtual DbSet<ProjectBranch> ProjectBranches { get; set; }
-        public virtual DbSet<ProjectBranchRole> ProjectBranchRole { get; set; }
+        public virtual DbSet<ProjectPart> ProjectPart { get; set; }
+        public virtual DbSet<PartBranch> PartBranch { get; set; }
+        public virtual DbSet<BranchRole> BranchRole { get; set; }
         public virtual DbSet<Designer> Designers { get; set; }
         public virtual DbSet<License> Licenses { get; set; }
         public virtual DbSet<BranchLicense> BranchLicenses { get; set; }
@@ -53,20 +55,23 @@ namespace SODP.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
-            //new DictionaryEntityConfiguration().Configure(modelBuilder.Entity<AppDictionary>());
             new UserEntityConfiguration().Configure(modelBuilder.Entity<User>());
-            new RoleEntityConfiguration().Configure(modelBuilder.Entity<Role>());
             new TokenEntityConfiguration().Configure(modelBuilder.Entity<Token>());
-            new StageEntityConfiguration().Configure(modelBuilder.Entity<Stage>());
-            new BranchEntityConfiguration().Configure(modelBuilder.Entity<Branch>());
-            new ProjectEntityConfiguration().Configure(modelBuilder.Entity<Project>());
-            new ProjectBranchEntityConfiguration().Configure(modelBuilder.Entity<ProjectBranch>());
-            new ProjectBranchRoleEntityConfiguration().Configure(modelBuilder.Entity<ProjectBranchRole>());
             new DesignerEntityConfiguration().Configure(modelBuilder.Entity<Designer>());
-            new LicenseEntityConfiguration().Configure(modelBuilder.Entity<License>());
-            new LicenseBranchEntityConfiguration().Configure(modelBuilder.Entity<BranchLicense>());
-            new CertificateEntityConfiguration().Configure(modelBuilder.Entity<Certificate>());
             new InvestorEntityConfiguration().Configure(modelBuilder.Entity<Investor>());
+            new StageEntityConfiguration().Configure(modelBuilder.Entity<Stage>());
+            new PartEntityConfiguration().Configure(modelBuilder.Entity<Part>());
+            new BranchEntityConfiguration().Configure(modelBuilder.Entity<Branch>());
+            new RoleEntityConfiguration().Configure(modelBuilder.Entity<Role>());
+            new LicenseEntityConfiguration().Configure(modelBuilder.Entity<License>());
+            new CertificateEntityConfiguration().Configure(modelBuilder.Entity<Certificate>());
+            new ProjectEntityConfiguration().Configure(modelBuilder.Entity<Project>());
+            new DictionaryEntityConfiguration().Configure(modelBuilder.Entity<AppDictionary>());
+
+            new ProjectPartEntityConfiguration().Configure(modelBuilder.Entity<ProjectPart>());
+            new PartBranchEntityConfiguration().Configure(modelBuilder.Entity<PartBranch>());
+            new BranchRoleEntityConfiguration().Configure(modelBuilder.Entity<BranchRole>());
+            new BranchLicenseEntityConfiguration().Configure(modelBuilder.Entity<BranchLicense>());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -4,20 +4,20 @@ using SODP.Model;
 
 namespace SODP.DataAccess.Configurations
 {
-    public class StageEntityConfiguration : IEntityTypeConfiguration<Stage>
+    public class PartEntityConfiguration : IEntityTypeConfiguration<Part>
     {
-        public void Configure(EntityTypeBuilder<Stage> builder)
+        public void Configure(EntityTypeBuilder<Part> builder)
         {
-			builder.Property(x => x.Order)
+            builder.Property(x => x.Order)
                .HasColumnType("int")
                .HasDefaultValue(1)
                .IsRequired();
 
-			builder.Property(p => p.Sign)
+            builder.Property(x => x.Sign)
                 .HasColumnType("nvarchar(10)")
                 .IsRequired();
 
-            builder.Property(p => p.Name)
+            builder.Property(x => x.Name)
                 .HasColumnType("nvarchar(50)")
                 .IsRequired();
 
@@ -28,7 +28,10 @@ namespace SODP.DataAccess.Configurations
 
 			builder.HasKey(u => u.Id);
 
-			builder.ToTable("Stages");
+			builder.HasIndex(x => new { x.Order })
+                .HasName("PartIX_Order");
+
+            builder.ToTable("Parts");
         }
     }
 }

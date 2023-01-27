@@ -4,11 +4,11 @@ using SODP.Model;
 
 namespace SODP.DataAccess.Configurations
 {
-    public class ProjectBranchRoleEntityConfiguration : IEntityTypeConfiguration<ProjectBranchRole>
+    public class BranchRoleEntityConfiguration : IEntityTypeConfiguration<BranchRole>
     {
-        public void Configure(EntityTypeBuilder<ProjectBranchRole> builder)
+        public void Configure(EntityTypeBuilder<BranchRole> builder)
         {
-            builder.Property(x => x.ProjectBranchId)
+            builder.Property(x => x.PartBranchId)
                 .IsRequired();
 
             builder.Property(x => x.Role)
@@ -18,11 +18,11 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.HasIndex(x => x.LicenseId)
-                .HasName("ProjectBranchRolesIX_License");
+                .HasName("BranchRolesIX_License");
 
-            builder.ToTable("ProjectBranchRoles");
+            builder.ToTable("BranchRoles");
 
-            builder.HasKey(x => new { x.ProjectBranchId, x.Role, x.LicenseId });
+            builder.HasKey(x => new { x.PartBranchId, x.Role, x.LicenseId });
         }
     }
 }

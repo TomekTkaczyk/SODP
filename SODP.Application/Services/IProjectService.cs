@@ -9,7 +9,7 @@ namespace SODP.Application.Services
     {
         Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO project);
         Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status, int currentPage, int pageSize, string searchString);
-        Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id);
+        Task<ServiceResponse<ProjectDTO>> GetWithPartsAsync(int id);
         Task<ServiceResponse> RestoreAsync(int id);
         Task<ServiceResponse> ArchiveAsync(int id);
         Task<ServiceResponse> SetInvestorAsync(int id, string investor);

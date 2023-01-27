@@ -181,7 +181,14 @@ namespace SODP.DataAccess.Migrations
                 oldClrType: typeof(bool),
                 oldType: "tinyint(1)");
 
-            migrationBuilder.AddColumn<DateTime>(
+			migrationBuilder.AddColumn<int>(
+				name: "Order",
+				table: "Stages",
+				type: "int",
+				nullable: false,
+				defaultValue: 1);
+
+			migrationBuilder.AddColumn<DateTime>(
                 name: "DevelopmentDate",
                 table: "Projects",
                 nullable: true);
@@ -235,7 +242,25 @@ namespace SODP.DataAccess.Migrations
                     table.PrimaryKey("PK_Investors", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
+			migrationBuilder.CreateTable(
+	            name: "Parts",
+	            columns: table => new
+	            {
+		            Id = table.Column<int>(nullable: false)
+			            .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+		            CreateTimeStamp = table.Column<DateTime>(nullable: false),
+		            ModifyTimeStamp = table.Column<DateTime>(nullable: false),
+		            Order = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+		            Sign = table.Column<string>(type: "nvarchar(10)", nullable: false),
+		            Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
+		            ActiveStatus = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: true)
+	            },
+	            constraints: table =>
+	            {
+		            table.PrimaryKey("PK_Parts", x => x.Id);
+	            });
+
+			migrationBuilder.CreateTable(
                 name: "ProjectPart",
                 columns: table => new
                 {
@@ -392,11 +417,18 @@ namespace SODP.DataAccess.Migrations
             migrationBuilder.DropTable(
                 name: "ProjectPart");
 
-            migrationBuilder.DropColumn(
+			migrationBuilder.DropTable(
+            	name: "Parts");
+
+			migrationBuilder.DropColumn(
                 name: "DevelopmentDate",
                 table: "Projects");
 
-            migrationBuilder.RenameIndex(
+			migrationBuilder.DropColumn(
+                name: "Order",
+                table: "Stages");
+
+			migrationBuilder.RenameIndex(
                 name: "UsersIX_UserName",
                 table: "Users",
                 newName: "IX_UserName");

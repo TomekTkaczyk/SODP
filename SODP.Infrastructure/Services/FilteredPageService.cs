@@ -9,7 +9,7 @@ using SODP.Shared.Response;
 
 namespace SODP.Infrastructure.Services
 {
-    public abstract class FilteredPageService<TEntity, TDto> : AppService<TEntity, TDto> where TEntity : BaseEntity where TDto : BaseDTO
+    public abstract class FilteredPageService<TEntity, TDto> : AppService<TEntity, TDto> where TEntity : BaseEntity, new() where TDto : BaseDTO
     {
         protected readonly IActiveStatusService<TEntity> _activeStatusService;
 

@@ -4,7 +4,7 @@ using SODP.Model;
 
 namespace SODP.DataAccess.Configurations
 {
-    public class LicenseBranchEntityConfiguration : IEntityTypeConfiguration<BranchLicense>
+    public class BranchLicenseEntityConfiguration : IEntityTypeConfiguration<BranchLicense>
     {
         public void Configure(EntityTypeBuilder<BranchLicense> builder)
         {
@@ -15,12 +15,12 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.HasIndex(x => x.BranchId)
-                .HasName("LicenseBranchesIX_Branch");
+                .HasName("BranchLicensesIX_Branch");
 
             builder.HasIndex(x => x.LicenseId)
-                .HasName("LicenseBranchesIX_License");
+                .HasName("BranchLicensesIX_License");
 
-            builder.ToTable("LicenseBranches");
+            builder.ToTable("BranchLicenses");
 
             builder.HasKey(x => new {x.LicenseId, x.BranchId });
 

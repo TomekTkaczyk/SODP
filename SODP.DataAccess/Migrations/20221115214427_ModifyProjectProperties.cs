@@ -352,57 +352,6 @@ namespace SODP.DataAccess.Migrations
                 name: "DesignerLicenseId",
                 table: "ProjectBranches");
 
-            //migrationBuilder.RenameColumn(
-            //    name: "DesignerLicenseId",
-            //    newName: "DesignerLicenseId",
-            //    table: "ProjectBranches");
-
-            //migrationBuilder.RenameColumn(
-            //    name: "CheckingLicenseId",
-            //    newName: "CheckingLicenseId",
-            //    table: "ProjectBranches");
-
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_Checking",
-            //    table: "ProjectBranches",
-            //    column: "CheckingLicenseId");
-
-            //migrationBuilder.CreateIndex(
-            //    name: "IX_Designer",
-            //    table: "ProjectBranches",
-            //    column: "DesignerLicenseId");
-
-            //migrationBuilder.AddForeignKey(
-            //    name: "FK_ProjectBranches_Licenses_CheckingLicenseId",
-            //    table: "ProjectBranches",
-            //    column: "CheckingLicenseId",
-            //    principalTable: "Licenses",
-            //    principalColumn: "Id",
-            //    onDelete: ReferentialAction.Restrict);
-
-            //migrationBuilder.AddForeignKey(
-            //    name: "FK_ProjectBranches_Licenses_DesignerLicenseId",
-            //    table: "ProjectBranches",
-            //    column: "DesignerLicenseId",
-            //    principalTable: "Licenses",
-            //    principalColumn: "Id",
-            //    onDelete: ReferentialAction.Restrict);
-
-            //migrationBuilder.AddForeignKey(
-            //    name: "FK_Project",
-            //    table: "ProjectBranches",
-            //    column: "ProjectId",
-            //    principalTable: "Projects",
-            //    principalColumn: "Id",
-            //    onDelete: ReferentialAction.Cascade);
-
-            //migrationBuilder.AddForeignKey(
-            //   name: "FK_Branch",
-            //   table: "ProjectBranches",
-            //   column: "BranchId",
-            //   principalTable: "Branches",
-            //   principalColumn: "Id",
-            //   onDelete: ReferentialAction.Cascade);
             #endregion
 
             #region ProjectBranchRoles

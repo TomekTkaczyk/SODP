@@ -2,17 +2,15 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SODP.DataAccess;
 
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    [Migration("20230110174800_AddDictionary")]
-    partial class AddDictionary
+    partial class SODPDBContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,7 +127,7 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(true);
 
-                    b.Property<int?>("ParentId")
+                    b.Property<int?>("AppDictionaryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateTimeStamp")
@@ -141,6 +139,9 @@ namespace SODP.DataAccess.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Sign")
                         .IsRequired()

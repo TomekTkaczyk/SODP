@@ -24,7 +24,7 @@ namespace SODP.UI.Pages.Shared
 
         protected virtual async Task<ProjectVM> GetProjectAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/branches");
+            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/parts");
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
             if (response.Success)
@@ -46,10 +46,11 @@ namespace SODP.UI.Pages.Shared
                     DevelopmentDate = response.Data.DevelopmentDate == null ? null : ((DateTime)response.Data.DevelopmentDate).Date.ToShortDateString(),
                     Status = response.Data.Status,
                 };
-                project.AvailableBranches = new AvailableBranchesVM
-                {
-                    Items = await GetBranchesAsync(project.ProjectBranches.Branches),
-                };
+
+                //project.AvailableBranches = new AvailableBranchesVM
+                //{
+                //    Items = await GetBranchesAsync(project.ProjectBranches.Branches),
+                //};
 
                 return project;
             }

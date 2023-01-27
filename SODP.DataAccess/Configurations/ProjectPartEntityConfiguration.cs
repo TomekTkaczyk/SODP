@@ -7,27 +7,27 @@ using System.Text;
 
 namespace SODP.DataAccess.Configurations
 {
-    public class ProjectBranchEntityConfiguration : IEntityTypeConfiguration<ProjectBranch>
+    public class ProjectPartEntityConfiguration : IEntityTypeConfiguration<ProjectPart>
     {
-        public void Configure(EntityTypeBuilder<ProjectBranch> builder)
+        public void Configure(EntityTypeBuilder<ProjectPart> builder)
         {
             builder.Property(x => x.ProjectId)
                 .IsRequired();
 
-            builder.Property(x => x.BranchId)
+            builder.Property(x => x.PartId)
                 .IsRequired();
 
             builder.HasIndex(x => x.ProjectId)
-                .HasName("ProjectBranchesIX_Project");
+                .HasName("ProjectPartIX_Project");
 
-            builder.HasIndex(x => x.BranchId)
-                .HasName("ProjectBranchesIX_Branch");
+            builder.HasIndex(x => x.PartId)
+                .HasName("ProjectPartIX_Part");
 
             builder.ToTable("ProjectBranches");
 
-            builder.HasMany(x => x.Roles)
-                .WithOne(y => y.ProjectBranch)
-                .HasForeignKey(z => z.ProjectBranchId);
+            builder.HasMany(x => x.Branches)
+                .WithOne(y => y.ProjectPart)
+                .HasForeignKey(z => z.ProjectPartId);
                 //.HasConstraintName("FK_ProjectBranch");
         }
     }

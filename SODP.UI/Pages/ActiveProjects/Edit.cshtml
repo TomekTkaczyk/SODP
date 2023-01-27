@@ -114,7 +114,7 @@
 		<br />
 
 		<div class="col-lg-7 form-group">
-			@for (int i = 0; i < Model.Project.ProjectBranches.Branches.Count; i++)
+@*			@for (int i = 0; i < Model.Project.ProjectBranches.Branches.Count; i++)
 			{
 				<input asp-for="Project.ProjectBranches.Branches[i].Branch.Id" type="hidden">
 				<input asp-for="Project.ProjectBranches.Branches[i].Branch.Name" type="hidden">
@@ -147,11 +147,11 @@
 					</div>
 				}
 			}
-		</div>
+*@		</div>
 
 		<br />
 
-		@if (Model.Project.AvailableBranches.Items.Count > 0)
+@*		@if (Model.Project.AvailableBranches.Items.Count > 0)
 		{
 			<div class="col col-lg-7 form-group">
 				<div class="row align-middle">
@@ -165,7 +165,7 @@
 				</div>
 			</div>
 		}
-
+*@
 		<div class="row">
 			<div class="col-lg-7">
 				<partial name="_SubmitAndBackButtonPartial" />

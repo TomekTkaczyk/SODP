@@ -5,6 +5,16 @@ namespace SODP.Model;
 
 public class Part : BaseEntity, IActiveStatus
 {
+	public Part() : this("", "") { }
+
+	public Part(string sign) : this(sign, "") { }
+
+	public Part(string sign = "", string name = "")
+    {
+        Sign = sign;
+        Name = name;
+    }
+
     public int Order { get; set; }
     public string Sign { get; set; }
     public string Name { get; set; }
