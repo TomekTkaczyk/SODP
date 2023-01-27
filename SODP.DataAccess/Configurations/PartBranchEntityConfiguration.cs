@@ -11,7 +11,11 @@ namespace SODP.DataAccess.Configurations
             builder.Property(x => x.ProjectPartId)
                 .IsRequired();
 
-            builder.ToTable("PartBranches");
+			builder.HasIndex(x => new { x.ProjectPartId })
+            	.HasName("PartBranchesIX_ProjectPartId");
+
+
+			builder.ToTable("PartBranches");
         }
     }
 }

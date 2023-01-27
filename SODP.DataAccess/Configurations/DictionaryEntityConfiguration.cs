@@ -18,10 +18,13 @@ namespace SODP.DataAccess.Configurations
 
 			builder.HasKey(u => u.Id);
 
-            builder.HasMany(x => x.Children)
+			builder.HasIndex(x => new { x.ParentId })
+				.HasName("DictioanryIX_ParentId");
+
+			builder.HasMany(x => x.Children)
 				.WithOne(y => y.Parent)
-				.HasForeignKey(z => z.ParentId)
-                .HasConstraintName("FK_Dictionary_Dictionary_ParentId");
+				.HasForeignKey(z => z.ParentId);
+                //.HasConstraintName("FK_Dictionary_Dictionary_ParentId");
 
             builder.ToTable("Dictionary");
 		}
