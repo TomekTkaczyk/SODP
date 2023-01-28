@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SODP.Shared.DTO
 {
-    public class PartBranchRoleDTO : BaseDTO
+    public class BranchRoleDTO : BaseDTO
     {
         public int PartBranchId { get; set; }
 

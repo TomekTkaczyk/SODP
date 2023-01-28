@@ -8,7 +8,7 @@ namespace SODP.Shared.DTO
     {
         public PartDTO Part { get; set; }
 
-        public ICollection<PartBranchRoleDTO> Roles { get; set; }
+        public ICollection<BranchRoleDTO> Roles { get; set; }
 
     }
 }

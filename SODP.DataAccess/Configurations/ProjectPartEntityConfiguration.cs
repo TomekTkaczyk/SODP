@@ -14,14 +14,16 @@ namespace SODP.DataAccess.Configurations
             builder.Property(x => x.ProjectId)
                 .IsRequired();
 
-            builder.Property(x => x.PartId)
-                .IsRequired();
+			builder.Property(x => x.Sign)
+				.HasColumnType("nvarchar(10)")
+				.IsRequired();
 
-            builder.HasIndex(x => x.ProjectId)
+			builder.Property(x => x.Name)
+				.HasColumnType("nvarchar(50)")
+				.IsRequired();
+
+			builder.HasIndex(x => x.ProjectId)
                 .HasName("ProjectPartsIX_Project");
-
-            builder.HasIndex(x => x.PartId)
-                .HasName("ProjectPartsIX_Part");
 
             builder.ToTable("ProjectParts");
 

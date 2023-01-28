@@ -113,6 +113,57 @@
 
 		<br />
 
+        @if (Model.Project.Parts.Count > 0)
+        {
+            <div class="col-lg-7" id="projectsAccordion" class="accordion">
+                @foreach (var item in Model.Project.Parts)
+                {
+                    <div class="button card border-light">
+                        <div class="card-header border-light p-0 d-flex align-items-center" style="background-color:white" id="card-header-@item.Id">
+							<div class="col font-weight-bold clickable"
+								 onclick="accordionCollapse(@item.Id)"
+								 id="card-head-@item.Id"
+								 data-toggle="collapse"
+								 data-target="#collapse-@item.Id"
+								 aria-expanded="false"
+								 aria-controls="collapse-@item.Id">
+								@item.Sign @item.Name
+							</div>
+							<div class="colgroup justify-content-end mr-2">
+								@if (User.IsInRole("ProjectManager"))
+								{
+									<a name="additionalBtn"
+									   id="editProject-@item.Id"
+									   onclick='Edit(@item.Id)'
+									   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+									   data-toggle="tooltip"
+									   data-placement="top"
+									   title="Edycja">
+										<i class="fas fa-edit fa-lg text-success"></i>
+									</a>
+									<a onclick='Delete("/api/v0_01/projects/@item.Id","Usinięcie projektu nie może być cofnięte")'
+									   class="btn"
+									   data-toggle="tooltip"
+									   data-placement="top"
+									   title="Usuń projekt">
+										<i class="fas fa-times fa-lg text-danger"></i>
+									</a>
+								}
+							</div>
+						</div>
+                    </div>
+					<div id="collapse-@item.Id"
+						 class="collapse hide"
+						 aria-labelledby="heading-@item.Id"
+						 data-parent="#projectsAccordion">
+						<div class="card-body" id="project-@item.Id">
+							Coś poszło nie tak z ładowaniem szczegółów
+						</div>
+					</div>
+                }
+            </div>
+        }
+
 		<div class="col-lg-7 form-group">
 @*			@for (int i = 0; i < Model.Project.ProjectBranches.Branches.Count; i++)
 			{

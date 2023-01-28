@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SODP.Shared.DTO;
+using SODP.UI.Pages.ActiveProjects.ViewModels;
 using System;
 
 namespace SODP.UI.Mappers
@@ -9,6 +10,10 @@ namespace SODP.UI.Mappers
     {
         public AutoMapperProfile()
         {
+            CreateMap<ProjectPartDTO, PartVM>()
+                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
+
             CreateMap<ProjectBranchDTO, Pages.ActiveProjects.ViewModels.ProjectBranchVM>()
                 .ForMember(dest => dest.Branch, act => act.Ignore())
                 .ForMember(dest => dest.Roles, act => act.Ignore());
@@ -30,8 +35,8 @@ namespace SODP.UI.Mappers
                 .ForMember(dest => dest.StageSign, opt => opt.MapFrom(x => x.Stage.Sign))
                 .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Name))
                 .ForMember(dest => dest.DevelopmentDate, opt => opt.MapFrom(x => x.DevelopmentDate == null ? null : ((DateTime)x.DevelopmentDate).Date.ToShortDateString()))
-                .ForMember(dest => dest.ProjectBranches, opt => opt.MapFrom(x => new Pages.ActiveProjects.ViewModels.BranchesVM()))
-                .ForMember(dest => dest.AvailableBranches, act => act.Ignore())
+                //.ForMember(dest => dest ProjectBranches, opt => opt.MapFrom(x => new Pages.ActiveProjects.ViewModels.BranchesVM()))
+                //.ForMember(dest => dest.AvailableBranches, act => act.Ignore())
                 .PreserveReferences();
 
 			CreateMap<ProjectDTO, Pages.ArchiveProjects.ViewModels.ProjectVM>()

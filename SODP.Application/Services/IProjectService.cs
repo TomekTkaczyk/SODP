@@ -9,17 +9,16 @@ namespace SODP.Application.Services
     {
         Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO project);
         Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status, int currentPage, int pageSize, string searchString);
-        Task<ServiceResponse<ProjectDTO>> GetWithPartsAsync(int id);
+        Task<ServiceResponse<ProjectDTO>> GetWithDetailsAsync(int id);
         Task<ServiceResponse> RestoreAsync(int id);
         Task<ServiceResponse> ArchiveAsync(int id);
         Task<ServiceResponse> SetInvestorAsync(int id, string investor);
-		Task<ServiceResponse> AddPartAsync(int id, int partId);
+		Task<ServiceResponse> AddPartAsync(int id, PartDTO part);
 		Task<ServiceResponse> DeletePartAsync(int id, int partId);
-        Task<ServicePageResponse<ProjectPartDTO>> GetPartsAsync(int id);
 
-        //      Task<ServicePageResponse<ProjectBranchRoleDTO>> GetBranchRolesAsync(int id, int branchId);
-        //      Task<ServiceResponse> AddBranchAsync(int id, int branchId);
-        //      Task<ServiceResponse> DeleteBranchAsync(int id, int branchId);
-        //      Task<ServiceResponse> SetBranchTechnicalRoleAsync(TechnicalRoleDTO technicalRole);
-    }
+		//      Task<ServicePageResponse<ProjectBranchRoleDTO>> GetBranchRolesAsync(int id, int branchId);
+		//      Task<ServiceResponse> AddBranchAsync(int id, int branchId);
+		//      Task<ServiceResponse> DeleteBranchAsync(int id, int branchId);
+		//      Task<ServiceResponse> SetBranchTechnicalRoleAsync(TechnicalRoleDTO technicalRole);
+	}
 }

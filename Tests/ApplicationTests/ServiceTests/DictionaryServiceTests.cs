@@ -142,7 +142,7 @@ namespace Tests.ApplicationTests.ServiceTests
          }
 
         [Fact]
-        public async Task when_call_GetPageAsync_with_specyfied_active_without_master_with_search_should_return_some_master_elements()
+        public void when_call_GetPageAsync_with_specyfied_active_without_master_with_search_should_return_some_master_elements()
         {
             //CreateFakeDictionaryData();
             //ServicePageResponse<DictionaryDTO> response;
@@ -171,7 +171,7 @@ namespace Tests.ApplicationTests.ServiceTests
         }
 
         [Fact]
-        public async Task when_call_GetPageAsync_with_specyfied_active_with_master_with_search_should_return_some_master_elements()
+        public void when_call_GetPageAsync_with_specyfied_active_with_master_with_search_should_return_some_master_elements()
         {
             //CreateFakeDictionaryData();
             //ServicePageResponse<DictionaryDTO> response;

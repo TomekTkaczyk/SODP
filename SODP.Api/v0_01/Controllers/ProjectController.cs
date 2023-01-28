@@ -70,13 +70,13 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
-        [HttpGet("{id}/parts")]
+        [HttpGet("{id}/details")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetWithPartsAsync(int id)
+        public async Task<IActionResult> GetWithDetailsAsync(int id)
         {
-            return Ok(await ((IProjectService)_service).GetWithPartsAsync(id));
+            return Ok(await ((IProjectService)_service).GetWithDetailsAsync(id));
         }
 
 
@@ -101,6 +101,18 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
+        [HttpPut("{id}/part")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> AddPartAsync(int id, PartDTO part)
+        {
+            return Ok(await _service.AddPartAsync(id, part));
+        }
+
+
+
+
         //[HttpGet("{id}/branches/{branchId}")]
         //[ProducesResponseType(StatusCodes.Status200OK)]
         //[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -108,16 +120,6 @@ namespace SODP.Api.v0_01.Controllers
         //public async Task<IActionResult> GetBranchRolesesAsync(int id, int branchId)
         //{                                               
         //    return Ok(await _service.GetBranchRolesAsync(id, branchId));
-        //}
-
-
-        //[HttpPut("{id}/branches/{branchId}")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //public async Task<IActionResult> AddBranchAsync(int id, int branchId)
-        //{
-        //    return Ok(await _service.AddBranchAsync(id, branchId));
         //}
 
 

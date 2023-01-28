@@ -8,6 +8,6 @@ public class PartBranch : BaseEntity
 
     public virtual ProjectPart ProjectPart { get; set; }
 
-    public ICollection<BranchRole> Branches { get; set; }
+    public ICollection<BranchRole> Roles { get; set; }
 
 }

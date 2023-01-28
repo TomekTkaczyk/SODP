@@ -99,35 +99,34 @@ namespace SODP.Application.Services
 
             return await base.GetAsync(id);
         }
-         
 
-        //public async Task<ServiceResponse<ProjectDTO>> GetWithBranchesAsync(int id)
-        //{
-        //    var serviceResponse = new ServiceResponse<ProjectDTO>();
-        //    try
-        //    {
-        //        var project = await _context.Projects
-        //            .Include(s => s.Stage)
-        //            .Include(s => s.Branches)
-        //            .ThenInclude(s => s.Branch)
-        //            .Include(s => s.Branches)
-        //            .ThenInclude(s => s.Roles)
-        //            .ThenInclude(s => s.License)
-        //            .ThenInclude(s => s.Designer)
-        //            .FirstOrDefaultAsync(x => x.Id == id);
-        //        if (project == null)
-        //        {
-        //            serviceResponse.SetError($"Błąd: Projekt Id:{id} nie odnaleziony.", 404);
-        //        }
-        //        serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse.SetError(ex.Message, 500);
-        //    }
 
-        //    return serviceResponse;
-        //}
+        public async Task<ServiceResponse<ProjectDTO>> GetWithDetailsAsync(int id)
+        {
+            var serviceResponse = new ServiceResponse<ProjectDTO>();
+            try
+            {
+                var project = await _context.Projects
+                    .Include(s => s.Stage)
+                    .Include(s => s.Parts)
+                    .ThenInclude(s => s.Branches)
+                    .ThenInclude(s => s.Roles)
+                    .ThenInclude(s => s.License)
+                    .ThenInclude(s => s.Designer)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+                if (project == null)
+                {
+                    serviceResponse.SetError($"Error: Project Id:{id} not found.", 404);
+                }
+                serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message, 500);
+            }
+
+            return serviceResponse;
+        }
 
 
         public async Task<ServiceResponse> UpdateAsync(ProjectDTO updateProject)
@@ -277,7 +276,7 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServicePageResponse<ProjectBranchRoleDTO>> GetBranchRolesAsync(int id, int branchId)
+        public ServicePageResponse<ProjectBranchRoleDTO> GetBranchRolesAsync(int id, int branchId)
         {
             var serviceResponse = new ServicePageResponse<ProjectBranchRoleDTO>();
             try 
@@ -338,7 +337,7 @@ namespace SODP.Application.Services
         //}
 
 
-        public async Task<ServiceResponse> DeleteBranchAsync(int id, int branchId)
+        public ServiceResponse DeleteBranchAsync(int id, int branchId)
         {
             var serviceResponse = new ServiceResponse();
             try
@@ -356,7 +355,7 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServiceResponse> SetBranchTechnicalRoleAsync(TechnicalRoleDTO technicalRole)
+        public ServiceResponse SetBranchTechnicalRoleAsync(TechnicalRoleDTO technicalRole)
         {
             var serviceResponse = new ServiceResponse();
             try
@@ -437,43 +436,43 @@ namespace SODP.Application.Services
 		}
 
 
-		public Task<ServiceResponse> AddPartAsync(int id, int partId)
+		public async Task<ServiceResponse> AddPartAsync(int id, PartDTO part)
 		{
-			throw new NotImplementedException();
+			var response = new ServiceResponse();
+            try
+            {
+				var project = await _query.Include(x => x.Parts).FirstOrDefaultAsync(x => x.Id == id);
+				if (project == null)
+				{
+					response.SetError($"Error: Part '{id}' not found.", 404);
+					return response;
+				}
+
+				if (project.Parts.FirstOrDefault(x => x.Sign == part.Sign) == null)
+				{
+					_context.ProjectPart.Add(
+						new ProjectPart()
+						{
+							Project = project,
+							Sign = part.Sign,
+							Name = part.Name,
+						});
+				}
+
+				_context.Entry(project).State = EntityState.Modified;
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+            {
+                response.SetError($"Error: {ex.Message}", 500);
+            }
+
+            return response;
 		}
 
 		public Task<ServiceResponse> DeletePartAsync(int id, int partId)
 		{
 			throw new NotImplementedException();
 		}
-
-		public Task<ServicePageResponse<ProjectPartDTO>> GetPartsAsync(int id)
-		{
-			throw new NotImplementedException();
-		}
-
-		public async Task<ServiceResponse<ProjectDTO>> GetWithPartsAsync(int id)
-		{
-            var serviceResponse = new ServiceResponse<ProjectDTO>();
-            try
-            {
-                var project = await _context.Projects
-                    .Include(s => s.Stage)
-                    .Include(s => s.Parts)
-                    //.ThenInclude(s => s.Branches)
-                    .FirstOrDefaultAsync(x => x.Id == id);
-                if (project == null)
-                {
-                    serviceResponse.SetError($"Error: Project Id:{id} not found", 404);
-                }
-                serviceResponse.SetData(_mapper.Map<ProjectDTO>(project));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
 	}
 }

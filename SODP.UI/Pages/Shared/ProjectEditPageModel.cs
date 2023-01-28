@@ -24,12 +24,13 @@ namespace SODP.UI.Pages.Shared
 
         protected virtual async Task<ProjectVM> GetProjectAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/parts");
+            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
             if (response.Success)
             {
-                var project = new ProjectVM
+                var parts = _mapper.Map<ICollection<PartVM>>(response.Data.Parts).ToList();
+				var project = new ProjectVM
                 {
                     Id = response.Data.Id,
                     Number = response.Data.Number,
@@ -45,12 +46,10 @@ namespace SODP.UI.Pages.Shared
                     Description = response.Data.Description,
                     DevelopmentDate = response.Data.DevelopmentDate == null ? null : ((DateTime)response.Data.DevelopmentDate).Date.ToShortDateString(),
                     Status = response.Data.Status,
+                    BuildingPermit = response.Data.BuildingPermit,
+                    Parts = parts,
+                    AvailableParts = await GetPartsAsync(parts)
                 };
-
-                //project.AvailableBranches = new AvailableBranchesVM
-                //{
-                //    Items = await GetBranchesAsync(project.ProjectBranches.Branches),
-                //};
 
                 return project;
             }
@@ -69,19 +68,41 @@ namespace SODP.UI.Pages.Shared
             }
         }
 
-        private async Task<List<SelectListItem>> GetBranchesAsync(IList<ProjectBranchVM> exclusionList)
-        {
-            var apiResponse = await _apiProvider.GetAsync($"branches?active=true");
-            var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
+		private async Task<IList<PartVM>> GetPartsAsync(IList<PartVM> exclusionList)
+		{
+			var apiResponse = await _apiProvider.GetAsync($"parts?active=true");
+			var response = await _apiProvider.GetContent<ServicePageResponse<ProjectPartDTO>>(apiResponse);
 
-            return responseBranch.Data.Collection
-                .Where(y => exclusionList.FirstOrDefault(z => z.Branch.Id.ToString() == y.Id.ToString()) == null)
-                .OrderBy(x => x.Order)
-                .Select(x => new SelectListItem
+            return response.Data.Collection
+                .Where(y => exclusionList.FirstOrDefault(z => z.Sign == y.Sign) == null)
+                .OrderBy(x => x.Sign)
+                .Select(x => new PartVM
                 {
-                    Value = x.Id.ToString(),
-                    Text = $"{x.Name.Trim()}"
+                    Id= x.Id,
+                    Sign = x.Sign,
+                    Name = x.Name,
                 }).ToList();
-        }
+
+				//.Select(x => new SelectListItem
+				//{
+				//	Value = x.Sign,
+				//	Text = $"{x.Name.Trim()}"
+				//}).ToList();
+		}
+
+		//private async Task<List<SelectListItem>> GetPartsAsync(IList<PartVM> exclusionList)
+  //      {
+  //          var apiResponse = await _apiProvider.GetAsync($"parts?active=true");
+  //          var responseBranch = await _apiProvider.GetContent<ServicePageResponse<PartDTO>>(apiResponse);
+
+  //          return responseBranch.Data.Collection
+  //              .Where(y => exclusionList.FirstOrDefault(z => z.Sign == y.Sign) == null)
+  //              .OrderBy(x => x.Sign)
+  //              .Select(x => new SelectListItem
+  //              {
+  //                  Value = x.Sign,
+  //                  Text = $"{x.Name.Trim()}"
+  //              }).ToList();
+  //      }
     }
 }
