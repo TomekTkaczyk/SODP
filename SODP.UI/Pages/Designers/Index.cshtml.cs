@@ -56,20 +56,19 @@ namespace SODP.UI.Pages.Designers
 
         public async Task<PartialViewResult> OnGetEditDesignerAsync(int? id)
         {
+            var model = new DesignerVM();
             if (id != null)
             {
                 var apiResponse = await _apiProvider.GetAsync($"designers/{id}");
-                if (apiResponse.IsSuccessStatusCode)
+                if (!apiResponse.IsSuccessStatusCode)
                 {
-                    var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
-
-                    return GetPartialView(response.Data.ToViewModel(), editDesignerPartialViewName);
+				    RedirectToPage("Errors/404");
                 }
-
-				RedirectToPage("Errors/404");
+                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
+                model = response.Data.ToViewModel();
 			}
 
-			return GetPartialView(new DesignerVM(), editDesignerPartialViewName);
+			return GetPartialView(model, editDesignerPartialViewName);
         }
 
         public async Task<PartialViewResult> OnPostEditDesignerAsync(DesignerVM designer)

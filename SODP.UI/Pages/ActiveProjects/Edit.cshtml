@@ -34,135 +34,187 @@
 
 		<br />
 
-		<div class="form-group row">
-			<div class="col-lg-7">
-				<label>Nazwa projektu:</label>
-				<input asp-for="Project.Name" class="form-control" placeholder="Nazwa projektu" />
-				<span asp-validation-for="Project.Name" style="font-size:14px" class="text-danger"></span>
-			</div>
-		</div>
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Szczegóły</a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="parts-tab" data-toggle="tab" href="#parts" role="tab" aria-controls="parts" aria-selected="false">Części opracowania</a>
+			</li>
+		</ul>
 
-		<div class="form-group row">
-			<div class="col-lg-7">
-				<label>Nazwa zamierzenia budowlanego:</label>
-				<textarea asp-for="Project.Title" class="form-control" placeholder="Nazwa zamierzenia budowlanego" rows="4"></textarea>
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<div class="col-lg-7">
-				<label>Adres:</label>
-				<textarea asp-for="Project.Address" class="form-control" placeholder="Adres inwestycji" rows="3"></textarea>
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<div class="col-lg-7">
-				<label>Jednostka ewidencyjna:</label>
-				<input asp-for="Project.LocationUnit" class="form-control" placeholder="Jednostka ewidencyjna" />
-				<span asp-validation-for="Project.LocationUnit" style="font-size:14px" class="text-danger"></span>
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<div class="col-lg-7">
-				<label>Kategoria obiektu budowlanego:</label>
-				<input asp-for="Project.BuildingCategory" class="form-control" placeholder="Kategoria obiektu budowlanego" />
-				<span asp-validation-for="Project.BuildingCategory" style="font-size:14px" class="text-danger"></span>
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<div class="col-lg-6">
-				<label>Inwestor:</label>
-				<textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor" rows="4"></textarea>
-			</div>
-			<div class="col-lg-1">
-				<button type="button"
-						class="col btn btn-info form-control text-white float-right h-100"
-						title="Pobierz inwestora z bazy"
-						data-toggle="ajax-modal"
-						data-url="@Url.Page("Edit","InvestorsList")&projectId=@Model.Project.Id">
-					...
-				</button>
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<div class="col-lg-7">
-				<label>Pozwolenie na budowę:</label>
-				<textarea asp-for="Project.BuildingPermit" class="form-control" placeholder="Nr pozwolenia na budowę" rows="2"></textarea>
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<div class="col-lg-7">
-				<label>Opis:</label>
-				<textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)" rows="2"></textarea>
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<div class="col-lg-7">
-				<label>Data opracowania:</label>
-				<div class="input-group-append" data-date-format="dd/mm/yyyy">
-					<input asp-for="Project.DevelopmentDate" class="form-control col" type="date"/>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+				<div class="form-group row">
+					<div class="col-lg-7">
+						<label>Nazwa projektu:</label>
+						<input asp-for="Project.Name" class="form-control" placeholder="Nazwa projektu" />
+						<span asp-validation-for="Project.Name" style="font-size:14px" class="text-danger"></span>
+					</div>
 				</div>
+
+				<div class="form-group row">
+					<div class="col-lg-7">
+						<label>Nazwa zamierzenia budowlanego:</label>
+						<textarea asp-for="Project.Title" class="form-control" placeholder="Nazwa zamierzenia budowlanego" rows="4"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-lg-7">
+						<label>Adres:</label>
+						<textarea asp-for="Project.Address" class="form-control" placeholder="Adres inwestycji" rows="3"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-lg-7">
+						<label>Jednostka ewidencyjna:</label>
+						<input asp-for="Project.LocationUnit" class="form-control" placeholder="Jednostka ewidencyjna" />
+						<span asp-validation-for="Project.LocationUnit" style="font-size:14px" class="text-danger"></span>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-lg-7">
+						<label>Kategoria obiektu budowlanego:</label>
+						<input asp-for="Project.BuildingCategory" class="form-control" placeholder="Kategoria obiektu budowlanego" />
+						<span asp-validation-for="Project.BuildingCategory" style="font-size:14px" class="text-danger"></span>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-lg-6">
+						<label>Inwestor:</label>
+						<textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor" rows="4"></textarea>
+					</div>
+					<div class="col-lg-1">
+						<button type="button"
+								class="col btn btn-info form-control text-white float-right h-100"
+								title="Pobierz inwestora z bazy"
+								data-toggle="ajax-modal"
+								data-url="@Url.Page("Edit","InvestorsList")&projectId=@Model.Project.Id">
+							...
+						</button>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-lg-7">
+						<label>Pozwolenie na budowę:</label>
+						<textarea asp-for="Project.BuildingPermit" class="form-control" placeholder="Nr pozwolenia na budowę" rows="2"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-lg-7">
+						<label>Opis:</label>
+						<textarea asp-for="Project.Description" class="form-control" placeholder="Opis (opcjonalny)" rows="2"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<div class="col-lg-7">
+						<label>Data opracowania:</label>
+						<div class="input-group-append" data-date-format="dd/mm/yyyy">
+							<input asp-for="Project.DevelopmentDate" class="form-control col" type="date" />
+						</div>
+					</div>
+				</div>
+
+				<br />
+
+				<div class="row">
+					<div class="col-lg-7">
+						<partial name="_SubmitAndBackButtonPartial" />
+					</div>
+				</div>
+
+				<br />
 			</div>
-		</div>
+			<div class="tab-pane fade show active" id="parts" role="tabpanel" aria-labelledby="parts-tab">
+				<div class="col-lg-7" style="padding:30px">
+					<div class="row align-middle">
+						<div class="col-4 p-0">
+							<button type="button"
+									class="btn btn-info form-control text-white float-right h-100"
+									title="Nowa część"
+									data-toggle="ajax-modal"
+									data-url="@Url.Page("Edit","NewProjectPart")&projectId=${projectId}">
+								<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa część
+							</button>
+						</div>
+						<a name="additionalBtn"
+						   id="addPartButton"
+						   onclick='AddNewPart(@Model.Project.Id)'
+						   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+						   data-toggle="tooltip"
+						   data-placement="top"
+						   title="Nowa część">
+							<i class="fas fa-plus fa-lg text-success"></i>
+						</a>
+					</div>
 
-		<br />
+					<br />
 
-        @if (Model.Project.Parts.Count > 0)
-        {
-            <div class="col-lg-7" id="projectsAccordion" class="accordion">
-                @foreach (var item in Model.Project.Parts)
-                {
-                    <div class="button card border-light">
-                        <div class="card-header border-light p-0 d-flex align-items-center" style="background-color:white" id="card-header-@item.Id">
-							<div class="col font-weight-bold clickable"
-								 onclick="accordionCollapse(@item.Id)"
-								 id="card-head-@item.Id"
-								 data-toggle="collapse"
-								 data-target="#collapse-@item.Id"
-								 aria-expanded="false"
-								 aria-controls="collapse-@item.Id">
-								@item.Sign @item.Name
-							</div>
-							<div class="colgroup justify-content-end mr-2">
-								@if (User.IsInRole("ProjectManager"))
-								{
-									<a name="additionalBtn"
+					@if (Model.Project.Parts.Count > 0)
+					{
+						<div id="projectsAccordion" class="accordion">
+							@foreach (var item in Model.Project.Parts)
+							{
+								<div class="button card border-light">
+									<div class="card-header border-light p-0 d-flex align-items-center" style="background-color:white" id="card-header-@item.Id">
+										<div class="col font-weight-bold clickable"
+									 onclick="accordionCollapse(@item.Id)"
+									 id="card-head-@item.Id"
+									 data-toggle="collapse"
+									 data-target="#collapse-@item.Id"
+									 aria-expanded="false"
+									 aria-controls="collapse-@item.Id">
+											@item.Sign @item.Name
+										</div>
+										<div class="colgroup justify-content-end mr-2">
+											@if (User.IsInRole("ProjectManager"))
+											{
+												<a name="additionalBtn"
 									   id="editProject-@item.Id"
 									   onclick='Edit(@item.Id)'
 									   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
 									   data-toggle="tooltip"
 									   data-placement="top"
 									   title="Edycja">
-										<i class="fas fa-edit fa-lg text-success"></i>
-									</a>
-									<a onclick='Delete("/api/v0_01/projects/@item.Id","Usinięcie projektu nie może być cofnięte")'
+													<i class="fas fa-edit fa-lg text-success"></i>
+												</a>
+												<a onclick='Delete("/api/v0_01/projects/part/@item.Id","Usunięcie części nie może być cofnięte")'
 									   class="btn"
 									   data-toggle="tooltip"
 									   data-placement="top"
-									   title="Usuń projekt">
-										<i class="fas fa-times fa-lg text-danger"></i>
-									</a>
-								}
-							</div>
+									   title="Usuń część projektu">
+													<i class="fas fa-times fa-lg text-danger"></i>
+												</a>
+											}
+										</div>
+									</div>
+								</div>
+								<div id="collapse-@item.Id"
+							 class="collapse hide"
+							 aria-labelledby="heading-@item.Id"
+							 data-parent="#projectsAccordion">
+									<div class="card-body" id="project-@item.Id">
+										Coś poszło nie tak z ładowaniem szczegółów
+									</div>
+								</div>
+							}
 						</div>
-                    </div>
-					<div id="collapse-@item.Id"
-						 class="collapse hide"
-						 aria-labelledby="heading-@item.Id"
-						 data-parent="#projectsAccordion">
-						<div class="card-body" id="project-@item.Id">
-							Coś poszło nie tak z ładowaniem szczegółów
-						</div>
-					</div>
-                }
-            </div>
-        }
+					}
+				</div>
+			</div>
+		</div>
+
+
+
+
+
 
 		<div class="col-lg-7 form-group">
 @*			@for (int i = 0; i < Model.Project.ProjectBranches.Branches.Count; i++)
@@ -217,16 +269,12 @@
 			</div>
 		}
 *@
-		<div class="row">
-			<div class="col-lg-7">
-				<partial name="_SubmitAndBackButtonPartial" />
-			</div>
-		</div>
 	</form>
 </div>
 
 
 @section Scripts{
+	<script src="~/js/delete.js"></script>
 	<partial name="/Pages/Shared/_ValidationScriptsPartial.cshtml" />
 	<script>
 		$('#myTab a').click(function (e) {
@@ -246,6 +294,12 @@
 	</script>
 
 	<script>
+		function OnChange(sign) {
+			var e = document.getElementById('dropdownparts');
+			document.getElementById('sign').value = e.value;
+			document.getElementById('title').value = e.value ? e.options[e.selectedIndex].text : "";
+		}
+
 		function EditRoles(projectId, branchId) {
 			$.ajax({
 				type: "Get",
@@ -271,11 +325,23 @@
 			})
 		}
 
-		function AddBranch(projectId) {
+		function AddNewPart(projectId) {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Edit","NewProjectPart")&projectId=${projectId}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#editPart').modal('show');
+				}
+			})
+		}
+
+
+		function EditPart(projectId) {
 			var selectedId = $("#Project_AvailableBranches_SelectedId").val();
 			$.ajax({
 				type: "Put",
-				url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${selectedId}`,
+				url: `@Url.Page("Edit", "Part")&id=${projectId}&branchId=${selectedId}`,
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader("XSRF-TOKEN",
 						$('input:hidden[name="__RequestVerificationToken"]').val());

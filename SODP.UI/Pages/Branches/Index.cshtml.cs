@@ -51,18 +51,18 @@ namespace SODP.UI.Pages.Branches
 
         public async Task<PartialViewResult> OnGetEditBranchAsync(int? id)
         {
+            var model = new BranchVM();
             if (id != null)
             {
                 var apiResponse = await _apiProvider.GetAsync($"branches/{id}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
-
-                    return GetPartialView(result.Data.ToViewModel(), editBranchPartialViewName);
+                    model = result.Data.ToViewModel();
                 }
             }
 
-            return GetPartialView(new BranchVM(), editBranchPartialViewName);
+            return GetPartialView(model, editBranchPartialViewName);
         }
 
         public async Task<PartialViewResult> OnPostEditBranchAsync(BranchVM branch)
@@ -88,7 +88,7 @@ namespace SODP.UI.Pages.Branches
                 }
             }
 
-            return GetPartialView<BranchVM>(branch, editBranchPartialViewName);
+            return GetPartialView(branch, editBranchPartialViewName);
         }
 
         public async Task<PartialViewResult> OnGetPartialDesignersAsync(int id)

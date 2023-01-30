@@ -470,7 +470,29 @@ namespace SODP.Application.Services
             return response;
 		}
 
-		public Task<ServiceResponse> DeletePartAsync(int id, int partId)
+
+		public async Task<ServiceResponse> DeletePartAsync(int partId)
+		{
+			var response = new ServiceResponse();
+            try
+            {
+                var part = new ProjectPart { Id = partId };
+                _context.Entry(part).State = EntityState.Deleted;
+                if (await _context.SaveChangesAsync() == 0)
+                {
+                    response.SetError($"Error: Part {partId} not found.", 404);
+                };
+            }
+            catch (Exception ex)
+            {
+                response.SetError(ex.Message, 500);
+            }
+
+            return response;
+		}
+
+
+		public Task<ServiceResponse> AddPartBranchAsync(int partId, BranchDTO branch)
 		{
 			throw new NotImplementedException();
 		}

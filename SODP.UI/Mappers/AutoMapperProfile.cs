@@ -75,6 +75,16 @@ namespace SODP.UI.Mappers
 
             CreateMap<LicenseDTO, Pages.ActiveProjects.ViewModels.LicenseVM>()
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.Designer.ToString()));
+
+
+            CreateMap<PartDTO, PartVM>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
+
+            CreateMap<PartDTO, NewPartVM>()
+                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
         }
     }
 }

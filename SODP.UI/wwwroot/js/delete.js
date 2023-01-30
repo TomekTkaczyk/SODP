@@ -1,5 +1,4 @@
 ﻿function Delete(url, msg) {
-    console.log(msg);
     if (msg == null) {
         msg = "Usunięcie rekordu. Operacja nie może być cofnięta.";
     }

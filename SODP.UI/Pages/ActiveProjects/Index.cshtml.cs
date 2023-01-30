@@ -72,7 +72,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<PartialViewResult> OnGetProjectPartialAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/parts");
+            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
             Project = _mapper.Map<ProjectVM>(response.Data);
 

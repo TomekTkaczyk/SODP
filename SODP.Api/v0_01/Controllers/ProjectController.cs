@@ -111,43 +111,60 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
+		[HttpDelete("part/{partId}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<IActionResult> DeletePartAsync(int partId)
+		{
+			return Ok(await _service.DeletePartAsync(partId));
+		}
 
 
-        //[HttpGet("{id}/branches/{branchId}")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //public async Task<IActionResult> GetBranchRolesesAsync(int id, int branchId)
-        //{                                               
-        //    return Ok(await _service.GetBranchRolesAsync(id, branchId));
-        //}
+		[HttpPut("part/{partId}/role")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<IActionResult> AddPartBranchAsync(int partId, BranchDTO branch)
+		{
+			return Ok(await _service.AddPartBranchAsync(partId, branch));
+		}
+
+		//[HttpGet("{id}/branches/{branchId}")]
+		//[ProducesResponseType(StatusCodes.Status200OK)]
+		//[ProducesResponseType(StatusCodes.Status404NotFound)]
+		//[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		//public async Task<IActionResult> GetBranchRolesesAsync(int id, int branchId)
+		//{                                               
+		//    return Ok(await _service.GetBranchRolesAsync(id, branchId));
+		//}
 
 
-        //[HttpDelete("{id}/branches/{branchId}")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //public async Task<IActionResult> DeleteBranchAsync(int id, int branchId)
-        //{
-        //    return Ok(await _service.DeleteBranchAsync(id, branchId));
-        //}
+		//[HttpDelete("{id}/branches/{branchId}")]
+		//[ProducesResponseType(StatusCodes.Status204NoContent)]
+		//[ProducesResponseType(StatusCodes.Status404NotFound)]
+		//[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		//public async Task<IActionResult> DeleteBranchAsync(int id, int branchId)
+		//{
+		//    return Ok(await _service.DeleteBranchAsync(id, branchId));
+		//}
 
 
-        //[HttpPatch("{id}/branch/{branchId}/role/{role}")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(StatusCodes.Status403Forbidden)]
-        //public async Task<IActionResult> SetBranchRoleAsync(int id, int branchId, TechnicalRole role, [FromBody] TechnicalRoleDTO technicalRole)
-        //{
-        //    if (id != technicalRole.ProjectId || branchId != technicalRole.BranchId || role != technicalRole.Role)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    return Ok(await _service.SetBranchTechnicalRoleAsync(technicalRole));
-        //}
+		//[HttpPatch("{id}/branch/{branchId}/role/{role}")]
+		//[ProducesResponseType(StatusCodes.Status204NoContent)]
+		//[ProducesResponseType(StatusCodes.Status404NotFound)]
+		//[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		//public async Task<IActionResult> SetBranchRoleAsync(int id, int branchId, TechnicalRole role, [FromBody] TechnicalRoleDTO technicalRole)
+		//{
+		//    if (id != technicalRole.ProjectId || branchId != technicalRole.BranchId || role != technicalRole.Role)
+		//    {
+		//        return BadRequest();
+		//    }
+		//    return Ok(await _service.SetBranchTechnicalRoleAsync(technicalRole));
+		//}
 
 
-        [HttpPatch("{id}/archive")]
+		[HttpPatch("{id}/archive")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

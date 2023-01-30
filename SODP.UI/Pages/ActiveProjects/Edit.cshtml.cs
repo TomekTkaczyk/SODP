@@ -1,4 +1,5 @@
 using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,6 +15,7 @@ using SODP.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -24,8 +26,9 @@ namespace SODP.UI.Pages.ActiveProjects
 	[Authorize(Roles = "Administrator,ProjectManager")]
 	public class EditModel : ProjectEditPageModel
 	{
-		const string technicalRolesPartialViewName = "_TechnicalRolesPartialView";
-		const string investorsPartialViewName = "_InvestorsPartialView";
+		const string _technicalRolesPartialViewName = "_TechnicalRolesPartialView";
+		const string _investorsPartialViewName = "_InvestorsPartialView";
+		const string _projectPartPartialViewName = "_ProjectPartPartialView";
 
 		public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
 
@@ -140,11 +143,11 @@ namespace SODP.UI.Pages.ActiveProjects
 						.ToList()
 				};
 
-				return GetPartialView(model, investorsPartialViewName);
+				return GetPartialView(model, _investorsPartialViewName);
 			}
 
 			// for example show error message
-			return GetPartialView(new InvestorsVM(), investorsPartialViewName);
+			return GetPartialView(new InvestorsVM(), _investorsPartialViewName);
 		}
 
 		public async Task<PartialViewResult> OnPostInvestorsList(InvestorsVM investors)
@@ -168,10 +171,50 @@ namespace SODP.UI.Pages.ActiveProjects
 				}
 			}
 
-			return GetPartialView(investors, investorsPartialViewName);
+			return GetPartialView(investors, _investorsPartialViewName);
 		}
 
-		private async Task<PartialViewResult> GetPartialBranchesViewAsync(int projectId, int branchId)
+		public async Task<PartialViewResult> OnGetNewProjectPartAsync(int projectId)
+        {
+			var items = await GetPartsAsync();
+			var model = new NewPartVM()
+			{
+				ProjectId = projectId,
+				Items = items.Select(x => new SelectListItem 
+				{ 
+					Value= x.Sign,
+					Text = x.Name, 
+				}).ToList()
+			};
+
+            return GetPartialView(model, _projectPartPartialViewName);
+        }
+
+        public async Task<PartialViewResult> OnPostEditProjectPartAsync(NewPartVM part)
+        {
+			part.Items = new List<SelectListItem>();
+			if (ModelState.IsValid)
+			{
+				var apiResponse = await _apiProvider.PutAsync($"projects/{part.ProjectId}/part", part.ToHttpContent());
+				switch (apiResponse.StatusCode)
+				{
+					case HttpStatusCode.OK:
+						var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
+						if (!response.Success)
+						{
+							SetModelErrors(response);
+						}
+						break;
+					default:
+						// redirect to ErrorPage
+						break;
+				}
+			}
+
+			return GetPartialView(part, _projectPartPartialViewName);
+        }
+
+        private async Task<PartialViewResult> GetPartialBranchesViewAsync(int projectId, int branchId)
 		{
 			var apiResponse = await _apiProvider.GetAsync($"projects/{projectId}/branches/{branchId}");
 			var responseRoles = await _apiProvider.GetContent<ServicePageResponse<ProjectBranchRoleDTO>>(apiResponse);
@@ -217,8 +260,20 @@ namespace SODP.UI.Pages.ActiveProjects
 				}).ToList();
 			technicalRoles.Licenses.Add(new SelectListItem("-- usuñ z listy --", "0"));
 
-			return GetPartialView(technicalRoles, technicalRolesPartialViewName);
+			return GetPartialView(technicalRoles, _technicalRolesPartialViewName);
 		}
 
-	}
+		private async Task<IList<PartVM>> GetPartsAsync()
+		{
+            var apiResponse = await _apiProvider.GetAsync($"parts");
+            if (apiResponse.IsSuccessStatusCode)
+            {
+				var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<PartDTO>>();
+				return _mapper.Map<ICollection<PartVM>>(result.Data.Collection).ToList();
+            }
+
+			return new List<PartVM>();
+        }
+    }
 }
+
