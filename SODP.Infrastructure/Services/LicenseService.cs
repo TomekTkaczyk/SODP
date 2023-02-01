@@ -59,6 +59,7 @@ namespace SODP.Infrastructure.Services
             {
                 var licenses = await _context.Licenses
                     .Include(x => x.Designer)
+                    .Include(x => x.Branches).ThenInclude(x => x.Branch)
                     .ToListAsync();
                 serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(licenses));
             }
@@ -133,9 +134,9 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<LicenseWithBranchesDTO>> GetBranchesAsync(int id)
+        public async Task<ServiceResponse<LicenseDTO>> GetBranchesAsync(int id)
         {
-            var serviceResponse = new ServiceResponse<LicenseWithBranchesDTO>();
+            var serviceResponse = new ServiceResponse<LicenseDTO>();
 
             try
             {
@@ -265,5 +266,6 @@ namespace SODP.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
-    }
+
+	}
 }

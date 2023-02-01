@@ -11,7 +11,7 @@ namespace SODP.Application.Services
     {
         Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString);
 
-        Task<ServiceResponse<LicenseWithBranchesDTO>> GetBranchesAsync(int id);
+        Task<ServiceResponse<LicenseDTO>> GetBranchesAsync(int id);
 
         Task<ServiceResponse> AddBranchAsync(int id, int branchId);
 

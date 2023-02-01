@@ -249,7 +249,7 @@ namespace SODP.UI.Pages.ActiveProjects
 			if(apiResponse.IsSuccessStatusCode)
 			{
 				var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<PartBranchDTO>>();
-				model.ProjectPart = _mapper.Map<PartDTO,ProjectPartVM>(result.Data.Part);
+				// model.ProjectPart = _mapper.Map<PartDTO,ProjectPartVM>(result.Data.Part);
 				model.Branches = _mapper.Map<ICollection<BranchRoleDTO>,IList<PartBranchVM>>(result.Data.Roles);
 			}
 

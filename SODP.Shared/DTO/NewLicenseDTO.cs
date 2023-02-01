@@ -8,5 +8,7 @@ namespace SODP.Shared.DTO
     {
         public DesignerDTO Designer { get; set; }
         public string Content { get; set; }
+
+        public IList<BranchDTO> Branches { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess;
@@ -108,11 +109,8 @@ namespace SODP.Application.Services
             {
                 var project = await _context.Projects
                     .Include(s => s.Stage)
-                    .Include(s => s.Parts)
-                    .ThenInclude(s => s.Branches)
-                    .ThenInclude(s => s.Roles)
-                    .ThenInclude(s => s.License)
-                    .ThenInclude(s => s.Designer)
+                    .Include(s => s.Parts).ThenInclude(s => s.Branches).ThenInclude(s => s.Roles).ThenInclude(s => s.License).ThenInclude(s => s.Designer)
+                    .Include(s => s.Parts).ThenInclude(s => s.Branches).ThenInclude(s => s.Branch)
                     .FirstOrDefaultAsync(x => x.Id == id);
                 if (project == null)
                 {
@@ -275,8 +273,22 @@ namespace SODP.Application.Services
             return serviceResponse;
         }
 
+		public async Task<ServiceResponse<ProjectPartDTO>> GetProjectPartAsync(int partId)
+		{
+			var serviceResponse = new ServiceResponse<ProjectPartDTO>();
+			var part = await _context.ProjectPart.FirstOrDefaultAsync(x => x.Id == partId);
+			if (part == null)
+			{
+				serviceResponse.SetError($"Error: ProjectPart {partId} not found.", 404);
+			}
 
-        public ServicePageResponse<ProjectBranchRoleDTO> GetBranchRolesAsync(int id, int branchId)
+			serviceResponse.SetData(_mapper.Map<ProjectPart, ProjectPartDTO>(part));
+
+			return serviceResponse;
+		}
+
+
+		public ServicePageResponse<ProjectBranchRoleDTO> GetBranchRolesAsync(int id, int branchId)
         {
             var serviceResponse = new ServicePageResponse<ProjectBranchRoleDTO>();
             try 
@@ -519,29 +531,65 @@ namespace SODP.Application.Services
 		}
 
 
-		public async Task<ServiceResponse> AddPartBranchAsync(int partId, BranchDTO data)
+		public async Task<ServiceResponse> AddBranchToPartAsync(int projectPartId, int branchId)
 		{
             var serviceResponse = new ServiceResponse();
-			var part = _context.ProjectPart
+            var part = _context.ProjectPart
                 .Include(x => x.Branches)
-                .FirstOrDefault(x => x.Id == partId);
-            var aaa = part.Branches;
+                .FirstOrDefault(x => x.Id == projectPartId);
+            if(part.Branches.FirstOrDefault(x => x.Id == branchId) != null)
+            {
+                serviceResponse.SetError($"Conflict: Branch Id:{branchId} allredy exists.", 409);
+                return serviceResponse;
+            }
+            var branch = _context.Branches.FirstOrDefault(x => x.Id == branchId);
+            part.Branches.Add(new PartBranch() 
+            { 
+                ProjectPart = part, 
+                Branch = branch, 
+            });
+            await _context.SaveChangesAsync();
 
             return serviceResponse;
 		}
 
-		public async Task<ServiceResponse<ProjectPartDTO>> GetProjectPartAsync(int partId)
+		public async Task<ServiceResponse> AddRoleToPartBranchAsync(int partBranchId, TechnicalRole role,  int licenseId)
 		{
-            var serviceResponse = new ServiceResponse<ProjectPartDTO>();
-			var part = await _context.ProjectPart.FirstOrDefaultAsync(x => x.Id == partId);
-            if(part == null)
+			var serviceResponse = new ServiceResponse();
+            var branch = await _context.PartBranch.FirstOrDefaultAsync(x => x.Id == partBranchId);
+            if(branch == null)
             {
-                serviceResponse.SetError($"Error: ProjectPart {partId} not found.", 404);
+                serviceResponse.SetError($"Error: PartBranch '{partBranchId}' not found.");
+                return serviceResponse;
             }
 
-            serviceResponse.SetData(_mapper.Map<ProjectPart,ProjectPartDTO>(part));
+            var license = await _context.Licenses.FirstOrDefaultAsync(x => x.Id == licenseId);
+            if(license == null)
+            {
+                serviceResponse.SetError($"Error: License Id:{licenseId} not found.");
+				return serviceResponse;
+			}
 
-            return serviceResponse;
+            if(branch.Roles == null)
+            {
+                branch.Roles = new List<BranchRole>();
+            }
+            var branchRole = branch.Roles.FirstOrDefault(x =>  x.Role == role);
+			if(branchRole != null)
+            {
+                serviceResponse.SetError($"Conflict: Role '{role}' allready exists.");
+                return serviceResponse;
+            }
+
+            branch.Roles.Add(new BranchRole
+            {
+                License= license,
+                Role= role,
+            });
+
+            await _context.SaveChangesAsync();
+
+			return serviceResponse;
 		}
 	}
 }

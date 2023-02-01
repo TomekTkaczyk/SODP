@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Services;
 using SODP.Shared.DTO;
+using SODP.Shared.DTO.Requests;
 using SODP.Shared.Enums;
 using System.Threading.Tasks;
 
@@ -121,6 +122,25 @@ namespace SODP.Api.v0_01.Controllers
 		}
 
 
+		[HttpPost("parts/{projectPartId}/branches/{branchId}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<IActionResult> AddBranchToPartAsync(int projectPartId, int branchId)
+		{
+			return Ok(await _service.AddBranchToPartAsync(projectPartId, branchId));
+		}
+
+        [HttpPost("parts/branches/roles")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> AddRoleToPartBranchAsync([FromBody] NewPartBranchRoleDTO role)
+		{
+			return Ok(await _service.AddRoleToPartBranchAsync(role.partBranchId, role.Role, role.LicenseId));
+		}
+
+
 		[HttpGet("parts/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -137,16 +157,6 @@ namespace SODP.Api.v0_01.Controllers
 		public async Task<IActionResult> DeletePartAsync(int id)
 		{
 			return Ok(await _service.DeletePartAsync(id));
-		}
-
-
-		[HttpPost("parts/{id}/branch")]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> AddPartBranchAsync(int id, BranchDTO branch)
-		{
-			return Ok(await _service.AddPartBranchAsync(id, branch));
 		}
 
 

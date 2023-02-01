@@ -50,6 +50,12 @@ namespace SODP.Domain
 
 			#endregion
 
+			#region BranchRole
+
+			CreateMap<BranchRole, BranchRoleDTO>();
+
+			#endregion
+
 			#region PartBranch
 
 			//CreateMap<PartBranchDTO, PartBranch>()
@@ -61,9 +67,7 @@ namespace SODP.Domain
 			//    .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
 			//    .ForMember(dest => dest.Roles, act => act.Ignore());
 
-			CreateMap<PartBranch, PartBranchDTO>()
-                .ForMember(dest => dest.Part, act => act.Ignore())
-                .ForMember(dest => dest.Roles, act => act.Ignore());
+			CreateMap<PartBranch, PartBranchDTO>();
 
 			#endregion
 
@@ -161,7 +165,8 @@ namespace SODP.Domain
                 .PreserveReferences();
 
             CreateMap<License, LicenseDTO>()
-                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
+				.ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
+				.AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ReverseMap();
 
             #endregion
