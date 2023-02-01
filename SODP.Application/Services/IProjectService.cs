@@ -15,12 +15,9 @@ namespace SODP.Application.Services
         Task<ServiceResponse> ArchiveAsync(int id);
         Task<ServiceResponse> SetInvestorAsync(int id, string investor);
 		Task<ServiceResponse> AddPartAsync(int id, PartDTO part);
+		Task<ServiceResponse> UpdatePartAsync(int id, PartDTO part);
 		Task<ServiceResponse> DeletePartAsync(int partId);
+		Task<ServiceResponse<ProjectPartDTO>> GetProjectPartAsync(int partId);
 		Task<ServiceResponse> AddPartBranchAsync(int partId, BranchDTO branch);
-
-		//      Task<ServicePageResponse<ProjectBranchRoleDTO>> GetBranchRolesAsync(int id, int branchId);
-		//      Task<ServiceResponse> AddBranchAsync(int id, int branchId);
-		//      Task<ServiceResponse> DeleteBranchAsync(int id, int branchId);
-		//      Task<ServiceResponse> SetBranchTechnicalRoleAsync(TechnicalRoleDTO technicalRole);
 	}
 }

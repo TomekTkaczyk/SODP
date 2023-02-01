@@ -106,7 +106,7 @@ else
 			}).then((willRestore) => {
 				if (willRestore) {
 					$.ajax({
-						type: "GET",
+						type: "PATCH",
 						url: `/api/v0_01/projects/${id}/restore`,
 						success: function (data) {
 							if (data.success) {

@@ -6,27 +6,29 @@ using System.Text.Json;
 
 namespace SODP.UI.Extensions
 {
-    public static class NewPartVMExtensions
+    public static class PartVMExtensions
     {
-        public static StringContent ToHttpContent(this NewPartVM part)
+        public static StringContent ToHttpContent(this PartVM part)
         {
             return new StringContent(
                                   JsonSerializer.Serialize(new PartDTO
                                   {
+                                      Id= part.Id,
                                       Sign = part.Sign,
-                                      Name = part.Name
+                                      Name = part.Name,
                                   }),
                                   Encoding.UTF8,
                                   "application/json"
                               );
         }
 
-        public static NewPartVM ToViewModel(this PartDTO part)
+        public static PartVM ToViewModel(this PartDTO part)
         {
-            return new NewPartVM
+            return new PartVM
             {
+                Id = part.Id,
                 Sign = part.Sign,
-                Name = part.Name
+                Name = part.Name,
             };
         }
     }

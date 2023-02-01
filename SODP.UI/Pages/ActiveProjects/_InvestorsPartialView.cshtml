@@ -39,7 +39,16 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<partial name="_SubmitAndBackButtonModalPartial" />
+				<div class="row justify-content-center">
+					<div class="col-5">
+						@*<input type="submit" class="btn btn-primary form-control" value="Zapisz i wróć do listy" />*@
+
+						<a asp-page="ActiveProject/Edit" class="btn btn-success form-control">Zapisz i wróć do listy</a>
+					</div>
+					<div class="col-5">
+						<a asp-page="ActiveProject/Edit" class="btn btn-success form-control">Anuluj</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

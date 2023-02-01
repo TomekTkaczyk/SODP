@@ -1,13 +1,10 @@
-using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using SODP.Application;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Infrastructure;
@@ -24,8 +21,7 @@ namespace SODP.UI
 {
     public class Startup
     {
-
-        private readonly string appPrefix;
+        private readonly string _appPrefix;
         
         public IConfiguration Configuration { get; }
 
@@ -33,8 +29,8 @@ namespace SODP.UI
         {
             Configuration = configuration;
 
-            appPrefix = Configuration.GetSection("AppSettings:AppPrefix").Value;
-            var sodpDllFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, appPrefix + "*.dll")
+            _appPrefix = Configuration.GetSection("AppSettings:AppPrefix").Value;
+            var sodpDllFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, _appPrefix + "*.dll")
                 .Where(x => !x.Contains("SODP.UI.Views.dll"));
 
             foreach (string filePath in sodpDllFiles)
@@ -47,19 +43,9 @@ namespace SODP.UI
         {
             services.AddSwagger(Configuration);
 
-            services.AddCors(options =>
-                options.AddPolicy(name: "SODPOriginsSpecification", builder => 
-                    {
-                        //builder.AllowAnyOrigin();                               // mozliwy dowolny origin inny ni¿ w³asny aplikacji
-                        //builder.AllowAnyMethod();                               // mozliwy dowolny origin inny ni¿ w³asny aplikacji
-                        //builder.AllowAnyHeader();                               // mozliwy dowolny origin inny ni¿ w³asny aplikacji
-                        builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}");           // mozliwy origin 
-                    })
-            );
+            services.AddCors(options => options.AddPolicy(name: "SODPOriginsSpecification", builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
 
             services.AddDataAccessDI(Configuration);
-
-            services.AddApplicationDI(Configuration);
 
             services.AddInfrastructureDI(Configuration);
 
@@ -67,7 +53,7 @@ namespace SODP.UI
                     .GetAssemblies()
                     .Where(x => x.GetName()
                     .Name
-                    .Contains(appPrefix))
+                    .Contains(_appPrefix))
                     .ToArray();
 
             services.Scan(scan =>
@@ -83,15 +69,9 @@ namespace SODP.UI
                     .AddClasses(classes => classes.AssignableTo(typeof(IValidator)))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime();
-
-                //scan
-                //    .FromAssemblies(app)
-                //    .AddClasses(classes => classes.AssignableTo(typeof(IActiveStatusService)))
-                //    .AsImplementedInterfaces()
-                //    .WithScopedLifetime();
             });
 
-            services.AddTransient<ITranslator, Translator>();
+            services.AddSingleton<ITranslator, Translator>();
 
             services.AddScoped<IWebAPIProvider, WebAPIProvider>();
 
@@ -112,13 +92,6 @@ namespace SODP.UI
 
             services.AddScoped<UserManager<User>,SODPUserManager>();
 
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    options.LoginPath = $"/Identity/Account/Login";
-            //    options.LogoutPath = $"/Identity/Account/Logout";
-            //    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
-            //});
-
             services.AddAutoMapper(app);
 
             services.AddMemoryCache();
@@ -137,20 +110,10 @@ namespace SODP.UI
 
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
-            // To check : 
-			//services.AddAntiforgery(options =>
-			//{
-			//	options.FormFieldName = $"{Configuration.GetSection($"AntiforgeryFieldname").Value}";
-			//	options.HeaderName = "X-CSRF-TOKEN-HEADERNAME";
-			//	options.SuppressXFrameOptionsHeader = false;
-			//});
-
 			services.AddControllers();
 
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
-
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -175,13 +138,7 @@ namespace SODP.UI
 
             app.UseRouting();
 
-            app.UseCors(options =>
-                options
-                //.AllowAnyOrigin()                           //
-                //.AllowAnyMethod()                           //
-                //.AllowAnyHeader()                           //
-                .WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}") 
-            );
+            app.UseCors(options => options.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}"));
 
             app.UseAuthentication();
 

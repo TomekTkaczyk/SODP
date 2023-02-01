@@ -36,7 +36,7 @@
 
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item" role="presentation">
-				<a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Szczegóły</a>
+				<a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Dane podstawowe</a>
 			</li>
 			<li class="nav-item" role="presentation">
 				<a class="nav-link" id="parts-tab" data-toggle="tab" href="#parts" role="tab" aria-controls="parts" aria-selected="false">Części opracowania</a>
@@ -45,6 +45,7 @@
 
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+				<br />
 				<div class="form-group row">
 					<div class="col-lg-7">
 						<label>Nazwa projektu:</label>
@@ -83,19 +84,25 @@
 					</div>
 				</div>
 
-				<div class="form-group row">
-					<div class="col-lg-6">
+				<div class="form-group">
+					<div class="col-lg-7">
 						<label>Inwestor:</label>
-						<textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor" rows="4"></textarea>
+						<div class="row m-0 p-0">
+							<div class="col-11 m-0 p-0">
+								<textarea asp-for="Project.Investor" class="form-control" placeholder="Inwestor" rows="4"></textarea>
+							</div>
+							<div class="col-1 m-0 p-0">
+								<button type="button"
+										class="col btn btn-info form-control text-white float-right h-100"
+										title="Pobierz inwestora z bazy"
+										data-toggle="ajax-modal"
+										data-url="@Url.Page("Edit","InvestorsList")&projectId=@Model.Project.Id">
+									...
+								</button>
+							</div>
+						</div>
 					</div>
 					<div class="col-lg-1">
-						<button type="button"
-								class="col btn btn-info form-control text-white float-right h-100"
-								title="Pobierz inwestora z bazy"
-								data-toggle="ajax-modal"
-								data-url="@Url.Page("Edit","InvestorsList")&projectId=@Model.Project.Id">
-							...
-						</button>
 					</div>
 				</div>
 
@@ -129,34 +136,9 @@
 						<partial name="_SubmitAndBackButtonPartial" />
 					</div>
 				</div>
-
-				<br />
 			</div>
-			<div class="tab-pane fade show active" id="parts" role="tabpanel" aria-labelledby="parts-tab">
+			<div class="tab-pane fade active" id="parts" role="tabpanel" aria-labelledby="parts-tab">
 				<div class="col-lg-7" style="padding:30px">
-					<div class="row align-middle">
-						<div class="col-4 p-0">
-							<button type="button"
-									class="btn btn-info form-control text-white float-right h-100"
-									title="Nowa część"
-									data-toggle="ajax-modal"
-									data-url="@Url.Page("Edit","NewProjectPart")&projectId=${projectId}">
-								<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa część
-							</button>
-						</div>
-						<a name="additionalBtn"
-						   id="addPartButton"
-						   onclick='AddNewPart(@Model.Project.Id)'
-						   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
-						   data-toggle="tooltip"
-						   data-placement="top"
-						   title="Nowa część">
-							<i class="fas fa-plus fa-lg text-success"></i>
-						</a>
-					</div>
-
-					<br />
-
 					@if (Model.Project.Parts.Count > 0)
 					{
 						<div id="projectsAccordion" class="accordion">
@@ -165,31 +147,31 @@
 								<div class="button card border-light">
 									<div class="card-header border-light p-0 d-flex align-items-center" style="background-color:white" id="card-header-@item.Id">
 										<div class="col font-weight-bold clickable"
-									 onclick="accordionCollapse(@item.Id)"
-									 id="card-head-@item.Id"
-									 data-toggle="collapse"
-									 data-target="#collapse-@item.Id"
-									 aria-expanded="false"
-									 aria-controls="collapse-@item.Id">
+											 onclick="accordionCollapse(@item.Id)"
+											 id="card-head-@item.Id"
+											 data-toggle="collapse"
+											 data-target="#collapse-@item.Id"
+											 aria-expanded="false"
+											 aria-controls="collapse-@item.Id">
 											@item.Sign @item.Name
 										</div>
 										<div class="colgroup justify-content-end mr-2">
 											@if (User.IsInRole("ProjectManager"))
 											{
 												<a name="additionalBtn"
-									   id="editProject-@item.Id"
-									   onclick='Edit(@item.Id)'
-									   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
-									   data-toggle="tooltip"
-									   data-placement="top"
-									   title="Edycja">
+												   id="editProject-@item.Id"
+												   onclick='EditPart(@item.Id)'
+												   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+												   data-toggle="tooltip"
+												   data-placement="top"
+												   title="Edycja">
 													<i class="fas fa-edit fa-lg text-success"></i>
 												</a>
-												<a onclick='Delete("/api/v0_01/projects/part/@item.Id","Usunięcie części nie może być cofnięte")'
-									   class="btn"
-									   data-toggle="tooltip"
-									   data-placement="top"
-									   title="Usuń część projektu">
+												<a onclick='Delete("/api/v0_01/projects/parts/@item.Id","Usunięcie części nie może być cofnięte")'
+												   class="btn"
+												   data-toggle="tooltip"
+												   data-placement="top"
+												   title="Usuń część projektu">
 													<i class="fas fa-times fa-lg text-danger"></i>
 												</a>
 											}
@@ -197,9 +179,9 @@
 									</div>
 								</div>
 								<div id="collapse-@item.Id"
-							 class="collapse hide"
-							 aria-labelledby="heading-@item.Id"
-							 data-parent="#projectsAccordion">
+									 class="collapse hide"
+									 aria-labelledby="heading-@item.Id"
+									 data-parent="#projectsAccordion">
 									<div class="card-body" id="project-@item.Id">
 										Coś poszło nie tak z ładowaniem szczegółów
 									</div>
@@ -207,13 +189,23 @@
 							}
 						</div>
 					}
+
+					<br />
+
+					<div class="row align-end">
+						<div class="col p-0">
+							<button type="button"
+									class="btn btn-info form-control text-white float-right h-100"
+									title="Nowa część"
+									data-toggle="ajax-modal"
+									data-url="@Url.Page("Edit","EditProjectPart")&projectId=@Model.Project.Id">
+								<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa część
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-
-
-
-
 
 
 		<div class="col-lg-7 form-group">
@@ -286,11 +278,13 @@
 		$("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
 			var id = $(e.target).attr("href").substr(1);
 			window.location.hash = id;
+
 		});
 
 		// on load of the page: switch to the currently selected tab
 		var hash = window.location.hash;
 		$('#myTab a[href="' + hash + '"]').tab('show');
+
 	</script>
 
 	<script>
@@ -325,10 +319,11 @@
 			})
 		}
 
-		function AddNewPart(projectId) {
+		function EditPart(part) {
+			console.log(part);
 			$.ajax({
 				type: "Get",
-				url: `@Url.Page("Edit","NewProjectPart")&projectId=${projectId}`,
+				url: `@Url.Page("Edit","EditProjectPart")&projectPartId=${part}`,
 				success: function (data) {
 					$('#modal-placeholder').html(data);
 					$('#editPart').modal('show');
@@ -337,8 +332,8 @@
 		}
 
 
-		function EditPart(projectId) {
-			var selectedId = $("#Project_AvailableBranches_SelectedId").val();
+		function ____EditPart(projectId) {
+			//var selectedId = $("#Project_AvailableBranches_SelectedId").val();
 			$.ajax({
 				type: "Put",
 				url: `@Url.Page("Edit", "Part")&id=${projectId}&branchId=${selectedId}`,
@@ -371,6 +366,13 @@
 				});
 			});
 		}
+
+		function accordionCollapse(id) {
+			if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
+				$(`#project-${id}`).load(`/ActiveProjects/Edit?handler=PartBranchesPartial&id=${id}`);
+			}
+		}
+
 	</script>
 
 	<script>

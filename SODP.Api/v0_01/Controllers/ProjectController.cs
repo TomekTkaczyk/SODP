@@ -101,7 +101,7 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
-        [HttpPut("{id}/part")]
+        [HttpPost("{id}/parts")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -111,60 +111,46 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
-		[HttpDelete("part/{partId}")]
-		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[HttpPut("parts/{id}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> DeletePartAsync(int partId)
+		public async Task<IActionResult> UpdatePartAsync(int id, PartDTO part)
 		{
-			return Ok(await _service.DeletePartAsync(partId));
+			return Ok(await _service.UpdatePartAsync(id, part));
 		}
 
 
-		[HttpPut("part/{partId}/role")]
+		[HttpGet("parts/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> AddPartBranchAsync(int partId, BranchDTO branch)
+		public async Task<IActionResult> GetPartAsync(int id)
 		{
-			return Ok(await _service.AddPartBranchAsync(partId, branch));
+			return Ok(await _service.GetProjectPartAsync(id));
 		}
 
-		//[HttpGet("{id}/branches/{branchId}")]
-		//[ProducesResponseType(StatusCodes.Status200OK)]
-		//[ProducesResponseType(StatusCodes.Status404NotFound)]
-		//[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		//public async Task<IActionResult> GetBranchRolesesAsync(int id, int branchId)
-		//{                                               
-		//    return Ok(await _service.GetBranchRolesAsync(id, branchId));
-		//}
+		[HttpDelete("parts/{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<IActionResult> DeletePartAsync(int id)
+		{
+			return Ok(await _service.DeletePartAsync(id));
+		}
 
 
-		//[HttpDelete("{id}/branches/{branchId}")]
-		//[ProducesResponseType(StatusCodes.Status204NoContent)]
-		//[ProducesResponseType(StatusCodes.Status404NotFound)]
-		//[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		//public async Task<IActionResult> DeleteBranchAsync(int id, int branchId)
-		//{
-		//    return Ok(await _service.DeleteBranchAsync(id, branchId));
-		//}
+		[HttpPost("parts/{id}/branch")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<IActionResult> AddPartBranchAsync(int id, BranchDTO branch)
+		{
+			return Ok(await _service.AddPartBranchAsync(id, branch));
+		}
 
 
-		//[HttpPatch("{id}/branch/{branchId}/role/{role}")]
-		//[ProducesResponseType(StatusCodes.Status204NoContent)]
-		//[ProducesResponseType(StatusCodes.Status404NotFound)]
-		//[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		//public async Task<IActionResult> SetBranchRoleAsync(int id, int branchId, TechnicalRole role, [FromBody] TechnicalRoleDTO technicalRole)
-		//{
-		//    if (id != technicalRole.ProjectId || branchId != technicalRole.BranchId || role != technicalRole.Role)
-		//    {
-		//        return BadRequest();
-		//    }
-		//    return Ok(await _service.SetBranchTechnicalRoleAsync(technicalRole));
-		//}
-
-
-		[HttpPatch("{id}/archive")]
+        [HttpPatch("{id}/archive")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

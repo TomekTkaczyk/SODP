@@ -471,6 +471,33 @@ namespace SODP.Application.Services
 		}
 
 
+		public async Task<ServiceResponse> UpdatePartAsync(int id, PartDTO part)
+		{
+			var response = new ServiceResponse();
+			try
+			{
+				var projectPart = await _context.ProjectPart.FirstOrDefaultAsync(x => x.Id == id);
+				if (projectPart == null)
+				{
+					response.SetError($"Error: Part '{id}' not found.", 404);
+					return response;
+				}
+
+                projectPart.Sign = part.Sign;
+                projectPart.Name = part.Name;
+
+				_context.Entry(projectPart).State = EntityState.Modified;
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				response.SetError($"Error: {ex.Message}", 500);
+			}
+
+			return response;
+		}
+
+
 		public async Task<ServiceResponse> DeletePartAsync(int partId)
 		{
 			var response = new ServiceResponse();
@@ -492,9 +519,29 @@ namespace SODP.Application.Services
 		}
 
 
-		public Task<ServiceResponse> AddPartBranchAsync(int partId, BranchDTO branch)
+		public async Task<ServiceResponse> AddPartBranchAsync(int partId, BranchDTO data)
 		{
-			throw new NotImplementedException();
+            var serviceResponse = new ServiceResponse();
+			var part = _context.ProjectPart
+                .Include(x => x.Branches)
+                .FirstOrDefault(x => x.Id == partId);
+            var aaa = part.Branches;
+
+            return serviceResponse;
+		}
+
+		public async Task<ServiceResponse<ProjectPartDTO>> GetProjectPartAsync(int partId)
+		{
+            var serviceResponse = new ServiceResponse<ProjectPartDTO>();
+			var part = await _context.ProjectPart.FirstOrDefaultAsync(x => x.Id == partId);
+            if(part == null)
+            {
+                serviceResponse.SetError($"Error: ProjectPart {partId} not found.", 404);
+            }
+
+            serviceResponse.SetData(_mapper.Map<ProjectPart,ProjectPartDTO>(part));
+
+            return serviceResponse;
 		}
 	}
 }

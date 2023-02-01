@@ -37,8 +37,6 @@ namespace SODP.Infrastructure
 
 			services.AddScoped<DataInitializer>();
 
-			services.AddScoped<DataInitializer>();
-
             services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
 		}
 

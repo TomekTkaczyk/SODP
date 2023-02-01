@@ -51,12 +51,16 @@ namespace SODP.Infrastructure.Managers
         private string GetCommand(FolderCommands command)
         {
             var OSPrefix = $"{Environment.OSVersion.Platform}Settings:";
-            return _configuration.GetSection($"{OSPrefix}{command}Command").Value;
+            
+            var result = _configuration.GetSection($"{OSPrefix}{command}Command").Value;
+
+            return result;
         }
 
         public async Task<string> RunCommand(string command)
         {
-            return await Task.Run(() => command.RunShell());
+            var result = await Task.Run(() => command.RunShell());
+            return result;
         }
     }
 }

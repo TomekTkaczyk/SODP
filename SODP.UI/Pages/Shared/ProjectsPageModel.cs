@@ -3,14 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
-using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using SODP.UI.ViewModels;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Shared
