@@ -8,6 +8,6 @@ namespace SODP.UI.Pages.ActiveProjects.ViewModels
 
 		public BranchVM Branch { get; set; }
 
-		public ICollection<RoleVM> Roles { get; set; }
+		public ICollection<BranchRoleVM> Roles { get; set; }
 	}
 }

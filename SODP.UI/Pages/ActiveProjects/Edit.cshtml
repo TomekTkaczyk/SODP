@@ -158,20 +158,30 @@
 										<div class="colgroup justify-content-end mr-2">
 											@if (User.IsInRole("ProjectManager"))
 											{
+												<a	name="additionalBtn"
+													id="newBranch-@item.Id"
+													onclick="AddBranch(@item.Id)"
+													class="btn btn-lg m-1 p-1"
+													data-toggle="tooltip"
+													data-placement="top"
+													title="Dodaj uprawnienia">
+													<i class="fas fa-plus fa-lg text-success"></i>
+												</a>
 												<a name="additionalBtn"
-												   id="editProject-@item.Id"
-												   onclick='EditPart(@item.Id)'
-												   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
-												   data-toggle="tooltip"
-												   data-placement="top"
-												   title="Edycja">
+													id="editProject-@item.Id"
+													onclick='EditPart(@Model.Project.Id,@item.Id)'
+													class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+													data-toggle="tooltip"
+													data-placement="top"
+													title="Edycja">
 													<i class="fas fa-edit fa-lg text-success"></i>
 												</a>
-												<a onclick='Delete("/api/v0_01/projects/parts/@item.Id","Usunięcie części nie może być cofnięte")'
-												   class="btn"
-												   data-toggle="tooltip"
-												   data-placement="top"
-												   title="Usuń część projektu">
+												<a 
+													onclick='Delete("/api/v0_01/projects/parts/@item.Id","Usunięcie części nie może być cofnięte")'
+													class="btn"
+													data-toggle="tooltip"
+													data-placement="top"
+													title="Usuń część projektu">
 													<i class="fas fa-times fa-lg text-danger"></i>
 												</a>
 											}
@@ -183,7 +193,7 @@
 									 aria-labelledby="heading-@item.Id"
 									 data-parent="#projectsAccordion">
 									<div class="card-body" id="project-@item.Id">
-										Coś poszło nie tak z ładowaniem szczegółów
+										Coś poszło nie tak z ładowaniem szczegółów części
 									</div>
 								</div>
 							}
@@ -267,7 +277,9 @@
 
 @section Scripts{
 	<script src="~/js/delete.js"></script>
+	<script src="~/js/ModalPlaceholder.js"></script>
 	<partial name="/Pages/Shared/_ValidationScriptsPartial.cshtml" />
+
 	<script>
 		$('#myTab a').click(function (e) {
 			e.preventDefault();
@@ -288,16 +300,46 @@
 	</script>
 
 	<script>
-		function OnChange(sign) {
-			var e = document.getElementById('dropdownparts');
-			document.getElementById('sign').value = e.value;
-			document.getElementById('title').value = e.value ? e.options[e.selectedIndex].text : "";
-		}
-
-		function EditRoles(projectId, branchId) {
+		function AddBranch(part) {
 			$.ajax({
 				type: "Get",
-				url: `@Url.Page("Edit","TechnicalRoles")&projectId=${projectId}&branchId=${branchId}`,
+				url: `@Url.Page("Edit","AddPartBranch")&projectPartId=${part}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#addPartBranch').modal('show');
+				}
+			})
+		}
+
+		function EditPart(project, part) {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Edit","EditProjectPart")&projectId=${project}&projectPartId=${part}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#editProjectPart').modal('show');
+				}
+			})
+		}
+
+		function RemoveBranch(project, branch) {
+			$.ajax({
+				type: "Delete",
+				url: `@Url.Page("Edit", "Branch")&projectId=${project}&branchId=${branch}`,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader("XSRF-TOKEN",
+						$('input:hidden[name="__RequestVerificationToken"]').val());
+				},
+				success: function (data) {
+					window.location.reload(true);
+				}
+			})
+		}
+
+		function EditRoles(project, branch) {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Edit","TechnicalRoles")&projectId=${project}&branchId=${branch}`,
 				success: function (data) {
 					$('#modal-placeholder').html(data);
 					$('#technicalRoles').modal('show');
@@ -305,71 +347,9 @@
 			})
 		}
 
-		function RemoveBranch(projectId, branchId) {
-			$.ajax({
-				type: "Delete",
-				url: `@Url.Page("Edit", "Branch")&id=${projectId}&branchId=${branchId}`,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader("XSRF-TOKEN",
-						$('input:hidden[name="__RequestVerificationToken"]').val());
-				},
-				success: function (data) {
-					window.location.reload(true);
-				}
-			})
-		}
-
-		function EditPart(part) {
-			console.log(part);
-			$.ajax({
-				type: "Get",
-				url: `@Url.Page("Edit","EditProjectPart")&projectPartId=${part}`,
-				success: function (data) {
-					$('#modal-placeholder').html(data);
-					$('#editPart').modal('show');
-				}
-			})
-		}
-
-
-		function ____EditPart(projectId) {
-			//var selectedId = $("#Project_AvailableBranches_SelectedId").val();
-			$.ajax({
-				type: "Put",
-				url: `@Url.Page("Edit", "Part")&id=${projectId}&branchId=${selectedId}`,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader("XSRF-TOKEN",
-						$('input:hidden[name="__RequestVerificationToken"]').val());
-				},
-				success: function (data) {
-					window.location.reload(true);
-				}
-			})
-		}
-
-		function initModalPlaceHolder(returnUrl) {
-			var placeholderElement = $('#modal-placeholder');
-			placeholderElement.on('click', '[data-save="modal"]', function (event) {
-				event.preventDefault();
-				var form = $(this).parents('.modal').find('form');
-				var actionUrl = form.attr('action');
-				var dataToSend = form.serialize();
-				$.post(actionUrl, dataToSend).done(function (data) {
-					var newBody = $('.modal-body', data);
-					placeholderElement.find('.modal-body').replaceWith(newBody);
-					var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
-					var url = $(this).data('url');
-					if (isValid) {
-						placeholderElement.find('.modal').modal('hide');
-						window.location.reload(true);
-					}
-				});
-			});
-		}
-
-		function accordionCollapse(id) {
-			if (document.getElementById(`card-head-${id}`).ariaExpanded !== "true") {
-				$(`#project-${id}`).load(`/ActiveProjects/Edit?handler=PartBranchesPartial&id=${id}`);
+		function accordionCollapse(part) {
+			if (document.getElementById(`card-head-${part}`).ariaExpanded !== "true") {
+				$(`#project-${part}`).load(`/ActiveProjects/Edit?handler=PartBranchesPartial&projectPartId=${part}`);
 			}
 		}
 
@@ -377,17 +357,7 @@
 
 	<script>
 		$(document).ready(function () {
-			$('[data-toggle="tooltip"]').tooltip();
-
-			$('button[data-toggle="ajax-modal"]').click(function (event) {
-				var url = $(this).data('url');
-				$.get(url).done(function (data) {
-					var placeholderElement = $('#modal-placeholder');
-					placeholderElement.html(data);
-					placeholderElement.find('.modal').modal('show');
-				});
-			});
-			initModalPlaceHolder(window.location.href);
+			modalPlaceHolder(window.location.href);
 		});
 	</script>
 }

@@ -14,6 +14,7 @@ using SODP.Shared.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -276,7 +277,10 @@ namespace SODP.Application.Services
 		public async Task<ServiceResponse<ProjectPartDTO>> GetProjectPartAsync(int partId)
 		{
 			var serviceResponse = new ServiceResponse<ProjectPartDTO>();
-			var part = await _context.ProjectPart.FirstOrDefaultAsync(x => x.Id == partId);
+			var part = await _context.ProjectParts
+                .Include(x => x.Branches)
+                .ThenInclude(x => x.Branch)
+                .FirstOrDefaultAsync(x => x.Id == partId);
 			if (part == null)
 			{
 				serviceResponse.SetError($"Error: ProjectPart {partId} not found.", 404);
@@ -308,45 +312,6 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
-
-
-        //public async Task<ServiceResponse> AddBranchAsync(int id, int branchId)
-        //{
-        //    var serviceResponse = new ServiceResponse();
-        //    try
-        //    {
-        //        var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == branchId);
-        //        if (branch == null)
-        //        {
-        //            serviceResponse.SetError($"Błąd: Branża Id:{branchId} nie odnaleziona", 404);
-        //            return serviceResponse;
-        //        }
-
-        //        var project = await _context.Projects.Include(b => b.Branches).FirstOrDefaultAsync(x => x.Id == id);
-        //        if (project == null)
-        //        {
-        //            serviceResponse.SetError($"Błąd: Projekt Id:{branchId} nie odnaleziony", 404);
-        //            return serviceResponse;
-        //        }
-
-        //        if(project.Branches == null || (project.Branches.FirstOrDefault(x => x.BranchId == branchId) == null))
-        //        {
-        //            var projectBranch = new ProjectBranch
-        //            {
-        //                Project = project,
-        //                Branch = branch
-        //            };
-        //            var result = await _context.ProjectBranches.AddAsync(projectBranch);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        serviceResponse.SetError(ex.Message, 500);
-        //    }
-
-        //    return serviceResponse;
-        //}
 
 
         public ServiceResponse DeleteBranchAsync(int id, int branchId)
@@ -462,7 +427,7 @@ namespace SODP.Application.Services
 
 				if (project.Parts.FirstOrDefault(x => x.Sign == part.Sign) == null)
 				{
-					_context.ProjectPart.Add(
+					_context.ProjectParts.Add(
 						new ProjectPart()
 						{
 							Project = project,
@@ -488,7 +453,7 @@ namespace SODP.Application.Services
 			var response = new ServiceResponse();
 			try
 			{
-				var projectPart = await _context.ProjectPart.FirstOrDefaultAsync(x => x.Id == id);
+				var projectPart = await _context.ProjectParts.FirstOrDefaultAsync(x => x.Id == id);
 				if (projectPart == null)
 				{
 					response.SetError($"Error: Part '{id}' not found.", 404);
@@ -510,7 +475,7 @@ namespace SODP.Application.Services
 		}
 
 
-		public async Task<ServiceResponse> DeletePartAsync(int partId)
+		public async Task<ServiceResponse> DeleteProjectPartAsync(int partId)
 		{
 			var response = new ServiceResponse();
             try
@@ -529,34 +494,55 @@ namespace SODP.Application.Services
 
             return response;
 		}
+        
 
-
-		public async Task<ServiceResponse> AddBranchToPartAsync(int projectPartId, int branchId)
+        public async Task<ServiceResponse> AddBranchToPartAsync(int partId, int branchId)
 		{
             var serviceResponse = new ServiceResponse();
-            var part = _context.ProjectPart
-                .Include(x => x.Branches)
-                .FirstOrDefault(x => x.Id == projectPartId);
-            if(part.Branches.FirstOrDefault(x => x.Id == branchId) != null)
+            var part = await _context.PartBranches
+                .FirstOrDefaultAsync(x => x.ProjectPartId == partId && x.BranchId == branchId);
+            if(part != null)
             {
                 serviceResponse.SetError($"Conflict: Branch Id:{branchId} allredy exists.", 409);
                 return serviceResponse;
             }
-            var branch = _context.Branches.FirstOrDefault(x => x.Id == branchId);
-            part.Branches.Add(new PartBranch() 
+            _context.PartBranches.Add(new PartBranch() 
             { 
-                ProjectPart = part, 
-                Branch = branch, 
+                ProjectPartId = partId, 
+                BranchId = branchId, 
             });
             await _context.SaveChangesAsync();
 
             return serviceResponse;
 		}
 
+		public async Task<ServiceResponse> DeletePartBranchAsync(int partBranchId)
+		{
+			var response = new ServiceResponse();
+			try
+			{
+				var branch = await _context.PartBranches.FirstOrDefaultAsync(x => x.Id == partBranchId);
+				if (branch == null)
+				{
+					response.SetError($"Error: Branch Id:{partBranchId} not found.", 404);
+					return response;
+				}
+				_context.PartBranches.Remove(branch);
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				response.SetError(ex.Message, 500);
+			}
+
+			return response;
+		}
+
+
 		public async Task<ServiceResponse> AddRoleToPartBranchAsync(int partBranchId, TechnicalRole role,  int licenseId)
 		{
 			var serviceResponse = new ServiceResponse();
-            var branch = await _context.PartBranch.FirstOrDefaultAsync(x => x.Id == partBranchId);
+            var branch = await _context.PartBranches.FirstOrDefaultAsync(x => x.Id == partBranchId);
             if(branch == null)
             {
                 serviceResponse.SetError($"Error: PartBranch '{partBranchId}' not found.");
@@ -591,5 +577,28 @@ namespace SODP.Application.Services
 
 			return serviceResponse;
 		}
+
+
+		public async Task<ServiceResponse<ProjectPartDTO>> GetProjectPartWithBranchesAsync(int projectPartId)
+		{
+            var serviceResponse = new ServiceResponse<ProjectPartDTO>();
+            var part = await _context.ProjectParts
+                .Include(x => x.Branches)
+                .ThenInclude(x => x.Branch)
+                .Include(x => x.Branches)
+                .ThenInclude(x => x.Roles)
+                .ThenInclude(x => x.License)
+                .ThenInclude(x => x.Designer)
+                .FirstOrDefaultAsync(x => x.Id==projectPartId);
+            if(part == null)
+            {
+                serviceResponse.SetError($"Error: Part Id:'{projectPartId}' not found.");
+                return serviceResponse;
+            }
+            serviceResponse.Data = _mapper.Map<ProjectPartDTO>(part);
+
+            return serviceResponse;
+		}
+
 	}
 }

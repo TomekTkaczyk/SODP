@@ -2,7 +2,7 @@
 
 namespace SODP.UI.Pages.ActiveProjects.ViewModels
 {
-    public class RoleVM
+    public class BranchRoleVM
     {
         public int Id { get; set; }
 

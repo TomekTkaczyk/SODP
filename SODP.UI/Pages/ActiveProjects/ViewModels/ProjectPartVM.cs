@@ -10,6 +10,6 @@ namespace SODP.UI.Pages.ActiveProjects.ViewModels
 
 		public string Name { get; set; }
 
-		public ICollection<BranchVM> Branches { get; set; }
+		public ICollection<PartBranchVM> Branches { get; set; }
 	}
 }

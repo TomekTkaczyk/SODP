@@ -4,11 +4,11 @@
 @model PartVM
 @inject ITranslator _translator;
 
-<div class="modal fade" id="editPart" tabindex="-1" role="dialog" aria-labelledby="editPartLabel" aria-hidden="true">
+<div class="modal fade" id="editProjectPart" tabindex="-1" role="dialog" aria-labelledby="editProjectPartLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                @*<h5 class="text-info" id="editPartLabel">@(Model.Id == 0 ? "Nowa część" : "Edycja części")</h5>*@
+                <h5 class="text-info" id="editProjectPartLabel">@(Model.Id == 0 ? "Nowa część projektu" : "Edycja części projektu")</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -30,7 +30,6 @@
                     </div>
                     <div class="form-group">
                         @Html.DropDownListFor(model => model.Sign, @Model.Items, "-- Słownik --", new { @class = "form-control", @onchange = "OnChange(this.value)", id="dropdownparts" })
-                        @*<span asp-validation-for="PartId" class="text-danger"></span>*@
                     </div>
                 </form>
             </div>

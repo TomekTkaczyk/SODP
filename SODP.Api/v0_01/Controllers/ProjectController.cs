@@ -112,26 +112,35 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
-		[HttpPut("parts/{id}")]
+		[HttpPut("parts/{partId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> UpdatePartAsync(int id, PartDTO part)
+		public async Task<IActionResult> UpdatePartAsync(int partId, PartDTO part)
 		{
-			return Ok(await _service.UpdatePartAsync(id, part));
+			return Ok(await _service.UpdatePartAsync(partId, part));
 		}
 
 
-		[HttpPost("parts/{projectPartId}/branches/{branchId}")]
+		[HttpPost("parts/{partId}/branches/{branchId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> AddBranchToPartAsync(int projectPartId, int branchId)
+		public async Task<IActionResult> AddBranchToPartAsync(int partId, int branchId)
 		{
-			return Ok(await _service.AddBranchToPartAsync(projectPartId, branchId));
+			return Ok(await _service.AddBranchToPartAsync(partId, branchId));
 		}
 
-        [HttpPost("parts/branches/roles")]
+		[HttpDelete("parts/branches/{branchId}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<IActionResult> DeleteBranchFromPartAsync(int branchId)
+		{
+			return Ok(await _service.DeletePartBranchAsync(branchId));
+		}
+
+		[HttpPost("parts/branches/roles")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -141,22 +150,32 @@ namespace SODP.Api.v0_01.Controllers
 		}
 
 
-		[HttpGet("parts/{id}")]
+		[HttpGet("parts/{projectPartId}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> GetPartAsync(int id)
+		public async Task<IActionResult> GetPartAsync(int projectPartId)
 		{
-			return Ok(await _service.GetProjectPartAsync(id));
+			return Ok(await _service.GetProjectPartAsync(projectPartId));
 		}
 
-		[HttpDelete("parts/{id}")]
+
+		[HttpGet("parts/{projectPartId}/branches")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> DeletePartAsync(int id)
+		public async Task<IActionResult> GetPartWithBranchesAsync(int projectPartId)
 		{
-			return Ok(await _service.DeletePartAsync(id));
+			return Ok(await _service.GetProjectPartWithBranchesAsync(projectPartId));
+		}
+
+		[HttpDelete("parts/{projectPartId}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<IActionResult> DeletePartAsync(int projectPartId)
+		{
+			return Ok(await _service.DeleteProjectPartAsync(projectPartId));
 		}
 
 

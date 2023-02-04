@@ -18,9 +18,6 @@ function initModalPlaceHolder(returnUrl) {
         var form = $(this).parents('.modal').find('form');
         var actionUrl = form.attr('action');
         var dataToSend = form.serialize();
-
-        // console.log(dataToSend);
-
         $.post(actionUrl, dataToSend).done(function (data) {
             var newBody = $('.modal-body', data);
             placeholderElement.find('.modal-body').replaceWith(newBody);
@@ -28,6 +25,7 @@ function initModalPlaceHolder(returnUrl) {
             if (isValid) {
                 placeholderElement.find('.modal').modal('hide');
                 window.location = returnUrl;
+                window.location.reload(true);
             }
         });
     });

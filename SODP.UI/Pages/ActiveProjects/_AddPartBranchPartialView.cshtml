@@ -1,0 +1,42 @@
+﻿@using SODP.UI.Pages.ActiveProjects.ViewModels
+@using SODP.UI.Services;
+@model AvailableBranchesVM
+@inject ITranslator _translator
+
+<!-- Modal add part branch -->
+<div class="modal fade" id="addPartBranch" tabindex="-1" role="dialog" aria-labelledby="addPartBranchLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<h5 class="text-info" id="addPartBranchLabel">Wybierz branżę:</h5>*@
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <div id="error-placeholder"></div>
+                <form asp-page-handler="addPartBranch">
+                    <input name="PartId" type="hidden" value="@Model.PartId" />
+                    <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <div class="form-group" enabled="@Model.Items.Count>0">
+                        @Html.DropDownListFor(model => model.SelectedId, @Model.Items, @Model.Items.Count > 0 ? null : "-- nic do wybrania --", @Model.Items.Count > 0
+                        ? (object)new { @class = "form-control", required = "true", }
+                        : new { @class = "form-control", required = "true", disabled = "disabled" })
+                        <span asp-validation-for="@Model.SelectedId" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="row justify-content-center">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" data-save="modal" @(Model.Items.Count==0 ? " hidden=true" : "")>Wybierz</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

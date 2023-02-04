@@ -2,6 +2,8 @@
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Services
@@ -15,11 +17,12 @@ namespace SODP.Application.Services
         Task<ServiceResponse> ArchiveAsync(int id);
         Task<ServiceResponse> SetInvestorAsync(int id, string investor);
 		Task<ServiceResponse> AddPartAsync(int id, PartDTO part);
-		Task<ServiceResponse> UpdatePartAsync(int id, PartDTO part);
-		Task<ServiceResponse> DeletePartAsync(int partId);
-		Task<ServiceResponse<ProjectPartDTO>> GetProjectPartAsync(int partId);
+		Task<ServiceResponse> UpdatePartAsync(int projectPartId, PartDTO part);
+		Task<ServiceResponse> DeleteProjectPartAsync(int projectPartId);
+		Task<ServiceResponse<ProjectPartDTO>> GetProjectPartAsync(int projectPartId);
 		Task<ServiceResponse> AddBranchToPartAsync(int projectPartId, int branchId);
-        Task<ServiceResponse> AddRoleToPartBranchAsync(int partBranchId, TechnicalRole role, int licenseId);
-
+        Task<ServiceResponse> DeletePartBranchAsync(int partBranchId);
+		Task<ServiceResponse> AddRoleToPartBranchAsync(int partBranchId, TechnicalRole role, int licenseId);
+		Task<ServiceResponse<ProjectPartDTO>> GetProjectPartWithBranchesAsync(int projectPartId);
 	}
 }

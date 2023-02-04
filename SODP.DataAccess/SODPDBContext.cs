@@ -21,9 +21,9 @@ namespace SODP.DataAccess
         public virtual DbSet<Part> Parts { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
         public virtual DbSet<Project> Projects { get; set; }
-        public virtual DbSet<ProjectPart> ProjectPart { get; set; }
-        public virtual DbSet<PartBranch> PartBranch { get; set; }
-        public virtual DbSet<BranchRole> BranchRole { get; set; }
+        public virtual DbSet<ProjectPart> ProjectParts { get; set; }
+        public virtual DbSet<PartBranch> PartBranches { get; set; }
+        public virtual DbSet<BranchRole> BranchRoles { get; set; }
         public virtual DbSet<Designer> Designers { get; set; }
         public virtual DbSet<License> Licenses { get; set; }
         public virtual DbSet<BranchLicense> BranchLicenses { get; set; }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using SODP.Model.Enums;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
@@ -21,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Licenses
 {
-	[Authorize(Roles = "ProjectManager")]
+    [Authorize(Roles = "ProjectManager")]
 	public class EditModel : SODPPageModel
     {
         private readonly IWebAPIProvider _apiProvider;
@@ -34,7 +33,6 @@ namespace SODP.UI.Pages.Licenses
 
         [BindProperty]
         public LicenseVM License { get; set; }
-
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -111,8 +109,7 @@ namespace SODP.UI.Pages.Licenses
                     Content = response.Data.Content,
                     ApplyBranches = response.Data.Branches
                     .OrderBy(x => x.Order)
-                    .Select(x => new SelectListItem
-                    {
+                    .Select(x => new SelectListItem {
                         Value = x.Id.ToString(),
                         Text = x.ToString()
                     }).ToList()
