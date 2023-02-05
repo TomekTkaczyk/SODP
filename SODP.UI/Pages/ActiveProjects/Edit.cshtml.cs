@@ -32,6 +32,7 @@ namespace SODP.UI.Pages.ActiveProjects
 		const string _editProjectPartPartialViewName = "_EditProjectPartPartialView";
 		const string _partBranchesPartialViewName = "_PartBranchesPartialView";
 		const string _partAddPartBranchViewName = "_AddPartBranchPartialView";
+		const string _partAddTechnicalRoleViewName = "_AddTechnicalRoleView";
 
 		public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
 
@@ -250,7 +251,7 @@ namespace SODP.UI.Pages.ActiveProjects
 		{
 			var model = new AvailableBranchesVM
 			{
-				PartId = projectPartId
+				ProjectPartId = projectPartId
 			};
 
 			var apiResponse = await _apiProvider.GetAsync($"branches?active=true");
@@ -285,7 +286,7 @@ namespace SODP.UI.Pages.ActiveProjects
 			{
 				if (model.SelectedId.HasValue && (model.SelectedId != 0))
 				{
-					var apiResponse = await _apiProvider.PostAsync($"projects/parts/{model.PartId}/branches/{model.SelectedId}", new StringContent(""));
+					var apiResponse = await _apiProvider.PostAsync($"projects/parts/{model.ProjectPartId}/branches/{model.SelectedId}", new StringContent(""));
 					switch (apiResponse.StatusCode)
 					{
 						case HttpStatusCode.OK:
@@ -304,6 +305,36 @@ namespace SODP.UI.Pages.ActiveProjects
 
 			return GetPartialView(model, _partAddPartBranchViewName);
 		}
+
+		public async Task<PartialViewResult> OnGetAddTechnicalRoleAsync(int partBranchId)
+		{
+			var model = new AvailableRolesVM 
+			{
+				PartBranchId = partBranchId
+			};
+
+			// Get branch from PartBranchId ???
+            var apiResponse = await _apiProvider.GetAsync($"");
+
+
+			// Get roles
+            apiResponse = await _apiProvider.GetAsync($"roles");
+			if (apiResponse.IsSuccessStatusCode)
+			{
+				var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<RoleDTO>>();
+				model.ItemsRole = result.Data.Collection.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.ToString()
+                }).ToList();
+			}
+
+            apiResponse = await _apiProvider.GetAsync($"licenses/branch/{}");
+
+            return GetPartialView(model, _partAddTechnicalRoleViewName);
+		}
+
+
 
 		private async Task<ProjectPartDTO> GetProjectPart(int projectPartId)
 		{

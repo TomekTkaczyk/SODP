@@ -122,7 +122,7 @@ namespace SODP.Api.v0_01.Controllers
 		}
 
 
-		[HttpPost("parts/{partId}/branches/{branchId}")]
+        [HttpPost("parts/{partId}/branches/{branchId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -130,6 +130,7 @@ namespace SODP.Api.v0_01.Controllers
 		{
 			return Ok(await _service.AddBranchToPartAsync(partId, branchId));
 		}
+
 
 		[HttpDelete("parts/branches/{branchId}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -139,6 +140,7 @@ namespace SODP.Api.v0_01.Controllers
 		{
 			return Ok(await _service.DeletePartBranchAsync(branchId));
 		}
+
 
 		[HttpPost("parts/branches/roles")]
         [ProducesResponseType(StatusCodes.Status200OK)]

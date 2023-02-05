@@ -15,7 +15,14 @@
                    data-toggle="tooltip"
                    data-placement="top"
                    title="Usuń branżę">
-                    <i class="fas fa-lg fa-trash-alt "></i>
+                    <i class="fas fa-trash-alt "></i>
+                </a>
+                <a onclick="AddTechnicalRole(@item.Id)"
+                   class="btn btn-lg m-0 p-0 text-danger clickable"
+                   data-toggle="tooltip"
+                   data-placement="top"
+                   title="Dodaj rolę do branży">
+                    <i class="fas fa-plus text-success"></i>
                 </a>
             </div>
             <div class="col">@item.Branch.ToString()</div>

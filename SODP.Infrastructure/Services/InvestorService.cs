@@ -6,8 +6,6 @@ using SODP.DataAccess;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {

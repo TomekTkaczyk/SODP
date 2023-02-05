@@ -164,7 +164,7 @@
 													class="btn btn-lg m-1 p-1"
 													data-toggle="tooltip"
 													data-placement="top"
-													title="Dodaj uprawnienia">
+													title="Dodaj branżę do części">
 													<i class="fas fa-plus fa-lg text-success"></i>
 												</a>
 												<a name="additionalBtn"
@@ -173,7 +173,7 @@
 													class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
 													data-toggle="tooltip"
 													data-placement="top"
-													title="Edycja">
+													title="Edycja części projektu">
 													<i class="fas fa-edit fa-lg text-success"></i>
 												</a>
 												<a 
@@ -217,60 +217,8 @@
 			</div>
 		</div>
 
-
-		<div class="col-lg-7 form-group">
-@*			@for (int i = 0; i < Model.Project.ProjectBranches.Branches.Count; i++)
-			{
-				<input asp-for="Project.ProjectBranches.Branches[i].Branch.Id" type="hidden">
-				<input asp-for="Project.ProjectBranches.Branches[i].Branch.Name" type="hidden">
-				<div class="row">
-					<div class="col my-auto font-weight-bold">
-						@Model.Project.ProjectBranches.Branches[i].Branch.Name
-					</div>
-					<div class="col-3 p-0 m-0">
-						<div class="btn btn-md"
-						 data-toggle="tooltip"
-						 data-placement="top"
-						 title="Ustaw funkcje techniczne"
-						 onclick="EditRoles(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
-							<i class="fas fa-edit fa-lg text-success"></i>
-						</div>
-						<div class="btn btn-md"
-						 data-toggle="tooltip"
-						 data-placement="top"
-						 title="Usuń branżę"
-						 onclick="RemoveBranch(@Model.Project.Id,@Model.Project.ProjectBranches.Branches[i].Branch.Id)">
-							<i class="fas fa-times fa-lg text-danger"></i>
-						</div>
-					</div>
-				</div>
-
-				@foreach (var role in Model.Project.ProjectBranches.Branches[i].Roles)
-				{
-					<div class="row">
-						<div class="col my-auto">@Model._translator.Translate(role.Role, Services.Languages.Pl) : @role.Designer (@role.Content)</div>
-					</div>
-				}
-			}
-*@		</div>
-
 		<br />
 
-@*		@if (Model.Project.AvailableBranches.Items.Count > 0)
-		{
-			<div class="col col-lg-7 form-group">
-				<div class="row align-middle">
-					<div class="col pt-1 pb-1">
-						@Html.DropDownListFor(model => model.Project.AvailableBranches.SelectedId, @Model.Project.AvailableBranches.Items, new { @class = "form-control" })
-						<span asp-validation-for="Project.AvailableBranches.SelectedId" style="font-size:14px" class="text-danger"></span>
-					</div>
-					<div class="btn btn-lg col-1" onclick="AddBranch(@Model.Project.Id, @Model.Project.AvailableBranches.SelectedId)">
-						<i class="fas fa-plus text-success"></i>
-					</div>
-				</div>
-			</div>
-		}
-*@
 	</form>
 </div>
 
@@ -300,17 +248,6 @@
 	</script>
 
 	<script>
-		function AddBranch(part) {
-			$.ajax({
-				type: "Get",
-				url: `@Url.Page("Edit","AddPartBranch")&projectPartId=${part}`,
-				success: function (data) {
-					$('#modal-placeholder').html(data);
-					$('#addPartBranch').modal('show');
-				}
-			})
-		}
-
 		function EditPart(project, part) {
 			$.ajax({
 				type: "Get",
@@ -318,6 +255,17 @@
 				success: function (data) {
 					$('#modal-placeholder').html(data);
 					$('#editProjectPart').modal('show');
+				}
+			})
+		}
+
+		function AddBranch(part) {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Edit","AddPartBranch")&projectPartId=${part}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#addPartBranch').modal('show');
 				}
 			})
 		}
@@ -332,6 +280,17 @@
 				},
 				success: function (data) {
 					window.location.reload(true);
+				}
+			})
+		}
+
+		function AddTechnicalRole(branch) {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Edit","AddTechnicalRole")&partBranchId=${branch}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#addTechnicalRole').modal('show');
 				}
 			})
 		}

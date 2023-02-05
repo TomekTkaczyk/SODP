@@ -5,7 +5,7 @@ namespace SODP.UI.Pages.ActiveProjects.ViewModels
 {
     public class AvailableBranchesVM
     {
-        public int PartId { get; set; }
+        public int ProjectPartId { get; set; }
 
         public int? SelectedId { get; set; }
 
