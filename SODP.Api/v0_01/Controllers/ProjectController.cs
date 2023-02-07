@@ -180,6 +180,14 @@ namespace SODP.Api.v0_01.Controllers
 			return Ok(await _service.DeleteProjectPartAsync(projectPartId));
 		}
 
+        [HttpGet("parts/branches/{partBranchId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> GetPartBranchAsync(int partBranchId)
+        {
+            return Ok(await _service.GetPartBranchAsync(partBranchId));
+        }
 
         [HttpPatch("{id}/archive")]
         [ProducesResponseType(StatusCodes.Status200OK)]

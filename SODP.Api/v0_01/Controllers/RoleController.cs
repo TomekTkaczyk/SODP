@@ -23,9 +23,9 @@ namespace SODP.Api.v0_01.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetPageAsync(bool? active, int currentPage=1, int pageSize=0)
+        public async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
         {
-            return Ok( await _service.GetPageAsync(active, currentPage, pageSize, "") );
+            return Ok(await _service.GetPageAsync(active, currentPage, pageSize));
         }
     }
 }

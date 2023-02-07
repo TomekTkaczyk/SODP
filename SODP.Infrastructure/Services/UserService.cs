@@ -39,31 +39,7 @@ namespace SODP.Infrastructure.Services
 
         public async Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
         {
-            var serviceResponse = new ServicePageResponse<UserDTO>();
-
-            try
-            {
-                var users = _context.Users.OrderBy(x => x.UserName);
-
-                serviceResponse.Data.TotalCount = await _context.Users.CountAsync();
-
-                if (pageSize == 0)
-                {
-                    pageSize = serviceResponse.Data.TotalCount;
-                }
-
-                serviceResponse.Data.PageNumber = currentPage;
-                serviceResponse.Data.PageSize = pageSize;
-
-                serviceResponse.Data.Collection = _mapper.Map<IList<UserDTO>>(await users.ToListAsync());
-                serviceResponse.StatusCode = 200;
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
+            return await GetPageAsync(active, currentPage, pageSize, "");
         }
 
         public async Task<ServiceResponse<UserDTO>> GetAsync(int id)
@@ -231,9 +207,33 @@ namespace SODP.Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString)
+        public async Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString)
         {
-            throw new NotImplementedException();
+            var serviceResponse = new ServicePageResponse<UserDTO>();
+
+            try
+            {
+                var users = _context.Users.OrderBy(x => x.UserName);
+
+                serviceResponse.Data.TotalCount = await _context.Users.CountAsync();
+
+                if (pageSize == 0)
+                {
+                    pageSize = serviceResponse.Data.TotalCount;
+                }
+
+                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageSize = pageSize;
+
+                serviceResponse.Data.Collection = _mapper.Map<IList<UserDTO>>(await users.ToListAsync());
+                serviceResponse.StatusCode = 200;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
+
+            return serviceResponse;
         }
     }
 }

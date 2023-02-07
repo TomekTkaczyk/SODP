@@ -120,9 +120,9 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetLicensesBranchAsync(int branchId, bool? active)
+        public async Task<IActionResult> GetLicensesBranchAsync(int branchId)
         {
-            return Ok(await _service.GetLicensesBranchAsync(branchId, active));
+            return Ok(await _service.GetLicensesBranchAsync(branchId));
         }
     }
 }

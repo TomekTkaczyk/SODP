@@ -284,10 +284,10 @@
 			})
 		}
 
-		function AddTechnicalRole(branch) {
+		function AddTechnicalRole(partBranch, branch) {
 			$.ajax({
 				type: "Get",
-				url: `@Url.Page("Edit","AddTechnicalRole")&partBranchId=${branch}`,
+				url: `@Url.Page("Edit","AddTechnicalRole")&partBranchId=${partBranch}&branchId=${branch}`,
 				success: function (data) {
 					$('#modal-placeholder').html(data);
 					$('#addTechnicalRole').modal('show');

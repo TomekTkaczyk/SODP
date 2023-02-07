@@ -600,5 +600,23 @@ namespace SODP.Application.Services
             return serviceResponse;
 		}
 
-	}
+        public async Task<ServiceResponse<PartBranchDTO>> GetPartBranchAsync(int partBranchId)
+        {
+            var serviceResponse = new ServiceResponse<PartBranchDTO>();
+            var part = await _context.PartBranches
+                .Include(x => x.Branch)
+                .Include(x => x.Roles)
+                .ThenInclude(x => x.License)
+                .ThenInclude(x => x.Designer)
+                .FirstOrDefaultAsync(x => x.Id == partBranchId);
+            if (part == null)
+            {
+                serviceResponse.SetError($"Error: Part Id:'{partBranchId}' not found.");
+                return serviceResponse;
+            }
+            serviceResponse.Data = _mapper.Map<PartBranchDTO>(part);
+
+            return serviceResponse;
+        }
+    }
 }

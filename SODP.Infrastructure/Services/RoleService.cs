@@ -23,11 +23,6 @@ namespace SODP.Infrastructure.Services
             _roleManager = roleManager;
         }
 
-        public Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ServicePageResponse<RoleDTO>> GetPageAsync(bool? active)
         {
             return await GetPageAsync(active, 1, 0);
@@ -87,5 +82,7 @@ namespace SODP.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

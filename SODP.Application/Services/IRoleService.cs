@@ -6,6 +6,6 @@ namespace SODP.Application.Services
 {
     public interface IRoleService : IGetEntityService<RoleDTO>, IActiveStatusService
     {
-        Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString);
+        Task<ServicePageResponse<RoleDTO>> GetPageAsync(bool? active, int currentPage, int pageSize);
     }
 }
