@@ -19,7 +19,7 @@ namespace SODP.UI.Pages.ArchiveProjects
     public class EditModel : ProjectEditPageModel
     {
 
-        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
+        public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory) { }
 
         public ProjectVM Project { get; set; }
 

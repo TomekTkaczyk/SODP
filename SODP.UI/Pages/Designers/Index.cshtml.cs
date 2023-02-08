@@ -25,7 +25,7 @@ namespace SODP.UI.Pages.Designers
         const string licensesPartialViewName = "_LicensesPartialView";
         const string newLicensePartialViewName = "_NewLicensePartialView";
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/Designers";
             _endpoint = "designers";

@@ -25,7 +25,7 @@ namespace SODP.UI.Pages.Stages
     {
         const string editStagePartialViewName = "_EditStagePartialView";
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/Stages";
             _endpoint = "stages";

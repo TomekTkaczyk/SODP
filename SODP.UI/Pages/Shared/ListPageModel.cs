@@ -16,7 +16,7 @@ namespace SODP.UI.Pages.Shared
 
 	public abstract class ListPageModel<T> : ListPageModel where T : BaseDTO
 	{
-		protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
+		protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory) { }
 
 		protected void SetPageProperty(StringBuilder url, int pageSize, string searchString)
 		{
@@ -99,7 +99,7 @@ namespace SODP.UI.Pages.Shared
 
         public int PageSize { get; set; }
 
-        protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator) 
+        protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory) 
         { 
             _apiProvider = apiProvider;
             foreach (var item in PageSizeSelectList.PageSizeList)

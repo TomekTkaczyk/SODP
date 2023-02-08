@@ -16,11 +16,11 @@ namespace SODP.UI.Pages.Shared
 
         public string ReturnUrl { get; protected set; }
 
-        protected SODPPageModel(ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator)
+        protected SODPPageModel(ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory)
         {
             _logger = logger;
             _mapper = mapper;
-            _translator = translator;
+            _translator = translatorFactory.GetTranslator();
         }
 
         protected virtual void SetModelErrors(ServiceResponse response)

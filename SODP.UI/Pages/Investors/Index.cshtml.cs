@@ -23,7 +23,7 @@ namespace SODP.UI.Pages.Investors
     {
 		const string editInvestorPartialViewName = "_EditInvestorPartialView";
 
-		public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
+		public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
 		{
 			ReturnUrl = "/Investors";
 			_endpoint = "investors";

@@ -16,7 +16,7 @@ namespace SODP.UI.Pages.Shared
     {
         protected readonly IWebAPIProvider _apiProvider;
 
-        public ProjectEditPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator)
+        public ProjectEditPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory)
         {
             _apiProvider = apiProvider;
         }

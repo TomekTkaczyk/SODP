@@ -1,7 +1,7 @@
 ﻿@using SODP.UI.Pages.ActiveProjects.ViewModels
 @using SODP.UI.Services;
 @model AvailableBranchesVM
-@inject ITranslator _translator
+@*@inject ITranslator _translator*@
 
 <!-- Modal add part branch -->
 <div class="modal fade" id="addPartBranch" tabindex="-1" role="dialog" aria-labelledby="addPartBranchLabel" aria-hidden="true">
@@ -17,7 +17,7 @@
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div id="error-placeholder"></div>
                 <form asp-page-handler="addPartBranch">
-                    <input name="ProjectPartId" type="hidden" value="@Model.ProjectPartId" />
+                    <input asp-for="ProjectPartId" type="hidden" value="@Model.ProjectPartId" />
                     <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <div class="form-group" enabled="@Model.Items.Count>0">
                         @Html.DropDownListFor(model => model.SelectedId, @Model.Items, @Model.Items.Count > 0 ? null : "-- nic do wybrania --", @Model.Items.Count > 0

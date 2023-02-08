@@ -312,6 +312,12 @@
 			}
 		}
 
+		function OnChange(sign) {
+			var e = document.getElementById('dropdownparts');
+			document.getElementById('sign').value = e.value;
+			document.getElementById('title').value = e.value ? e.options[e.selectedIndex].text : "";
+		}
+
 	</script>
 
 	<script>

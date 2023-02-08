@@ -18,7 +18,7 @@ namespace SODP.UI.Pages.ArchiveProjects
     {
 		const string projectPartialViewName = "_ProjectPartialView";
 
-		public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
+		public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/ArchiveProjects";
         }

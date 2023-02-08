@@ -435,6 +435,10 @@ namespace SODP.Application.Services
 							Name = part.Name,
 						});
 				}
+                else
+                {
+                    throw new Exception("Part exist");
+                }
 
 				_context.Entry(project).State = EntityState.Modified;
 				await _context.SaveChangesAsync();

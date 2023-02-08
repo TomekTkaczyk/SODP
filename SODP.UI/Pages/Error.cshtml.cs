@@ -14,7 +14,7 @@ namespace SODP.UI.Pages
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-        public ErrorModel(ILogger<ErrorModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator) { }
+        public ErrorModel(ILogger<ErrorModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory) { }
 
         public void OnGet()
         {

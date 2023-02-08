@@ -71,7 +71,7 @@ namespace SODP.UI
                     .WithTransientLifetime();
             });
 
-            services.AddSingleton<ITranslator, Translator>();
+            services.AddSingleton<LanguageTranslatorFactory>();
 
             services.AddScoped<IWebAPIProvider, WebAPIProvider>();
 

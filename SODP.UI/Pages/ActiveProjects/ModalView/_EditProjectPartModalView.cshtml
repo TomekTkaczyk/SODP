@@ -2,7 +2,7 @@
 @using SODP.UI.Services;
 
 @model PartVM
-@inject ITranslator _translator;
+@*@inject ITranslator _translator;*@
 
 <div class="modal fade" id="editProjectPart" tabindex="-1" role="dialog" aria-labelledby="editProjectPartLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -29,7 +29,9 @@
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        @Html.DropDownListFor(model => model.Sign, @Model.Items, "-- Słownik --", new { @class = "form-control", @onchange = "OnChange(this.value)", id="dropdownparts" })
+                        @Html.DropDownListFor(model => model.Sign, @Model.Items, "-- Słownik --", @Model.Items.Count > 0
+                        ? (object)new { @class = "form-control", @onchange = "OnChange(this.value)", id="dropdownparts" }
+                        : new { @class = "form-control", disabled = "disabled" })
                     </div>
                 </form>
             </div>

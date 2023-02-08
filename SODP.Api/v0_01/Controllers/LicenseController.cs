@@ -116,7 +116,7 @@ namespace SODP.Api.v0_01.Controllers
         }
 
 
-        [HttpGet("branch/{branchId}")]
+        [HttpGet("branches/{branchId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

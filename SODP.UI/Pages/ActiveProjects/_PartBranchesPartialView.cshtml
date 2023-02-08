@@ -1,7 +1,7 @@
 ﻿@using SODP.UI.Pages.ActiveProjects.ViewModels
 @using SODP.UI.Services;
 @model ProjectPartVM
-@inject ITranslator _translator
+@inject LanguageTranslatorFactory _translatorFactory
 
 <label class="text-secondary">Branże w ramach części:</label>
 @if (Model.Branches.Count > 0)
@@ -30,7 +30,7 @@
         @foreach (var role in item.Roles)
         {
             <div class="row">
-                <div class="col-3">@_translator.Translate(role.Role, Languages.Pl):</div>
+                <div class="col-3">@_translatorFactory.GetTranslator().Translate(role.Role):</div>
                 <div class="col">@role.Designer</div>
             </div>
         }

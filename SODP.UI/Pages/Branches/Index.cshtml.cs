@@ -24,7 +24,7 @@ namespace SODP.UI.Pages.Branches
         const string editBranchPartialViewName = "_EditBranchPartialView";
         const string designersPartialViewName = "_DesignersPartialView";
         
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/Branches";
             _endpoint = "branches";

@@ -1,4 +1,5 @@
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using SODP.Model;
 using SODP.Shared.DTO;
+using SODP.Shared.DTO.Requests;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -27,14 +29,15 @@ namespace SODP.UI.Pages.ActiveProjects
 	[Authorize(Roles = "Administrator,ProjectManager")]
 	public class EditModel : ProjectEditPageModel
 	{
-		const string _technicalRolesPartialViewName = "_TechnicalRolesPartialView";
-		const string _investorsPartialViewName = "_InvestorsPartialView";
-		const string _editProjectPartPartialViewName = "_EditProjectPartPartialView";
-		const string _partBranchesPartialViewName = "_PartBranchesPartialView";
-		const string _partAddPartBranchViewName = "_AddPartBranchPartialView";
-		const string _partAddTechnicalRoleViewName = "_AddTechnicalRolePartialView";
+		const string _editProjectPartViewName = "ModalView/_EditProjectPartModalView";
+		const string _addTechnicalRoleViewName = "ModalView/_AddTechnicalRoleModalView";
+		const string _addPartBranchViewName = "ModalView/_AddPartBranchModalView";
 
-		public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator) { }
+		const string _investorsViewName = "_InvestorsPartialView";
+		const string _partBranchesViewName = "_PartBranchesPartialView";
+		const string _technicalRolesViewName = "_TechnicalRolesPartialView";
+
+		public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory) { }
 
 		public ProjectVM Project { get; set; }
 
@@ -147,11 +150,11 @@ namespace SODP.UI.Pages.ActiveProjects
 						.ToList()
 				};
 
-				return GetPartialView(model, _investorsPartialViewName);
+				return GetPartialView(model, _investorsViewName);
 			}
 
 			// for example show error message
-			return GetPartialView(new InvestorsVM(), _investorsPartialViewName);
+			return GetPartialView(new InvestorsVM(), _investorsViewName);
 		}
 
 		public async Task<PartialViewResult> OnPostInvestorsListAsync(InvestorsVM investors)
@@ -175,35 +178,30 @@ namespace SODP.UI.Pages.ActiveProjects
 				}
 			}
 
-			return GetPartialView(investors, _investorsPartialViewName);
+			return GetPartialView(investors, _investorsViewName);
 		}
 
-		public async Task<PartialViewResult> OnGetEditProjectPartAsync(int projectId, int partId)
+		public async Task<PartialViewResult> OnGetEditProjectPartAsync(int projectId, int projectPartId)
 		{
-			var items = await GetPartsAsync();
 			var model = new PartVM()
 			{
-				Id = partId,
+				Id = projectPartId,
 				ProjectId = projectId,
-				Items = items.Select(x => new SelectListItem
-				{
-					Value = x.Sign,
-					Text = x.Name,
-				}).ToList()
+				Items = await GetPartsSelectListAsync(),
 			};
-			var part = await GetProjectPart(partId);
+			var part = await GetProjectPart(projectPartId);
 			if (part != null)
 			{
 				model.Sign = part.Sign;
 				model.Name = part.Name;
 			}
 
-			return GetPartialView(model, _editProjectPartPartialViewName);
+			return GetPartialView(model, _editProjectPartViewName);
 		}
 
 		public async Task<PartialViewResult> OnPostEditProjectPartAsync(PartVM part)
 		{
-			part.Items = new List<SelectListItem>();
+			part.Items = await GetPartsSelectListAsync();
 			if (ModelState.IsValid)
 			{
 				HttpResponseMessage apiResponse;
@@ -215,22 +213,17 @@ namespace SODP.UI.Pages.ActiveProjects
 				{
 					apiResponse = await _apiProvider.PutAsync($"projects/parts/{part.Id}", part.ToHttpContent());
 				}
-				switch (apiResponse.StatusCode)
+				if (apiResponse.StatusCode == HttpStatusCode.OK)
 				{
-					case HttpStatusCode.OK:
-						var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
-						if (!response.Success)
-						{
-							SetModelErrors(response);
-						}
-						break;
-					default:
-						// redirect to ErrorPage
-						break;
+					var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
+					if (!response.Success)
+					{
+						SetModelErrors(response);
+					}
 				}
 			}
 
-			return GetPartialView(part, _editProjectPartPartialViewName);
+			return GetPartialView(part, _editProjectPartViewName);
 		}
 
 		public async Task<PartialViewResult> OnGetPartBranchesPartialAsync(int projectPartId)
@@ -244,7 +237,7 @@ namespace SODP.UI.Pages.ActiveProjects
 				model = _mapper.Map<ProjectPartVM>(result.Data);
 			}
 
-			return GetPartialView(model, _partBranchesPartialViewName);
+			return GetPartialView(model, _partBranchesViewName);
 		}
 
 		public async Task<PartialViewResult> OnGetAddPartBranchAsync(int projectPartId)
@@ -276,7 +269,7 @@ namespace SODP.UI.Pages.ActiveProjects
 				}
 			}
 
-			return GetPartialView(model, _partAddPartBranchViewName);
+			return GetPartialView(model, _addPartBranchViewName);
 		}
 
 		public async Task<PartialViewResult> OnPostAddPartBranch(AvailableBranchesVM model)
@@ -287,64 +280,82 @@ namespace SODP.UI.Pages.ActiveProjects
 				if (model.SelectedId.HasValue && (model.SelectedId != 0))
 				{
 					var apiResponse = await _apiProvider.PostAsync($"projects/parts/{model.ProjectPartId}/branches/{model.SelectedId}", new StringContent(""));
-					switch (apiResponse.StatusCode)
+					if (apiResponse.StatusCode == HttpStatusCode.OK)
 					{
-						case HttpStatusCode.OK:
-							var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
-							if (!response.Success)
-							{
-								SetModelErrors(response);
-							}
-							break;
-						default:
-							// redirect to ErrorPage
-							break;
+						var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
+						if (!response.Success)
+						{
+							SetModelErrors(response);
+						}
 					}
 				}
 			}
 
-			return GetPartialView(model, _partAddPartBranchViewName);
+			return GetPartialView(model, _addPartBranchViewName);
 		}
 
 		public async Task<PartialViewResult> OnGetAddTechnicalRoleAsync(int partBranchId, int branchId)
 		{
-            var model = new AvailableRolesVM
+			var roles = Enum.GetValues(typeof(TechnicalRole)).Cast<TechnicalRole>().Select(x => new {
+				Value = (int)x,
+				Text = _translator.Translate(x.ToString(),Languages.Pl)
+			});
+
+			var model = new AvailableRolesVM
 			{
 				PartBranchId = partBranchId,
-				ItemsRole = Enum
-                .GetValues(typeof(TechnicalRole))
-                .Cast<TechnicalRole>()
-                .Select(x => new SelectListItem
-                {
-                    Value = x.ToString(),
-                    Text = _translator.Translate(x.ToString(),Languages.Pl)
-
-                }).ToList(),
-				ItemsLicense= new List<SelectListItem>()
+				ItemsRole = new SelectList(roles, "Value", "Text"),
 			};
 
-            var apiResponse = await _apiProvider.GetAsync($"projects/parts/branches/{partBranchId}");
+			var apiResponse = await _apiProvider.GetAsync($"licenses/branches/{branchId}");
 			if (apiResponse.IsSuccessStatusCode)
 			{
-				var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<PartBranchDTO>>();
-				model.ItemsLicense = result.Data.Roles.Select(x => new SelectListItem
-                {
-                    Value = x.License.Id.ToString(),
-                    Text = $"{x.License.Designer.ToString()} ({x.License.Content})"
-                }).ToList();
-				foreach (var item in result.Data.Roles)
+				var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<LicenseDTO>>();
+				var licenses = result.Data.Collection.Select(x => new
 				{
-					var role = model.ItemsRole.FirstOrDefault(x => x.Value == item.Role.ToString());
-					if(role != null)
+					Value = x.Id.ToString(),
+					Text = $"{x.Designer} ({x.Content})"
+				});
+				model.ItemsLicense = new SelectList(licenses, "Value", "Text");
+			}
+
+			//var apiResponse = await _apiProvider.GetAsync($"projects/parts/branches/{partBranchId}");
+			//if (apiResponse.IsSuccessStatusCode)
+			//{
+			//	var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<PartBranchDTO>>();
+			//	var licenses = result.Data.Roles.Select(x => new {
+			//		Value = x.License.Id.ToString(),
+			//		Text = $"{x.License.Designer} ({x.License.Content})"
+			//	});
+			//	model.ItemsLicense = new SelectList(licenses, "Value", "Text");
+			//}
+
+			return GetPartialView(model, _addTechnicalRoleViewName);
+		}
+
+		public async Task<PartialViewResult> OnPostAddTechnicalRoleAsync(AvailableRolesVM model)
+		{
+			if (ModelState.IsValid)
+			{
+				var role = new NewPartBranchRoleDTO
+				{
+					partBranchId = model.PartBranchId,
+					Role = (TechnicalRole)Enum.Parse(typeof(TechnicalRole), model.SelectedRoleId.ToString()),
+					LicenseId = (int)model.SelectedLicenseId
+				};
+				var apiResponse = await _apiProvider.PostAsync($"projects/parts/branches/roles", new StringContent(JsonSerializer.Serialize(role), Encoding.UTF8, "application/json"));
+				if (apiResponse.StatusCode == HttpStatusCode.OK)
+				{
+					var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
+					if (!response.Success)
 					{
-						model.ItemsRole.Remove(role);
+						SetModelErrors(response);
 					}
 				}
 			}
 
-            return GetPartialView(model, _partAddTechnicalRoleViewName);
+			return GetPartialView(model, _addTechnicalRoleViewName);
 		}
-
 
 
 		private async Task<ProjectPartDTO> GetProjectPart(int projectPartId)
@@ -405,19 +416,23 @@ namespace SODP.UI.Pages.ActiveProjects
 				}).ToList();
 			technicalRoles.Licenses.Add(new SelectListItem("-- usuñ z listy --", "0"));
 
-			return GetPartialView(technicalRoles, _technicalRolesPartialViewName);
+			return GetPartialView(technicalRoles, _technicalRolesViewName);
 		}
 
-		private async Task<IList<PartVM>> GetPartsAsync()
+		private async Task<IList<SelectListItem>> GetPartsSelectListAsync()
 		{
 			var apiResponse = await _apiProvider.GetAsync($"parts");
 			if (apiResponse.IsSuccessStatusCode)
 			{
 				var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<PartDTO>>();
-				return _mapper.Map<ICollection<PartVM>>(result.Data.Collection).ToList();
+				return result.Data.Collection.Select(x => new SelectListItem
+				{
+					Value = x.Sign,
+					Text = x.Name,
+				}).ToList();
 			}
 
-			return new List<PartVM>();
+			return new List<SelectListItem>();
 		}
 	}
 }

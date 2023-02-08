@@ -23,7 +23,7 @@ namespace SODP.UI.Pages.Users
 	{
         private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator)
+        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory)
         {
             ReturnUrl = "/Users/Edit";
 			_apiProvider = apiProvider;

@@ -16,7 +16,6 @@
                 success: function (data) {
                     if (data.success) {
                         window.location.reload();
-                        toastr.success(data.message);
                     }
                     else {
                         toastr.error(data.message);

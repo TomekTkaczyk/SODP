@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace SODP.UI.Services
 {
+    
     public enum Languages
     {
         En, Pl
@@ -12,6 +13,17 @@ namespace SODP.UI.Services
 
     public class Translator : ITranslator
     {
+        private Languages _currentLanguage;
+
+        public Languages CurrentLanguage => _currentLanguage;
+
+        public Translator(Languages language)
+        {
+            _currentLanguage = language;
+        }
+
+        public string Translate(string source) => Translate(source, CurrentLanguage);
+
         public string Translate(string source, Languages lang)
         {
 			//var regex = new Regex("'(.*?)'");
@@ -43,5 +55,6 @@ namespace SODP.UI.Services
             { "Designer", "Designer" },
             { "Checker", "Checker" }
         };
-    }
+
+	}
 }
