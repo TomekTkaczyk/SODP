@@ -583,7 +583,30 @@ namespace SODP.Application.Services
 		}
 
 
-		public async Task<ServiceResponse<ProjectPartDTO>> GetProjectPartWithBranchesAsync(int projectPartId)
+        public async Task<ServiceResponse> DeleteBranchRoleAsync(int branchRoleId)
+        {
+            var response = new ServiceResponse();
+            try
+            {
+                var role = await _context.BranchRoles.FirstOrDefaultAsync(x => x.Id == branchRoleId);
+                if (role == null)
+                {
+                    response.SetError($"Error: BranchRole Id:{branchRoleId} not found.", 404);
+                    return response;
+                }
+                _context.BranchRoles.Remove(role);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                response.SetError(ex.Message, 500);
+            }
+
+            return response;
+        }
+
+
+        public async Task<ServiceResponse<ProjectPartDTO>> GetProjectPartWithBranchesAsync(int projectPartId)
 		{
             var serviceResponse = new ServiceResponse<ProjectPartDTO>();
             var part = await _context.ProjectParts

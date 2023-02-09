@@ -19,7 +19,6 @@ function initModalPlaceHolder(returnUrl) {
         var actionUrl = form.attr('action');
         var dataToSend = form.serialize();
         $.post(actionUrl, dataToSend).done(function (data) {
-            console.log(data);
             var newBody = $('.modal-body', data);
             placeholderElement.find('.modal-body').replaceWith(newBody);
             var isValid = newBody.find('[name="IsValidate"]').val() == 'True';

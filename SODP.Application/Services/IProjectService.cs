@@ -23,7 +23,8 @@ namespace SODP.Application.Services
 		Task<ServiceResponse> AddBranchToPartAsync(int projectPartId, int branchId);
         Task<ServiceResponse> DeletePartBranchAsync(int partBranchId);
 		Task<ServiceResponse> AddRoleToPartBranchAsync(int partBranchId, TechnicalRole role, int licenseId);
-		Task<ServiceResponse<ProjectPartDTO>> GetProjectPartWithBranchesAsync(int projectPartId);
+        Task<ServiceResponse> DeleteBranchRoleAsync(int branchRoleId);
+        Task<ServiceResponse<ProjectPartDTO>> GetProjectPartWithBranchesAsync(int projectPartId);
 		Task<ServiceResponse<PartBranchDTO>> GetPartBranchAsync(int partBranchId);
 	}
 }

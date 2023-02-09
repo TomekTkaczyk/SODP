@@ -30,6 +30,13 @@
         @foreach (var role in item.Roles)
         {
             <div class="row">
+                <a onclick='Delete("/api/v0_01/projects/parts/branches/roles/@role.Id")'
+                   class="col-2 btn btn-lg m-0 p-0 text-danger clickable"
+                   data-toggle="tooltip"
+                   data-placement="top"
+                   title="Usuń rolę">
+                    <i class="fas fa-trash-alt "></i>
+                </a>
                 <div class="col-3">@_translatorFactory.GetTranslator().Translate(role.Role):</div>
                 <div class="col">@role.Designer</div>
             </div>

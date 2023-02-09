@@ -352,8 +352,10 @@ namespace SODP.UI.Pages.ActiveProjects
 			return GetPartialView(model, _addTechnicalRoleViewName);
 		}
 
-		public async Task<PartialViewResult> OnPostAddTechnicalRoleAsync(AvailableRolesVM model)
+		public async Task<PartialViewResult> OnPostAddTechnicalRole(AvailableRolesVM model)
 		{
+			model.ItemsLicense = new SelectList(new List<SelectListItem>());
+			model.ItemsRole = new SelectList(new List<SelectListItem>());
 			if (ModelState.IsValid)
 			{
 				var role = new NewPartBranchRoleDTO

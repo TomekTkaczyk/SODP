@@ -152,7 +152,17 @@ namespace SODP.Api.v0_01.Controllers
 		}
 
 
-		[HttpGet("parts/{projectPartId}")]
+        [HttpDelete("parts/branches/roles/{branchRoleId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> DeleteRoleFromPartBranchAsync(int branchRoleId)
+        {
+            return Ok(await _service.DeleteBranchRoleAsync(branchRoleId));
+        }
+
+
+        [HttpGet("parts/{projectPartId}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -180,6 +190,7 @@ namespace SODP.Api.v0_01.Controllers
 			return Ok(await _service.DeleteProjectPartAsync(projectPartId));
 		}
 
+
         [HttpGet("parts/branches/{partBranchId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -188,6 +199,7 @@ namespace SODP.Api.v0_01.Controllers
         {
             return Ok(await _service.GetPartBranchAsync(partBranchId));
         }
+
 
         [HttpPatch("{id}/archive")]
         [ProducesResponseType(StatusCodes.Status200OK)]
