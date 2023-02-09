@@ -255,8 +255,8 @@ namespace SODP.UI.Pages.ActiveProjects
 				{
 					Value = x.Id.ToString(),
 					Text = x.ToString()
-				})
-					.ToList();
+				}).ToList();
+
 				apiResponse = await _apiProvider.GetAsync($"projects/parts/{projectPartId}");
 				if (apiResponse.IsSuccessStatusCode)
 				{
@@ -296,39 +296,58 @@ namespace SODP.UI.Pages.ActiveProjects
 
 		public async Task<PartialViewResult> OnGetAddTechnicalRoleAsync(int partBranchId, int branchId)
 		{
-			var roles = Enum.GetValues(typeof(TechnicalRole)).Cast<TechnicalRole>().Select(x => new {
-				Value = (int)x,
-				Text = _translator.Translate(x.ToString(),Languages.Pl)
-			});
+			var roles = Enum.GetValues(typeof(TechnicalRole)).Cast<TechnicalRole>().Select(x => new SelectListItem {
+				Value = ((int)x).ToString(),
+				Text = x.ToString()
+			}).ToList();
+
+			List<BranchRoleDTO> assignedRoles;
+			List<DesignerDTO> assignedDesigners;
+
+			var apiResponse = await _apiProvider.GetAsync($"projects/parts/branches/{partBranchId}");
+			if (apiResponse.IsSuccessStatusCode)
+			{
+				var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<PartBranchDTO>>();
+				assignedRoles = result.Data.Roles.ToList();
+				assignedDesigners = result.Data.Roles.Select(x => x.License.Designer).ToList();
+			}
+			else
+			{
+				assignedRoles = new List<BranchRoleDTO>();
+				assignedDesigners = new List<DesignerDTO>();
+			}
+
+			foreach (var item in assignedRoles)
+			{
+				var existRole = roles.FirstOrDefault(x => x.Text.Equals(item.Role));
+				if (existRole != null)
+				{
+					roles.Remove(existRole);
+				}
+			}
+
+			var designers = new List<SelectListItem>() ;
+			apiResponse = await _apiProvider.GetAsync($"licenses/branches/{branchId}");
+			if (apiResponse.IsSuccessStatusCode)
+			{
+				var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<LicenseDTO>>();
+				var licenses = result.Data.Collection.ToList();
+				licenses.RemoveAll(x => assignedDesigners.Any(y => y.Id == x.Designer.Id));
+
+				designers = licenses.Select(x => new SelectListItem
+				{
+					Value = x.Id.ToString(),
+					Text = $"{x.Designer} ({x.Content})"
+				}).ToList();
+			}
+
 
 			var model = new AvailableRolesVM
 			{
 				PartBranchId = partBranchId,
 				ItemsRole = new SelectList(roles, "Value", "Text"),
+				ItemsLicense = new SelectList(designers, "Value", "Text"),
 			};
-
-			var apiResponse = await _apiProvider.GetAsync($"licenses/branches/{branchId}");
-			if (apiResponse.IsSuccessStatusCode)
-			{
-				var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<LicenseDTO>>();
-				var licenses = result.Data.Collection.Select(x => new
-				{
-					Value = x.Id.ToString(),
-					Text = $"{x.Designer} ({x.Content})"
-				});
-				model.ItemsLicense = new SelectList(licenses, "Value", "Text");
-			}
-
-			//var apiResponse = await _apiProvider.GetAsync($"projects/parts/branches/{partBranchId}");
-			//if (apiResponse.IsSuccessStatusCode)
-			//{
-			//	var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<PartBranchDTO>>();
-			//	var licenses = result.Data.Roles.Select(x => new {
-			//		Value = x.License.Id.ToString(),
-			//		Text = $"{x.License.Designer} ({x.License.Content})"
-			//	});
-			//	model.ItemsLicense = new SelectList(licenses, "Value", "Text");
-			//}
 
 			return GetPartialView(model, _addTechnicalRoleViewName);
 		}
