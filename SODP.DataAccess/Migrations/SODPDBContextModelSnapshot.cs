@@ -218,28 +218,31 @@ namespace SODP.DataAccess.Migrations
 
             modelBuilder.Entity("SODP.Model.BranchRole", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("LicenseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifyTimeStamp")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("PartBranchId")
                         .HasColumnType("int");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<int>("LicenseId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModifyTimeStamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("PartBranchId", "Role", "LicenseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LicenseId")
                         .HasName("BranchRolesIX_License");
+
+                    b.HasIndex("PartBranchId");
 
                     b.ToTable("BranchRoles");
                 });

@@ -172,7 +172,7 @@ namespace SODP.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BranchLicenses", x => new { x.LicenseId, x.BranchId });
+                    table.PrimaryKey("PK_BranchLicenses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_BranchLicenses_Branches_BranchId",
                         column: x => x.BranchId,
@@ -307,7 +307,7 @@ namespace SODP.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BranchRoles", x => new { x.PartBranchId, x.Role, x.LicenseId });
+                    table.PrimaryKey("PK_BranchRoles", x => x.Id);
                     table.ForeignKey(
                         name: "FK_BranchRoles_Licenses_LicenseId",
                         column: x => x.LicenseId,

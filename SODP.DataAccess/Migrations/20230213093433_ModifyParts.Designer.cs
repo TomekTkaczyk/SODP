@@ -9,8 +9,8 @@ using SODP.DataAccess;
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    [Migration("20230128182223_ChangePartsEntity")]
-    partial class ChangePartsEntity
+    [Migration("20230213093433_ModifyParts")]
+    partial class ModifyParts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -220,28 +220,31 @@ namespace SODP.DataAccess.Migrations
 
             modelBuilder.Entity("SODP.Model.BranchRole", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("LicenseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifyTimeStamp")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("PartBranchId")
                         .HasColumnType("int");
 
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<int>("LicenseId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateTimeStamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModifyTimeStamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("PartBranchId", "Role", "LicenseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LicenseId")
                         .HasName("BranchRolesIX_License");
+
+                    b.HasIndex("PartBranchId");
 
                     b.ToTable("BranchRoles");
                 });
@@ -414,6 +417,9 @@ namespace SODP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");
 
@@ -424,6 +430,8 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
 
                     b.HasIndex("ProjectPartId")
                         .HasName("PartBranchesIX_ProjectPartId");
@@ -828,6 +836,12 @@ namespace SODP.DataAccess.Migrations
 
             modelBuilder.Entity("SODP.Model.PartBranch", b =>
                 {
+                    b.HasOne("SODP.Model.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SODP.Model.ProjectPart", "ProjectPart")
                         .WithMany("Branches")
                         .HasForeignKey("ProjectPartId")

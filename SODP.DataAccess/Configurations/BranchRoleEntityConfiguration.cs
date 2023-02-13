@@ -22,7 +22,7 @@ namespace SODP.DataAccess.Configurations
 
             builder.ToTable("BranchRoles");
 
-            builder.HasKey(x => new { x.PartBranchId, x.Role, x.LicenseId });
+//            builder.HasKey(x => new { x.PartBranchId, x.Role, x.LicenseId });
         }
     }
 }

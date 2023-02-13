@@ -207,7 +207,7 @@ namespace SODP.DataAccess.Migrations
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("LicenseId", "BranchId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BranchId")
                         .HasName("BranchLicensesIX_Branch");
@@ -238,7 +238,7 @@ namespace SODP.DataAccess.Migrations
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("PartBranchId", "Role", "LicenseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LicenseId")
                         .HasName("BranchRolesIX_License");
