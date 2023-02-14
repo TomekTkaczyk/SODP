@@ -7,15 +7,13 @@ using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
+using SODP.UI.Pages.Parts.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.Pages.Stages.ViewModels;
 using SODP.UI.Services;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Policy;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Stages
@@ -23,7 +21,7 @@ namespace SODP.UI.Pages.Stages
     [Authorize(Roles = "ProjectManager")]
     public class IndexModel : ListPageModel<StageDTO>
     {
-        const string editStagePartialViewName = "_EditStagePartialView";
+        const string editStageModalViewName = "ModalView/_EditStageModalView";
 
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
@@ -50,20 +48,22 @@ namespace SODP.UI.Pages.Stages
 
         public async Task<PartialViewResult> OnGetEditStageAsync(int? id)
         {
-            if (id != null)
+            var model = new StageVM();
+            if (id == null)
             {
-                var apiResponse = await _apiProvider.GetAsync($"stages/{id}");
-                if (apiResponse.IsSuccessStatusCode)
-                {
-                    var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
-
-                    return GetPartialView(response.Data.ToViewModel(), editStagePartialViewName);
-                }
-
-                RedirectToPage("Errors/404");
+                return GetPartialView(model, editStageModalViewName);
             }
 
-            return GetPartialView(new StageVM(), editStagePartialViewName);
+            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}");
+            if (!apiResponse.IsSuccessStatusCode)
+            {
+				RedirectToPage($"Errors/{(int)apiResponse.StatusCode}");
+			}
+
+			var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
+            model = _mapper.Map<StageVM>(result.Data);
+
+            return GetPartialView(model, editStageModalViewName);
         }
 
         public async Task<PartialViewResult> OnPostEditStageAsync(StageVM stage)
@@ -71,8 +71,8 @@ namespace SODP.UI.Pages.Stages
             if (ModelState.IsValid)
             {
                 var apiResponse = stage.Id == 0
-                    ? await _apiProvider.PostAsync($"stages", stage.ToHttpContent())
-                    : await _apiProvider.PutAsync($"stages/{stage.Id}", stage.ToHttpContent());
+                    ? await _apiProvider.PostAsync($"{_endpoint}", stage.ToHttpContent())
+                    : await _apiProvider.PutAsync($"{_endpoint}/{stage.Id}", stage.ToHttpContent());
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
@@ -88,7 +88,7 @@ namespace SODP.UI.Pages.Stages
                 }
             }
 
-            return  GetPartialView(stage, editStagePartialViewName);
+            return  GetPartialView(stage, editStageModalViewName);
         }
     }
 }
