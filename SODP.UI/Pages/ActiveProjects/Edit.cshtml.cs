@@ -190,9 +190,9 @@ namespace SODP.UI.Pages.ActiveProjects
 			{
 				Id = projectPartId,
 				ProjectId = projectId,
-				Items = await GetPartsSelectListAsync(),
+				Items = await GetAvailablePartsAsync(),
 			};
-			var part = await GetProjectPart(projectPartId);
+			var part = await GetProjectPartAsync(projectPartId);
 			if (part != null)
 			{
 				model.Sign = part.Sign;
@@ -204,7 +204,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
 		public async Task<PartialViewResult> OnPostEditProjectPartAsync(PartVM part)
 		{
-			part.Items = await GetPartsSelectListAsync();
+			part.Items = await GetAvailablePartsAsync();
 			if (ModelState.IsValid)
 			{
 				HttpResponseMessage apiResponse;
@@ -299,9 +299,9 @@ namespace SODP.UI.Pages.ActiveProjects
 
 		public async Task<PartialViewResult> OnGetAddTechnicalRoleAsync(int partBranchId)
 		{
-			var response = await PartBranchServiceResponse(partBranchId);
+			var response = await PartBranchServiceResponseAsync(partBranchId);
 			var roles = GetAvailableRoles(response.Data);
-			var designers = await GetAvailableDesigners(response.Data);
+			var designers = await GetAvailableDesignersAsync(response.Data);
 
 			var model = new AvailableRolesVM
 			{
@@ -315,9 +315,9 @@ namespace SODP.UI.Pages.ActiveProjects
 
 		public async Task<PartialViewResult> OnPostAddTechnicalRole(AvailableRolesVM model)
 		{
-			var partBranchResponse = await PartBranchServiceResponse(model.PartBranchId);
+			var partBranchResponse = await PartBranchServiceResponseAsync(model.PartBranchId);
 			model.ItemsLicense = GetAvailableRoles(partBranchResponse.Data);
-			model.ItemsRole = await GetAvailableDesigners(partBranchResponse.Data);
+			model.ItemsRole = await GetAvailableDesignersAsync(partBranchResponse.Data);
 			if (ModelState.IsValid)
 			{
 				var role = new NewPartBranchRoleDTO
@@ -361,7 +361,7 @@ namespace SODP.UI.Pages.ActiveProjects
 			return new SelectList(roles, "Value", "Text");
 		}
 
-		private async Task<SelectList> GetAvailableDesigners(PartBranchDTO partBranch)
+		private async Task<SelectList> GetAvailableDesignersAsync(PartBranchDTO partBranch)
 		{
 			var apiResponse = await _apiProvider.GetAsync($"licenses/branches/{partBranch.Branch.Id}");
 			var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<LicenseDTO>>();
@@ -376,7 +376,7 @@ namespace SODP.UI.Pages.ActiveProjects
 			return new SelectList(designers, "Value", "Text");
 		}
 
-		private async Task<ProjectPartDTO> GetProjectPart(int projectPartId)
+		private async Task<ProjectPartDTO> GetProjectPartAsync(int projectPartId)
 		{
 			var apiResponse = await _apiProvider.GetAsync($"projects/parts/{projectPartId}");
 			if (apiResponse.IsSuccessStatusCode)
@@ -437,7 +437,7 @@ namespace SODP.UI.Pages.ActiveProjects
 			return GetPartialView(technicalRoles, _technicalRolesViewName);
 		}
 
-		private async Task<IList<SelectListItem>> GetPartsSelectListAsync()
+		private async Task<IList<SelectListItem>> GetAvailablePartsAsync()
 		{
 			var apiResponse = await _apiProvider.GetAsync($"parts");
 			if (apiResponse.IsSuccessStatusCode)
@@ -453,7 +453,7 @@ namespace SODP.UI.Pages.ActiveProjects
 			return new List<SelectListItem>();
 		}
 
-		private async Task<ServiceResponse<PartBranchDTO>> PartBranchServiceResponse(int partBranchId)
+		private async Task<ServiceResponse<PartBranchDTO>> PartBranchServiceResponseAsync(int partBranchId)
 		{
 			ServiceResponse<PartBranchDTO> response = new();
             var apiResponse = await _apiProvider.GetAsync($"projects/parts/branches/{partBranchId}");

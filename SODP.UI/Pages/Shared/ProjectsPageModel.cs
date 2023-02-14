@@ -25,7 +25,7 @@ namespace SODP.UI.Pages.Shared
         {
 			var endpoint = GetUrl(currentPage, pageSize, searchString);
             endpoint += $"&status={status}";
-			var apiResponse = await GetApiResponse(endpoint);
+			var apiResponse = await GetApiResponseAsync(endpoint);
 
 			PageInfo = GetPageInfo(apiResponse, searchString);
             Projects = new ProjectsVM

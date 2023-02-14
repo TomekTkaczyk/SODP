@@ -36,7 +36,7 @@ namespace SODP.UI.Pages.Stages
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
             var endpoint = GetUrl(currentPage, pageSize, searchString);
-            var apiResponse = await GetApiResponse(endpoint);
+            var apiResponse = await GetApiResponseAsync(endpoint);
             
             PageInfo = GetPageInfo(apiResponse, searchString);
 			Stages = new StagesVM

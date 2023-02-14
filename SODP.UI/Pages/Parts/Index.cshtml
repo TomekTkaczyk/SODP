@@ -1,0 +1,14 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@using SODP.Model
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+
+@model SODP.UI.Pages.Parts.IndexModel
+
+@{
+	ViewData["Title"] = "Części projektu";
+}
+
+@inject SignInManager<User> SignInManager
+

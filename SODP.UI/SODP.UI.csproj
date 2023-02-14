@@ -57,4 +57,8 @@
     <ProjectReference Include="..\SODP.Shared\SODP.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Parts\ModalView\" />
+  </ItemGroup>
+
 </Project>

@@ -40,7 +40,7 @@ namespace SODP.UI.Pages.Shared
 			return url.ToString();
 		}
 
-		protected async Task<ServicePageResponse<T>> GetApiResponse(string url) 
+		protected async Task<ServicePageResponse<T>> GetApiResponseAsync(string url) 
 		{
 			var apiResponse = await _apiProvider.GetAsync(url);
 
