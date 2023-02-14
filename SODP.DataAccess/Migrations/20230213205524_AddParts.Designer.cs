@@ -9,8 +9,8 @@ using SODP.DataAccess;
 namespace SODP.DataAccess.Migrations
 {
     [DbContext(typeof(SODPDBContext))]
-    [Migration("20230213093433_ModifyParts")]
-    partial class ModifyParts
+    [Migration("20230213205524_AddParts")]
+    partial class AddParts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -192,7 +192,8 @@ namespace SODP.DataAccess.Migrations
 
             modelBuilder.Entity("SODP.Model.BranchLicense", b =>
                 {
-                    b.Property<int>("LicenseId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("BranchId")
@@ -201,13 +202,13 @@ namespace SODP.DataAccess.Migrations
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("LicenseId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("LicenseId", "BranchId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BranchId")
                         .HasName("BranchLicensesIX_Branch");

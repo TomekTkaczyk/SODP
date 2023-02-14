@@ -297,30 +297,11 @@ namespace SODP.UI.Pages.ActiveProjects
 			return GetPartialView(model, _addPartBranchViewName);
 		}
 
-		public async Task<PartialViewResult> OnGetAddTechnicalRoleAsync(int partBranchId, int branchId)
+		public async Task<PartialViewResult> OnGetAddTechnicalRoleAsync(int partBranchId)
 		{
 			var response = await PartBranchServiceResponse(partBranchId);
 			var roles = GetAvailableRoles(response.Data);
 			var designers = await GetAvailableDesigners(response.Data);
-
-   //         List<BranchRoleDTO> assignedRoles = response.Data.Roles.ToList(); ;
-			//List<DesignerDTO> assignedDesigners = assignedRoles.Select(x => x.License.Designer).ToList();
-
-			//var designers = new List<SelectListItem>();
-			//var apiResponse = await _apiProvider.GetAsync($"licenses/branches/{branchId}");
-			//if (apiResponse.IsSuccessStatusCode)
-			//{
-			//	var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<LicenseDTO>>();
-			//	var licenses = result.Data.Collection.ToList();
-			//	licenses.RemoveAll(x => assignedDesigners.Any(y => y.Id == x.Designer.Id));
-
-			//	designers = licenses.Select(x => new SelectListItem
-			//	{
-			//		Value = x.Id.ToString(),
-			//		Text = $"{x.Designer} ({x.Content})"
-			//	}).ToList();
-			//}
-
 
 			var model = new AvailableRolesVM
 			{
@@ -334,8 +315,9 @@ namespace SODP.UI.Pages.ActiveProjects
 
 		public async Task<PartialViewResult> OnPostAddTechnicalRole(AvailableRolesVM model)
 		{
-			model.ItemsLicense = new SelectList(new List<SelectListItem>());
-			model.ItemsRole = new SelectList(new List<SelectListItem>());
+			var partBranchResponse = await PartBranchServiceResponse(model.PartBranchId);
+			model.ItemsLicense = GetAvailableRoles(partBranchResponse.Data);
+			model.ItemsRole = await GetAvailableDesigners(partBranchResponse.Data);
 			if (ModelState.IsValid)
 			{
 				var role = new NewPartBranchRoleDTO
@@ -357,6 +339,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
 			return GetPartialView(model, _addTechnicalRoleViewName);
 		}
+
 
 		private SelectList GetAvailableRoles(PartBranchDTO partBranch)
 		{
@@ -404,7 +387,6 @@ namespace SODP.UI.Pages.ActiveProjects
 
 			return null;
 		}
-
 
 		private async Task<PartialViewResult> GetPartialBranchesViewAsync(int projectId, int branchId)
 		{
@@ -455,7 +437,6 @@ namespace SODP.UI.Pages.ActiveProjects
 			return GetPartialView(technicalRoles, _technicalRolesViewName);
 		}
 
-
 		private async Task<IList<SelectListItem>> GetPartsSelectListAsync()
 		{
 			var apiResponse = await _apiProvider.GetAsync($"parts");
@@ -470,26 +451,6 @@ namespace SODP.UI.Pages.ActiveProjects
 			}
 
 			return new List<SelectListItem>();
-		}
-
-		private async Task<List<BranchRoleDTO>> GetAssignedRoles(int partBranchId)
-		{
-			List<BranchRoleDTO> assignedRoles;
-
-			var apiResponse = await _apiProvider.GetAsync($"projects/parts/branches/{partBranchId}");
-			if (apiResponse.IsSuccessStatusCode)
-			{
-				var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<PartBranchDTO>>();
-				assignedRoles = result.Data.Roles.ToList();
-				//assignedDesigners = result.Data.Roles.Select(x => x.License.Designer).ToList();
-			}
-			else
-			{
-				assignedRoles = new List<BranchRoleDTO>();
-				//assignedDesigners = new List<DesignerDTO>();
-			}
-
-			return assignedRoles;
 		}
 
 		private async Task<ServiceResponse<PartBranchDTO>> PartBranchServiceResponse(int partBranchId)
@@ -511,31 +472,6 @@ namespace SODP.UI.Pages.ActiveProjects
 
 			return response;
         }
-
-  //      private async Task<(List<SelectListItem>, List<SelectListItem>)> GetListItems(int partBranchId)
-		//{
-		//	List<SelectListItem> availableRoles;
-  //          List<SelectListItem> availableDesigners;
-
-  //          List<BranchRoleDTO> assignedRoles;
-		//	List<DesignerDTO> assignedDesigners; ;
-
-  //          var apiResponse = await _apiProvider.GetAsync($"projects/parts/branches/{partBranchId}");
-  //          if (apiResponse.IsSuccessStatusCode)
-  //          {
-  //              var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<PartBranchDTO>>();
-  //              assignedRoles = result.Data.Roles.ToList();
-		//		assignedDesigners = result.Data.Roles.Select(x => x.License.Designer).ToList();
-		//	}
-  //          else
-  //          {
-  //              assignedRoles = new List<BranchRoleDTO>();
-		//		assignedDesigners = new List<DesignerDTO>();
-		//	}
-
-		//	return (availableRoles, availableDesigners);
-  //      }
-
 	}
 }
 
