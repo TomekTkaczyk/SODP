@@ -1,5 +1,4 @@
 ﻿function Delete(url, msg) {
-    console.log(msg);
     if (msg == null) {
         msg = "Usunięcie rekordu. Operacja nie może być cofnięta.";
     }
@@ -16,7 +15,6 @@
                 url: url,
                 success: function (data) {
                     if (data.success) {
-                        toastr.success(data.message);
                         window.location.reload();
                     }
                     else {

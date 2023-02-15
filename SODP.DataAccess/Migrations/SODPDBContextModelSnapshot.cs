@@ -116,6 +116,40 @@ namespace SODP.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SODP.Model.AppDictionary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ActiveStatus")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("CreateTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("ModifyTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sign")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId")
+                        .HasName("DictioanryIX_ParentId");
+
+                    b.ToTable("Dictionary");
+                });
+
             modelBuilder.Entity("SODP.Model.Branch", b =>
                 {
                     b.Property<int>("Id")
@@ -149,9 +183,69 @@ namespace SODP.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Order")
-                        .HasName("IX_ORDER");
+                        .HasName("BranchesIX_Order");
 
                     b.ToTable("Branches");
+                });
+
+            modelBuilder.Entity("SODP.Model.BranchLicense", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("LicenseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifyTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BranchId")
+                        .HasName("BranchLicensesIX_Branch");
+
+                    b.HasIndex("LicenseId")
+                        .HasName("BranchLicensesIX_License");
+
+                    b.ToTable("BranchLicenses");
+                });
+
+            modelBuilder.Entity("SODP.Model.BranchRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("LicenseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ModifyTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("PartBranchId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LicenseId")
+                        .HasName("BranchRolesIX_License");
+
+                    b.HasIndex("PartBranchId");
+
+                    b.ToTable("BranchRoles");
                 });
 
             modelBuilder.Entity("SODP.Model.Certificate", b =>
@@ -182,7 +276,7 @@ namespace SODP.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DesignerId")
-                        .HasName("IX_Designer");
+                        .HasName("CertificatesIX_Designer");
 
                     b.ToTable("Certificates");
                 });
@@ -246,7 +340,7 @@ namespace SODP.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
-                        .HasName("IX_NAME");
+                        .HasName("InvestorsIX_Name");
 
                     b.ToTable("Investors");
                 });
@@ -273,14 +367,53 @@ namespace SODP.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DesignerId")
-                        .HasName("IX_Designer");
+                        .HasName("LicensesIX_Designer");
 
                     b.ToTable("Licenses");
                 });
 
-            modelBuilder.Entity("SODP.Model.LicenseBranch", b =>
+            modelBuilder.Entity("SODP.Model.Part", b =>
                 {
-                    b.Property<int>("LicenseId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ActiveStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime>("CreateTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("ModifyTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Order")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("Sign")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Order")
+                        .HasName("PartIX_Order");
+
+                    b.ToTable("Parts");
+                });
+
+            modelBuilder.Entity("SODP.Model.PartBranch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("BranchId")
@@ -289,21 +422,20 @@ namespace SODP.DataAccess.Migrations
                     b.Property<DateTime>("CreateTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("LicenseId", "BranchId");
+                    b.Property<int>("ProjectPartId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("BranchId")
-                        .HasName("IX_Branch");
+                    b.HasKey("Id");
 
-                    b.HasIndex("LicenseId")
-                        .HasName("IX_License");
+                    b.HasIndex("BranchId");
 
-                    b.ToTable("LicenseBranches");
+                    b.HasIndex("ProjectPartId")
+                        .HasName("PartBranchesIX_ProjectPartId");
+
+                    b.ToTable("PartBranches");
                 });
 
             modelBuilder.Entity("SODP.Model.Project", b =>
@@ -373,58 +505,44 @@ namespace SODP.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("StageId")
-                        .HasName("IX_Stage");
+                        .HasName("ProjectsIX_Stage");
 
                     b.HasIndex("Number", "StageId")
                         .IsUnique()
-                        .HasName("IX_NumberStage");
+                        .HasName("ProjectsIX_NumberStage");
 
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("SODP.Model.ProjectBranch", b =>
+            modelBuilder.Entity("SODP.Model.ProjectPart", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("BranchId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreateTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("ModifyTimeStamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Sign")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("BranchId")
-                        .HasName("IX_Branch");
-
                     b.HasIndex("ProjectId")
-                        .HasName("IX_Project");
+                        .HasName("ProjectPartsIX_Project");
 
-                    b.ToTable("ProjectBranches");
-                });
-
-            modelBuilder.Entity("SODP.Model.ProjectBranchRole", b =>
-                {
-                    b.Property<int>("ProjectBranchId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LicenseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectBranchId", "Role", "LicenseId");
-
-                    b.HasIndex("LicenseId")
-                        .HasName("IX_License");
-
-                    b.ToTable("ProjectBranchRoles");
+                    b.ToTable("ProjectParts");
                 });
 
             modelBuilder.Entity("SODP.Model.Role", b =>
@@ -451,11 +569,11 @@ namespace SODP.DataAccess.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique()
-                        .HasName("IX_Name");
+                        .HasName("RolesIX_Name");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("IX_NormalizedName");
+                        .HasName("RolesIX_NormalizedName");
 
                     b.ToTable("Roles");
                 });
@@ -480,6 +598,11 @@ namespace SODP.DataAccess.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Order")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Sign")
                         .IsRequired()
@@ -514,7 +637,7 @@ namespace SODP.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
-                        .HasName("IX_User");
+                        .HasName("TokensIX_User");
 
                     b.ToTable("Tokens");
                 });
@@ -588,18 +711,18 @@ namespace SODP.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .HasName("IX_Email");
+                        .HasName("UsersIX_Email");
 
                     b.HasIndex("NormalizedEmail")
-                        .HasName("IX_NormalizedEmail");
+                        .HasName("UsersIX_NormalizedEmail");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("IX_MormalizedUserName");
+                        .HasName("UsersIX_MormalizedUserName");
 
                     b.HasIndex("UserName")
                         .IsUnique()
-                        .HasName("IX_UserName");
+                        .HasName("UsersIX_UserName");
 
                     b.ToTable("Users");
                 });
@@ -655,6 +778,43 @@ namespace SODP.DataAccess.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SODP.Model.AppDictionary", b =>
+                {
+                    b.HasOne("SODP.Model.AppDictionary", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+                });
+
+            modelBuilder.Entity("SODP.Model.BranchLicense", b =>
+                {
+                    b.HasOne("SODP.Model.Branch", "Branch")
+                        .WithMany("Licenses")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SODP.Model.License", "License")
+                        .WithMany("Branches")
+                        .HasForeignKey("LicenseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SODP.Model.BranchRole", b =>
+                {
+                    b.HasOne("SODP.Model.License", "License")
+                        .WithMany()
+                        .HasForeignKey("LicenseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SODP.Model.PartBranch", "PartBranch")
+                        .WithMany("Roles")
+                        .HasForeignKey("PartBranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SODP.Model.Certificate", b =>
                 {
                     b.HasOne("SODP.Model.Designer", "Designer")
@@ -673,17 +833,17 @@ namespace SODP.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SODP.Model.LicenseBranch", b =>
+            modelBuilder.Entity("SODP.Model.PartBranch", b =>
                 {
                     b.HasOne("SODP.Model.Branch", "Branch")
-                        .WithMany("Licenses")
+                        .WithMany()
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SODP.Model.License", "License")
+                    b.HasOne("SODP.Model.ProjectPart", "ProjectPart")
                         .WithMany("Branches")
-                        .HasForeignKey("LicenseId")
+                        .HasForeignKey("ProjectPartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -697,34 +857,11 @@ namespace SODP.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SODP.Model.ProjectBranch", b =>
+            modelBuilder.Entity("SODP.Model.ProjectPart", b =>
                 {
-                    b.HasOne("SODP.Model.Branch", "Branch")
-                        .WithMany()
-                        .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SODP.Model.Project", "Project")
-                        .WithMany("Branches")
+                        .WithMany("Parts")
                         .HasForeignKey("ProjectId")
-                        .HasConstraintName("FK_Project")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SODP.Model.ProjectBranchRole", b =>
-                {
-                    b.HasOne("SODP.Model.License", "License")
-                        .WithMany()
-                        .HasForeignKey("LicenseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SODP.Model.ProjectBranch", "ProjectBranch")
-                        .WithMany("Roles")
-                        .HasForeignKey("ProjectBranchId")
-                        .HasConstraintName("FK_ProjectBranch")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

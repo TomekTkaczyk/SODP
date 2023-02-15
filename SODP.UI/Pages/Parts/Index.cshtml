@@ -1,0 +1,134 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@using SODP.Model
+@using System.Text.Json;
+@using System.Text.Json.Serialization;
+@using SODP.UI.Pages.Parts;
+
+@model IndexModel
+
+@{
+	ViewData["Title"] = "Części projektu";
+}
+
+@inject SignInManager<User> SignInManager
+
+<div class="row mb-2">
+	<div class="col-8 p-0">
+		<h2 class="text-info p-0">@ViewData["Title"]</h2>
+	</div>
+
+	<div class="col-4 p-0">
+		<button type="button"
+				class="btn btn-info form-control text-white float-right h-100"
+				title="Nowa część"
+				data-toggle="ajax-modal"
+				data-url="@Url.Page("Index", "EditPart")">
+			<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa część
+		</button>
+	</div>
+</div>
+
+@if(Model.Parts.Parts.Count() > 0)
+{
+	<table id="StagesTable" class="table table-sm table-hover">
+		<thead class="thead-light">
+			<tr>
+				<th class="pl-1 pr-1">Symbol</th>
+				<th class="pl-1 pr-1">Opis</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.Parts.Parts)
+			{
+				<tr class="m-0 p-0">
+					<td onclick='@(User.IsInRole("ProjectManager") ? "EditPart("+@item.Id+")" : "")'
+						class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+						data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+						title='@(User.IsInRole("ProjectManager") ? "Edycja części" : "")'
+						data-placement="top"
+						style="vertical-align:middle">
+						@item.Sign
+					</td>
+					<td onclick='@(User.IsInRole("ProjectManager") ? "EditPart("+@item.Id+")" : "")'
+						class='cell@(User.IsInRole("ProjectManager") ? " clickable" : "")'
+						data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
+						title='@(User.IsInRole("ProjectManager") ? "Edycja części" : "")'
+						style="vertical-align:middle">
+						@item.Name
+					</td>
+					<td class="cell text-right">
+						@if (User.IsInRole("ProjectManager"))
+						{
+							<a onclick='Delete("/api/v0_01/parts/@item.Id","Usunięcie części. Operacja nie może być cofnięta")'
+							   class="btn"
+							   data-toggle="tooltip"
+							   data-placement="top"
+							   title="Usuń część">
+								<i class="fas fa-times fa-lg text-danger"></i>
+							</a>
+							<input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
+							   onchange="handleChange(@item.Id,this.checked)"
+							   id="checkbox_@item.Id"
+							   data-toggle="toggle"
+							   title="Aktywność"
+							   data-style="ios">
+						}
+					</td>
+				</tr>
+			}
+		</tbody>
+		<tfoot>
+			<tr>
+				<th></th>
+				<th></th>
+				<th></th>
+			</tr>
+		</tfoot>
+	</table>
+}
+else 
+{
+	<p> Lista części jest pusta</p>
+}
+
+@section Scripts{
+	<script src="~/js/delete.js"></script>
+	<script src="~/js/ModalPlaceholder.js"></script>
+
+	<script>
+		function EditPart(id) {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Index","EditPart")&Id=` + id,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#editPart').modal('show');
+				}
+			})
+		}
+
+		function handleChange(id, checked) {
+			let c = checked ? 1 : 0;
+			$.ajax({
+				type: "PATCH",
+				url: `/api/v0_01/parts/${id}/status`,
+				contentType: "application/json; charset=utf-8",
+				dataType: 'json',
+				data: JSON.stringify(c),
+				success: function (response) { },
+				error: function (jqXHR, exception) {
+					console.log(exception);
+				}
+			});
+		}
+	</script>
+
+	<script>
+		$(document).ready(function () {
+			modalPlaceHolder('/Parts');
+		});
+
+	</script>
+}

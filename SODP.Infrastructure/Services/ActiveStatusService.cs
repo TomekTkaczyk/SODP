@@ -3,12 +3,7 @@ using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Model;
 using SODP.Model.Interfaces;
-using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Threading.Tasks;
-
-
 
 namespace SODP.Infrastructure.Services
 {
@@ -32,14 +27,14 @@ namespace SODP.Infrastructure.Services
 
 				if (entity == null)
 				{
-					serviceResponse.SetError($"Encja Id:{id} nie odnaleziona.", 404);
+					serviceResponse.SetError($"Entity Id:{id} not exist.", 404);
 
 					return serviceResponse;
 				}
 
 				if(entity is not IActiveStatus)
 				{
-					serviceResponse.SetError($"Encja Id:{id} nie posiada właściwości ActiveStatus.", 404);
+					serviceResponse.SetError($"Entity Id:{id} property ActiveStatus nor exist.", 404);
 
 					return serviceResponse;
 				}

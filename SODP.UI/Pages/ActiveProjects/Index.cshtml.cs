@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
@@ -12,9 +11,7 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared;
 using SODP.UI.Services;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
@@ -22,16 +19,16 @@ namespace SODP.UI.Pages.ActiveProjects
     [Authorize(Roles = "User, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
-        const string newProjectPartialViewName = "_NewProjectPartialView";
+        const string newProjectPartialViewName = "ModalView/_NewProjectModalView";
+
         const string projectPartialViewName = "_ProjectPartialView";
 
         public ProjectVM Project { get; set; }
 
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/ActiveProjects";
-            _endpoint = "projects";
         }
 
 
@@ -76,7 +73,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<PartialViewResult> OnGetProjectPartialAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/branches");
+            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
             Project = _mapper.Map<ProjectVM>(response.Data);
 

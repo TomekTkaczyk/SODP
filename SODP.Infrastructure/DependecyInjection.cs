@@ -12,7 +12,6 @@ using SODP.Infrastructure.Managers;
 using SODP.Infrastructure.Services;
 using SODP.Shared.Interfaces;
 using SODP.Shared.Services;
-using System;
 
 namespace SODP.Infrastructure
 {
@@ -35,8 +34,6 @@ namespace SODP.Infrastructure
 			services.AddScoped<SODPDBContext>();
 
 			services.AddScoped<UserInitializer>();
-
-			services.AddScoped<DataInitializer>();
 
 			services.AddScoped<DataInitializer>();
 

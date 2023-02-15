@@ -28,6 +28,8 @@
 	</div>
 </div>
 
+<partial name="_SearchString" />
+
 @if (Model.Designers.Designers.Count() > 0)
 {
 	<div id="designersAccordion" class="accordion">
@@ -110,6 +112,7 @@ else
 				type: "Get",
 				url: `@Url.Page("Index","EditDesigner")&Id=${id}`,
 				success: function (data) {
+					console.log(data);
 					$('#modal-placeholder').html(data);
 					$('#editDesigner').modal('show');
 				}
@@ -121,6 +124,7 @@ else
 				type: "Get",
 				url: `@Url.Page("Index","NewLicense")&designerId=${designerId}`,
 				success: function (data) {
+					console.log(data);
 					$('#modal-placeholder').html(data);
 					$('#newLicense').modal('show');
 				}
@@ -135,8 +139,7 @@ else
 				contentType: "application/json; charset=utf-8",
 				dataType: 'json',
 				data: JSON.stringify(c),
-				success: function (response) {
-				},
+				success: function (response) {},
 				error: function (jqXHR, exception) {
 					console.log(jqXHR);
 					console.log(exception);

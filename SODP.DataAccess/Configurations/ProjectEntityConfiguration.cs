@@ -48,17 +48,17 @@ namespace SODP.DataAccess.Configurations
 
 			builder.HasIndex(p => new { p.Number, p.StageId })
                 .IsUnique()
-                .HasName("IX_NumberStage");
+                .HasName("ProjectsIX_NumberStage");
 
             builder.HasIndex(p => p.StageId)
-                .HasName("IX_Stage");
+                .HasName("ProjectsIX_Stage");
 
             builder.ToTable("Projects");
 
-            builder.HasMany(x => x.Branches)
+            builder.HasMany(x => x.Parts)
                 .WithOne(y => y.Project)
-                .HasForeignKey(z => z.ProjectId)
-                .HasConstraintName("FK_Project");
+                .HasForeignKey(z => z.ProjectId);
+                // .HasConstraintName("FK_Project");
         }
     }
 }

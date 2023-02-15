@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SODP.Model
+namespace SODP.Model;
+
+public class UserClaim : IdentityUserClaim<int>
 {
-    public class UserClaim : IdentityUserClaim<int>
-    {
-    }
 }

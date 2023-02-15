@@ -7,38 +7,14 @@ using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SODP.Infrastructure.Services
 {
-    public class BranchService : AppService<Branch, BranchDTO>, IBranchService
+    public class BranchService : FilteredPageService<Branch, BranchDTO>, IBranchService
     {
 
 		public BranchService(IMapper mapper, IValidator<Branch> validator, SODPDBContext context, IActiveStatusService<Branch> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
-
-        public async Task<ServiceResponse<BranchDTO>> GetAsync(string sign)
-        {
-            var serviceResponse = new ServiceResponse<BranchDTO>();
-            try
-            {
-                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Sign == sign);
-                if (branch == null)
-                {
-                    serviceResponse.SetError($"Błąd: Branża {sign} nie odnaleziona.", 401);
-                    return serviceResponse;
-                }
-                serviceResponse.SetData(_mapper.Map<BranchDTO>(branch));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
 
 
         public async Task<ServiceResponse<BranchDTO>> CreateAsync(BranchDTO newBranch)
@@ -47,7 +23,7 @@ namespace SODP.Infrastructure.Services
             try
             {
                 var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Sign == newBranch.Sign);
-                if(branch != null)
+                if (branch != null)
                 {
                     serviceResponse.SetError($"Błąd: Branża {newBranch.Sign} już istnieje.", 400);
                     return serviceResponse;
@@ -82,7 +58,7 @@ namespace SODP.Infrastructure.Services
             try
             {
                 var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id != updateBranch.Id && x.Sign.Equals(updateBranch.Sign));
-                if(branch != null)
+                if (branch != null)
                 {
                     serviceResponse.SetError("Branża już istnieje", 409);
                     return serviceResponse;
@@ -109,6 +85,28 @@ namespace SODP.Infrastructure.Services
         }
 
 
+        public async Task<ServiceResponse<BranchDTO>> GetAsync(string sign)
+        {
+            var serviceResponse = new ServiceResponse<BranchDTO>();
+            try
+            {
+                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Sign == sign);
+                if (branch == null)
+                {
+                    serviceResponse.SetError($"Error: Branch {sign} not found.", 404);
+                    return serviceResponse;
+                }
+                serviceResponse.SetData(_mapper.Map<BranchDTO>(branch));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
+
+            return serviceResponse;
+        }
+
+
         public async Task<ServicePageResponse<LicenseDTO>> GetLicensesAsync(int id)
         {
             var serviceResponse = new ServicePageResponse<LicenseDTO>();
@@ -130,5 +128,18 @@ namespace SODP.Infrastructure.Services
 
             return serviceResponse;
         }
-	}
+
+
+        protected override FilteredPageService<Branch, BranchDTO> WithSearchString(string searchString)
+        {
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                _query = _query.Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString));
+            }
+
+            return this;
+        }
+
+
+    }
 }

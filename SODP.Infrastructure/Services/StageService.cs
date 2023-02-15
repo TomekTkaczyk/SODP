@@ -14,41 +14,12 @@ using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-    public class StageService : AppService<Stage, StageDTO>, IStageService
+    public class StageService : FilteredPageService<Stage, StageDTO>, IStageService
     {
 
-        public StageService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context, IActiveStatusService<Stage> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
-
-
-		public async Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public StageService(IMapper mapper, IValidator<Stage> validator, SODPDBContext context, IActiveStatusService<Stage> activeStatusService) : base(mapper, validator, context, activeStatusService) 
         {
-            var serviceResponse = new ServicePageResponse<StageDTO>();
-            if(active != null)
-            {
-                SetActiveFilter(active);
-            }
-            var query = GetQuery().Where(x => string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.Sign.Contains(searchString));
-            pageSize = pageSize == 0 ? await query.CountAsync() : pageSize;
-
-            try
-            {
-                var stages = await query
-                    .OrderBy(x => x.Sign)
-                    .Skip((currentPage - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
-
-                serviceResponse.Data.TotalCount = await query.CountAsync();
-                serviceResponse.Data.PageNumber = currentPage;
-                serviceResponse.Data.PageSize = pageSize;
-                serviceResponse.SetData(_mapper.Map<IList<StageDTO>>(stages));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
+            _query = _query.OrderBy(x => x.Name);
         }
 
 
@@ -138,24 +109,17 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == id);
-                if (stage == null)
-                {
-                    serviceResponse.SetError($"Błąd: Stadium [{id}] nie odnalezione.", 404);
-                    serviceResponse.ValidationErrors.Add("Id", $"Stadium [{id}] nie odnalezione.");
-
-                    return serviceResponse;
-                }
-                var project = await _context.Projects.FirstOrDefaultAsync(x => x.Stage.Id == id);
+                var project = await _context.Projects
+                    .Include(x => x.Stage)
+                    .FirstOrDefaultAsync(x => x.Stage.Id == id);
                 if (project != null)
                 {
-					serviceResponse.SetError($"Błąd: Stadium {project.Stage.Sign} posiada powiązane projekty.", 400);
-                    serviceResponse.ValidationErrors.Add("Id", $"Stadium [{id}] posiada powiązane projekty.");
+					serviceResponse.SetError($"Error: Stage '{project.Stage.Sign}' has subsidiary projects.", 400);
                     
                     return serviceResponse;
                 }
                 
-                serviceResponse = await base.DeleteAsync(stage.Id);
+                serviceResponse = await base.DeleteAsync(id);
             }
             catch (Exception ex)
             {
@@ -191,7 +155,6 @@ namespace SODP.Infrastructure.Services
             catch (Exception ex)
             {
                 serviceResponse.SetError(ex.Message);
-                return serviceResponse;
             }
 
             return serviceResponse;
@@ -202,5 +165,13 @@ namespace SODP.Infrastructure.Services
         {
             return ( await _context.Stages.FirstOrDefaultAsync(x => x.Sign == sign) != null);
         }
-	}
+
+
+        protected override FilteredPageService<Stage, StageDTO> WithSearchString(string searchString)
+        {
+            _query = _query.Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString));
+
+            return this;
+        }
+    }
 }

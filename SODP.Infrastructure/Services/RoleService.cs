@@ -72,5 +72,17 @@ namespace SODP.Infrastructure.Services
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        public Task<ServicePageResponse<RoleDTO>> GetPageAsync(int currentPage, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
+        {
+            throw new NotImplementedException();
+        }
+
+
+    }
 }

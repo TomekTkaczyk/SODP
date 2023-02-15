@@ -6,6 +6,7 @@ namespace SODP.Shared.Enums
 {
     public enum TechnicalRole
     {
-        Designer, Checker
+        Checker = 1,
+        Designer = 0, 
     }
 }

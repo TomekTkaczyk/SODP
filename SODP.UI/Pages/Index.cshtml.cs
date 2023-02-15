@@ -9,6 +9,6 @@ namespace SODP.UI.Pages
 {
     public class IndexModel : SODPPageModel
     {
-        public IndexModel(ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator) { } 
+        public IndexModel(ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory) { } 
     }
 }

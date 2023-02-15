@@ -20,10 +20,10 @@
 
 <partial name="_SearchString" />
 
-@if (Model.ProjectsViewModel.Projects.Count() > 0)
+@if (Model.Projects.Projects.Count() > 0)
 {
 	<div id="projectsAccordion" class="accordion">
-		@foreach (var item in Model.ProjectsViewModel.Projects)
+		@foreach (var item in Model.Projects.Projects)
 		{
 			<div class="button card border-light">
 				<div class="card-header border-light p-0 d-flex align-items-center" style="background-color:white" id="card-header-@item.Id">

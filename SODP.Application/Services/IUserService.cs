@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public interface IUserService : IEntityService<UserDTO>
+    public interface IUserService : IEntityService<UserDTO>, IActiveStatusService
     {
+        Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString);
         Task<ServicePageResponse<RoleDTO>> GetRolesAsync(int id);
     }
 }

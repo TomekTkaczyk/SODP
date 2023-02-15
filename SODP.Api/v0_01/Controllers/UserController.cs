@@ -10,23 +10,22 @@ namespace SODP.Api.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/users")]
-    public class UserController : ControllerBase
+    public class UserController : ApiControllerBase
     {
         private readonly IUserService _service;
-        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService service, ILogger<UserController> logger)
+        public UserController(IUserService service, ILogger<UserController> logger) : base(logger)
         {
             _service = service;
-            _logger = logger;
         }
+
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public virtual async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
+        public virtual async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            return Ok(await _service.GetPageAsync(active, currentPage, pageSize));
+            return Ok(await _service.GetPageAsync(active, currentPage, pageSize, searchString));
         }
 
 

@@ -8,7 +8,12 @@ namespace SODP.DataAccess.Configurations
     {
         public void Configure(EntityTypeBuilder<Stage> builder)
         {
-            builder.Property(p => p.Sign)
+			builder.Property(x => x.Order)
+               .HasColumnType("int")
+               .HasDefaultValue(1)
+               .IsRequired();
+
+			builder.Property(p => p.Sign)
                 .HasColumnType("nvarchar(10)")
                 .IsRequired();
 

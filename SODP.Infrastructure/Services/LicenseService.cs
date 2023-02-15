@@ -1,32 +1,21 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using SODP.Application.Interfaces;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-    public class LicenseService : ILicenseService
+    public class LicenseService : FilteredPageService<License, LicenseDTO>, ILicenseService
     {
-        private readonly IMapper _mapper;
-        private readonly IValidator<License> _validator;
-        private readonly SODPDBContext _context;
         private readonly IDesignerService _designerService;
 
-        public LicenseService(IMapper mapper, IValidator<License> validator, SODPDBContext context, IDesignerService designerService)
+        public LicenseService(IMapper mapper, IValidator<License> validator, SODPDBContext context, IDesignerService designerService, IActiveStatusService<License> activeStatusService) : base(mapper, validator, context, activeStatusService)
         {
-            _mapper = mapper;
-            _validator = validator;
-            _context = context;
             _designerService = designerService;
         }
         public Task<ServiceResponse<LicenseDTO>> CreateAsync(LicenseDTO entity)
@@ -63,14 +52,14 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-
-        public async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<LicenseDTO>();
             try
             {
                 var licenses = await _context.Licenses
                     .Include(x => x.Designer)
+                    .Include(x => x.Branches).ThenInclude(x => x.Branch)
                     .ToListAsync();
                 serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(licenses));
             }
@@ -82,8 +71,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-
-        public async Task<ServiceResponse> DeleteAsync(int id)
+        public override async Task<ServiceResponse> DeleteAsync(int id)
         {
             var serviceResponse = new ServiceResponse();
             try
@@ -120,7 +108,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<LicenseDTO>> GetAsync(int id)
+        public override async Task<ServiceResponse<LicenseDTO>> GetAsync(int id)
         {
             var serviceResponse = new ServiceResponse<LicenseDTO>();
 
@@ -146,9 +134,9 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<LicenseWithBranchesDTO>> GetBranchesAsync(int id)
+        public async Task<ServiceResponse<LicenseDTO>> GetBranchesAsync(int id)
         {
-            var serviceResponse = new ServiceResponse<LicenseWithBranchesDTO>();
+            var serviceResponse = new ServiceResponse<LicenseDTO>();
 
             try
             {
@@ -210,7 +198,7 @@ namespace SODP.Infrastructure.Services
                     return result;
                 }
 
-                license.Branches.Add(new LicenseBranch
+                license.Branches.Add(new BranchLicense
                 {                              
                     BranchId = branchId,
                     LicenseId = id
@@ -269,14 +257,15 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-		public Task<bool> ExistAsync(int id)
-		{
-			throw new NotImplementedException();
-		}
-
 		public Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
 		{
 			throw new NotImplementedException();
 		}
+
+        protected override FilteredPageService<License, LicenseDTO> WithSearchString(string searchString)
+        {
+            throw new NotImplementedException();
+        }
+
 	}
 }

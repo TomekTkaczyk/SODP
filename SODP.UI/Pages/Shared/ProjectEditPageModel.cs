@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -17,19 +16,20 @@ namespace SODP.UI.Pages.Shared
     {
         protected readonly IWebAPIProvider _apiProvider;
 
-        public ProjectEditPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(logger, mapper, translator)
+        public ProjectEditPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory)
         {
             _apiProvider = apiProvider;
         }
 
         protected virtual async Task<ProjectVM> GetProjectAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/branches");
+            var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 
             if (response.Success)
             {
-                var project = new ProjectVM
+                var parts = _mapper.Map<ICollection<ProjectPartVM>>(response.Data.Parts).ToList();
+				var project = new ProjectVM
                 {
                     Id = response.Data.Id,
                     Number = response.Data.Number,
@@ -45,15 +45,9 @@ namespace SODP.UI.Pages.Shared
                     Description = response.Data.Description,
                     DevelopmentDate = response.Data.DevelopmentDate == null ? null : ((DateTime)response.Data.DevelopmentDate).Date.ToShortDateString(),
                     Status = response.Data.Status,
-                    ProjectBranches = new BranchesVM
-                    {
-                        Branches = _mapper.Map<IList<ProjectBranchVM>>(response.Data.Branches)
-                    },
-
-                };
-                project.AvailableBranches = new AvailableBranchesVM
-                {
-                    Items = await GetBranchesAsync(project.ProjectBranches.Branches),
+                    BuildingPermit = response.Data.BuildingPermit,
+                    Parts = parts,
+                    // AvailableParts = await GetPartsAsync(parts)
                 };
 
                 return project;
@@ -73,19 +67,20 @@ namespace SODP.UI.Pages.Shared
             }
         }
 
-        private async Task<List<SelectListItem>> GetBranchesAsync(IList<ProjectBranchVM> exclusionList)
-        {
-            var apiResponse = await _apiProvider.GetAsync($"branches?active=true");
-            var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
+		//private async Task<IList<PartVM>> GetPartsAsync(IList<PartVM> exclusionList)
+		//{
+		//	var apiResponse = await _apiProvider.GetAsync($"parts?active=true");
+		//	var response = await _apiProvider.GetContent<ServicePageResponse<ProjectPartDTO>>(apiResponse);
 
-            return responseBranch.Data.Collection
-                .Where(y => exclusionList.FirstOrDefault(z => z.Branch.Id.ToString() == y.Id.ToString()) == null)
-                .OrderBy(x => x.Order)
-                .Select(x => new SelectListItem
-                {
-                    Value = x.Id.ToString(),
-                    Text = $"{x.Name.Trim()}"
-                }).ToList();
-        }
+  //          return response.Data.Collection
+  //              .Where(y => exclusionList.FirstOrDefault(z => z.Sign == y.Sign) == null)
+  //              .OrderBy(x => x.Sign)
+  //              .Select(x => new PartVM
+  //              {
+  //                  Id= x.Id,
+  //                  Sign = x.Sign,
+  //                  Name = x.Name,
+  //              }).ToList();
+		//}
     }
 }

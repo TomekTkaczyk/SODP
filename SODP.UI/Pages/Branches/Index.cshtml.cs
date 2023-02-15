@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
@@ -20,12 +19,12 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.Branches
 {
     [Authorize(Roles = "ProjectManager")]
-    public class IndexModel : ListPageModel
-    {
-        const string editBranchPartialViewName = "_EditBranchPartialView";
-        const string designersPartialViewName = "_DesignersPartialView";
+    public class IndexModel : ListPageModel<BranchDTO>
+	{
+        const string _editBranchPartialViewName = "_EditBranchPartialView";
+        const string _designersPartialViewName = "_DesignersPartialView";
         
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/Branches";
             _endpoint = "branches";
@@ -35,51 +34,44 @@ namespace SODP.UI.Pages.Branches
 
         public DesignersVM Designers { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            var url = new StringBuilder();
-            url.Append(ReturnUrl);
-            url.Append("?currentPage=:&pageSize=");
-            url.Append(pageSize);
-
+            var endpoint = GetUrl(currentPage, pageSize, searchString);
+			var apiResponse = await GetApiResponseAsync(endpoint);
+			
+            PageInfo = GetPageInfo(apiResponse, searchString);
             Branches = new BranchesVM
             {
-                PageInfo = new PageInfo
-                {
-                    CurrentPage = currentPage,
-                    ItemsPerPage = pageSize,
-                    Url = url.ToString()
-                },
+                Branches = apiResponse.Data.Collection.ToList(),
+                PageInfo = PageInfo
             };
-
-            Branches = await GetBranchesAsync(Branches.PageInfo);
 
             return Page();
         }
 
         public async Task<PartialViewResult> OnGetEditBranchAsync(int? id)
         {
+            var model = new BranchVM();
             if (id != null)
             {
-                var apiResponse = await _apiProvider.GetAsync($"branches/{id}");
+                var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
                     var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
-
-                    return GetPartialView(result.Data.ToViewModel(), editBranchPartialViewName);
+                    model = result.Data.ToViewModel();
                 }
             }
 
-            return GetPartialView(new BranchVM(), editBranchPartialViewName);
+            return GetPartialView(model, _editBranchPartialViewName);
         }
 
-        public async Task<PartialViewResult> OnPostEditBranchAsync(BranchVM branch)
+        public async Task<PartialViewResult> OnPostEditBranchAsync(BranchVM model)
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = branch.Id == 0 
-                    ? await _apiProvider.PostAsync($"branches", branch.ToHttpContent())
-                    : await _apiProvider.PutAsync($"branches/{branch.Id}", branch.ToHttpContent());
+                var apiResponse = model.Id == 0 
+                    ? await _apiProvider.PostAsync($"{_endpoint}", model.ToHttpContent())
+                    : await _apiProvider.PutAsync($"{_endpoint}/{model.Id}", model.ToHttpContent());
 
                 switch (apiResponse.StatusCode)
                 {
@@ -96,12 +88,12 @@ namespace SODP.UI.Pages.Branches
                 }
             }
 
-            return GetPartialView<BranchVM>(branch, editBranchPartialViewName);
+            return GetPartialView(model, _editBranchPartialViewName);
         }
 
         public async Task<PartialViewResult> OnGetPartialDesignersAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"branches/{id}/designers");
+            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}/designers");
             switch (apiResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -119,25 +111,7 @@ namespace SODP.UI.Pages.Branches
                     break;
             }
 
-            return GetPartialView<DesignersVM>(Designers, designersPartialViewName);
+            return GetPartialView<DesignersVM>(Designers, _designersPartialViewName);
         } 
-
-        private async Task<BranchesVM> GetBranchesAsync(PageInfo pageInfo)
-        {
-            var result = new BranchesVM
-            {
-                Branches = new List<BranchDTO>()
-            };
-
-            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
-
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<BranchDTO>>();
-                result.Branches = response.Data.Collection.ToList();
-            }
-
-            return result;
-        }
     }
 }

@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SODP.Model
+namespace SODP.Model;
+
+public class UserRole : IdentityUserRole<int>
 {
-    public class UserRole : IdentityUserRole<int>
-    {
-    }
 }

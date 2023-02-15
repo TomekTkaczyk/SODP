@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Model;
@@ -15,41 +16,50 @@ using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-	public class AppService<TEntity,TDto> where TEntity : BaseEntity where TDto : BaseDTO
+	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity, new() where TDto : BaseDTO
     {
-		private IQueryable<TEntity> query;
+		protected IQueryable<TEntity> _query;
+		protected int _totalCount;
 
 		protected readonly IMapper _mapper;
 		protected readonly IValidator<TEntity> _validator;
 		protected readonly SODPDBContext _context;
-		protected readonly IActiveStatusService<TEntity> _activeStatusService;
 
-		public AppService(IMapper mapper, IValidator<TEntity> validator, SODPDBContext context, IActiveStatusService<TEntity> activeStatusService)
+		public AppService(IMapper mapper, IValidator<TEntity> validator, SODPDBContext context)
         {
 			_mapper = mapper;
 			_validator = validator;
 			_context = context;
-			_activeStatusService = activeStatusService;
 
-			query = _context.Set<TEntity>().AsQueryable();
+			_query = _context.Set<TEntity>().AsQueryable();
+			_totalCount = _query.Count();
 		}
 
+        protected IQueryable<TEntity> PageQuery(int currentPage, int pageSize)
+        {
 
-		public IQueryable<TEntity> GetQuery()
-		{
-			return query;
-		}
+			if (currentPage < 1)
+			{
+				throw new ArgumentOutOfRangeException(nameof(currentPage),"Bad argument. Required currentPage > 0");
+			}
 
+            if (pageSize > 0)
+            {
+                _query = _query.Skip((currentPage - 1) * pageSize).Take(pageSize);
+            }
 
-		public virtual async Task<ServiceResponse<TDto>> GetAsync(int id)
+            return _query;
+        }
+
+        public virtual async Task<ServiceResponse<TDto>> GetAsync(int id)
 		{
 			var serviceResponse = new ServiceResponse<TDto>();
 			try
 			{
-				var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
+				var entity = await _query.FirstOrDefaultAsync(x => x.Id == id);
 				if (entity == null)
 				{
-					serviceResponse.SetError($"Błąd: Encja Id:{id} nie odnaleziona.", 401);
+					serviceResponse.SetError($"Error: Entity Id:{id} not found.", 404);
 					return serviceResponse;
 				}
 				serviceResponse.SetData(_mapper.Map<TDto>(entity));
@@ -62,37 +72,12 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-
-		protected AppService<TEntity, TDto> SetActiveFilter(bool? active)
+		public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(int currentPage = 1, int pageSize = 0)
 		{
-			if (typeof(IActiveStatus).IsAssignableFrom(typeof(TEntity)))
-			{
-				query = query.Where(x => (active == null) || ((IActiveStatus)x).ActiveStatus == active);
-			}
-
-			return this;
-		}
-
-
-		protected IQueryable<TEntity> PageQuery(int currentPage = 1, int pageSize = 0)
-		{
-			if (pageSize > 0)
-			{
-				query = query.Skip((currentPage - 1) * pageSize).Take(pageSize);
-			}
-
-			return query;
-		}
-
-
-		public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
-		{
-			SetActiveFilter(active);
-			
 			var serviceResponse = new ServicePageResponse<TDto>();
 			try
 			{
-				serviceResponse.Data.TotalCount = await query.CountAsync();
+				serviceResponse.Data.TotalCount = await _query.CountAsync();
 				serviceResponse.Data.PageNumber= currentPage;
 				serviceResponse.Data.PageSize= pageSize;
 				serviceResponse.SetData(_mapper.Map<IList<TDto>>(await PageQuery(currentPage, pageSize).ToListAsync()));
@@ -105,34 +90,19 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-
-		public async Task<bool> ExistAsync(int id)
-		{
-			return (await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id) != null);
-		}
-
-
-		public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
-		{
-			return await _activeStatusService.SetActiveStatusAsync(id, status);
-		}
-
-
 		public virtual async Task<ServiceResponse> DeleteAsync(int id)
 		{
 			var serviceResponse = new ServiceResponse();
 
 			try
 			{
-				var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
-				if (entity == null)
-				{
-					serviceResponse.SetError($"Błąd: Encja Id:{id} nie odnaleziona.", 401);
-					return serviceResponse;
-				}
+				var entity = new TEntity() { Id = id };
+				_context.Entry(entity).State = EntityState.Deleted;
 
-				_context.Set<TEntity>().Remove(entity);
-				await _context.SaveChangesAsync();
+				if (await _context.SaveChangesAsync() == 0)
+				{
+					serviceResponse.SetError($"Error: Entity Id:{id} not found.", 404);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -141,5 +111,11 @@ namespace SODP.Infrastructure.Services
 
 			return serviceResponse;
 		}
-	}
+    
+		public async Task<bool> ExistAsync(int id)
+        {
+            return (await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id) != null);
+        }
+
+    }
 }

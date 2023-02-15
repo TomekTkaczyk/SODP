@@ -9,23 +9,22 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("/api/v0_01/branches")]
-    public class BranchController : ControllerBase
+    public class BranchController : ApiControllerBase
     {
         private readonly IBranchService _service;
-        private readonly ILogger<BranchController> _logger;
 
-        public BranchController(IBranchService service, ILogger<BranchController> logger)
+        public BranchController(IBranchService service, ILogger<BranchController> logger) : base(logger) 
         {
             _service = service;
-            _logger = logger;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
+        public async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            return Ok(await _service.GetPageAsync(active, currentPage, pageSize));
+            _logger.LogInformation("Get BranchPage...");
+            return Ok(await _service.GetPageAsync(active, currentPage, pageSize, searchString));
         }
 
 

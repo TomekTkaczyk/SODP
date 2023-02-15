@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using SODP.Domain;
 using Xunit;
 
 namespace Tests.MappTests
@@ -9,7 +8,12 @@ namespace Tests.MappTests
         [Fact]
         public void AutoMapper_Configuration_IsValid()
         {
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
+            var config = new MapperConfiguration(cfg => 
+            { 
+                cfg.AddProfile<SODP.Domain.AutoMapperProfile>(); 
+                cfg.AddProfile<SODP.UI.Mappers.AutoMapperProfile>(); 
+            });
+            
             config.AssertConfigurationIsValid();
         }
     }

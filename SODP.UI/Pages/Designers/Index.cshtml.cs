@@ -19,13 +19,13 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.Designers
 {
     [Authorize(Roles = "ProjectManager")]
-	public class IndexModel : ListPageModel
+	public class IndexModel : ListPageModel<DesignerDTO>
     {
         const string editDesignerPartialViewName = "_EditDesignerPartialView";
         const string licensesPartialViewName = "_LicensesPartialView";
         const string newLicensePartialViewName = "_NewLicensePartialView";
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, ITranslator translator) : base(apiProvider, logger, mapper, translator)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/Designers";
             _endpoint = "designers";
@@ -39,44 +39,36 @@ namespace SODP.UI.Pages.Designers
 
         public BranchesVM Branches { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            var url = new StringBuilder();
-            url.Append(ReturnUrl);
-            url.Append("?currentPage=:&pageSize=");
-			pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
-			url.Append(pageSize);
-
+			var endpoint = GetUrl(currentPage, pageSize, searchString);
+			var apiResponse = await GetApiResponseAsync(endpoint);
+			
+            PageInfo = GetPageInfo(apiResponse, searchString);
             Designers = new DesignersVM
             {
-                PageInfo = new PageInfo
-                {
-                    CurrentPage = currentPage,
-                    ItemsPerPage = pageSize,
-                    Url = url.ToString()
-                },
-            };
-            Designers.Designers = await GetDesignersAsync(Designers.PageInfo);
+                Designers = apiResponse.Data.Collection.ToList(),
+                PageInfo = PageInfo
+			};
 
             return Page();
         }
 
         public async Task<PartialViewResult> OnGetEditDesignerAsync(int? id)
         {
+            var model = new DesignerVM();
             if (id != null)
             {
                 var apiResponse = await _apiProvider.GetAsync($"designers/{id}");
-                if (apiResponse.IsSuccessStatusCode)
+                if (!apiResponse.IsSuccessStatusCode)
                 {
-                    var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
-
-                    return GetPartialView(response.Data.ToViewModel(), editDesignerPartialViewName);
+				    RedirectToPage("Errors/404");
                 }
-
-				RedirectToPage("Errors/404");
+                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
+                model = response.Data.ToViewModel();
 			}
 
-			return GetPartialView(new DesignerVM(), editDesignerPartialViewName);
+			return GetPartialView(model, editDesignerPartialViewName);
         }
 
         public async Task<PartialViewResult> OnPostEditDesignerAsync(DesignerVM designer)
@@ -151,30 +143,6 @@ namespace SODP.UI.Pages.Designers
             }
 
             return GetPartialView<NewLicenseVM>(license, newLicensePartialViewName);
-        }
-
-        private async Task<List<DesignerVM>> GetDesignersAsync(PageInfo pageInfo)
-        {
-            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={pageInfo.CurrentPage}&pageSize={pageInfo.ItemsPerPage}");
-            
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                var response = await _apiProvider.GetContent<ServicePageResponse<DesignerDTO>>(apiResponse);
-                pageInfo.TotalItems = response.Data.TotalCount;
-                pageInfo.CurrentPage = response.Data.PageNumber;
-
-                return response.Data.Collection
-                    .Select(x => new DesignerVM
-                    {
-                        Id = x.Id,
-                        Title = x.Title,
-                        Firstname = x.Firstname,
-                        Lastname = x.Lastname,
-                        ActiveStatus = x.ActiveStatus
-                    }).ToList();
-            }
-
-            return new List<DesignerVM>();
         }
     }
 }

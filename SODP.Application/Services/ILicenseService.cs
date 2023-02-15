@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public interface ILicenseService : IEntityService<LicenseDTO>
+    public interface ILicenseService : IGetEntityService<LicenseDTO>, IActiveStatusService
     {
-        Task<ServiceResponse<LicenseWithBranchesDTO>> GetBranchesAsync(int id);
+        Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString);
+
+        Task<ServiceResponse<LicenseDTO>> GetBranchesAsync(int id);
 
         Task<ServiceResponse> AddBranchAsync(int id, int branchId);
 

@@ -2,7 +2,7 @@
 @using SODP.UI.Services;
 
 @model ProjectVM
-@inject ITranslator _translator;
+@inject LanguageTranslatorFactory _translatorFactory;
 
 <div>
 	<div>
@@ -51,7 +51,7 @@
 			@foreach (var role in item.Roles)
 			{
 				<div class="row">
-					<div class="col my-auto">@_translator.Translate(role.Role, Services.Languages.Pl) : @role.Designer (@role.Content)</div>
+					<div class="col my-auto">@_translatorFactory.GetTranslator().Translate(role.Role) : @role.Designer (@role.Content)</div>
 				</div>
 			}
 		}

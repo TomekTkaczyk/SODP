@@ -1,9 +1,4 @@
-﻿using SODP.Shared.DTO;
-using SODP.UI.Mappers;
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SODP.UI.Pages.Branches.ViewModels
 {

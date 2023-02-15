@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using SODP.Model;
+using System.Collections.Generic;
+using System.Security.Policy;
+using System.Text.RegularExpressions;
 
 namespace SODP.UI.Services
 {
+    
     public enum Languages
     {
         En, Pl
@@ -9,11 +13,26 @@ namespace SODP.UI.Services
 
     public class Translator : ITranslator
     {
+        private Languages _currentLanguage;
+
+        public Languages CurrentLanguage => _currentLanguage;
+
+        public Translator(Languages language)
+        {
+            _currentLanguage = language;
+        }
+
+        public string Translate(string source) => Translate(source, CurrentLanguage);
+
         public string Translate(string source, Languages lang)
         {
-            GetDictionary(lang).TryGetValue(source, out string translation);
+			//var regex = new Regex("'(.*?)'");
+			//var regex = new Regex("'(.*?[^\\])'")
+			//var matches = regex.Match(source);
 
-            return translation ?? "";
+			GetDictionary(lang).TryGetValue(source, out string translation);
+
+			return translation ?? "";
         }
 
         private Dictionary<string, string> GetDictionary(Languages lang)
@@ -36,5 +55,6 @@ namespace SODP.UI.Services
             { "Designer", "Designer" },
             { "Checker", "Checker" }
         };
-    }
+
+	}
 }

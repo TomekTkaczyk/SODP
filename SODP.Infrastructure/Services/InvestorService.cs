@@ -6,16 +6,19 @@ using SODP.DataAccess;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-	public class InvestorService : AppService<Investor, InvestorDTO>, IInvestorService
+	public class InvestorService : FilteredPageService<Investor, InvestorDTO>, IInvestorService
 	{
 		public InvestorService(IMapper mapper, IValidator<Investor> validator, SODPDBContext context, IActiveStatusService<Investor> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
-		public async Task<ServiceResponse<InvestorDTO>> CreateAsync(InvestorDTO newInvestor)
+        protected override FilteredPageService<Investor, InvestorDTO> WithSearchString(string searchString)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ServiceResponse<InvestorDTO>> CreateAsync(InvestorDTO newInvestor)
 		{
 			var serviceResponse = new ServiceResponse<InvestorDTO>();
 			try
@@ -34,7 +37,7 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-		public async Task<ServiceResponse> UpdateAsync(InvestorDTO updateInvestor)
+        public async Task<ServiceResponse> UpdateAsync(InvestorDTO updateInvestor)
 		{
 			var serviceResponse = new ServiceResponse();
 			try
@@ -65,5 +68,5 @@ namespace SODP.Infrastructure.Services
 			}
 			return serviceResponse;
 		}
-	}
+    }
 }

@@ -9,23 +9,21 @@ namespace SODP.Api.v0_01.Controllers
 {
     [ApiController]
     [Route("api/v0_01/designers")]
-    public class DesignerController : ControllerBase
+    public class DesignerController : ApiControllerBase
     {
         private readonly IDesignerService _service;
-        private readonly ILogger<DesignerController> _logger;
 
-        public DesignerController(IDesignerService service, ILogger<DesignerController> logger)
+        public DesignerController(IDesignerService service, ILogger<DesignerController> logger) : base(logger)
         {
             _service = service;
-            _logger = logger;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
+        public async Task<IActionResult> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            return Ok(await _service.GetPageAsync(active, currentPage, pageSize));
+            return Ok(await _service.GetPageAsync(active, currentPage, pageSize, searchString));
         }
 
 

@@ -51,18 +51,18 @@ namespace SODP.DataAccess.Configurations
 			builder.HasKey(u => u.Id);
 
             builder.HasIndex(u => u.UserName)
-                .HasName("IX_UserName")
+                .HasName("UsersIX_UserName")
                 .IsUnique();
 
             builder.HasIndex(u => u.NormalizedUserName)
-                .HasName("IX_MormalizedUserName")
+                .HasName("UsersIX_MormalizedUserName")
                 .IsUnique();
 
             builder.HasIndex(u => u.Email)
-                .HasName("IX_Email");
+                .HasName("UsersIX_Email");
 
             builder.HasIndex(u => u.NormalizedEmail)
-                .HasName("IX_NormalizedEmail");
+                .HasName("UsersIX_NormalizedEmail");
 
 
             builder.ToTable("Users");

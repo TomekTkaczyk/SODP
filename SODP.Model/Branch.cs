@@ -2,25 +2,24 @@
 using SODP.Model.Interfaces;
 using System.Collections.Generic;
 
-namespace SODP.Model
+namespace SODP.Model;
+
+public class Branch : BaseEntity, IActiveStatus
 {
-    public class Branch : BaseEntity, IActiveStatus
+    public int Order { get; set; }
+    public string Sign { get; set; }
+    public string Name { get; set; }
+    public bool ActiveStatus { get; set; }
+    public virtual ICollection<BranchLicense> Licenses { get; set; }
+
+    public void Normalize()
     {
-        public int Order { get; set; }
-        public string Sign { get; set; }
-        public string Name { get; set; }
-        public bool ActiveStatus { get; set; }
-        public virtual ICollection<LicenseBranch> Licenses { get; set; }
+        Sign = Sign.ToUpper();
+        Name = Name.CapitalizeFirstLetter();
+    }
 
-        public void Normalize()
-        {
-            Sign = Sign.ToUpper();
-            Name = Name.CapitalizeFirstLetter();
-        }
-
-        public override string ToString()
-        {
-            return $"{ Sign.Trim()} {Name.Trim()}";
-        }
+    public override string ToString()
+    {
+        return $"{ Sign.Trim()} {Name.Trim()}";
     }
 }

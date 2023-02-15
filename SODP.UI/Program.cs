@@ -26,6 +26,7 @@ namespace SODP.UI
                 });
 
             var host = hostBuilder.Build();
+
             using (var scope = host.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<SODPDBContext>();

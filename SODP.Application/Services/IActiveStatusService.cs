@@ -9,8 +9,5 @@ namespace SODP.Application.Services
 		Task<ServiceResponse> SetActiveStatusAsync(int id, bool status);
     }
 
-	public interface IActiveStatusService<in T> : IActiveStatusService where T : BaseEntity
-	{
-	}
-
+	public interface IActiveStatusService<in T> : IActiveStatusService where T : BaseEntity { }
 }

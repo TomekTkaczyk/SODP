@@ -19,6 +19,14 @@ namespace SODP.Domain
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Name));
 
 
+			CreateMap<AppDictionary, DictionaryDTO>()
+                .ReverseMap();
+
+            CreateMap<DictionaryDTO, AppDictionary>()
+                .ForMember(dest => dest.Parent, act => act.Ignore())
+                .ReverseMap();
+
+
             CreateMap<Stage, StageDTO>()
                 .ReverseMap();
 
@@ -26,82 +34,142 @@ namespace SODP.Domain
             CreateMap<Investor, InvestorDTO>()
                 .ReverseMap();
 
+			#region Part
 
-            CreateMap<Project, ProjectDTO>();
+			CreateMap<Part, PartDTO>()
+			   .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
+			   .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
+			   .ForMember(dest => dest.Order, opt => opt.MapFrom(x => x.Order))
+			   .PreserveReferences();
 
+			CreateMap<PartDTO, Part>()
+				.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
+				.ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
+				.ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+				.ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
 
-            CreateMap<ProjectBranch, ProjectBranchDTO>()
-                .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch))
-                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles))
+			#endregion
+
+			#region BranchRole
+
+			CreateMap<BranchRole, BranchRoleDTO>();
+
+			#endregion
+
+			#region PartBranch
+
+			//CreateMap<PartBranchDTO, PartBranch>()
+			//    .ForMember(dest => dest.ProjectPartId, act => act.Ignore())
+			//    .ForMember(dest => dest.ProjectPart, act => act.Ignore())
+			//    .ForMember(dest => dest.BranchId, act => act.Ignore())
+			//    .ForMember(dest => dest.Branch, act => act.Ignore())
+			//    .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+			//    .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
+			//    .ForMember(dest => dest.Roles, act => act.Ignore());
+
+			CreateMap<PartBranch, PartBranchDTO>();
+
+			#endregion
+
+			#region ProjectPart
+
+			CreateMap<ProjectPart, ProjectPartDTO>()
+			    .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
+			    .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
+			    .ForMember(dest => dest.Branches, opt => opt.MapFrom(src => src.Branches))
                 .PreserveReferences();
 
-
-            CreateMap<Branch, BranchDTO>()
-               .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
-               .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
-               .ForMember(dest => dest.Order, act => act.Ignore())
-               .PreserveReferences();
-
-
-            CreateMap<ProjectBranchRole, ProjectBranchRoleDTO>()
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
-                .PreserveReferences();
-
-
-            CreateMap<Project, NewProjectDTO>()
-                .ForMember(dest => dest.StageId, opt => opt.MapFrom(src => src.StageId));
-
-
-            CreateMap<ProjectDTO, Project>()
-                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-                .ForMember(dest => dest.Branches, act => act.Ignore())
+            CreateMap<ProjectPartDTO, ProjectPart>()
+                .ForMember(dest => dest.Branches, opt => opt.MapFrom(src => src.Branches))
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
-                .ForMember(dest => dest.Stage, act => act.Ignore())
                 .PreserveReferences();
 
+			#endregion
+
+			#region Branch
+
+			CreateMap<Branch, BranchDTO>()
+               .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
+               .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
+               .ForMember(dest => dest.Order, opt => opt.MapFrom(x => x.Order))
+               .PreserveReferences();
+
+			CreateMap<BranchDTO, Branch>()
+				.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
+				.ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
+				.ForMember(dest => dest.Licenses, act => act.Ignore())
+				.ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+				.ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
+
+			#endregion
+
+            #region Project
+
+			CreateMap<Project, NewProjectDTO>()
+                .ForMember(dest => dest.StageId, opt => opt.MapFrom(src => src.StageId));
 
             CreateMap<NewProjectDTO, Project>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ForMember(dest => dest.Status, act => act.Ignore())
-                .ForMember(dest => dest.Branches, act => act.Ignore())
+                .ForMember(dest => dest.Parts, act => act.Ignore())
                 .ForMember(dest => dest.Stage, act => act.Ignore())
                 .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
                 .ForMember(dest => dest.Address, act => act.Ignore())
                 .ForMember(dest => dest.Investor, act => act.Ignore())
                 .ForMember(dest => dest.Investor, act => act.Ignore())
+                .ForMember(dest => dest.Title, act => act.Ignore())
+                .ForMember(dest => dest.LocationUnit, act => act.Ignore())
+                .ForMember(dest => dest.BuildingCategory, act => act.Ignore())
+                .ForMember(dest => dest.BuildingPermit, act => act.Ignore())
+                .ForMember(dest => dest.Description, act => act.Ignore())
+                .ForMember(dest => dest.DevelopmentDate, act => act.Ignore())
                 .PreserveReferences();
 
+            CreateMap<Project, ProjectDTO>();
 
-            CreateMap<BranchDTO, Branch>()
-                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
-                .ForMember(dest => dest.Licenses, act => act.Ignore())
-                .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
-                .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
+			CreateMap<ProjectDTO, Project>()
+				.AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
+				.ForMember(dest => dest.Parts, act => act.Ignore())
+				.ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+				.ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
+				.ForMember(dest => dest.Stage, act => act.Ignore())
+				.PreserveReferences();
 
+			#endregion
 
-            CreateMap<Designer, DesignerDTO>()
+			#region Designer
+
+			CreateMap<Designer, DesignerDTO>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ReverseMap()
                 .PreserveReferences();
 
+			#endregion
 
-            CreateMap<License, LicenseWithBranchesDTO>()
+			#region License
+
+			CreateMap<NewLicenseDTO, License>()
+				.ForMember(dest => dest.Id, act => act.Ignore())
+				.ForMember(dest => dest.Designer, act => act.Ignore())
+				.ForMember(dest => dest.Branches, act => act.Ignore())
+				.ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+				.ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
+				.AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
+				.PreserveReferences();
+
+			CreateMap<License, LicenseWithBranchesDTO>()
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.Designer))
                 .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
                 .PreserveReferences();
 
-
             CreateMap<License, LicenseDTO>()
-                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
+				.ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
+				.AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ReverseMap();
 
-
-            CreateMap<NewLicenseDTO, License>()
-                .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-                .PreserveReferences();
+            #endregion
         }
     }
 }

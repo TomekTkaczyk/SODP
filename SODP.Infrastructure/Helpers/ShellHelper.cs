@@ -18,7 +18,7 @@ public static class ShellHelper
 
     public static string RunShell(this string cmd)
     {
-        Process p = new Process();
+        var p = new Process();
         
         p.StartInfo.FileName = commandProcessor;               // for linux  "/bin/bash", for windows  "cmd.exe"
         p.StartInfo.Arguments = cmd;
@@ -26,7 +26,7 @@ public static class ShellHelper
         p.StartInfo.RedirectStandardOutput = true;
         p.Start();
 
-        string output = commandProcessor+cmd+"\n "+p.StandardOutput.ReadToEnd() +"\n ";
+        string output = commandProcessor + cmd + "\n ";// +p.StandardOutput.ReadToEnd() +"\n ";
         p.WaitForExit();
 
         return output;
@@ -40,10 +40,10 @@ public static class ShellHelper
         switch (os.Platform)
         {
             case PlatformID.Win32NT:
-                result = "cmd";
+                result = "cmd ";
                 break;
             case PlatformID.Unix:
-                result = "/bin/bash";
+                result = "/bin/bash ";
                 break;
             default:
                 result = os.VersionString;

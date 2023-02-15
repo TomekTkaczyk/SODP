@@ -1,0 +1,44 @@
+﻿@using SODP.UI.Pages.ActiveProjects.ViewModels
+@using SODP.UI.Services;
+
+@model PartVM
+@*@inject ITranslator _translator;*@
+
+<div class="modal fade" id="editProjectPart" tabindex="-1" role="dialog" aria-labelledby="editProjectPartLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="text-info" id="editProjectPartLabel">@(Model.Id == 0 ? "Nowa część projektu" : "Edycja części projektu")</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                <div id="error-placeholder"></div>
+                <form asp-page-handler="editProjectPart">
+                    <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <input asp-for="Id" type="hidden" value="@Model.Id" />
+                    <input asp-for="ProjectId" type="hidden" value="@Model.ProjectId" />
+                    <div class="form-group">
+                        <input asp-for="Sign" onkeyup="this.value = this.value.toUpperCase();" id="sign" class="form-control" value="@Model.Sign" placeholder="Znak części" />
+                        <span asp-validation-for="Sign" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="Name" onkeyup="this.value = this.value.toUpperCase();" id="title" class="form-control" value="@Model.Name" placeholder="Nazwa części" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        @Html.DropDownListFor(model => model.Sign, @Model.Items, "-- Słownik --", @Model.Items.Count > 0
+                        ? (object)new { @class = "form-control", @onchange = "OnChange(this.value)", id="dropdownparts" }
+                        : new { @class = "form-control", disabled = "disabled" })
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <partial name="_SubmitAndBackButtonModalPartial" />
+            </div>
+        </div>
+    </div>
+</div>
+
