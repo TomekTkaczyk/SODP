@@ -35,10 +35,9 @@ namespace SODP.UI.Pages.ActiveProjects
 		const string _editProjectPartViewName = "ModalView/_EditProjectPartModalView";
 		const string _addTechnicalRoleViewName = "ModalView/_AddTechnicalRoleModalView";
 		const string _addPartBranchViewName = "ModalView/_AddPartBranchModalView";
+		const string _getInvestorViewName = "ModalView/_GetInvestorModalView";
 
-		const string _investorsViewName = "_InvestorsPartialView";
 		const string _partBranchesViewName = "_PartBranchesPartialView";
-		const string _technicalRolesViewName = "_TechnicalRolesPartialView";
 
 		public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory) { }
 
@@ -84,56 +83,6 @@ namespace SODP.UI.Pages.ActiveProjects
 			return Page();
 		}
 
-		public async Task<IActionResult> OnPutBranchAsync(int id, int branchId)
-		{
-			var apiResponse = await _apiProvider.PutAsync($"projects/{id}/branches/{branchId}", new StringContent(
-								  JsonSerializer.Serialize(branchId),
-								  Encoding.UTF8,
-								  "application/json"
-							  ));
-
-			Project = await GetProjectAsync(id);
-
-			return Page();
-		}
-
-		public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId)
-		{
-			await _apiProvider.DeleteAsync($"projects/{id}/branches/{branchId}");
-
-			Project = await GetProjectAsync(id);
-
-			return Page();
-		}
-
-		public async Task<IActionResult> OnGetTechnicalRolesAsync(int projectId, int branchId)
-		{
-			return await GetPartialBranchesViewAsync(projectId, branchId);
-		}
-
-		public async Task<IActionResult> OnPostTechnicalRolesAsync(TechnicalRoleVM role)
-		{
-			if (ModelState.IsValid)
-			{
-				var apiResponse = await _apiProvider
-					.PatchAsync(
-						$"projects/{role.ProjectId}/branch/{role.BranchId}/role/{role.RoleId}",
-						role.ToHttpContent()
-					);
-
-				var response = await _apiProvider.GetContent<ServiceResponse<object>>(apiResponse);
-
-				if (apiResponse.IsSuccessStatusCode && response.Success)
-				{
-					return await GetPartialBranchesViewAsync(role.ProjectId, role.BranchId);
-				}
-
-				SetModelErrors(response);
-			}
-
-			return await GetPartialBranchesViewAsync(role.ProjectId, role.BranchId);
-		}
-
 		public async Task<PartialViewResult> OnGetInvestorsListAsync(int projectId)
 		{
 			var apiResponse = await _apiProvider.GetAsync($"investors");
@@ -153,11 +102,11 @@ namespace SODP.UI.Pages.ActiveProjects
 						.ToList()
 				};
 
-				return GetPartialView(model, _investorsViewName);
+				return GetPartialView(model, _getInvestorViewName);
 			}
 
 			// for example show error message
-			return GetPartialView(new InvestorsVM(), _investorsViewName);
+			return GetPartialView(new InvestorsVM(), _getInvestorViewName);
 		}
 
 		public async Task<PartialViewResult> OnPostInvestorsListAsync(InvestorsVM investors)
@@ -181,7 +130,7 @@ namespace SODP.UI.Pages.ActiveProjects
 				}
 			}
 
-			return GetPartialView(investors, _investorsViewName);
+			return GetPartialView(investors, _getInvestorViewName);
 		}
 
 		public async Task<PartialViewResult> OnGetEditProjectPartAsync(int projectId, int projectPartId)
@@ -316,8 +265,8 @@ namespace SODP.UI.Pages.ActiveProjects
 		public async Task<PartialViewResult> OnPostAddTechnicalRole(AvailableRolesVM model)
 		{
 			var partBranchResponse = await PartBranchServiceResponseAsync(model.PartBranchId);
-			model.ItemsLicense = GetAvailableRoles(partBranchResponse.Data);
-			model.ItemsRole = await GetAvailableDesignersAsync(partBranchResponse.Data);
+			model.ItemsRole = GetAvailableRoles(partBranchResponse.Data);
+			model.ItemsLicense = await GetAvailableDesignersAsync(partBranchResponse.Data);
 			if (ModelState.IsValid)
 			{
 				var role = new NewPartBranchRoleDTO
@@ -358,6 +307,11 @@ namespace SODP.UI.Pages.ActiveProjects
 				}
 			}
 
+			foreach(var item in roles)
+			{
+				item.Text = _translator.Translate(item.Text);
+			}
+
 			return new SelectList(roles, "Value", "Text");
 		}
 
@@ -388,58 +342,9 @@ namespace SODP.UI.Pages.ActiveProjects
 			return null;
 		}
 
-		private async Task<PartialViewResult> GetPartialBranchesViewAsync(int projectId, int branchId)
-		{
-			var apiResponse = await _apiProvider.GetAsync($"projects/{projectId}/branches/{branchId}");
-			var responseRoles = await _apiProvider.GetContent<ServicePageResponse<ProjectBranchRoleDTO>>(apiResponse);
-
-			var technicalRoles = new TechnicalRoleVM
-			{
-				ProjectId = projectId,
-				BranchId = branchId,
-
-				AvailableRoles = Enum.GetValues(typeof(TechnicalRole))
-				.Cast<TechnicalRole>()
-				.Select(x => new SelectListItem
-				{
-					Value = ((int)x).ToString(),
-					Text = _translator.Translate(x.ToString(), Languages.Pl)
-				}).ToList(),
-
-				Roles = responseRoles.Data.Collection
-				.Where(y => Enum.TryParse(y.Role, out TechnicalRole role))
-				.Select(x =>
-				{
-					Enum.TryParse(x.Role, out TechnicalRole role);
-					return new
-					{
-						key = role,
-						license = new LicenseVM()
-						{
-							Content = x.License.Content,
-							Designer = x.License.Designer.ToString()
-						}
-					};
-				}).ToDictionary(t => t.key, t => t.license)
-			};
-
-			apiResponse = await _apiProvider.GetAsync($"licenses/branch/{branchId}");
-			var responseLicenses = await _apiProvider.GetContent<ServicePageResponse<LicenseDTO>>(apiResponse);
-
-			technicalRoles.Licenses = responseLicenses.Data.Collection
-				.Select(x => new SelectListItem
-				{
-					Value = x.Id.ToString(),
-					Text = $"{x.Designer} ({x.Content})"
-				}).ToList();
-			technicalRoles.Licenses.Add(new SelectListItem("-- usuñ z listy --", "0"));
-
-			return GetPartialView(technicalRoles, _technicalRolesViewName);
-		}
-
 		private async Task<IList<SelectListItem>> GetAvailablePartsAsync()
 		{
-			var apiResponse = await _apiProvider.GetAsync($"parts");
+			var apiResponse = await _apiProvider.GetAsync($"parts?active=true");
 			if (apiResponse.IsSuccessStatusCode)
 			{
 				var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<PartDTO>>();

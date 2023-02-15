@@ -31,8 +31,7 @@ namespace SODP.UI.Pages.Parts
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var endpoint = _endpoint;
-            var apiResponse = await GetApiResponseAsync(endpoint);
+            var apiResponse = await GetApiResponseAsync($"{_endpoint}");
             if (apiResponse != null)
             {
                 Parts = new PartsVM

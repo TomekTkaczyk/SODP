@@ -3,7 +3,7 @@
 @using SODP.Shared.Enums;
 
 @model AvailableRolesVM
-@*@inject ITranslator _translator;*@
+
 <!-- Modal -->
 <div class="modal fade" id="addTechnicalRole" tabindex="-1" role="dialog" aria-labelledby="addTechnicalRoleLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -34,7 +34,6 @@
             <div class="modal-footer">
                 <div class="row justify-content-center">
                     <div class="col">
-                        @*<button type="button" class="btn btn-primary" data-save="modal" @((Model.ItemsRole.Count==0 || Model.ItemsLicense.Count==0) ? " hidden=true" : "")>Wybierz</button>*@
                         <button type="button" class="btn btn-primary" data-save="modal">Wybierz</button>
                     </div>
                     <div class="col">
