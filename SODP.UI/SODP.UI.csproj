@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Pages\ActiveProjects\_NewProjectPartialView.cshtml" />
+    <None Include="Pages\ActiveProjects\ModalView\_NewProjectModalView.cshtml" />
     <None Include="wwwroot\lib\fontawesome\webfonts\fa-brands-400.svg" />
     <None Include="wwwroot\lib\fontawesome\webfonts\fa-brands-400.woff2" />
     <None Include="wwwroot\lib\fontawesome\webfonts\fa-regular-400.svg" />

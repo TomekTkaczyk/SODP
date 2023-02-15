@@ -28,7 +28,7 @@ namespace SODP.UI.Pages.Shared
 
             if (response.Success)
             {
-                var parts = _mapper.Map<ICollection<PartVM>>(response.Data.Parts).ToList();
+                var parts = _mapper.Map<ICollection<ProjectPartVM>>(response.Data.Parts).ToList();
 				var project = new ProjectVM
                 {
                     Id = response.Data.Id,
@@ -47,7 +47,7 @@ namespace SODP.UI.Pages.Shared
                     Status = response.Data.Status,
                     BuildingPermit = response.Data.BuildingPermit,
                     Parts = parts,
-                    AvailableParts = await GetPartsAsync(parts)
+                    // AvailableParts = await GetPartsAsync(parts)
                 };
 
                 return project;
@@ -67,41 +67,20 @@ namespace SODP.UI.Pages.Shared
             }
         }
 
-		private async Task<IList<PartVM>> GetPartsAsync(IList<PartVM> exclusionList)
-		{
-			var apiResponse = await _apiProvider.GetAsync($"parts?active=true");
-			var response = await _apiProvider.GetContent<ServicePageResponse<ProjectPartDTO>>(apiResponse);
+		//private async Task<IList<PartVM>> GetPartsAsync(IList<PartVM> exclusionList)
+		//{
+		//	var apiResponse = await _apiProvider.GetAsync($"parts?active=true");
+		//	var response = await _apiProvider.GetContent<ServicePageResponse<ProjectPartDTO>>(apiResponse);
 
-            return response.Data.Collection
-                .Where(y => exclusionList.FirstOrDefault(z => z.Sign == y.Sign) == null)
-                .OrderBy(x => x.Sign)
-                .Select(x => new PartVM
-                {
-                    Id= x.Id,
-                    Sign = x.Sign,
-                    Name = x.Name,
-                }).ToList();
-
-				//.Select(x => new SelectListItem
-				//{
-				//	Value = x.Sign,
-				//	Text = $"{x.Name.Trim()}"
-				//}).ToList();
-		}
-
-		//private async Task<List<SelectListItem>> GetPartsAsync(IList<PartVM> exclusionList)
-  //      {
-  //          var apiResponse = await _apiProvider.GetAsync($"parts?active=true");
-  //          var responseBranch = await _apiProvider.GetContent<ServicePageResponse<PartDTO>>(apiResponse);
-
-  //          return responseBranch.Data.Collection
+  //          return response.Data.Collection
   //              .Where(y => exclusionList.FirstOrDefault(z => z.Sign == y.Sign) == null)
   //              .OrderBy(x => x.Sign)
-  //              .Select(x => new SelectListItem
+  //              .Select(x => new PartVM
   //              {
-  //                  Value = x.Sign,
-  //                  Text = $"{x.Name.Trim()}"
+  //                  Id= x.Id,
+  //                  Sign = x.Sign,
+  //                  Name = x.Name,
   //              }).ToList();
-  //      }
+		//}
     }
 }

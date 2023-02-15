@@ -19,7 +19,8 @@ namespace SODP.UI.Pages.ActiveProjects
     [Authorize(Roles = "User, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
-        const string newProjectPartialViewName = "_NewProjectPartialView";
+        const string newProjectPartialViewName = "ModalView/_NewProjectModalView";
+
         const string projectPartialViewName = "_ProjectPartialView";
 
         public ProjectVM Project { get; set; }

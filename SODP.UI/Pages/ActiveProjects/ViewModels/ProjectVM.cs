@@ -1,5 +1,4 @@
 ﻿using SODP.Shared.Enums;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -41,13 +40,6 @@ namespace SODP.UI.Pages.ActiveProjects.ViewModels
 
 		public ProjectStatus Status { get; set; }
         
-        public IList<PartVM> Parts { get; set; }
-
-        public IList<PartVM> AvailableParts { get; set; }
-
-        //public BranchesVM ProjectBranches { get; set; }
-        
-        //public AvailableBranchesVM AvailableBranches { get; set; }
-
+        public ICollection<ProjectPartVM> Parts { get; set; }
     }
 }

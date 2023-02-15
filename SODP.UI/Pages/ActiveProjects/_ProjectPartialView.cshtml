@@ -2,9 +2,8 @@
 @using SODP.UI.Services;
 
 @model ProjectVM
-@*@inject ITranslator _translator;*@
+@inject LanguageTranslatorFactory _translatorFactory;
 
-<!-- Modal ProjectPartialView -->
 <div>
 	<div>
 		<label class="text-secondary">Nazwa zamierzenia budowlanego:</label>
@@ -62,12 +61,18 @@
 			<div class="row ml-2 text-primary">
 				<span class="font-weight-bold" style="white-space: pre-line">@item.Name</span>
 			</div>
-@*			@foreach (var role in item.Roles)
+			@foreach (var branch in item.Branches)
 			{
 				<div class="row">
-					<div class="col my-auto ml-2 text-primary">@_translator.Translate(role.Role, Services.Languages.Pl) : @role.Designer (@role.Content)</div>
+					<div class="col my-auto ml-2 text-primary">@branch.Branch.ToString()</div>
 				</div>
+				@foreach(var role in branch.Roles)
+				{
+					<div class="row">
+						<div class="col my-auto ml-2 text-primary">@_translatorFactory.GetTranslator().Translate(role.Role) : @role.Designer (@role.Content)</div>
+					</div>
+				}
 			}
-*@		}
+		}
 	</div>
 </div>
