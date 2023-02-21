@@ -30,6 +30,11 @@ namespace SODP.Infrastructure.Services
                 WithSearchString(searchString);
             }
 
+            if (typeof(IOrdered).IsAssignableFrom(typeof(TEntity)))
+            {
+                _query = _query.OrderBy(x => ((IOrdered)x).Order);
+            }
+
             return await GetPageAsync(currentPage, pageSize);
         }
 

@@ -5,10 +5,6 @@ using SODP.Application.Services;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
@@ -82,7 +78,5 @@ namespace SODP.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

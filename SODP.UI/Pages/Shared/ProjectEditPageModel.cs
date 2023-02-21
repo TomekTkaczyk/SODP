@@ -43,11 +43,10 @@ namespace SODP.UI.Pages.Shared
                     BuildingCategory = response.Data.BuildingCategory,
                     Investor = response.Data.Investor,
                     Description = response.Data.Description,
-                    DevelopmentDate = response.Data.DevelopmentDate == null ? null : ((DateTime)response.Data.DevelopmentDate).Date.ToShortDateString(),
+                    DevelopmentDate = response.Data.DevelopmentDate == null ? null : ((DateTime)response.Data.DevelopmentDate).ToString("yyyy-MM-dd"),
                     Status = response.Data.Status,
                     BuildingPermit = response.Data.BuildingPermit,
                     Parts = parts,
-                    // AvailableParts = await GetPartsAsync(parts)
                 };
 
                 return project;

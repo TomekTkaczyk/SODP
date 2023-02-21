@@ -4,13 +4,14 @@ using System.Collections.Generic;
 
 namespace SODP.Model;
 
-public class Branch : BaseEntity, IActiveStatus
+public class Branch : BaseEntity, IActiveStatus, IOrdered
 {
-    public int Order { get; set; }
     public string Sign { get; set; }
     public string Name { get; set; }
     public bool ActiveStatus { get; set; }
-    public virtual ICollection<BranchLicense> Licenses { get; set; }
+	public int Order { get; set; }
+
+	public virtual ICollection<BranchLicense> Licenses { get; set; }
 
     public void Normalize()
     {

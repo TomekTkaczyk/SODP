@@ -82,6 +82,8 @@ namespace SODP.UI.Mappers
 
             CreateMap<ProjectPartDTO, Pages.ActiveProjects.ViewModels.ProjectPartVM>();
 
+            CreateMap<StageDTO, Pages.Stages.ViewModels.StageVM>();
+
 
 		}
 	}

@@ -21,7 +21,7 @@ namespace SODP.UI.Pages.Stages
     [Authorize(Roles = "ProjectManager")]
     public class IndexModel : ListPageModel<StageDTO>
     {
-        const string editStageModalViewName = "ModalView/_EditStageModalView";
+        const string _editStageModalViewName = "ModalView/_EditStageModalView";
 
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
@@ -51,7 +51,7 @@ namespace SODP.UI.Pages.Stages
             var model = new StageVM();
             if (id == null)
             {
-                return GetPartialView(model, editStageModalViewName);
+                return GetPartialView(model, _editStageModalViewName);
             }
 
             var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}");
@@ -63,7 +63,7 @@ namespace SODP.UI.Pages.Stages
 			var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
             model = _mapper.Map<StageVM>(result.Data);
 
-            return GetPartialView(model, editStageModalViewName);
+            return GetPartialView(model, _editStageModalViewName);
         }
 
         public async Task<PartialViewResult> OnPostEditStageAsync(StageVM stage)
@@ -88,7 +88,7 @@ namespace SODP.UI.Pages.Stages
                 }
             }
 
-            return  GetPartialView(stage, editStageModalViewName);
+            return  GetPartialView(stage, _editStageModalViewName);
         }
     }
 }

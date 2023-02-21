@@ -22,6 +22,11 @@ namespace SODP.DataAccess.Configurations
 				.HasColumnType("nvarchar(50)")
 				.IsRequired();
 
+			builder.Property(x => x.Order)
+			   .HasColumnType("int")
+			   .HasDefaultValue(1)
+			   .IsRequired();
+
 			builder.HasIndex(x => x.ProjectId)
                 .HasName("ProjectPartsIX_Project");
 

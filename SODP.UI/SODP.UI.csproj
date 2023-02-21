@@ -57,4 +57,15 @@
     <ProjectReference Include="..\SODP.Shared\SODP.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Pages\ArchiveProjects\_ProjectPartialView.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\Shared\ViewModels\" />
+  </ItemGroup>
+
 </Project>

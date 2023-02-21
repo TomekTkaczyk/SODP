@@ -19,9 +19,9 @@ namespace SODP.UI.Pages.ActiveProjects
     [Authorize(Roles = "User, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
-        const string newProjectPartialViewName = "ModalView/_NewProjectModalView";
+        const string _newProjectPartialViewName = "ModalView/_NewProjectModalView";
 
-        const string projectPartialViewName = "_ProjectPartialView";
+        const string _projectPartialViewName = "_ProjectPartialView";
 
         public ProjectVM Project { get; set; }
 
@@ -77,7 +77,7 @@ namespace SODP.UI.Pages.ActiveProjects
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
             Project = _mapper.Map<ProjectVM>(response.Data);
 
-			return GetPartialView(Project, projectPartialViewName);
+			return GetPartialView(Project, _projectPartialViewName);
         }
 
 
@@ -96,7 +96,7 @@ namespace SODP.UI.Pages.ActiveProjects
                     }).ToList();
             }
 
-			return GetPartialView(project, newProjectPartialViewName);
+			return GetPartialView(project, _newProjectPartialViewName);
         }
 	}
 }

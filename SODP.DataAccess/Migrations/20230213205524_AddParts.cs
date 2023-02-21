@@ -149,7 +149,8 @@ namespace SODP.DataAccess.Migrations
                 nullable: false,
                 defaultValue: 1);
 
-            migrationBuilder.AddColumn<DateTime>(
+
+			migrationBuilder.AddColumn<DateTime>(
                 name: "DevelopmentDate",
                 table: "Projects",
                 nullable: true);
@@ -259,7 +260,8 @@ namespace SODP.DataAccess.Migrations
                     ModifyTimeStamp = table.Column<DateTime>(nullable: false),
                     ProjectId = table.Column<int>(nullable: false),
                     Sign = table.Column<string>(type: "nvarchar(10)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                 },
                 constraints: table =>
                 {

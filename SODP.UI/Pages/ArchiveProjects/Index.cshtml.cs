@@ -16,7 +16,7 @@ namespace SODP.UI.Pages.ArchiveProjects
 	[Authorize(Roles = "User, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
-		const string projectPartialViewName = "_ProjectPartialView";
+		const string _projectPartialViewName = "_ProjectPartialView";
 
 		public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
@@ -31,11 +31,11 @@ namespace SODP.UI.Pages.ArchiveProjects
 
 		public async Task<PartialViewResult> OnGetProjectPartialAsync(int id)
 		{
-			var apiResponse = await _apiProvider.GetAsync($"projects/{id}/branches");
+			var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
 			var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
 			Project = _mapper.Map<ProjectVM>(response.Data);
 
-			return GetPartialView(Project, projectPartialViewName);
+			return GetPartialView(Project, _projectPartialViewName);
 		}
 	}
 }

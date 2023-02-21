@@ -123,7 +123,7 @@
 				<div class="form-group row">
 					<div class="col-lg-7">
 						<label>Data opracowania:</label>
-						<div class="input-group-append" data-date-format="dd/mm/yyyy">
+						<div class="input-group-append" data-date-format="dd.mm.yyyy">
 							<input asp-for="Project.DevelopmentDate" class="form-control col" type="date" />
 						</div>
 					</div>
@@ -152,7 +152,9 @@
 											 data-toggle="collapse"
 											 data-target="#collapse-@item.Id"
 											 aria-expanded="false"
-											 aria-controls="collapse-@item.Id">
+											 aria-controls="collapse-@item.Id"
+											 order="@item.Order"
+										>
 											 (@item.Sign) @item.Name
 										</div>
 										<div class="colgroup justify-content-end mr-2">
@@ -208,6 +210,7 @@
 									class="btn btn-info form-control text-white float-right h-100"
 									title="Nowa część"
 									data-toggle="ajax-modal"
+									@*onclick="EditPart(@Model.Project.Id)">*@
 									data-url="@Url.Page("Edit","EditProjectPart")&projectId=@Model.Project.Id">
 								<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa część
 							</button>
@@ -232,6 +235,7 @@
 		$('#myTab a').click(function (e) {
 			e.preventDefault();
 			$(this).tab('show');
+			//modalPlaceHolder(window.location.href);
 		});
 
 		// store the currently selected tab in the hash value

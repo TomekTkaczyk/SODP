@@ -8,5 +8,6 @@ public class ProjectPart : BaseEntity
     public virtual Project Project { get; set; }
 	public string Sign { get; set; }
 	public string Name { get; set; }
+	public int Order { get; set; }
 	public ICollection<PartBranch> Branches { get; set; }
 }

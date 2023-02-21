@@ -21,14 +21,13 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse<PartDTO>();
             try
             {
-                var part = await _context.Parts.FirstOrDefaultAsync(x => x.Sign == newPart.Sign);
-                if (part != null)
+                if (await _context.Parts.AnyAsync(x => x.Sign == newPart.Sign))
                 {
                     serviceResponse.SetError($"Error: Part '{newPart.Sign}' exist.", 409);
                     return serviceResponse;
                 }
 
-                part = _mapper.Map<Part>(newPart);
+                var part = _mapper.Map<Part>(newPart);
                 var validationResult = await _validator.ValidateAsync(part);
                 if (!validationResult.IsValid)
                 {
@@ -38,8 +37,12 @@ namespace SODP.Infrastructure.Services
 
                 part.Normalize();
                 part.ActiveStatus = true;
+                part.Order = await GetMaxOrderAsync() + 1;
+                
                 var entity = await _context.Parts.AddAsync(part);
+                
                 await _context.SaveChangesAsync();
+                
                 serviceResponse.SetData(_mapper.Map<PartDTO>(entity.Entity));
             }
             catch (Exception ex)
@@ -50,8 +53,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-
-        public async Task<ServiceResponse> UpdateAsync(PartDTO updatePart)
+		public async Task<ServiceResponse> UpdateAsync(PartDTO updatePart)
         {
             var serviceResponse = new ServiceResponse();
             try
@@ -115,6 +117,14 @@ namespace SODP.Infrastructure.Services
             return this;
         }
 
+		private async Task<int> GetMaxOrderAsync()
+		{
+			if (await _context.Parts.AnyAsync())
+			{
+				return await _context.Parts.MaxAsync(x => x.Order);
+			}
 
-    }
+			return 0;
+		}
+	}
 }

@@ -3,7 +3,7 @@ using SODP.Model.Interfaces;
 
 namespace SODP.Model;
 
-public class Part : BaseEntity, IActiveStatus
+public class Part : BaseEntity, IActiveStatus, IOrdered
 {
 	public Part() : this("", "") { }
 
@@ -15,10 +15,10 @@ public class Part : BaseEntity, IActiveStatus
         Name = name;
     }
 
-    public int Order { get; set; }
     public string Sign { get; set; }
     public string Name { get; set; }
     public bool ActiveStatus { get; set; }
+    public int Order { get; set; }
 
     public void Normalize()
     {

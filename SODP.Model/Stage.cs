@@ -3,7 +3,7 @@ using SODP.Model.Interfaces;
 
 namespace SODP.Model;
 
-public class Stage : BaseEntity, IActiveStatus
+public class Stage : BaseEntity, IActiveStatus, IOrdered
 {
     public Stage() : this("","") { }
 

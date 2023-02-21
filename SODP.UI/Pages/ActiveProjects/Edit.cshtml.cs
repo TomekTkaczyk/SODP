@@ -133,7 +133,7 @@ namespace SODP.UI.Pages.ActiveProjects
 			return GetPartialView(investors, _getInvestorViewName);
 		}
 
-		public async Task<PartialViewResult> OnGetEditProjectPartAsync(int projectId, int projectPartId)
+		public async Task<IActionResult> OnGetEditProjectPartAsync(int projectId, int projectPartId)
 		{
 			var model = new PartVM()
 			{
@@ -151,7 +151,7 @@ namespace SODP.UI.Pages.ActiveProjects
 			return GetPartialView(model, _editProjectPartViewName);
 		}
 
-		public async Task<PartialViewResult> OnPostEditProjectPartAsync(PartVM part)
+		public async Task<IActionResult> OnPostEditProjectPartAsync(PartVM part)
 		{
 			part.Items = await GetAvailablePartsAsync();
 			if (ModelState.IsValid)

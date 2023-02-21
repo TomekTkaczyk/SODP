@@ -1,6 +1,7 @@
 ﻿function modalPlaceHolder(returnUrl) {
     $('[data-toggle="tooltip"]').tooltip();
     $('button[data-toggle="ajax-modal"]').click(function (event) {
+        event.preventDefault();
         var url = $(this).data('url');
         $.get(url).done(function (data) {
             var placeholderElement = $('#modal-placeholder');
@@ -24,8 +25,7 @@ function initModalPlaceHolder(returnUrl) {
             var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
             if (isValid) {
                 placeholderElement.find('.modal').modal('hide');
-                window.location = returnUrl;
-                window.location.reload(true);
+                location.reload();
             }
         });
     });

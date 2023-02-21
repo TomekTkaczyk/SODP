@@ -539,7 +539,12 @@ namespace SODP.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(10)");
 
-                    b.HasKey("Id");
+					b.Property<int>("Order")
+	                    .ValueGeneratedOnAdd()
+	                    .HasColumnType("int")
+	                    .HasDefaultValue(1);
+
+					b.HasKey("Id");
 
                     b.HasIndex("ProjectId")
                         .HasName("ProjectPartsIX_Project");
