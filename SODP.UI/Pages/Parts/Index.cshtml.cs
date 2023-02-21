@@ -8,7 +8,7 @@ using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Parts.Extensions;
 using SODP.UI.Pages.Parts.ViewModels;
-using SODP.UI.Pages.Shared;
+using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System.Linq;
 using System.Net;

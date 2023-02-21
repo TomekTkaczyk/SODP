@@ -1,0 +1,24 @@
+﻿@using SODP.UI.Pages.Branches.ViewModels
+
+@model DesignersVM
+
+<div>
+    @if (Model.Licenses.Count > 0)
+    {
+        @foreach (var item in Model.Licenses)
+        {
+            <div class="row">
+                <div class="col col-md-4">
+                    @item.Designer.Title @item.Designer.Firstname @item.Designer.Lastname
+                </div>
+                <div class="col col-md-1">
+                    @item.Content
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Brak projektantów</p>
+    }
+</div>

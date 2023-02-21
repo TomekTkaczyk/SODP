@@ -6,11 +6,9 @@ using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.ActiveProjects;
-using SODP.UI.Pages.ActiveProjects.ViewModels;
-using SODP.UI.Pages.Shared;
+using SODP.UI.Pages.Shared.PageModels;
+using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
-using SODP.UI.ViewModels;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ArchiveProjects

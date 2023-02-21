@@ -7,7 +7,7 @@ using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Branches.ViewModels;
-using SODP.UI.Pages.Shared;
+using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +21,8 @@ namespace SODP.UI.Pages.Branches
     [Authorize(Roles = "ProjectManager")]
     public class IndexModel : ListPageModel<BranchDTO>
 	{
-        const string _editBranchPartialViewName = "_EditBranchPartialView";
-        const string _designersPartialViewName = "_DesignersPartialView";
+        const string _editBranchPartialViewName = "ModalView/_EditBranchModalView";
+        const string _designersPartialViewName = "PartialView/_DesignersPartialView";
         
         public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {

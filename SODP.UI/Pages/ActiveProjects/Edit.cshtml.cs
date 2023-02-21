@@ -1,12 +1,9 @@
 using AutoMapper;
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using SODP.Model;
-using SODP.Model.Enums;
 using SODP.Shared.DTO;
 using SODP.Shared.DTO.Requests;
 using SODP.Shared.Enums;
@@ -14,30 +11,28 @@ using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
-using SODP.UI.Pages.Shared;
+using SODP.UI.Pages.Shared.PageModels;
+using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.WebSockets;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
 {
-	[Authorize(Roles = "Administrator,ProjectManager")]
+    [Authorize(Roles = "Administrator,ProjectManager")]
 	public class EditModel : ProjectEditPageModel
 	{
 		const string _editProjectPartViewName = "ModalView/_EditProjectPartModalView";
 		const string _addTechnicalRoleViewName = "ModalView/_AddTechnicalRoleModalView";
 		const string _addPartBranchViewName = "ModalView/_AddPartBranchModalView";
 		const string _getInvestorViewName = "ModalView/_GetInvestorModalView";
-
-		const string _partBranchesViewName = "_PartBranchesPartialView";
+		const string _partBranchesViewName = "PartialView/_PartBranchesPartialView";
 
 		public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory) { }
 

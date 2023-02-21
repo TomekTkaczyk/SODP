@@ -7,7 +7,7 @@ using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Designers.ViewModels;
-using SODP.UI.Pages.Shared;
+using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +21,9 @@ namespace SODP.UI.Pages.Designers
     [Authorize(Roles = "ProjectManager")]
 	public class IndexModel : ListPageModel<DesignerDTO>
     {
-        const string editDesignerPartialViewName = "_EditDesignerPartialView";
-        const string licensesPartialViewName = "_LicensesPartialView";
-        const string newLicensePartialViewName = "_NewLicensePartialView";
+        const string _newLicenseModalViewName = "ModalView/_NewLicensePartialView";
+        const string _editDesignerModalViewName = "ModalView/_EditDesignerModalView";
+        const string _licensesPartialViewName = "PartialView/_LicensesPartialView";
 
         public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
@@ -68,7 +68,7 @@ namespace SODP.UI.Pages.Designers
                 model = response.Data.ToViewModel();
 			}
 
-			return GetPartialView(model, editDesignerPartialViewName);
+			return GetPartialView(model, _editDesignerModalViewName);
         }
 
         public async Task<PartialViewResult> OnPostEditDesignerAsync(DesignerVM designer)
@@ -93,7 +93,7 @@ namespace SODP.UI.Pages.Designers
                 }
             }
 
-            return GetPartialView(designer, editDesignerPartialViewName);
+            return GetPartialView(designer, _editDesignerModalViewName);
         }
 
         public async Task<PartialViewResult> OnGetLicensesPartialAsync(int id)
@@ -109,7 +109,7 @@ namespace SODP.UI.Pages.Designers
                 };
             }
 
-            return GetPartialView(Licenses, licensesPartialViewName);
+            return GetPartialView(Licenses, _licensesPartialViewName);
         }
 
         public PartialViewResult OnGetNewLicenseAsync(int designerId)
@@ -119,7 +119,7 @@ namespace SODP.UI.Pages.Designers
                 DesignerId = designerId,
             };
 
-            return GetPartialView(license, newLicensePartialViewName);
+            return GetPartialView(license, _newLicenseModalViewName);
         }
 
         public async Task<PartialViewResult> OnPostNewLicenseAsync(NewLicenseVM license)
@@ -142,7 +142,7 @@ namespace SODP.UI.Pages.Designers
                 }
             }
 
-            return GetPartialView<NewLicenseVM>(license, newLicensePartialViewName);
+            return GetPartialView<NewLicenseVM>(license, _newLicenseModalViewName);
         }
     }
 }

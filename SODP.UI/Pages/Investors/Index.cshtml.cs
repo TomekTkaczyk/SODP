@@ -1,14 +1,12 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Investors.ViewModels;
-using SODP.UI.Pages.Shared;
+using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +17,9 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Investors
 {
-	public class IndexModel : ListPageModel<InvestorDTO>
+    public class IndexModel : ListPageModel<InvestorDTO>
     {
-		const string editInvestorPartialViewName = "_EditInvestorPartialView";
+		const string _editInvestorModalViewName = "ModalView/_EditInvestorModalView";
 
 		public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
 		{
@@ -61,12 +59,12 @@ namespace SODP.UI.Pages.Investors
 				{
 					var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<InvestorDTO>>();
 
-					return GetPartialView(response.Data.ToViewModel(), editInvestorPartialViewName);
+					return GetPartialView(response.Data.ToViewModel(), _editInvestorModalViewName);
 				}
                 RedirectToPage("Errors/404");
             }
 
-            return GetPartialView(new InvestorVM(), editInvestorPartialViewName);
+            return GetPartialView(new InvestorVM(), _editInvestorModalViewName);
         }
 
 
@@ -91,7 +89,7 @@ namespace SODP.UI.Pages.Investors
                         break;
                 }
             }
-			return GetPartialView(investor, editInvestorPartialViewName);
+			return GetPartialView(investor, _editInvestorModalViewName);
 
         }
 

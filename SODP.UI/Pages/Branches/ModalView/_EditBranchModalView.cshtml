@@ -1,14 +1,13 @@
-﻿@using SODP.UI.Pages.Parts.ViewModels
+﻿@using SODP.UI.Pages.Branches.ViewModels
 
-@model PartVM
+@model BranchVM
 
 <!-- Modal -->
-
-<div class="modal fade" id="editPart" tabindex="-1" role="dialog" aria-labelledby="editPartLabel" aria-hidden="true">
+<div class="modal fade" id="editBranch" tabindex="-1" role="dialog" aria-labelledby="editBranchLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="text-info" id="editPartLabel">@(Model.Id==0 ? "Nowa część" : "Edycja części")</h5>
+                <h5 class="text-info" id="editBranchLabel">@(Model.Id == 0 ? "Nowa branża" : "Edycja branży")</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -16,15 +15,15 @@
             <div class="modal-body">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div id="error-placeholder"></div>
-                <form asp-page-handler="EditPart">
+                <form asp-page-handler="editBranch">
                     <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <input asp-for="Id" type="hidden" value="@Model.Id" />
                     <div class="form-group">
-                        <input asp-for="Sign" onkeyup="this.value = this.value.toUpperCase();" id="sign" class="form-control" value="@Model.Sign" placeholder="Znak części" readonly="@(Model.Id.Equals(0) ? false : true)" />
+                        <input asp-for="Sign" onkeyup="this.value = this.value.toUpperCase();" id="sign" class="form-control" value="@Model.Sign" placeholder="Znak branży" />
                         <span asp-validation-for="Sign" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input asp-for="Name" onkeyup="this.value = this.value.toUpperCase();" id="title" class="form-control" value="@Model.Name" placeholder="Opis opis" />
+                        <input asp-for="Name" onkeyup="this.value = this.value.toUpperCase();" id="title" class="form-control" value="@Model.Name" placeholder="Opis branży" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                 </form>

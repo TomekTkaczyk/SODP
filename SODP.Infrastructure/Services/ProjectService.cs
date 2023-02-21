@@ -292,28 +292,6 @@ namespace SODP.Application.Services
 		}
 
 
-		public ServicePageResponse<ProjectBranchRoleDTO> GetBranchRolesAsync(int id, int branchId)
-        {
-            var serviceResponse = new ServicePageResponse<ProjectBranchRoleDTO>();
-            try 
-            {
-                //var projectBranch = await _context.PartBranch
-                //    .Include(x => x.Branches)
-                //    .ThenInclude(x => x.License)
-                //    .ThenInclude(x => x.Designer)
-                //    .FirstOrDefaultAsync(x => x.Project.Id == id && x.BranchId == branchId);
-                //var roles = projectBranch.Roles.ToList();
-                //serviceResponse.SetData(_mapper.Map<IList<ProjectBranchRoleDTO>>(projectBranch.Roles));
-            }
-            catch(Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
-
-
         public ServiceResponse DeleteBranchAsync(int id, int branchId)
         {
             var serviceResponse = new ServiceResponse();

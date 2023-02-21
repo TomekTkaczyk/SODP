@@ -1,14 +1,14 @@
-﻿@using SODP.UI.Pages.Parts.ViewModels
+﻿@using SODP.UI.Pages.Investors.ViewModels
 
-@model PartVM
+@model InvestorVM
 
 <!-- Modal -->
 
-<div class="modal fade" id="editPart" tabindex="-1" role="dialog" aria-labelledby="editPartLabel" aria-hidden="true">
+<div class="modal fade" id="editInvestor" tabindex="-1" role="dialog" aria-labelledby="editInvestorLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="text-info" id="editPartLabel">@(Model.Id==0 ? "Nowa część" : "Edycja części")</h5>
+                <h5 class="text-info" id="editInvestorLabel">@(Model.Id == 0 ? "Nowy inwestor" : "Edycja danych")</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -16,16 +16,13 @@
             <div class="modal-body">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div id="error-placeholder"></div>
-                <form asp-page-handler="EditPart">
+                <form asp-page-handler="EditInvestor">
                     <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <input asp-for="Id" type="hidden" value="@Model.Id" />
                     <div class="form-group">
-                        <input asp-for="Sign" onkeyup="this.value = this.value.toUpperCase();" id="sign" class="form-control" value="@Model.Sign" placeholder="Znak części" readonly="@(Model.Id.Equals(0) ? false : true)" />
-                        <span asp-validation-for="Sign" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input asp-for="Name" onkeyup="this.value = this.value.toUpperCase();" id="title" class="form-control" value="@Model.Name" placeholder="Opis opis" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <label>Inwestor:</label>
+                        <textarea asp-for="Name" class="form-control" placeholder="Nazwa i adres inwestora"></textarea>
+                        <span class="text-danger" asp-validation-for="Name"></span>
                     </div>
                 </form>
             </div>
@@ -34,4 +31,5 @@
             </div>
         </div>
     </div>
+
 </div>

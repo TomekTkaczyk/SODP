@@ -9,7 +9,8 @@ using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
-using SODP.UI.Pages.Shared;
+using SODP.UI.Pages.Shared.PageModels;
+using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,9 +20,8 @@ namespace SODP.UI.Pages.ActiveProjects
     [Authorize(Roles = "User, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
-        const string _newProjectPartialViewName = "ModalView/_NewProjectModalView";
-
-        const string _projectPartialViewName = "_ProjectPartialView";
+        const string _newProjectModalViewName = "ModalView/_NewProjectModalView";
+        const string _projectPartialViewName = "PartialView/_ProjectPartialView";
 
         public ProjectVM Project { get; set; }
 
@@ -96,7 +96,7 @@ namespace SODP.UI.Pages.ActiveProjects
                     }).ToList();
             }
 
-			return GetPartialView(project, _newProjectPartialViewName);
+			return GetPartialView(project, _newProjectModalViewName);
         }
 	}
 }

@@ -8,16 +8,14 @@ namespace SODP.UI.Mappers
     {
         public AutoMapperProfile()
         {
-            CreateMap<ProjectPartDTO, Pages.ActiveProjects.ViewModels.PartVM>()
+
+            #region DTO to Pages/Shared/ViewModels
+
+            CreateMap<ProjectPartDTO, Pages.Shared.ViewModels.PartVM>()
                 .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
 
-            CreateMap<ProjectBranchDTO, Pages.ArchiveProjects.ViewModels.ProjectBranchVM>()
-                .ForMember(dest => dest.Branch, act => act.Ignore())
-                .ForMember(dest => dest.Roles, act => act.Ignore());
-
-
-            CreateMap<ProjectDTO, Pages.ActiveProjects.ViewModels.ProjectVM>()
+            CreateMap<ProjectDTO, Pages.Shared.ViewModels.ProjectVM>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ForMember(dest => dest.Stage, act => act.Ignore())
                 .ForMember(dest => dest.StageId, opt => opt.MapFrom(x => x.Stage.Id))
@@ -26,41 +24,15 @@ namespace SODP.UI.Mappers
                 .ForMember(dest => dest.DevelopmentDate, opt => opt.MapFrom(x => x.DevelopmentDate == null ? null : ((DateTime)x.DevelopmentDate).Date.ToShortDateString()))
                 .PreserveReferences();
 
-			CreateMap<ProjectDTO, Pages.ArchiveProjects.ViewModels.ProjectVM>()
-	            .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-	            .ForMember(dest => dest.Stage, act => act.Ignore())
-	            .ForMember(dest => dest.StageId, opt => opt.MapFrom(x => x.Stage.Id))
-	            .ForMember(dest => dest.StageSign, opt => opt.MapFrom(x => x.Stage.Sign))
-	            .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Name))
-                .ForMember(dest => dest.DevelopmentDate, opt => opt.MapFrom(x => x.DevelopmentDate == null ? null : ((DateTime)x.DevelopmentDate).Date.ToShortDateString()))
-				.ForMember(dest => dest.ProjectBranches, opt => opt.MapFrom(x => new Pages.ArchiveProjects.ViewModels.BranchesVM()))
-                .ForMember(dest => dest.AvailableBranches, act => act.Ignore())
-                .PreserveReferences();
+			CreateMap<BranchDTO, Pages.Shared.ViewModels.BranchVM>();
 
-			CreateMap<ProjectBranchRoleDTO, Pages.ActiveProjects.ViewModels.BranchRoleVM>()
-                .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.License.Designer.ToString()))
-                .ForMember(dest => dest.Content, opt => opt.MapFrom(x => x.License.Content));
+            CreateMap<InvestorDTO, Pages.Shared.ViewModels.InvestorVM>();
 
-			CreateMap<ProjectBranchRoleDTO, Pages.ArchiveProjects.ViewModels.RoleVM>()
-				.ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.License.Designer.ToString()))
-				.ForMember(dest => dest.Content, opt => opt.MapFrom(x => x.License.Content));
-
-			CreateMap<BranchDTO, Pages.ActiveProjects.ViewModels.BranchVM>();
-
-			CreateMap<BranchDTO, Pages.ArchiveProjects.ViewModels.BranchVM>();
-
-            CreateMap<InvestorDTO, Pages.ActiveProjects.ViewModels.InvestorVM>()
-                .ReverseMap();
-
-            CreateMap<LicenseDTO, Pages.ActiveProjects.ViewModels.LicenseVM>()
+            CreateMap<LicenseDTO, Pages.Shared.ViewModels.LicenseVM>()
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.Designer.ToString()));
 
-            CreateMap<PartDTO, Pages.ActiveProjects.ViewModels.PartVM>()
+            CreateMap<PartDTO, Pages.Shared.ViewModels.PartVM>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.Id))
-                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
-
-            CreateMap<PartDTO, Pages.ActiveProjects.ViewModels.NewPartVM>()
                 .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
 
@@ -69,22 +41,23 @@ namespace SODP.UI.Mappers
 				.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
 				.ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
 
-			CreateMap<PartDTO, Pages.Parts.ViewModels.NewPartVM>()
-				.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
-				.ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
-
-			CreateMap<BranchRoleDTO, Pages.ActiveProjects.ViewModels.BranchRoleVM>()
+			CreateMap<BranchRoleDTO, Pages.Shared.ViewModels.BranchRoleVM>()
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(x => x.Role))
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.License.Designer.ToString()))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(x => x.License.Content));
 
-            CreateMap<PartBranchDTO, Pages.ActiveProjects.ViewModels.PartBranchVM>();
+            CreateMap<PartBranchDTO, Pages.Shared.ViewModels.PartBranchVM>();
 
-            CreateMap<ProjectPartDTO, Pages.ActiveProjects.ViewModels.ProjectPartVM>();
+            CreateMap<ProjectPartDTO, Pages.Shared.ViewModels.ProjectPartVM>();
+
+            #endregion
+
+            #region DTO to Pages/Stages/ViewModels
 
             CreateMap<StageDTO, Pages.Stages.ViewModels.StageVM>();
+            
+            #endregion
 
-
-		}
-	}
+        }
+    }
 }

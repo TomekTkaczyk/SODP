@@ -1,7 +1,12 @@
-﻿namespace SODP.UI.Pages.Investors.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SODP.UI.Pages.Investors.ViewModels
 {
-	public class InvestorVM	: NewInvestorVM
+	public class InvestorVM
 	{
 		public int Id { get; set; }
-	}
+
+        [Required(ErrorMessage = "Nazwa inwestora jest wymagana")]
+        public string Name { get; set; }
+    }
 }
