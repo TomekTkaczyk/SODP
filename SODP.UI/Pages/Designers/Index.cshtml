@@ -21,8 +21,9 @@
 		<button type="button"
 				class="btn btn-info form-control text-white float-right h-100"
 				title="Nowy projektant"
-				data-toggle="ajax-modal"
-				data-url="@Url.Page("Index", "EditDesigner")">
+@*				data-toggle="ajax-modal"
+				data-url="@Url.Page("Index", "EditDesigner")"
+*@				onclick="NewDesigner()">
 			<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
 		</button>
 	</div>
@@ -37,52 +38,52 @@
 		{
 			<div class="button card p-0 border-light">
 				<div class="card-header p-0 border-light d-flex align-items-center" style="background-color:white" id="card-header-@item.Id">
-						<div class="col font-weight-bold clickable"
-							 onclick="accordionCollapse(@item.Id)"
-							 id="card-head-@item.Id"
-							 data-toggle="collapse"
-							 data-target="#collapse-@item.Id"
-							 aria-expanded="false"
-							 aria-controls="collapse-@item.Id">
-							@item.Title @item.Firstname @item.Lastname
-						</div>
-						<div class="colgroup justify-content-end mr-2">
-							<a name="additionalBtn"
-							   id="newLicense-@item.Id"
-							   onclick="NewLicense(@item.Id)"
-							   class="btn btn-lg m-1 p-1"
-							   data-toggle="tooltip"
-							   data-placement="top"
-							   title="Dodaj uprawnienia">
-								<i class="fas fa-plus fa-lg text-success"></i>
-							</a>
+					<div class="col font-weight-bold clickable"
+							onclick="accordionCollapse(@item.Id)"
+							id="card-head-@item.Id"
+							data-toggle="collapse"
+							data-target="#collapse-@item.Id"
+							aria-expanded="false"
+							aria-controls="collapse-@item.Id">
+						@item.Title @item.Firstname @item.Lastname
+					</div>
+					<div class="colgroup justify-content-end mr-2">
+						<a name="additionalBtn"
+							id="newLicense-@item.Id"
+							onclick="NewLicense(@item.Id)"
+							class="btn btn-lg m-1 p-1"
+							data-toggle="tooltip"
+							data-placement="top"
+							title="Dodaj uprawnienia">
+							<i class="fas fa-plus fa-lg text-success"></i>
+						</a>
 
-							<a name="additionalBtn"
-							   id="editDesigner-@item.Id"
-							   onclick='EditDesigner(@item.Id)'
-							   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
-							   data-toggle="tooltip"
-							   data-placement="top"
-							   title="Edycja">
-								<i class="fas fa-edit fa-lg text-success"></i>
-							</a>
+						<a name="additionalBtn"
+							id="editDesigner-@item.Id"
+							onclick='EditDesigner(@item.Id)'
+							class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+							data-toggle="tooltip"
+							data-placement="top"
+							title="Edycja">
+							<i class="fas fa-edit fa-lg text-success"></i>
+						</a>
 
-							<a name="additionalBtn"
-							   id="deleteDesigner-@item.Id"
-							   onclick='Delete("/api/v0_01/designers/@item.Id")'
-							   class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
-							   data-toggle="tooltip"
-							   data-placement="top"
-							   title="Usuń projektanta">
-								<i class="fas fa-times fa-lg text-danger"></i>
-							</a>
-							<input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
-							   onchange="handleChange(@item.Id,this.checked)"
-							   id="checkbox_@item.Id"
-							   data-toggle="toggle"
-							   title="Aktywność"
-							   data-style="ios">
-						</div>
+						<a name="additionalBtn"
+							id="deleteDesigner-@item.Id"
+							onclick='Delete("/api/v0_01/designers/@item.Id")'
+							class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+							data-toggle="tooltip"
+							data-placement="top"
+							title="Usuń projektanta">
+							<i class="fas fa-times fa-lg text-danger"></i>
+						</a>
+						<input type="checkbox" asp-for="@item.ActiveStatus" name="checkbox_@item.Id"
+							onchange="handleChange(@item.Id,this.checked)"
+							id="checkbox_@item.Id"
+							data-toggle="toggle"
+							title="Aktywność"
+							data-style="ios">
+					</div>
 				</div>
 			</div>
 			<div id="collapse-@item.Id"
@@ -107,26 +108,49 @@ else
 	<script src="~/js/delete.js"></script>
 	<script src="~/js/ModalPlaceholder.js"></script>
 	<script>
-		function EditDesigner(id) {
+		function NewDesigner() {
+			initModalPlaceHolder("/Designers");
 			$.ajax({
 				type: "Get",
-				url: `@Url.Page("Index","EditDesigner")&Id=${id}`,
+				url: `@Url.Page("Index","EditDesigner")`,
 				success: function (data) {
-					console.log(data);
 					$('#modal-placeholder').html(data);
 					$('#editDesigner').modal('show');
+				},
+				error: function (jqXHR, exception) {
+					console.log(jqXHR);
+					console.log(exception);
 				}
 			})
 		}
 
-		function NewLicense(designerId) {
+		function EditDesigner(id) {
 			$.ajax({
 				type: "Get",
-				url: `@Url.Page("Index","NewLicense")&designerId=${designerId}`,
+				url: `@Url.Page("Index","EditDesigner")&id=${id}`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#editDesigner').modal('show');
+				},
+				error: function (jqXHR, exception) {
+					console.log(jqXHR);
+					console.log(exception);
+				}
+			})
+		}
+
+		function NewLicense(id) {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Index","NewLicense")&id=${id}`,
 				success: function (data) {
 					console.log(data);
 					$('#modal-placeholder').html(data);
 					$('#newLicense').modal('show');
+				},
+				error: function (jqXHR, exception) {
+					console.log(jqXHR);
+					console.log(exception);
 				}
 			})
 		}
@@ -156,7 +180,9 @@ else
 
 	<script>
 		$(document).ready(function () {
-			modalPlaceHolder('/Designers');
+			//modalPlaceHolder('/Designers');
+			//initModalPlaceHolder("/Designers");
+			console.log("Ready");
 		});
 	</script>
 }

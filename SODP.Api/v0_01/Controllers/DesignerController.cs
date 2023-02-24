@@ -41,9 +41,10 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateAsync([FromBody] DesignerDTO entity)
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> CreateAsync([FromBody] DesignerDTO designer)
         {
-            return Ok(await _service.CreateAsync(entity));
+            return Ok(await _service.CreateAsync(designer));
         }
 
 

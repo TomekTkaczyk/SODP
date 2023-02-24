@@ -9,6 +9,7 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -21,7 +22,7 @@ namespace SODP.UI.Pages.Designers
     [Authorize(Roles = "ProjectManager")]
 	public class IndexModel : ListPageModel<DesignerDTO>
     {
-        const string _newLicenseModalViewName = "ModalView/_NewLicensePartialView";
+        const string _newLicenseModalViewName = "ModalView/_NewLicenseModalView";
         const string _editDesignerModalViewName = "ModalView/_EditDesignerModalView";
         const string _licensesPartialViewName = "PartialView/_LicensesPartialView";
 
@@ -54,30 +55,30 @@ namespace SODP.UI.Pages.Designers
             return Page();
         }
 
-        public async Task<PartialViewResult> OnGetEditDesignerAsync(int? id)
+        public async Task<IActionResult> OnGetEditDesignerAsync(int? id)
         {
-            var model = new DesignerVM();
-            if (id != null)
-            {
-                var apiResponse = await _apiProvider.GetAsync($"designers/{id}");
-                if (!apiResponse.IsSuccessStatusCode)
-                {
-				    RedirectToPage("Errors/404");
-                }
-                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
-                model = response.Data.ToViewModel();
+			var model = new DesignerVM();
+			if (id != null)
+			{
+				var apiResponse = await _apiProvider.GetAsync($"designers/{id}");
+				if (!apiResponse.IsSuccessStatusCode)
+				{
+					RedirectToPage("Errors/404");
+				}
+				var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
+				model = response.Data.ToViewModel();
 			}
 
 			return GetPartialView(model, _editDesignerModalViewName);
-        }
+		}
 
-        public async Task<PartialViewResult> OnPostEditDesignerAsync(DesignerVM designer)
+        public async Task<IActionResult> OnPostEditDesignerAsync(DesignerVM designer)
         {
             if (ModelState.IsValid)
             {
                 var apiResponse = designer.Id == 0
-                    ? await _apiProvider.PostAsync($"designers", designer.ToHttpContent())
-                    : await _apiProvider.PutAsync($"designers/{designer.Id}", designer.ToHttpContent());
+                    ? await _apiProvider.PostAsync($"{_endpoint}", designer.ToHttpContent())
+                    : await _apiProvider.PutAsync($"{_endpoint}/{designer.Id}", designer.ToHttpContent());
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
@@ -96,7 +97,7 @@ namespace SODP.UI.Pages.Designers
             return GetPartialView(designer, _editDesignerModalViewName);
         }
 
-        public async Task<PartialViewResult> OnGetLicensesPartialAsync(int id)
+        public async Task<IActionResult> OnGetLicensesPartialAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"designers/{id}/licenses");
             if (apiResponse.IsSuccessStatusCode)
@@ -112,17 +113,18 @@ namespace SODP.UI.Pages.Designers
             return GetPartialView(Licenses, _licensesPartialViewName);
         }
 
-        public PartialViewResult OnGetNewLicenseAsync(int designerId)
+        public IActionResult OnGetNewLicense(int id)
         {
-            var license = new NewLicenseVM
-            {
-                DesignerId = designerId,
-            };
+			var model = new NewLicenseVM
+			{
+				DesignerId = id,
+				Content = ""
+			};
 
-            return GetPartialView(license, _newLicenseModalViewName);
-        }
+			return GetPartialView(model, _newLicenseModalViewName);
+		}
 
-        public async Task<PartialViewResult> OnPostNewLicenseAsync(NewLicenseVM license)
+		public async Task<IActionResult> OnPostNewLicenseAsync(NewLicenseVM license)
         {
             if (ModelState.IsValid)
             {

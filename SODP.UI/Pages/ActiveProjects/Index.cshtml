@@ -23,9 +23,8 @@
 			<button type="button"
 				class="btn btn-info form-control text-white float-right h-100"
 				title="Nowy projekt"
-				data-toggle="ajax-modal"
-				data-url="@Url.Page("Index","NewProject")">
-				<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projekt
+				onclick = "NewProject()">
+				<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projekt 
 			</button>
 		</div>
 	}
@@ -112,8 +111,42 @@ else
 
 @section Scripts{
 	<script src="~/js/delete.js"></script>
-	<script src="~/js/ModalPlaceholder.js"></script>
 	<script>
+		function NewProject() {
+			$.ajax({
+				type: "Get",
+				url: `@Url.Page("Index","NewProject")`,
+				success: function (data) {
+					$('#modal-placeholder').html(data);
+					$('#newProject').modal('show');
+				},
+				error: function (jqXHR, exception) {
+					console.log(jqXHR);
+					console.log(exception);
+				}
+			})
+		}
+
+		function initModalPlaceHolder() {
+			var placeholderElement = $('#modal-placeholder');
+			placeholderElement.on('click', '[data-save="modal"]', function (event) {
+				event.preventDefault();
+				var form = $(this).parents('.modal').find('form');
+				var actionUrl = form.attr('action');
+				var dataToSend = form.serialize();
+
+				$.post(actionUrl, dataToSend).done(function (data) {
+					var newBody = $('.modal-body', data);
+					placeholderElement.find('.modal-body').replaceWith(newBody);
+					var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
+					var id = newBody.find('[id="id"]').val();
+					if(id != 0){
+						location = `/ActiveProjects/Edit?Id=${id}#details`;
+					}
+				});
+			});
+		}
+
 		function Edit(id) {
 			window.location = `/ActiveProjects/Edit?Id=${id}#details`;
 		}
@@ -149,11 +182,9 @@ else
 				$(`#project-${id}`).load(`/ActiveProjects/index?handler=ProjectPartial&id=${id}`);
 			}
 		}
-	</script>
 
-	<script>
 		$(document).ready(function () {
-			modalPlaceHolder('/ActiveProjects');
+			initModalPlaceHolder();
 		});
 	</script>
 }

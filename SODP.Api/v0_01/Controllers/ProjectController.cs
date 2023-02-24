@@ -6,6 +6,7 @@ using SODP.Application.Services;
 using SODP.Shared.DTO;
 using SODP.Shared.DTO.Requests;
 using SODP.Shared.Enums;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace SODP.Api.v0_01.Controllers
@@ -47,17 +48,20 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateAsync([FromBody] NewProjectDTO project)
         {
-            var result = await (_service as IProjectService).CreateAsync(project);
-            return result.StatusCode switch
-            {
-                StatusCodes.Status200OK => Ok(result),
-                StatusCodes.Status403Forbidden => Forbid(),
-                StatusCodes.Status500InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
-                _ => BadRequest(result),
-            };
+            return Ok(await _service.CreateAsync(project));
+            //var result = await _service.CreateAsync(project);
+            //return result.StatusCode switch
+            //{
+            //    StatusCodes.Status200OK => Ok(result),
+            //    StatusCodes.Status403Forbidden => Forbid(),
+            //    StatusCodes.Status409Conflict => Conflict(result),
+            //    //StatusCodes.Status500InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
+            //    _ => BadRequest(result),
+            //};
         }
 
 

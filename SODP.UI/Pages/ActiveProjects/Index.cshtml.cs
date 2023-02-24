@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
@@ -12,12 +13,13 @@ using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
 {
-    [Authorize(Roles = "User, ProjectManager")]
+	[Authorize(Roles = "User, ProjectManager")]
     public class IndexModel : ProjectsPageModel
     {
         const string _newProjectModalViewName = "ModalView/_NewProjectModalView";
@@ -34,7 +36,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            return await base.OnGetAsync(ProjectStatus.Active, currentPage, pageSize, searchString);
+            return await OnGetAsync(ProjectStatus.Active, currentPage, pageSize, searchString);
         }
 
 
@@ -44,34 +46,31 @@ namespace SODP.UI.Pages.ActiveProjects
         }
 
 
-        public async Task<PartialViewResult> OnPostNewProjectAsync(NewProjectVM project)
+        public async Task<IActionResult> OnPostNewProjectAsync(NewProjectVM project)
         {
             if (ModelState.IsValid)
             {
                 var apiResponse = await _apiProvider.PostAsync(_endpoint, project.ToHttpContent());
-
-                var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
-
-                if (apiResponse.IsSuccessStatusCode && response.Success)
+                switch (apiResponse.StatusCode)
                 {
-                    return await GetNewProjectPartialViewAsync(new NewProjectVM
-                    {
-                        Id = response.Data.Id,
-                        Number = response.Data.Number,
-                        StageId = response.Data.Stage.Id
-                    });
-                }
-                else
-                {
-                    SetModelErrors(response);
+                    case System.Net.HttpStatusCode.OK:
+                        var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
+                        project.Id = response.Data.Id;
+                        if (!response.Success)
+                        {
+                            SetModelErrors(response);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
+			
+            return GetPartialView(project, _newProjectModalViewName);
+		}
 
-            return await GetNewProjectPartialViewAsync(project);
-        }
 
-
-        public async Task<PartialViewResult> OnGetProjectPartialAsync(int id)
+		public async Task<IActionResult> OnGetProjectPartialAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
             var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
@@ -81,7 +80,7 @@ namespace SODP.UI.Pages.ActiveProjects
         }
 
 
-        private async Task<PartialViewResult> GetNewProjectPartialViewAsync(NewProjectVM project)
+        private async Task<IActionResult> GetNewProjectPartialViewAsync(NewProjectVM project)
         {
             var apiResponse = await _apiProvider.GetAsync("stages");
             if (apiResponse.IsSuccessStatusCode)

@@ -38,7 +38,8 @@ namespace SODP.Application.Services
                 var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
                 if (exist != null)
                 {
-                    serviceResponse.SetError($"Błąd: Projekt {exist.Symbol} już istnieje.", 400);
+                    serviceResponse.SetData(_mapper.Map<ProjectDTO>(exist));
+                    serviceResponse.SetError($"Błąd: Projekt {exist.Symbol} już istnieje.", 409);
                     return serviceResponse;
                 }
 
