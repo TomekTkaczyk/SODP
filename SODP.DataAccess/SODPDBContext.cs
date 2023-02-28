@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SODP.DataAccess.Configurations;
 using SODP.Model;
 using SODP.Shared.Interfaces;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ namespace SODP.DataAccess
     public class SODPDBContext : IdentityDbContext<User, Role, int>
     {
         private readonly IDateTime _dateTime;
+        //private readonly IWebHostEnvironment _env;
 
         public SODPDBContext(DbContextOptions<SODPDBContext> options, IDateTime dateTime) : base(options)
         {
@@ -55,28 +55,14 @@ namespace SODP.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
-            new UserEntityConfiguration().Configure(modelBuilder.Entity<User>());
-            new TokenEntityConfiguration().Configure(modelBuilder.Entity<Token>());
-            new DesignerEntityConfiguration().Configure(modelBuilder.Entity<Designer>());
-            new InvestorEntityConfiguration().Configure(modelBuilder.Entity<Investor>());
-            new StageEntityConfiguration().Configure(modelBuilder.Entity<Stage>());
-            new PartEntityConfiguration().Configure(modelBuilder.Entity<Part>());
-            new BranchEntityConfiguration().Configure(modelBuilder.Entity<Branch>());
-            new RoleEntityConfiguration().Configure(modelBuilder.Entity<Role>());
-            new LicenseEntityConfiguration().Configure(modelBuilder.Entity<License>());
-            new CertificateEntityConfiguration().Configure(modelBuilder.Entity<Certificate>());
-            new ProjectEntityConfiguration().Configure(modelBuilder.Entity<Project>());
-            new DictionaryEntityConfiguration().Configure(modelBuilder.Entity<AppDictionary>());
-
-            new ProjectPartEntityConfiguration().Configure(modelBuilder.Entity<ProjectPart>());
-            new PartBranchEntityConfiguration().Configure(modelBuilder.Entity<PartBranch>());
-            new BranchRoleEntityConfiguration().Configure(modelBuilder.Entity<BranchRole>());
-            new BranchLicenseEntityConfiguration().Configure(modelBuilder.Entity<BranchLicense>());
+            modelBuilder.HasDefaultSchema(null);
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging(true);
+
         }
     }
 }

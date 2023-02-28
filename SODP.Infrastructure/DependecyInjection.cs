@@ -26,6 +26,7 @@ namespace SODP.Infrastructure
 					configuration.GetConnectionString("DefaultDbConnection"),
 					b =>
 					{
+                        b.SchemaBehavior(MySqlSchemaBehavior.Ignore);
 						b.CharSetBehavior(CharSetBehavior.NeverAppend);
 						b.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MariaDb));
 					});

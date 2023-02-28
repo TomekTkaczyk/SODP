@@ -530,6 +530,11 @@ namespace SODP.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("Order")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
