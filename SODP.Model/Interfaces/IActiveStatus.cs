@@ -8,6 +8,6 @@ namespace SODP.Model.Interfaces
 {
 	public interface IActiveStatus
 	{
-		bool ActiveStatus { get; set; }
+		bool? ActiveStatus { get; set; }
 	}
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
@@ -22,7 +23,12 @@ namespace SODP.Infrastructure
 			services.AddDbContext<SODPDBContext>(options =>
 			{
 				options.EnableDetailedErrors();
-				options.UseMySql(
+                var aaa = services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment();
+                if (services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment())
+                {
+                    options.EnableSensitiveDataLogging();
+                }
+                options.UseMySql(
 					configuration.GetConnectionString("DefaultDbConnection"),
 					b =>
 					{

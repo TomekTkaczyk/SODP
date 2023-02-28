@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using SODP.Model;
 using SODP.Shared.Interfaces;
 using System.Threading.Tasks;
@@ -9,7 +11,6 @@ namespace SODP.DataAccess
     public class SODPDBContext : IdentityDbContext<User, Role, int>
     {
         private readonly IDateTime _dateTime;
-        //private readonly IWebHostEnvironment _env;
 
         public SODPDBContext(DbContextOptions<SODPDBContext> options, IDateTime dateTime) : base(options)
         {
@@ -61,8 +62,7 @@ namespace SODP.DataAccess
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.EnableSensitiveDataLogging(true);
-
+            //optionsBuilder.EnableSensitiveDataLogging(true);
         }
     }
 }

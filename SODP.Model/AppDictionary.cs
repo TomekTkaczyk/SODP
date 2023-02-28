@@ -19,7 +19,7 @@ public class AppDictionary : BaseEntity, IActiveStatus, IEquatable<AppDictionary
 
     public string Sign { get; set; }
     public string Name { get; set; }
-    public bool ActiveStatus { get; set; }
+    public bool? ActiveStatus { get; set; }
 
     public virtual ICollection<AppDictionary> Children { get; set; }
 

@@ -9,7 +9,7 @@ public class Designer : BaseEntity, IActiveStatus
     public string Title { get; set; }
     public string Firstname { get; set; }
     public string Lastname { get; set; }
-    public bool ActiveStatus { get; set; }
+    public bool? ActiveStatus { get; set; }
     public virtual ICollection<License> Licenses { get; set; }
 
     public override string ToString()

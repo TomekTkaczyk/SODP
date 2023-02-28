@@ -18,7 +18,7 @@ public class Stage : BaseEntity, IActiveStatus, IOrdered
     public int Order { get; set; }
     public string Sign { get; set; }
     public string Name { get; set; }
-	public bool ActiveStatus { get; set; }
+	public bool? ActiveStatus { get; set; }
 
     public void Normalize()
     {

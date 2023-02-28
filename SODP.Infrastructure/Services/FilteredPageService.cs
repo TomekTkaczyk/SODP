@@ -25,7 +25,7 @@ namespace SODP.Infrastructure.Services
                 WithActiveStatus(active.Value);
             }
 
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
                 WithSearchString(searchString);
             }

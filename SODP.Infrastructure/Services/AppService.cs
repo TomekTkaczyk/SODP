@@ -1,22 +1,14 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Model;
-using SODP.Model.Interfaces;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
-	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity, new() where TDto : BaseDTO
+    public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity, new() where TDto : BaseDTO
     {
 		protected IQueryable<TEntity> _query;
 		protected int _totalCount;
