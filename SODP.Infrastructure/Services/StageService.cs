@@ -7,10 +7,6 @@ using SODP.Domain.Helpers;
 using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Services
 {
@@ -28,7 +24,7 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse<StageDTO>();
             try
             {
-                var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Sign == sign);
+                var stage = await _context.Stages.SingleOrDefaultAsync(x => x.Sign == sign);
 
                 serviceResponse.SetData(_mapper.Map<StageDTO>(stage));
             }
@@ -46,7 +42,7 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse<StageDTO>();
             try
             {
-                var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Sign.ToUpper() == newStage.Sign.ToUpper());
+                var stage = await _context.Stages.SingleOrDefaultAsync(x => x.Sign.ToUpper() == newStage.Sign.ToUpper());
                 if (stage != null)
                 {
 
@@ -84,7 +80,7 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == updateStage.Id);
+                var stage = await _context.Stages.SingleOrDefaultAsync(x => x.Id == updateStage.Id);
                 if (stage == null)
                 {
                     serviceResponse.SetError($"Stadium {updateStage.Id} nie odnalezione.", 404);
@@ -111,7 +107,7 @@ namespace SODP.Infrastructure.Services
             {
                 var project = await _context.Projects
                     .Include(x => x.Stage)
-                    .FirstOrDefaultAsync(x => x.Stage.Id == id);
+                    .SingleOrDefaultAsync(x => x.Stage.Id == id);
                 if (project != null)
                 {
 					serviceResponse.SetError($"Error: Stage '{project.Stage.Sign}' has subsidiary projects.", 400);
@@ -135,14 +131,14 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var stage = await _context.Stages.FirstOrDefaultAsync(x => x.Sign == sign);
+                var stage = await _context.Stages.SingleOrDefaultAsync(x => x.Sign == sign);
                 if (stage == null)
                 {
                     serviceResponse.SetError($"Stadium Sign:{sign} nie odnalezione.", 404);
                     serviceResponse.ValidationErrors.Add("Sign", $"Stadium {sign} nie odnalezione.");
                     return serviceResponse;
                 }
-                var project = await _context.Projects.FirstOrDefaultAsync(x => x.Stage.Sign == sign);
+                var project = await _context.Projects.SingleOrDefaultAsync(x => x.Stage.Sign == sign);
                 if (project != null)
                 {
                     serviceResponse.SetError($"Stadium {sign} posiada powiązane projekty.", 409);
@@ -163,15 +159,14 @@ namespace SODP.Infrastructure.Services
 
         public async Task<bool> ExistAsync(string sign)
         {
-            return ( await _context.Stages.FirstOrDefaultAsync(x => x.Sign == sign) != null);
+            return ( await _context.Stages.SingleOrDefaultAsync(x => x.Sign == sign) != null);
         }
 
-
-        protected override FilteredPageService<Stage, StageDTO> WithSearchString(string searchString)
+        public override async Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            _query = _query.Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString));
-
-            return this;
+            return await base.GetPageAsync(_query
+                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => string.IsNullOrWhiteSpace(searchString) || x.Sign.Contains(searchString) || x.Name.Contains(searchString)), currentPage, pageSize);
         }
     }
 }

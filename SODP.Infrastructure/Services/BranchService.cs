@@ -22,7 +22,7 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse<BranchDTO>();
             try
             {
-                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Sign == newBranch.Sign);
+                var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Sign == newBranch.Sign);
                 if (branch != null)
                 {
                     serviceResponse.SetError($"Błąd: Branża {newBranch.Sign} już istnieje.", 400);
@@ -57,14 +57,14 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id != updateBranch.Id && x.Sign.Equals(updateBranch.Sign));
+                var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Id != updateBranch.Id && x.Sign.Equals(updateBranch.Sign));
                 if (branch != null)
                 {
                     serviceResponse.SetError("Branża już istnieje", 409);
                     return serviceResponse;
                 }
 
-                branch = await _context.Branches.FirstOrDefaultAsync(x => x.Id == updateBranch.Id);
+                branch = await _context.Branches.SingleOrDefaultAsync(x => x.Id == updateBranch.Id);
                 if (branch == null)
                 {
                     serviceResponse.SetError($"Branża {updateBranch.Id} nie odnaleziona.", 404);
@@ -90,7 +90,7 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse<BranchDTO>();
             try
             {
-                var branch = await _context.Branches.FirstOrDefaultAsync(x => x.Sign == sign);
+                var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Sign == sign);
                 if (branch == null)
                 {
                     serviceResponse.SetError($"Error: Branch {sign} not found.", 404);
@@ -129,15 +129,19 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-
-        protected override FilteredPageService<Branch, BranchDTO> WithSearchString(string searchString)
+        public override async Task<ServicePageResponse<BranchDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                _query = _query.Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString));
-            }
+            var serviceResponse = new ServicePageResponse<BranchDTO>();
 
-            return this;
+            var pageCollection = _query
+                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString))
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize);
+
+            serviceResponse.SetData(_mapper.Map<IList<BranchDTO>>(await pageCollection.ToListAsync()));
+
+            return serviceResponse;
         }
 
 

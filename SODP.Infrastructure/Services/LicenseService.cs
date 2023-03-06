@@ -12,16 +12,7 @@ namespace SODP.Infrastructure.Services
 {
     public class LicenseService : FilteredPageService<License, LicenseDTO>, ILicenseService
     {
-        private readonly IDesignerService _designerService;
-
-        public LicenseService(IMapper mapper, IValidator<License> validator, SODPDBContext context, IDesignerService designerService, IActiveStatusService<License> activeStatusService) : base(mapper, validator, context, activeStatusService)
-        {
-            _designerService = designerService;
-        }
-        public Task<ServiceResponse<LicenseDTO>> CreateAsync(LicenseDTO entity)
-        {
-            throw new NotImplementedException();
-        }
+        public LicenseService(IMapper mapper, IValidator<License> validator, SODPDBContext context, IActiveStatusService<License> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
         public async Task<ServiceResponse<LicenseDTO>> CreateAsync(NewLicenseDTO newLicense)
         {
@@ -29,7 +20,7 @@ namespace SODP.Infrastructure.Services
 
             var license = await _context.Licenses
                 .Include(x => x.Designer)
-                .FirstOrDefaultAsync(x => x.Content.Trim().Equals(newLicense.Content.Trim()));
+                .SingleOrDefaultAsync(x => x.Content.Trim().Equals(newLicense.Content.Trim()));
             if (license != null)
             {
                 serviceResponse.SetError("Nr uprawnień już występuje w bazie", 409);
@@ -37,7 +28,7 @@ namespace SODP.Infrastructure.Services
             }
 
             license = _mapper.Map<License>(newLicense);
-            license.Designer = _context.Designers.FirstOrDefault(x => x.Id == newLicense.DesignerId);
+            license.Designer = _context.Designers.SingleOrDefault(x => x.Id == newLicense.DesignerId);
             var validationResult = await _validator.ValidateAsync(license);
             if (!validationResult.IsValid)
             {
@@ -52,23 +43,12 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
-            var serviceResponse = new ServicePageResponse<LicenseDTO>();
-            try
-            {
-                var licenses = await _context.Licenses
-                    .Include(x => x.Designer)
-                    .Include(x => x.Branches).ThenInclude(x => x.Branch)
-                    .ToListAsync();
-                serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(licenses));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
+            return await base.GetPageAsync(_context.Licenses
+                .Include(x => x.Designer)
+                .Include(x => x.Branches)
+                .ThenInclude(x => x.Branch), currentPage, pageSize);
         }
 
         public override async Task<ServiceResponse> DeleteAsync(int id)
@@ -76,25 +56,25 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var license = await _context.Licenses.FirstOrDefaultAsync(x => x.Id == id);
+                var license = await _context.Licenses.SingleOrDefaultAsync(x => x.Id == id);
                 if(license == null)
                 {
                     serviceResponse.SetError($"Błąd: Uprawnienia Id:{id} nie odnalezione.", 401);
                     return serviceResponse;
                 }
 
-                var projectsWithLicense = await _context.Projects
-                    .Include(x => x.Stage)
-                    //.Include(x => x.Branches)
-                    //.ThenInclude(y => y.DesignerLicense)
-                    //.Include(x => x.Branches)
-                    //.ThenInclude(y => y.CheckingLicense)
+                var branchRole = await _context.BranchRoles
+                    .Include(x => x.PartBranch)
+                    .ThenInclude(x => x.ProjectPart)
+                    .ThenInclude(x => x.Project)
+                    .ThenInclude(x => x.Stage)
+                    .Where(x => x.LicenseId == id)
                     .ToListAsync();
-                    //.FirstOrDefaultAsync(x => x.DesignerLicenseId == id || x.CheckingLicenseId == id);
-                if(projectsWithLicense != null)
+
+                if(branchRole != null)
                 {
-                    //serviceResponse.SetError($"Błąd: Uprawnienia użyte w projekcie {projectsWithLicense.Project}");
-                    //return serviceResponse;
+                    serviceResponse.SetError($"Error: License using in {branchRole[0].PartBranch.ProjectPart.Project}");
+                    return serviceResponse;
                 }
 
                 _context.Licenses.Remove(license);
@@ -116,7 +96,7 @@ namespace SODP.Infrastructure.Services
             {
                 var license = await _context.Licenses
                     .Include(x => x.Designer)
-                    .FirstOrDefaultAsync(x => x.Id == id);
+                    .SingleOrDefaultAsync(x => x.Id == id);
                 
                 if (license == null)
                 {
@@ -144,7 +124,7 @@ namespace SODP.Infrastructure.Services
                     .Include(x => x.Designer)
                     .Include(x => x.Branches)
                     .ThenInclude(x => x.Branch)
-                    .FirstOrDefaultAsync(x => x.Id == id);
+                    .SingleOrDefaultAsync(x => x.Id == id);
                 serviceResponse.SetData(_mapper.Map<LicenseWithBranchesDTO>(license));
             }
             catch (Exception ex)
@@ -161,7 +141,7 @@ namespace SODP.Infrastructure.Services
 
             try
             {
-                var oldLicense = await _context.Licenses.FirstOrDefaultAsync(x => x.Id == updateLicense.Id);
+                var oldLicense = await _context.Licenses.SingleOrDefaultAsync(x => x.Id == updateLicense.Id);
                 if (oldLicense == null)
                 {
                     serviceResponse.SetError($"Błąd: Uprawnienia Id:{updateLicense.Id} nie odnalezione.", 401);
@@ -186,14 +166,14 @@ namespace SODP.Infrastructure.Services
             {
                 var license = await _context.Licenses
                     .Include(x => x.Branches)
-                    .FirstOrDefaultAsync(x => x.Id == id);
+                    .SingleOrDefaultAsync(x => x.Id == id);
                 if (license == null)
                 {
                     result.SetError("License not found", 401);
                     return result;
                 }
 
-                if (license.Branches.FirstOrDefault(x => x.Id == branchId) != null)
+                if (license.Branches.SingleOrDefault(x => x.Id == branchId) != null)
                 {
                     return result;
                 }
@@ -220,7 +200,7 @@ namespace SODP.Infrastructure.Services
 
             try
             {
-                var branch = await _context.BranchLicenses.FirstOrDefaultAsync(x => x.LicenseId == id && x.BranchId == branchId);
+                var branch = await _context.BranchLicenses.SingleOrDefaultAsync(x => x.LicenseId == id && x.BranchId == branchId);
                 if (branch != null)
                 {
                     _context.BranchLicenses.Remove(branch);
@@ -245,7 +225,7 @@ namespace SODP.Infrastructure.Services
                     .Include(x => x.Branches)
                     .ThenInclude(x => x.Branch)
                     .Include(x => x.Designer)
-                    .Where(x => x.Branches.FirstOrDefault(y => y.BranchId == branchId) != null)
+                    .Where(x => x.Branches.SingleOrDefault(y => y.BranchId == branchId) != null)
                     .ToListAsync();
                 serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(licenses));
             }
@@ -257,15 +237,18 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-		public Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
-		{
-			throw new NotImplementedException();
-		}
-
-        protected override FilteredPageService<License, LicenseDTO> WithSearchString(string searchString)
+        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            throw new NotImplementedException();
+            var serviceResponse = new ServicePageResponse<LicenseDTO>();
+
+            var pageCollection = _query
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize);
+
+            serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(await pageCollection.ToListAsync()));
+
+            return serviceResponse;
         }
 
-	}
+    }
 }

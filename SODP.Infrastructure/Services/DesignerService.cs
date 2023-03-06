@@ -16,7 +16,7 @@ namespace SODP.Infrastructure.Services
 
         public async Task<int> GetAsync(DesignerDTO designer)
         {
-            var result = await _context.Designers.FirstOrDefaultAsync(x => x.Firstname.Trim().Equals(designer.Firstname.Trim()) && x.Lastname.Trim().Equals(designer.Lastname.Trim()));
+            var result = await _context.Designers.SingleOrDefaultAsync(x => x.Firstname.Trim().Equals(designer.Firstname.Trim()) && x.Lastname.Trim().Equals(designer.Lastname.Trim()));
             
             return (result == null ? 0 : result.Id);
         }
@@ -64,7 +64,7 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var oldDesigner = await _context.Designers.FirstOrDefaultAsync(x => x.Id == updateDesigner.Id);
+                var oldDesigner = await _context.Designers.SingleOrDefaultAsync(x => x.Id == updateDesigner.Id);
                 if(oldDesigner == null)
                 {
                     serviceResponse.SetError($"Błąd: Projektant Id:{updateDesigner.Id} nie odnaleziony.", 401);
@@ -127,7 +127,7 @@ namespace SODP.Infrastructure.Services
 
             try
             {
-                var license = await _context.Licenses.FirstOrDefaultAsync(x => x.Content.Equals(newLicense.Content));
+                var license = await _context.Licenses.SingleOrDefaultAsync(x => x.Content.Equals(newLicense.Content));
                 if(license != null)
                 {
                     serviceResponse.SetError("Numer uprawnień już istnieje", 409);
@@ -135,7 +135,7 @@ namespace SODP.Infrastructure.Services
                 }
 
                 license = _mapper.Map<License>(newLicense);
-                license.Designer = await _context.Designers.FirstOrDefaultAsync(x => x.Id == license.DesignerId);
+                license.Designer = await _context.Designers.SingleOrDefaultAsync(x => x.Id == license.DesignerId);
                 var entity = _context.Licenses.Add(license);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<LicenseDTO>(entity.Entity));
@@ -148,17 +148,20 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
+        public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        {
+            var serviceResponse = new ServicePageResponse<DesignerDTO>();
 
-		protected override DesignerService WithSearchString(string searchString)
-		{
-            searchString = searchString.Trim();
-            if (string.IsNullOrWhiteSpace(searchString))
-            {
-			    _query = _query.Where(x => x.Firstname.Contains(searchString) || x.Lastname.Contains(searchString));
-			    _totalCount = _query.Count();
-            }
+            var pageCollection = _query
+                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => x.Firstname.Contains(searchString) || x.Lastname.Contains(searchString))
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize);
 
-			return this;
-		}
-	}
+            serviceResponse.SetData(_mapper.Map<IList<DesignerDTO>>(await pageCollection.ToListAsync()));
+
+            return serviceResponse;
+        }
+
+    }
 }

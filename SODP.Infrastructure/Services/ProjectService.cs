@@ -35,7 +35,7 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse<ProjectDTO>();
             try
             {
-                var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
+                var exist = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
                 if (exist != null)
                 {
                     serviceResponse.SetData(_mapper.Map<ProjectDTO>(exist));
@@ -52,7 +52,7 @@ namespace SODP.Application.Services
                 }
 
                 project.Normalize();
-                project.Stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == project.StageId);
+                project.Stage = await _context.Stages.SingleOrDefaultAsync(x => x.Id == project.StageId);
                 project.Title = "";
                 project.Address = "";
                 project.LocationUnit = "";
@@ -80,19 +80,12 @@ namespace SODP.Application.Services
 
         public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status = ProjectStatus.Active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            _query = _query
+            return await GetPageAsync(_query
                 .Include(x => x.Stage)
-                .Where(x => x.Status == status);
-            if(!string.IsNullOrEmpty(searchString))
-            {
-                _query = _query.Where(x => x.Name.Contains(searchString) || x.Number.Contains(searchString) || x.Title.Contains(searchString) || x.Description.Contains(searchString));
-            }
-            _query = _query
+                .Where(x => x.Status == status)
+                .Where(x => string.IsNullOrWhiteSpace(searchString) || x.Name.Contains(searchString) || x.Number.Contains(searchString) || x.Title.Contains(searchString) || x.Description.Contains(searchString))
                 .OrderBy(x => x.Number)
-                .ThenBy(x => x.Stage.Sign)
-                .AsNoTracking();
-
-            return await GetPageAsync(currentPage, pageSize);
+                .ThenBy(x => x.Stage.Sign), currentPage, pageSize);
         }
 
 
@@ -113,7 +106,7 @@ namespace SODP.Application.Services
                     .Include(s => s.Stage)
                     .Include(s => s.Parts).ThenInclude(s => s.Branches).ThenInclude(s => s.Roles).ThenInclude(s => s.License).ThenInclude(s => s.Designer)
                     .Include(s => s.Parts).ThenInclude(s => s.Branches).ThenInclude(s => s.Branch)
-                    .FirstOrDefaultAsync(x => x.Id == id);
+                    .SingleOrDefaultAsync(x => x.Id == id);
                 if (project == null)
                 {
                     serviceResponse.SetError($"Error: Project Id:{id} not found.", 404);
@@ -134,14 +127,14 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var oldProject = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Id == updateProject.Id);
+                var oldProject = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Id == updateProject.Id);
                 if(oldProject == null)
                 {
                     serviceResponse.SetError($"Błąd: Project Id:{updateProject.Id} nie odnaleziony.", 404);
                     return serviceResponse;
                 }
                 var project = _mapper.Map<Project>(updateProject);
-                project.Stage = await _context.Stages.FirstOrDefaultAsync(x => x.Id == project.StageId);
+                project.Stage = await _context.Stages.SingleOrDefaultAsync(x => x.Id == project.StageId);
                 var validationResult = await _validator.ValidateAsync(project);
                 if(!validationResult.IsValid)
                 {
@@ -185,7 +178,7 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var project = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Id == id);
+                var project = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Id == id);
                 if (project == null)
                 {
                     serviceResponse.SetError($"Błąd: Project Id:{id} nie odnaleziony.", 401);
@@ -221,7 +214,7 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var project = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Id == id); 
+                var project = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Id == id); 
                 if(project == null)
                 {
                     serviceResponse.SetError($"Błąd: Projekt Id:{id} nie odnaleziony.", 401);
@@ -249,7 +242,7 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var project = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Id == id); 
+                var project = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Id == id); 
                 if(project == null)
                 {
                     serviceResponse.SetError($"Błąd: Project Id:{id} nie odnaleziony.", 401);
@@ -281,7 +274,7 @@ namespace SODP.Application.Services
 			var part = await _context.ProjectParts
                 .Include(x => x.Branches)
                 .ThenInclude(x => x.Branch)
-                .FirstOrDefaultAsync(x => x.Id == partId);
+                .SingleOrDefaultAsync(x => x.Id == partId);
 			if (part == null)
 			{
 				serviceResponse.SetError($"Error: ProjectPart {partId} not found.", 404);
@@ -318,14 +311,14 @@ namespace SODP.Application.Services
             {
                 //var partBranch = await _context.PartBranch
                 //    .Include(x => x.Branches)
-                //    .FirstOrDefaultAsync(x => x.PartBranchId == technicalRole.ProjectId && x.BranchId == technicalRole.BranchId);
+                //    .SingleOrDefaultAsync(x => x.PartBranchId == technicalRole.ProjectId && x.BranchId == technicalRole.BranchId);
                 //if (projectBranch == null)
                 //{
                 //    serviceResponse.SetError("Branża projektu nie odnaleziona", 400);
                 //    return serviceResponse;
                 //}
 
-                //var branchRole = projectBranch.Roles.FirstOrDefault(x => x.Role == technicalRole.Role);
+                //var branchRole = projectBranch.Roles.SingleOrDefault(x => x.Role == technicalRole.Role);
 
                 //if (technicalRole.LicenseId == 0)
                 //{
@@ -338,7 +331,7 @@ namespace SODP.Application.Services
                 //{
                 //    var license = await _context.Licenses
                 //        .Include(x => x.Branches)
-                //        .FirstOrDefaultAsync(x => x.Id == technicalRole.LicenseId);
+                //        .SingleOrDefaultAsync(x => x.Id == technicalRole.LicenseId);
 
                 //    if (license == null)
                 //    {
@@ -346,7 +339,7 @@ namespace SODP.Application.Services
                 //        return serviceResponse;
                 //    }
 
-                //    if (license.Branches == null || license.Branches.FirstOrDefault(x => x.BranchId == technicalRole.BranchId) == null)
+                //    if (license.Branches == null || license.Branches.SingleOrDefault(x => x.BranchId == technicalRole.BranchId) == null)
                 //    {
                 //        serviceResponse.SetError($"Uprawnienia nie obejmują branży", 400);
                 //        return serviceResponse;
@@ -397,14 +390,14 @@ namespace SODP.Application.Services
 			var response = new ServiceResponse();
             try
             {
-				var project = await _query.Include(x => x.Parts).FirstOrDefaultAsync(x => x.Id == id);
+				var project = await _query.Include(x => x.Parts).SingleOrDefaultAsync(x => x.Id == id);
 				if (project == null)
 				{
 					response.SetError($"Error: Part '{id}' not found.", 404);
 					return response;
 				}
 
-				if (project.Parts.FirstOrDefault(x => x.Sign == part.Sign) == null)
+				if (project.Parts.SingleOrDefault(x => x.Sign == part.Sign) == null)
 				{
 					_context.ProjectParts.Add(
 						new ProjectPart()
@@ -436,7 +429,7 @@ namespace SODP.Application.Services
 			var response = new ServiceResponse();
 			try
 			{
-				var projectPart = await _context.ProjectParts.FirstOrDefaultAsync(x => x.Id == id);
+				var projectPart = await _context.ProjectParts.SingleOrDefaultAsync(x => x.Id == id);
 				if (projectPart == null)
 				{
 					response.SetError($"Error: Part '{id}' not found.", 404);
@@ -483,7 +476,7 @@ namespace SODP.Application.Services
 		{
             var serviceResponse = new ServiceResponse();
             var part = await _context.PartBranches
-                .FirstOrDefaultAsync(x => x.ProjectPartId == partId && x.BranchId == branchId);
+                .SingleOrDefaultAsync(x => x.ProjectPartId == partId && x.BranchId == branchId);
             if(part != null)
             {
                 serviceResponse.SetError($"Conflict: Branch Id:{branchId} allredy exists.", 409);
@@ -504,7 +497,7 @@ namespace SODP.Application.Services
 			var response = new ServiceResponse();
 			try
 			{
-				var branch = await _context.PartBranches.FirstOrDefaultAsync(x => x.Id == partBranchId);
+				var branch = await _context.PartBranches.SingleOrDefaultAsync(x => x.Id == partBranchId);
 				if (branch == null)
 				{
 					response.SetError($"Error: Branch Id:{partBranchId} not found.", 404);
@@ -525,14 +518,14 @@ namespace SODP.Application.Services
 		public async Task<ServiceResponse> AddRoleToPartBranchAsync(int partBranchId, TechnicalRole role,  int licenseId)
 		{
 			var serviceResponse = new ServiceResponse();
-            var branch = await _context.PartBranches.FirstOrDefaultAsync(x => x.Id == partBranchId);
+            var branch = await _context.PartBranches.SingleOrDefaultAsync(x => x.Id == partBranchId);
             if(branch == null)
             {
                 serviceResponse.SetError($"Error: PartBranch '{partBranchId}' not found.");
                 return serviceResponse;
             }
 
-            var license = await _context.Licenses.FirstOrDefaultAsync(x => x.Id == licenseId);
+            var license = await _context.Licenses.SingleOrDefaultAsync(x => x.Id == licenseId);
             if(license == null)
             {
                 serviceResponse.SetError($"Error: License Id:{licenseId} not found.");
@@ -543,7 +536,7 @@ namespace SODP.Application.Services
             {
                 branch.Roles = new List<BranchRole>();
             }
-            var branchRole = branch.Roles.FirstOrDefault(x =>  x.Role == role);
+            var branchRole = branch.Roles.SingleOrDefault(x =>  x.Role == role);
 			if(branchRole != null)
             {
                 serviceResponse.SetError($"Conflict: Role '{role}' allready exists.");
@@ -567,7 +560,7 @@ namespace SODP.Application.Services
             var response = new ServiceResponse();
             try
             {
-                var role = await _context.BranchRoles.FirstOrDefaultAsync(x => x.Id == branchRoleId);
+                var role = await _context.BranchRoles.SingleOrDefaultAsync(x => x.Id == branchRoleId);
                 if (role == null)
                 {
                     response.SetError($"Error: BranchRole Id:{branchRoleId} not found.", 404);
@@ -595,7 +588,7 @@ namespace SODP.Application.Services
                 .ThenInclude(x => x.Roles)
                 .ThenInclude(x => x.License)
                 .ThenInclude(x => x.Designer)
-                .FirstOrDefaultAsync(x => x.Id==projectPartId);
+                .SingleOrDefaultAsync(x => x.Id==projectPartId);
             if(part == null)
             {
                 serviceResponse.SetError($"Error: Part Id:'{projectPartId}' not found.");
@@ -614,7 +607,7 @@ namespace SODP.Application.Services
                 .Include(x => x.Roles)
                 .ThenInclude(x => x.License)
                 .ThenInclude(x => x.Designer)
-                .FirstOrDefaultAsync(x => x.Id == partBranchId);
+                .SingleOrDefaultAsync(x => x.Id == partBranchId);
             if (part == null)
             {
                 serviceResponse.SetError($"Error: Part Id:'{partBranchId}' not found.");

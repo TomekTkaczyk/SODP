@@ -58,14 +58,14 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse();
             try
             {
-                var part = await _query.FirstOrDefaultAsync(x => x.Id != updatePart.Id && x.Sign.Equals(updatePart.Sign));
+                var part = await _query.SingleOrDefaultAsync(x => x.Id != updatePart.Id && x.Sign.Equals(updatePart.Sign));
                 if (part != null)
                 {
                     serviceResponse.SetError("Part exist.", 409);
                     return serviceResponse;
                 }
 
-				part = await _query.FirstOrDefaultAsync(x => x.Id == updatePart.Id);
+				part = await _query.SingleOrDefaultAsync(x => x.Id == updatePart.Id);
                 if (part == null)
                 {
                     serviceResponse.SetError($"Part '{updatePart.Id}' not found.", 404);
@@ -90,7 +90,7 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServiceResponse<PartDTO>();
             try
             {
-                var part = await _query.FirstOrDefaultAsync(x => x.Sign == sign);
+                var part = await _query.SingleOrDefaultAsync(x => x.Sign == sign);
                 if (part == null)
                 {
                     serviceResponse.SetError($"Error: Part '{sign}' not found.", 404);
@@ -107,17 +107,23 @@ namespace SODP.Infrastructure.Services
         }
 
 
-        protected override FilteredPageService<Part, PartDTO> WithSearchString(string searchString)
+        public override async Task<ServicePageResponse<PartDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                _query = _query.Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString));
-            }
+            var serviceResponse = new ServicePageResponse<PartDTO>();
 
-            return this;
+            var pageCollection = _query
+                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString))
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize);
+
+            serviceResponse.SetData(_mapper.Map<IList<PartDTO>>(await pageCollection.ToListAsync()));
+
+            return serviceResponse;
         }
 
-		private async Task<int> GetMaxOrderAsync()
+
+        private async Task<int> GetMaxOrderAsync()
 		{
 			if (await _context.Parts.AnyAsync())
 			{
@@ -126,5 +132,7 @@ namespace SODP.Infrastructure.Services
 
 			return 0;
 		}
+
+
 	}
 }

@@ -13,11 +13,6 @@ namespace SODP.Infrastructure.Services
 	{
 		public InvestorService(IMapper mapper, IValidator<Investor> validator, SODPDBContext context, IActiveStatusService<Investor> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
-        protected override FilteredPageService<Investor, InvestorDTO> WithSearchString(string searchString)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ServiceResponse<InvestorDTO>> CreateAsync(InvestorDTO newInvestor)
 		{
 			var serviceResponse = new ServiceResponse<InvestorDTO>();
@@ -42,7 +37,7 @@ namespace SODP.Infrastructure.Services
 			var serviceResponse = new ServiceResponse();
 			try
 			{
-				var investor = await _context.Investors.FirstOrDefaultAsync(x => x.Id != updateInvestor.Id && x.Name == updateInvestor.Name);
+				var investor = await _context.Investors.SingleOrDefaultAsync(x => x.Id != updateInvestor.Id && x.Name == updateInvestor.Name);
 				if (investor != null)
 				{
 					serviceResponse.SetError("Inwestor już istnieje", 409);
@@ -51,7 +46,7 @@ namespace SODP.Infrastructure.Services
 					return serviceResponse;
 				}
 
-				investor = await _context.Investors.FirstOrDefaultAsync(x => x.Id == updateInvestor.Id);
+				investor = await _context.Investors.SingleOrDefaultAsync(x => x.Id == updateInvestor.Id);
 				if (investor == null)
 				{
 					serviceResponse.SetError($"Inwestor {investor.Id} nie odnaleziony.", 404);
@@ -68,5 +63,21 @@ namespace SODP.Infrastructure.Services
 			}
 			return serviceResponse;
 		}
+
+        public override async Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        {
+            var serviceResponse = new ServicePageResponse<InvestorDTO>();
+
+            var pageCollection = _query
+                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => x.Name.Contains(searchString))
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize);
+
+            serviceResponse.SetData(_mapper.Map<IList<InvestorDTO>>(await pageCollection.ToListAsync()));
+
+            return serviceResponse;
+        }
+
     }
 }

@@ -115,7 +115,7 @@ namespace SODP.Infrastructure.Services
             var serviceResponse = new ServicePageResponse<RoleDTO>();
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == id);
                 if (user == null)
                 {
                     serviceResponse.SetError($"Użytkownik Id:{id} nie odnaleziony.", 404);

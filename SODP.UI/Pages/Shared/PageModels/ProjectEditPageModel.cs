@@ -72,7 +72,7 @@ namespace SODP.UI.Pages.Shared.PageModels
         //	var response = await _apiProvider.GetContent<ServicePageResponse<ProjectPartDTO>>(apiResponse);
 
         //          return response.Data.Collection
-        //              .Where(y => exclusionList.FirstOrDefault(z => z.Sign == y.Sign) == null)
+        //              .Where(y => exclusionList.SingleOrDefault(z => z.Sign == y.Sign) == null)
         //              .OrderBy(x => x.Sign)
         //              .Select(x => new PartVM
         //              {

@@ -5,7 +5,7 @@ namespace SODP.Model;
 
 public class Stage : BaseEntity, IActiveStatus, IOrdered
 {
-    public Stage() : this("","") { }
+	public Stage() : this("", "") { }
 
 	public Stage(string sign) : this(sign, "") { }
 

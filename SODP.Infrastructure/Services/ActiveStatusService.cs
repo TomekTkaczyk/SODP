@@ -23,7 +23,7 @@ namespace SODP.Infrastructure.Services
 			try
 			{
 				var dbset = _context.Set<TEntity>();
-				var entity = await dbset.FirstOrDefaultAsync(x => x.Id == id);
+				var entity = await dbset.SingleOrDefaultAsync(x => x.Id == id);
 
 				if (entity == null)
 				{

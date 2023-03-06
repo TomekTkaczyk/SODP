@@ -83,7 +83,7 @@ public class Project : BaseEntity
     private void RequiredPropertiesInit(string number, string stageSign, string name)
     {
         Number = number;
-        Stage = new Stage() { Sign = stageSign };
+        Stage = new Stage(stageSign);
         Name = name;
     }
 }

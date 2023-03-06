@@ -106,14 +106,14 @@ namespace SODP.Infrastructure
                         var message = _folderCommandCreator.RunCommand(command).Result;
                     }
 
-                    var stage = _context.Stages.FirstOrDefault(x => x.Sign == currentProject.Stage.Sign);
+                    var stage = _context.Stages.SingleOrDefault(x => x.Sign == currentProject.Stage.Sign);
                     if (stage == null)
                     {
-                        stage = new Stage() { Sign = currentProject.Stage.Sign, Name = "" };
+                        stage = new Stage(currentProject.Stage.Sign);
                     }
                     currentProject.Stage = stage;
 
-                    var project = _context.Projects.FirstOrDefault(x => x.Number == currentProject.Number && x.Stage.Sign == currentProject.Stage.Sign);
+                    var project = _context.Projects.SingleOrDefault(x => x.Number == currentProject.Number && x.Stage.Sign == currentProject.Stage.Sign);
                     if (project == null)
                     {
                         _context.Projects.Add(currentProject);

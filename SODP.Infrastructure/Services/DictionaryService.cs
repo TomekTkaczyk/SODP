@@ -113,11 +113,6 @@ namespace SODP.Infrastructure.Services
             return this;
         }
 
-        protected override FilteredPageService<AppDictionary, DictionaryDTO> WithSearchString(string searchString)
-        {
-            throw new NotImplementedException();
-        }
-
         //public async Task<ServiceResponse> DeleteAsync(string master, string sign = "")
         //{
         //    var serviceResponse = new ServiceResponse();
@@ -128,7 +123,7 @@ namespace SODP.Infrastructure.Services
         //        {
         //            collection = _context.AppDictionary.Where(x => x.Master.Equals(master));
         //            _context.AppDictionary.RemoveRange(collection);
-        //            var item = _context.AppDictionary.FirstOrDefault(x => string.IsNullOrEmpty(x.Master) && x.Sign.Equals(master));
+        //            var item = _context.AppDictionary.SingleOrDefault(x => string.IsNullOrEmpty(x.Master) && x.Sign.Equals(master));
         //            if (item == null)
         //            {
         //                serviceResponse.SetError($"Error: Dictionary item {master}:{sign} not found", 404);
@@ -138,7 +133,7 @@ namespace SODP.Infrastructure.Services
         //        }
         //        else
         //        {
-        //            var item = _context.AppDictionary.FirstOrDefault(x => x.Master.Equals(master) && x.Sign.Equals(sign));
+        //            var item = _context.AppDictionary.SingleOrDefault(x => x.Master.Equals(master) && x.Sign.Equals(sign));
         //            if (item == null)
         //            {
         //                serviceResponse.SetError($"Error: Dictionary item {master}:{sign} not found.", 404);
@@ -158,7 +153,7 @@ namespace SODP.Infrastructure.Services
         //public async Task<ServiceResponse> UpdateAsync(DictionaryDTO entity)
         //{
         //    var serviceResponse = new ServiceResponse();
-        //    var item = await _context.AppDictionary.FirstOrDefaultAsync(x => x.Id == entity.Id);
+        //    var item = await _context.AppDictionary.SingleOrDefaultAsync(x => x.Id == entity.Id);
         //    if (item == null)
         //    {
         //        serviceResponse.SetError($"Error: Entity {entity.Id} not found", 404);
@@ -177,7 +172,7 @@ namespace SODP.Infrastructure.Services
         //    var serviceResponse = new ServiceResponse<DictionaryDTO>();
         //    try
         //    {
-        //        var item = await _context.AppDictionary.FirstOrDefaultAsync(x => string.IsNullOrEmpty(x.Master) && x.Sign.Equals(master));
+        //        var item = await _context.AppDictionary.SingleOrDefaultAsync(x => string.IsNullOrEmpty(x.Master) && x.Sign.Equals(master));
         //        if (item == null)
         //        {
         //            serviceResponse.SetError($"Dictionary item {master} not found", 404);
@@ -202,7 +197,7 @@ namespace SODP.Infrastructure.Services
 
         //    try
         //    {
-        //        var item = await _context.AppDictionary.FirstOrDefaultAsync(x => x.Master.Equals(master) && x.Sign.Equals(sign));
+        //        var item = await _context.AppDictionary.SingleOrDefaultAsync(x => x.Master.Equals(master) && x.Sign.Equals(sign));
         //        if (item == null)
         //        {
         //            serviceResponce.SetError($"Error: Dictionary item {master}:{sign} not found", 404);
@@ -226,7 +221,7 @@ namespace SODP.Infrastructure.Services
         //    {
         //        var item = await _context.AppDictionary
         //            .Include(x => x.Children)
-        //            .FirstOrDefaultAsync(x => (sign == "" ? x.Sign == master : (x.Master == master && x.Sign == sign)));
+        //            .SingleOrDefaultAsync(x => (sign == "" ? x.Sign == master : (x.Master == master && x.Sign == sign)));
         //        if (item == null)
         //        {
         //            serviceResponse.SetError($"Error: Dictionary item {master}:{sign} not found.", 404);
@@ -241,5 +236,21 @@ namespace SODP.Infrastructure.Services
 
         //    return serviceResponse;
         //}
+
+        public override async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        {
+            var serviceResponse = new ServicePageResponse<DictionaryDTO>();
+
+            var pageCollection = _query
+                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString))
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize);
+
+            serviceResponse.SetData(_mapper.Map<IList<DictionaryDTO>>(await pageCollection.ToListAsync()));
+
+            return serviceResponse;
+        }
+
     }
 }

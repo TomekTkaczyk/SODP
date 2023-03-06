@@ -27,28 +27,13 @@ namespace SODP.Infrastructure.Services
 			_totalCount = _query.Count();
 		}
 
-        protected IQueryable<TEntity> PageQuery(int currentPage, int pageSize)
-        {
-
-			if (currentPage < 1)
-			{
-				throw new ArgumentOutOfRangeException(nameof(currentPage),"Bad argument. Required currentPage > 0");
-			}
-
-            if (pageSize > 0)
-            {
-                _query = _query.Skip((currentPage - 1) * pageSize).Take(pageSize);
-            }
-
-            return _query;
-        }
 
         public virtual async Task<ServiceResponse<TDto>> GetAsync(int id)
 		{
 			var serviceResponse = new ServiceResponse<TDto>();
 			try
 			{
-				var entity = await _query.FirstOrDefaultAsync(x => x.Id == id);
+				var entity = await _query.SingleOrDefaultAsync(x => x.Id == id);
 				if (entity == null)
 				{
 					serviceResponse.SetError($"Error: Entity Id:{id} not found.", 404);
@@ -64,25 +49,26 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-		public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(int currentPage = 1, int pageSize = 0)
-		{
-			var serviceResponse = new ServicePageResponse<TDto>();
-			try
-			{
-				serviceResponse.Data.TotalCount = await _query.CountAsync();
-				serviceResponse.Data.PageNumber= currentPage;
-				serviceResponse.Data.PageSize= pageSize;
-				serviceResponse.SetData(_mapper.Map<IList<TDto>>(await PageQuery(currentPage, pageSize).ToListAsync()));
-			}
-			catch (Exception ex)
-			{
-				serviceResponse.SetError(ex.Message);
-			}
+        protected virtual async Task<ServicePageResponse<TDto>> GetPageAsync(IQueryable<TEntity> query, int currentPage = 1, int pageSize = 0)
+        {
+            var serviceResponse = new ServicePageResponse<TDto>();
+            try
+            {
+                serviceResponse.Data.TotalCount = await query.CountAsync();
+                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageSize = pageSize;
+                serviceResponse.SetData(_mapper.Map<IList<TDto>>(await PageQuery(query, currentPage, pageSize).ToListAsync()));
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.SetError(ex.Message);
+            }
 
-			return serviceResponse;
-		}
+            return serviceResponse;
+        }
 
-		public virtual async Task<ServiceResponse> DeleteAsync(int id)
+
+        public virtual async Task<ServiceResponse> DeleteAsync(int id)
 		{
 			var serviceResponse = new ServiceResponse();
 
@@ -106,8 +92,23 @@ namespace SODP.Infrastructure.Services
     
 		public async Task<bool> ExistAsync(int id)
         {
-            return (await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id) != null);
+            return (await _context.Set<TEntity>().SingleOrDefaultAsync(x => x.Id == id) != null);
         }
 
+        private static IQueryable<TEntity> PageQuery(IQueryable<TEntity> query, int currentPage, int pageSize)
+        {
+
+            if (currentPage < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(currentPage), "Bad argument. Required currentPage > 0");
+            }
+
+            if (pageSize > 0)
+            {
+                query = query.Skip((currentPage - 1) * pageSize).Take(pageSize);
+            }
+
+            return query.AsNoTracking();
+        }
     }
 }

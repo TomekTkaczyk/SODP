@@ -210,7 +210,7 @@ namespace SODP.UI.Pages.ActiveProjects
 					var part = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectPartDTO>>();
 					foreach (var item in part.Data.Branches)
 					{
-						var selected = model.Items.FirstOrDefault(x => x.Value == item.Branch.Id.ToString());
+						var selected = model.Items.SingleOrDefault(x => x.Value == item.Branch.Id.ToString());
 						model.Items.Remove(selected);
 					}
 				}
@@ -295,7 +295,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
 			foreach (var item in partBranch.Roles)
 			{
-				var existRole = roles.FirstOrDefault(x => x.Text.Equals(item.Role));
+				var existRole = roles.SingleOrDefault(x => x.Text.Equals(item.Role));
 				if (existRole != null)
 				{
 					roles.Remove(existRole);
