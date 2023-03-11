@@ -7,6 +7,7 @@ using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Investors.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
+using SODP.UI.Pages.Stages.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,22 +32,19 @@ namespace SODP.UI.Pages.Investors
 		public InvestorsVM Investors { get; set; }
 
 
-		public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0)
+		public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
         {
-			var url = new StringBuilder();
-			url.Append(ReturnUrl);
-			url.Append("?currentPage=");
-			url.Append(currentPage);
-			url.Append("&pageSize=");
-			url.Append(pageSize);
+            var endpoint = GetUrl(currentPage, pageSize, searchString);
+            var apiResponse = await GetApiResponseAsync(endpoint);
+            
+			PageInfo = GetPageInfo(apiResponse, searchString);
+            Investors = new InvestorsVM
+            {
+                Investors = apiResponse.Data.Collection.ToList(),
+                PageInfo = PageInfo
+            };
 
-			PageInfo.CurrentPage = currentPage;
-			PageInfo.ItemsPerPage = pageSize;
-			PageInfo.Url = url.ToString();
-
-			Investors = await GetInvestorsAsync();
-
-			return Page();
+            return Page();
 		}
 
 

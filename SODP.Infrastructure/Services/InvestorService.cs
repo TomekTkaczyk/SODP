@@ -64,20 +64,15 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-        public override async Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public override async Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
         {
-            var serviceResponse = new ServicePageResponse<InvestorDTO>();
+			_query = _context.Investors
+				.Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+				.Where(x => string.IsNullOrWhiteSpace(searchString) || x.Name.Contains(searchString))
+				.OrderBy(x => x.Name)
+				.ThenBy(x => x.Id);
 
-            var pageCollection = _query
-                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
-                .Where(x => x.Name.Contains(searchString))
-                .Skip((currentPage - 1) * pageSize)
-                .Take(pageSize);
-
-            serviceResponse.SetData(_mapper.Map<IList<InvestorDTO>>(await pageCollection.ToListAsync()));
-
-            return serviceResponse;
+			return await GetPageAsync(currentPage, pageSize);
         }
-
     }
 }

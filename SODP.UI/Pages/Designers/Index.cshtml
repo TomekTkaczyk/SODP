@@ -21,9 +21,8 @@
 		<button type="button"
 				class="btn btn-info form-control text-white float-right h-100"
 				title="Nowy projektant"
-@*				data-toggle="ajax-modal"
-				data-url="@Url.Page("Index", "EditDesigner")"
-*@				onclick="NewDesigner()">
+				data-toggle="ajax-modal"
+				data-url="@Url.Page("Index", "EditDesigner")">
 			<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowy projektant
 		</button>
 	</div>
@@ -108,22 +107,6 @@ else
 	<script src="~/js/delete.js"></script>
 	<script src="~/js/ModalPlaceholder.js"></script>
 	<script>
-		function NewDesigner() {
-			initModalPlaceHolder("/Designers");
-			$.ajax({
-				type: "Get",
-				url: `@Url.Page("Index","EditDesigner")`,
-				success: function (data) {
-					$('#modal-placeholder').html(data);
-					$('#editDesigner').modal('show');
-				},
-				error: function (jqXHR, exception) {
-					console.log(jqXHR);
-					console.log(exception);
-				}
-			})
-		}
-
 		function EditDesigner(id) {
 			$.ajax({
 				type: "Get",
@@ -180,9 +163,7 @@ else
 
 	<script>
 		$(document).ready(function () {
-			//modalPlaceHolder('/Designers');
-			//initModalPlaceHolder("/Designers");
-			console.log("Ready");
+			modalPlaceHolder('/Designers');
 		});
 	</script>
 }

@@ -22,7 +22,7 @@ namespace SODP.Infrastructure.Services
             return await _activeStatusService.SetActiveStatusAsync(id, status);
         }
 
-        public abstract Task<ServicePageResponse<TDto>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "");
+        public abstract Task<ServicePageResponse<TDto>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0);
 
     }
 }

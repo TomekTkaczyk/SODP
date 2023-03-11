@@ -121,6 +121,7 @@ namespace SODP.UI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseMySwagger();
             }
             else
             {
@@ -128,7 +129,7 @@ namespace SODP.UI
                 app.UseHsts();
             }
 
-            app.UseMySwagger();
+            app.UseHttpLogging();
 
             app.UseStatusCodePagesWithRedirects("/Errors/{0}");
 

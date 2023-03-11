@@ -40,9 +40,9 @@ public class Project : BaseEntity
     public virtual Stage Stage { get; set; }     // Stage object
     public string Name { get; set; }             // Project name (file system - directory name)
     public string Title { get; set; }            // The name of the construction project 
-    public string Address { get; set; }          // Address
+    public string Address { get; set; }         // Address
     public string LocationUnit { get; set; }     // Location record unit
-    public string BuildingCategory { get; set; }  
+    public string BuildingCategory { get; set; }
     public string Investor { get; set; }
     public string BuildingPermit { get; set; }
     public string Description { get; set; }     

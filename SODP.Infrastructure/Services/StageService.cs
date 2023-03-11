@@ -162,11 +162,15 @@ namespace SODP.Infrastructure.Services
             return ( await _context.Stages.SingleOrDefaultAsync(x => x.Sign == sign) != null);
         }
 
-        public override async Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public override async Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
         {
-            return await base.GetPageAsync(_query
+            _query = _context.Stages
                 .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
-                .Where(x => string.IsNullOrWhiteSpace(searchString) || x.Sign.Contains(searchString) || x.Name.Contains(searchString)), currentPage, pageSize);
+                .Where(x => string.IsNullOrWhiteSpace(searchString) || x.Sign.Contains(searchString) || x.Name.Contains(searchString))
+                .OrderBy(x => x.Order)
+                .ThenBy(x => x.Sign);
+
+            return await GetPageAsync(currentPage, pageSize);
         }
     }
 }

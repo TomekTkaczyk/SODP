@@ -6,7 +6,7 @@ namespace SODP.Application.Services
 {
     public interface IBranchService : IEntityService<BranchDTO>, IActiveStatusService
 	{
-        Task<ServicePageResponse<BranchDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString);
+        Task<ServicePageResponse<BranchDTO>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize);
         Task<ServiceResponse<BranchDTO>> GetAsync(string sign);
         Task<ServicePageResponse<LicenseDTO>> GetLicensesAsync(int id);
     }

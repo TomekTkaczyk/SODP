@@ -264,6 +264,7 @@
 		}
 
 		function AddBranch(part) {
+			console.log(window.location.href);
 			$.ajax({
 				type: "Get",
 				url: `@Url.Page("Edit","AddPartBranch")&projectPartId=${part}`,

@@ -34,7 +34,7 @@ namespace SODP.Infrastructure.Services
 
 				if(entity is not IActiveStatus)
 				{
-					serviceResponse.SetError($"Entity Id:{id} property ActiveStatus nor exist.", 404);
+					serviceResponse.SetError($"Entity Id:{id} property ActiveStatus not exist.", 404);
 
 					return serviceResponse;
 				}

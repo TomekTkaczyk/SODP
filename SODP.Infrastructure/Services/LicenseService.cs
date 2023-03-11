@@ -43,12 +43,14 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
         {
-            return await base.GetPageAsync(_context.Licenses
+            _query = _context.Licenses
                 .Include(x => x.Designer)
                 .Include(x => x.Branches)
-                .ThenInclude(x => x.Branch), currentPage, pageSize);
+                .ThenInclude(x => x.Branch);
+
+            return await base.GetPageAsync(currentPage, pageSize);
         }
 
         public override async Task<ServiceResponse> DeleteAsync(int id)
@@ -237,7 +239,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<LicenseDTO>();
 
@@ -247,7 +249,7 @@ namespace SODP.Infrastructure.Services
 
             serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(await pageCollection.ToListAsync()));
 
-            return serviceResponse;
+            return await GetPageAsync(currentPage, pageSize);
         }
 
     }

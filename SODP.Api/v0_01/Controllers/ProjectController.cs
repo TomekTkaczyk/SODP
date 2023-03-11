@@ -28,9 +28,9 @@ namespace SODP.Api.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetPageAsync(ProjectStatus status = ProjectStatus.Active, int currentPage = 1, int pageSize = 0,  string searchString = "")
+        public async Task<IActionResult> GetPageAsync(ProjectStatus status = ProjectStatus.Active, string searchString = "", int currentPage = 1, int pageSize = 0)
         {
-            return Ok( await ((IProjectService)_service).GetPageAsync(status, currentPage, pageSize, searchString));
+            return Ok( await ((IProjectService)_service).GetPageAsync(status, searchString, currentPage, pageSize));
         }
 
 
@@ -132,6 +132,7 @@ namespace SODP.Api.v0_01.Controllers
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		public async Task<IActionResult> AddBranchToPartAsync(int partId, int branchId)
 		{
+            _logger.LogInformation($"Strzał do parts/{partId}/branches/{branchId}");
 			return Ok(await _service.AddBranchToPartAsync(partId, branchId));
 		}
 

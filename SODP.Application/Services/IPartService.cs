@@ -6,7 +6,7 @@ namespace SODP.Application.Services
 {
 	public interface IPartService : IEntityService<PartDTO>, IActiveStatusService
 	{
-		Task<ServicePageResponse<PartDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString);
+		Task<ServicePageResponse<PartDTO>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize);
 		Task<ServiceResponse<PartDTO>> GetAsync(string sign);
 	}
 }

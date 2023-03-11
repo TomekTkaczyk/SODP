@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using SODP.Model;
 using SODP.Shared.Interfaces;
 using System.Threading.Tasks;

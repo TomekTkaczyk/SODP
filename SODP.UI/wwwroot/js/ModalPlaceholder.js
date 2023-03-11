@@ -4,6 +4,7 @@
         event.preventDefault();
         var url = $(this).data('url');
         $.get(url).done(function (data) {
+            console.log(data);
             var placeholderElement = $('#modal-placeholder');
             placeholderElement.html(data);
             placeholderElement.find('.modal').modal('show');
@@ -20,12 +21,13 @@ function initModalPlaceHolder(returnUrl) {
         var actionUrl = form.attr('action');
         var dataToSend = form.serialize();
         $.post(actionUrl, dataToSend).done(function (data) {
+            console.log(data);
             var newBody = $('.modal-body', data);
             placeholderElement.find('.modal-body').replaceWith(newBody);
             var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
             if (isValid) {
                 placeholderElement.find('.modal').modal('hide');
-                location = returnUrl;
+                window.location.reload();
             }
         });
     });

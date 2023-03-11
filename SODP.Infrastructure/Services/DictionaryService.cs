@@ -237,19 +237,15 @@ namespace SODP.Infrastructure.Services
         //    return serviceResponse;
         //}
 
-        public override async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public override async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
         {
-            var serviceResponse = new ServicePageResponse<DictionaryDTO>();
-
-            var pageCollection = _query
+            _query = _context.AppDictionary
                 .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
                 .Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString))
-                .Skip((currentPage - 1) * pageSize)
-                .Take(pageSize);
+                .OrderBy(x => x.Parent)
+                .ThenBy(x => x.Id);
 
-            serviceResponse.SetData(_mapper.Map<IList<DictionaryDTO>>(await pageCollection.ToListAsync()));
-
-            return serviceResponse;
+            return await GetPageAsync(currentPage, pageSize);
         }
 
     }

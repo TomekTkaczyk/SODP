@@ -148,20 +148,16 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
         {
-            var serviceResponse = new ServicePageResponse<DesignerDTO>();
-
-            var pageCollection = _query
+            _query = _context.Designers                    
                 .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
-                .Where(x => x.Firstname.Contains(searchString) || x.Lastname.Contains(searchString))
-                .Skip((currentPage - 1) * pageSize)
-                .Take(pageSize);
+                .Where(x => string.IsNullOrWhiteSpace(searchString) || x.Firstname.Contains(searchString) || x.Lastname.Contains(searchString))
+                .OrderBy(x => x.Lastname)
+                .ThenBy(x => x.Firstname)
+                .ThenBy(x => x.Id);
 
-            serviceResponse.SetData(_mapper.Map<IList<DesignerDTO>>(await pageCollection.ToListAsync()));
-
-            return serviceResponse;
+            return await GetPageAsync(currentPage,pageSize);
         }
-
     }
 }

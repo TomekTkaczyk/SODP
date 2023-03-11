@@ -14,6 +14,7 @@ using SODP.Shared.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.WebSockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -35,11 +36,11 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse<ProjectDTO>();
             try
             {
-                var exist = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
+                var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
                 if (exist != null)
                 {
                     serviceResponse.SetData(_mapper.Map<ProjectDTO>(exist));
-                    serviceResponse.SetError($"Błąd: Projekt {exist.Symbol} już istnieje.", 409);
+                    serviceResponse.SetError($"Error: Project {exist.Symbol} exist.", 409);
                     return serviceResponse;
                 }
 
@@ -78,20 +79,22 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status = ProjectStatus.Active, int currentPage = 1, int pageSize = 0, string searchString = "")
+        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status, string searchString, int currentPage = 1, int pageSize = 0)
         {
-            return await GetPageAsync(_query
+            _query = _context.Projects
                 .Include(x => x.Stage)
                 .Where(x => x.Status == status)
                 .Where(x => string.IsNullOrWhiteSpace(searchString) || x.Name.Contains(searchString) || x.Number.Contains(searchString) || x.Title.Contains(searchString) || x.Description.Contains(searchString))
                 .OrderBy(x => x.Number)
-                .ThenBy(x => x.Stage.Sign), currentPage, pageSize);
+                .ThenBy(x => x.Stage.Sign);
+
+            return await GetPageAsync(currentPage, pageSize);
         }
 
 
         public override async Task<ServiceResponse<ProjectDTO>> GetAsync(int id)
         {
-            _query = _query.Include(s => s.Stage);
+            _query = _context.Projects.Include(s => s.Stage);
 
             return await base.GetAsync(id);
         }
@@ -476,16 +479,16 @@ namespace SODP.Application.Services
 		{
             var serviceResponse = new ServiceResponse();
             var part = await _context.PartBranches
-                .SingleOrDefaultAsync(x => x.ProjectPartId == partId && x.BranchId == branchId);
+                .FirstOrDefaultAsync(x => x.ProjectPartId == partId && x.BranchId == branchId);
             if(part != null)
             {
                 serviceResponse.SetError($"Conflict: Branch Id:{branchId} allredy exists.", 409);
                 return serviceResponse;
             }
-            _context.PartBranches.Add(new PartBranch() 
-            { 
-                ProjectPartId = partId, 
-                BranchId = branchId, 
+            _context.PartBranches.Add(new PartBranch()
+            {
+                ProjectPartId = partId,
+                BranchId = branchId,
             });
             await _context.SaveChangesAsync();
 

@@ -6,7 +6,7 @@ namespace SODP.Application.Services
 {
     public interface IStageService : IEntityService<StageDTO>, IActiveStatusService
     {
-        Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString);
+        Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize);
         Task<ServiceResponse<StageDTO>> GetAsync(string sign);
         Task<ServiceResponse> DeleteAsync(string sign);
         Task<bool> ExistAsync(string sign);

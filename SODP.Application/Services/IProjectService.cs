@@ -11,7 +11,7 @@ namespace SODP.Application.Services
     public interface IProjectService : IGetEntityService<ProjectDTO>
     {
         Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO project);
-        Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status, int currentPage, int pageSize, string searchString);
+        Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status, string searchString, int currentPage, int pageSize);
         Task<ServiceResponse<ProjectDTO>> GetWithDetailsAsync(int id);
         Task<ServiceResponse> RestoreAsync(int id);
         Task<ServiceResponse> ArchiveAsync(int id);

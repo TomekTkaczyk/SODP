@@ -6,6 +6,6 @@ namespace SODP.Application.Services
 {
     public interface IInvestorService : IEntityService<InvestorDTO>, IActiveStatusService 
     {
-        Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString);
+        Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize);
     }
 }
