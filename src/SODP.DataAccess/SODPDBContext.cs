@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SODP.DataAccess
 {
-    public class SODPDBContext : IdentityDbContext<User, Role, int>
+	public class SODPDBContext : IdentityDbContext<User, Role, int>
     {
         private readonly IDateTime _dateTime;
 
@@ -48,7 +48,6 @@ namespace SODP.DataAccess
 
             return result;
         }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

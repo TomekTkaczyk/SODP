@@ -1,17 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
-using SODP.Domain.Managers;
-using SODP.Model.Enums;
-using System;
-using System.Threading.Tasks;
+using SODP.Shared.Enums;
 
 namespace SODP.Infrastructure.Managers
 {
-    public class FolderCommandCreator : IFolderCommandCreator
+	public class FolderCommandCreator : IFolderCommandCreator
     {
         private readonly IConfiguration _configuration;
-        private readonly FolderConfigurator _folderConfigurator;
+        private readonly IFolderConfigurator _folderConfigurator;
 
-        public FolderCommandCreator(IConfiguration configuration, FolderConfigurator folderConfigurator)
+        public FolderCommandCreator(IConfiguration configuration, IFolderConfigurator folderConfigurator)
         {
             _configuration = configuration;
             _folderConfigurator = folderConfigurator;

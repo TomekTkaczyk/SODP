@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SODP.Model.Enums;
+using SODP.Shared.Enums;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace SODP.Domain.Helpers
+namespace SODP.Application.Helpers
 {
-    public static class UserManagerHelper
+	public static class UserManagerHelper
     {
         public static async Task<(IdentityResult, IdentityResult)> UpdateRolesAsync<T>(this UserManager<T> userManager, T user, IList<string> roles) where T : class
         {

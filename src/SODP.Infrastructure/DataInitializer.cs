@@ -1,18 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SODP.DataAccess;
-using SODP.Domain.Managers;
 using SODP.Domain.Entities;
-using SODP.Model.Enums;
+using SODP.Infrastructure.Managers;
 using SODP.Shared.Enums;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.Json;
 
 namespace SODP.Infrastructure
 {
-    public class DataInitializer
+	public class DataInitializer
     {
         private readonly IConfiguration _configuration;
         private readonly SODPDBContext _context;

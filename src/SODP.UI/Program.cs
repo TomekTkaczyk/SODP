@@ -8,7 +8,7 @@ using SODP.Infrastructure;
 
 namespace SODP.UI
 {
-    public class Program
+	public class Program
     {
         public static void Main(string[] args)
         {
@@ -29,11 +29,14 @@ namespace SODP.UI
 
             using (var scope = host.Services.CreateScope())
             {
-                var db = scope.ServiceProvider.GetRequiredService<SODPDBContext>();
+                var provider = scope.ServiceProvider;
+                var db = provider.GetRequiredService<SODPDBContext>();
+
                 db.Database.Migrate();
                 db.Database.EnsureCreated();
-                scope.ServiceProvider.GetRequiredService<UserInitializer>().UserInit();
-                scope.ServiceProvider.GetRequiredService<DataInitializer>().LoadData();
+                
+                provider.GetRequiredService<UserInitializer>().UserInit();
+                provider.GetRequiredService<DataInitializer>().LoadData();
             }
 
             host.Run();

@@ -9,17 +9,18 @@ using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SODP.Application.Interfaces;
 using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.Domain.Managers;
 using SODP.Infrastructure.Managers;
 using SODP.Infrastructure.Services;
 
 namespace SODP.Infrastructure
 {
-    public static class DependecyInjection
+	public static class DependecyInjection
     {
-		public static void AddDataAccessDI(this IServiceCollection services, IConfiguration configuration)
+		public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.AddDbContext<SODPDBContext>(options =>
+            services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
+			
+            services.AddDbContext<SODPDBContext>(options =>
 			{
 				options.EnableDetailedErrors();
                 var aaa = services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment();
@@ -38,21 +39,20 @@ namespace SODP.Infrastructure
 			});
 
 			services.AddScoped<SODPDBContext>();
-
 			services.AddScoped<UserInitializer>();
-
 			services.AddScoped<DataInitializer>();
 
-            services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
+
+            return services;
 		}
 
-		public static void UseMySwagger(this IApplicationBuilder app)
+		public static void UseSwagger(this IApplicationBuilder app)
         {
-            app.UseSwagger();
+            SwaggerBuilderExtensions.UseSwagger(app);
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SODP.WEBAPI"));
         }
 
-        public static void AddSwagger(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSwaggerGen(c =>
             {
@@ -100,35 +100,20 @@ namespace SODP.Infrastructure
                     }
                 });
             });
-        }
-
-        public static IServiceCollection AddInfrastructureDI(this IServiceCollection services, IConfiguration configuration)
-        {
-            AddScopedInfrastructureServices(services);
-            AddTransientInfrastructureServices(services);
-            AddSingletonInfrastructureServices(services);
 
             return services;
         }
 
-        private static void AddTransientInfrastructureServices(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IDateTime, DateTimeService>();
+			services.AddTransient<IDateTime, DateTimeService>();
+
+			services.AddScoped<IFolderConfigurator, FolderConfigurator>();
+			services.AddScoped<IFolderCommandCreator, FolderCommandCreator>();
+			services.AddScoped<IFolderManager, FolderManager>();
+
+            return services;
         }
 
-        private static void AddScopedInfrastructureServices(this IServiceCollection services)
-        {
-
-            services.AddScoped<FolderConfigurator>();
-
-            services.AddScoped<IFolderCommandCreator, FolderCommandCreator>();
-
-            services.AddScoped<IFolderManager, FolderManager>();
-
-        }
-
-        private static void AddSingletonInfrastructureServices(this IServiceCollection services)
-        {
-        }
     }
 }

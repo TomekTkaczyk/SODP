@@ -1,16 +1,15 @@
 ﻿using SODP.Domain.Entities;
-using SODP.Domain.Managers;
-using SODP.Model.Enums;
 using SODP.Model.Extensions;
+using SODP.Shared.Enums;
 
 namespace SODP.Infrastructure.Managers
 {
-    public class FolderManager : IFolderManager
+	public class FolderManager : IFolderManager
     {
         private readonly IFolderCommandCreator _folderCommandCreator;
-        private readonly FolderConfigurator _folderConfigurator;
+        private readonly IFolderConfigurator _folderConfigurator;
 
-        public FolderManager(FolderConfigurator folderConfigurator, IFolderCommandCreator folderCommandCreator)
+        public FolderManager(IFolderConfigurator folderConfigurator, IFolderCommandCreator folderCommandCreator)
         {
             _folderCommandCreator = folderCommandCreator;
             _folderConfigurator = folderConfigurator;

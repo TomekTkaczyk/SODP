@@ -1,10 +1,9 @@
 ﻿using SODP.Domain.Entities;
-using SODP.Model.Enums;
-using System.Threading.Tasks;
+using SODP.Shared.Enums;
 
-namespace SODP.Domain.Managers
+namespace SODP.Infrastructure.Managers
 {
-    public interface IFolderManager
+	public interface IFolderManager
     {
         Task<(bool Success, string Message)> RenameFolderAsync(Project project, ProjectsFolder source);
         Task<(bool Success, string Message)> RenameFolderAsync(Project project, string oldName, ProjectsFolder source);

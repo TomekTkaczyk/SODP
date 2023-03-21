@@ -1,9 +1,8 @@
-﻿using SODP.Model.Enums;
-using System.Threading.Tasks;
+﻿using SODP.Shared.Enums;
 
-namespace SODP.Domain.Managers
+namespace SODP.Infrastructure.Managers
 {
-    public interface IFolderCommandCreator
+	public interface IFolderCommandCreator
     {
         string GetCommandRenameFolder(string folder, string oldName);
         string GetCommandRenameFolder(string folder, string oldName, ProjectsFolder source);

@@ -1,4 +1,4 @@
-namespace SODP.Model.Enums
+namespace SODP.Shared.Enums
 {
     public enum FolderCommands
     {

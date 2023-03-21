@@ -45,9 +45,9 @@ namespace SODP.UI
 
             services.AddCors(options => options.AddPolicy(name: "SODPOriginsSpecification", builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
 
-            services.AddDataAccessDI(Configuration);
+            services.AddDataAccess(Configuration);
 
-            services.AddInfrastructureDI(Configuration);
+            services.AddInfrastructure(Configuration);
 
             var app = AppDomain.CurrentDomain
                     .GetAssemblies()
@@ -121,7 +121,7 @@ namespace SODP.UI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseMySwagger();
+                app.UseSwagger();
             }
             else
             {

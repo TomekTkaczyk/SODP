@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using SODP.Application.Helpers;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
-using SODP.Domain.Helpers;
-using SODP.Domain.Managers;
+using SODP.Infrastructure.Managers;
 using SODP.Infrastructure.Services;
-using SODP.Model.Enums;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
 
 namespace SODP.Application.Services
 {
-    public class ProjectService : AppService<Project, ProjectDTO>, IProjectService
+	public class ProjectService : AppService<Project, ProjectDTO>, IProjectService
     {
         private readonly IFolderManager _folderManager;
 

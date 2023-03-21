@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using SODP.Shared.Response;
 using System.Collections.Generic;
 
-namespace SODP.Domain.Helpers
+namespace SODP.Application.Helpers
 {
     public static class ServiceResponseHelper
     {
