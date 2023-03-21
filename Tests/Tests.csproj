@@ -49,15 +49,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SODP.WebApi\SODP.WebApi.csproj" />
-    <ProjectReference Include="..\SODP.Application\SODP.Application.csproj" />
-    <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
-    <ProjectReference Include="..\SODP.Model\SODP.Model.csproj" />
-    <ProjectReference Include="..\SODP.UI\SODP.UI.csproj" />
+    <Folder Include="NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="NewFolder\" />
+    <ProjectReference Include="..\src\SODP.Application\SODP.Application.csproj" />
+    <ProjectReference Include="..\src\SODP.DataAccess\SODP.DataAccess.csproj" />
+    <ProjectReference Include="..\src\SODP.Domain\SODP.Domain.csproj" />
+    <ProjectReference Include="..\src\SODP.Infrastructure\SODP.Infrastructure.csproj" />
+    <ProjectReference Include="..\src\SODP.Model\SODP.Model.csproj" />
+    <ProjectReference Include="..\src\SODP.Shared\SODP.Shared.csproj" />
+    <ProjectReference Include="..\src\SODP.UI\SODP.UI.csproj" />
+    <ProjectReference Include="..\src\SODP.WebApi\SODP.WebApi.csproj" />
   </ItemGroup>
 
 </Project>
