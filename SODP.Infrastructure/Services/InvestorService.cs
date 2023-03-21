@@ -3,13 +3,13 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.Model;
+using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 
 namespace SODP.Infrastructure.Services
 {
-	public class InvestorService : FilteredPageService<Investor, InvestorDTO>, IInvestorService
+    public class InvestorService : FilteredPageService<Investor, InvestorDTO>, IInvestorService
 	{
 		public InvestorService(IMapper mapper, IValidator<Investor> validator, SODPDBContext context, IActiveStatusService<Investor> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 

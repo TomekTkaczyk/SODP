@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
-using SODP.Model;
+﻿using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using System.Linq;
 

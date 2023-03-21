@@ -1,23 +1,15 @@
 ﻿using AutoMapper;
-using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess;
+using SODP.Domain.Entities;
 using SODP.Domain.Helpers;
 using SODP.Domain.Managers;
 using SODP.Infrastructure.Services;
-using SODP.Model;
 using SODP.Model.Enums;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Net.WebSockets;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {

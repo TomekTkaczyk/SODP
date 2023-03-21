@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SODP.Shared.Enums
+﻿namespace SODP.Shared.Enums
 {
     public enum TechnicalRole
     {

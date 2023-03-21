@@ -5,7 +5,7 @@ using SODP.Application.Services;
 using SODP.Shared.DTO;
 using System.Threading.Tasks;
 
-namespace SODP.Api.v0_01.Controllers
+namespace SODP.WebApi.v0_01.Controllers
 {
     [ApiController]
     [Route("/api/v0_01/branches")]

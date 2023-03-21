@@ -1,7 +1,7 @@
 ﻿using SODP.Model.Extensions;
 using SODP.Model.Interfaces;
 
-namespace SODP.Model;
+namespace SODP.Domain.Entities;
 
 public class Stage : BaseEntity, IActiveStatus, IOrdered
 {

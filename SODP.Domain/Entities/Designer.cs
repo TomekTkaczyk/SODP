@@ -2,7 +2,7 @@
 using SODP.Model.Interfaces;
 using System.Collections.Generic;
 
-namespace SODP.Model;
+namespace SODP.Domain.Entities;
 
 public class Designer : BaseEntity, IActiveStatus
 {

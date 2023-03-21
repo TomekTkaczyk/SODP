@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SODP.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SODP.Domain.Entities;
 
 namespace SODP.DataAccess.Configurations
 {

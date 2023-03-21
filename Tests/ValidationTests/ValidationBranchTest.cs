@@ -1,6 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using SODP.Application.Validators;
-using SODP.Model;
+using SODP.Domain.Entities;
 using Xunit;
 
 namespace Tests.ValidationTests

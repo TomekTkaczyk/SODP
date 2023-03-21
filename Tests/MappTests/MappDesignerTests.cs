@@ -6,7 +6,7 @@ using AutoFixture;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using SODP.Domain;
-using SODP.Model;
+using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using Xunit;
 

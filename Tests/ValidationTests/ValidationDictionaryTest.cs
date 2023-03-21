@@ -1,7 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation.TestHelper;
 using SODP.Application.Validators;
-using SODP.Model;
+using SODP.Domain.Entities;
 using System;
 using Xunit;
 

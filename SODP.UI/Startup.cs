@@ -9,7 +9,7 @@ using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Infrastructure;
 using SODP.Infrastructure.Managers;
-using SODP.Model;
+using SODP.Domain.Entities;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;

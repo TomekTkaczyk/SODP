@@ -1,10 +1,4 @@
-﻿using SODP.Shared.Enums;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
-namespace SODP.Shared.DTO
+﻿namespace SODP.Shared.DTO
 {
     public class BranchRoleDTO : BaseDTO
     {

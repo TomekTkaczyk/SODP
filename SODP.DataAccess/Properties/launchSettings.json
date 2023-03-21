@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SODP.DataAccess": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:49386;http://localhost:49389"
+    }
+  }
+}

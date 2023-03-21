@@ -3,11 +3,10 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Services;
 using SODP.DataAccess;
+using SODP.Domain.Entities;
 using SODP.Domain.Helpers;
-using SODP.Model;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Security.Cryptography.X509Certificates;
 
 namespace SODP.Infrastructure.Services
 {

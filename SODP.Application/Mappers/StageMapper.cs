@@ -1,8 +1,5 @@
-﻿using SODP.Model;
+﻿using SODP.Domain.Entities;
 using SODP.Shared.DTO;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SODP.Application.Mappers
 {

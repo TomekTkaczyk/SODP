@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SODP.Model;
+namespace SODP.Domain.Entities;
 
 public class AppDictionary : BaseEntity, IActiveStatus, IEquatable<AppDictionary>
 {

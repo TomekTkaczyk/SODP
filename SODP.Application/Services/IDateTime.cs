@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SODP.Shared.Interfaces
+namespace SODP.Application.Interfaces
 {
     public interface IDateTime
     {

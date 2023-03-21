@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using AutoMapper;
 using SODP.Domain;
-using SODP.Model;
+using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using System.Linq;
 using Xunit;

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SODP.Model;
-using SODP.Shared.Interfaces;
+using SODP.Application.Interfaces;
+using SODP.Domain.Entities;
 using System.Threading.Tasks;
 
 namespace SODP.DataAccess

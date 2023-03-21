@@ -2,11 +2,10 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
-using SODP.Shared.Services;
-using System;
-using System.IO;
+using SODP.DataAccess;
+using SODP.Infrastructure.Services;
 
-namespace SODP.DataAccess
+namespace SODP.Infrastructure
 {
     public class MigrationContextFactory : IDesignTimeDbContextFactory<SODPDBContext>
     {

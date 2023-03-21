@@ -6,13 +6,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
+using SODP.Application.Interfaces;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Domain.Managers;
 using SODP.Infrastructure.Managers;
 using SODP.Infrastructure.Services;
-using SODP.Shared.Interfaces;
-using SODP.Shared.Services;
 
 namespace SODP.Infrastructure
 {
@@ -50,7 +49,7 @@ namespace SODP.Infrastructure
 		public static void UseMySwagger(this IApplicationBuilder app)
         {
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SODP.API"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SODP.WEBAPI"));
         }
 
         public static void AddSwagger(this IServiceCollection services, IConfiguration configuration)
@@ -59,7 +58,7 @@ namespace SODP.Infrastructure
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "SODP.API",
+                    Title = "SODP.WEBAPI",
                     Version = "v1",
                     Description = "Aplikacja do zarządzania projektami SODP",
                     TermsOfService = new Uri(configuration.GetSection($"AppSettings:termsOfService").Value),

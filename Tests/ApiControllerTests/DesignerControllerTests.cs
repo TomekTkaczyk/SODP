@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using SODP.Api.v0_01.Controllers;
+using SODP.WebApi.v0_01.Controllers;
 using SODP.Application.Services;
 using System.Threading.Tasks;
 using Xunit;

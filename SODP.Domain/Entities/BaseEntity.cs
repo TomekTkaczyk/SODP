@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SODP.Model;
+namespace SODP.Domain.Entities;
 
 public abstract class BaseEntity
 {

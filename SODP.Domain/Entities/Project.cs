@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace SODP.Model;
+namespace SODP.Domain.Entities;
 
 public class Project : BaseEntity
 {

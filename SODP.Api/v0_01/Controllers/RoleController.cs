@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using SODP.Application.Services;
 using System.Threading.Tasks;
 
-namespace SODP.Api.v0_01.Controllers
+namespace SODP.WebApi.v0_01.Controllers
 {
     // [Authorize]
     [ApiController]

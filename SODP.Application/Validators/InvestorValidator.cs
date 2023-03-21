@@ -1,8 +1,5 @@
 ﻿using FluentValidation;
-using SODP.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SODP.Domain.Entities;
 
 namespace SODP.Application.Validators
 {

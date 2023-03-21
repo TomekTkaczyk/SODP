@@ -9,7 +9,7 @@ using SODP.Shared.Enums;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
-namespace SODP.Api.v0_01.Controllers
+namespace SODP.WebApi.v0_01.Controllers
 {
     // [Authorize]
     [ApiController]

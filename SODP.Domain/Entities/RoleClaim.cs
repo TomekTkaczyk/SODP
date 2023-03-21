@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace SODP.Model;
+namespace SODP.Domain.Entities;
 
 public class RoleClaim : IdentityRoleClaim<int>
 {

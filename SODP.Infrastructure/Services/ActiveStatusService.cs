@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.Model;
+using SODP.Domain.Entities;
 using SODP.Model.Interfaces;
 using SODP.Shared.Response;
 
 namespace SODP.Infrastructure.Services
 {
-	public class ActiveStatusService<TEntity> : IActiveStatusService<TEntity> where TEntity : BaseEntity
+    public class ActiveStatusService<TEntity> : IActiveStatusService<TEntity> where TEntity : BaseEntity
 	{
 		private readonly SODPDBContext _context;
 

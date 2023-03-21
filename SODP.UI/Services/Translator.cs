@@ -1,11 +1,8 @@
-﻿using SODP.Model;
-using System.Collections.Generic;
-using System.Security.Policy;
-using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
 
 namespace SODP.UI.Services
 {
-    
+
     public enum Languages
     {
         En, Pl

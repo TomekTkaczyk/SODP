@@ -1,9 +1,8 @@
-﻿using SODP.Shared.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SODP.Shared.DTO
 {
-	public class DictionaryDTO : BaseDTO
+    public class DictionaryDTO : BaseDTO
 	{
 		public int? ParentId { get; set; }
 		public string Sign { get; set; }

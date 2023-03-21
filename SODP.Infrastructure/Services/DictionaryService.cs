@@ -3,7 +3,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.Model;
+using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 

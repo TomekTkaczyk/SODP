@@ -1,4 +1,4 @@
-﻿namespace SODP.Model;
+﻿namespace SODP.Domain.Entities;
 
 public class Token : BaseEntity
 {

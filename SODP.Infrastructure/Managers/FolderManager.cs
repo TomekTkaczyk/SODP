@@ -1,12 +1,7 @@
-﻿using SODP.Domain.Managers;
-using SODP.Model;
+﻿using SODP.Domain.Entities;
+using SODP.Domain.Managers;
 using SODP.Model.Enums;
 using SODP.Model.Extensions;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Managers
 {

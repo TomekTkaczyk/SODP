@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Services;
-using SODP.Model;
+using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SODP.Model.Interfaces;
 
-namespace SODP.Model;
+namespace SODP.Domain.Entities;
 
 public class User : IdentityUser<int>
 {

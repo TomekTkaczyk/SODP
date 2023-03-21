@@ -1,4 +1,4 @@
-﻿using SODP.Model;
+﻿using SODP.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,6 +1,6 @@
 using FluentValidation;
 using SODP.Application.Services;
-using SODP.Model;
+using SODP.Domain.Entities;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Validators

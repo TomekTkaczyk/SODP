@@ -1,10 +1,10 @@
-﻿using SODP.Model;
+﻿using SODP.Domain.Entities;
 using SODP.Shared.Response;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-	public interface IActiveStatusService
+    public interface IActiveStatusService
 	{
 		Task<ServiceResponse> SetActiveStatusAsync(int id, bool status);
     }

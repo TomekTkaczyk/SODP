@@ -1,6 +1,6 @@
 ﻿using SODP.Shared.Enums;
 
-namespace SODP.Model;
+namespace SODP.Domain.Entities;
 
 public class BranchRole : BaseEntity
 {

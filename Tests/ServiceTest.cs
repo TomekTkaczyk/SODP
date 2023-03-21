@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.Model;
-using SODP.Shared.Services;
+using SODP.Infrastructure.Services;
+using SODP.Domain.Entities;
 using System;
 
 namespace Tests

@@ -1,7 +1,6 @@
-﻿using SODP.Shared.Interfaces;
-using System;
+﻿using SODP.Application.Interfaces;
 
-namespace SODP.Shared.Services
+namespace SODP.Infrastructure.Services
 {
     public class DateTimeService : IDateTime
     {

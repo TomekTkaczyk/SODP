@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SODP.Model;
+using SODP.Domain.Entities;
 
 namespace SODP.UI.Areas.Identity.Pages.Account.Manage
 {

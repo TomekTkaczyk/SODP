@@ -1,9 +1,6 @@
-﻿using SODP.Model;
-using SODP.Shared.DTO;
-using SODP.Shared.Response;
-using System.Threading.Tasks;
+﻿using SODP.Shared.DTO;
 
 namespace SODP.Application.Services
 {
-	public interface IDictionaryService : IGetEntityService<DictionaryDTO>, IActiveStatusService { }
+    public interface IDictionaryService : IGetEntityService<DictionaryDTO>, IActiveStatusService { }
 }

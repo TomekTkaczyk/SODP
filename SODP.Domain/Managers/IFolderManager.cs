@@ -1,4 +1,4 @@
-﻿using SODP.Model;
+﻿using SODP.Domain.Entities;
 using SODP.Model.Enums;
 using System.Threading.Tasks;
 

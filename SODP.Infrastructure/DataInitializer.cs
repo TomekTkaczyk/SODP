@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SODP.DataAccess;
 using SODP.Domain.Managers;
-using SODP.Model;
+using SODP.Domain.Entities;
 using SODP.Model.Enums;
 using SODP.Shared.Enums;
 using System;
