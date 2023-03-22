@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Wordprocessing;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SODP.DataAccess;
 using SODP.Domain.Helpers;
 using SODP.Domain.Managers;
@@ -24,11 +25,13 @@ namespace SODP.Application.Services
     public class ProjectService : AppService<Project, ProjectDTO>, IProjectService
     {
         private readonly IFolderManager _folderManager;
+		private readonly ILogger<ProjectService> _logger;
 
-        public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context) : base(mapper, validator, context)
+		public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context, ILogger<ProjectService> logger) : base(mapper, validator, context)
         {
             _folderManager = folderManager;
-        }
+			_logger = logger;
+		}
 
 
         public async Task<ServiceResponse<ProjectDTO>> CreateAsync(NewProjectDTO newProject)
@@ -63,15 +66,19 @@ namespace SODP.Application.Services
                 var (Success, Message) = await _folderManager.CreateFolderAsync(project);
                 if (!Success)
                 {
+                    _logger.LogError("[CreateFolderAsync] : Create folder fail.");
                     throw new ApplicationException($"Error: {Message}");
                 }
 
                 var entity = _context.Projects.Add(project);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<ProjectDTO>(entity.Entity));
-            }
-            catch (Exception ex)
+				_logger.LogError("[CreateProject] : Create project done.");
+
+			}
+			catch (Exception ex)
             {
+                _logger.LogInformation($"[Exception Project service] : {ex.Message}");
                 serviceResponse.SetError(ex.Message, 500);
             }
 

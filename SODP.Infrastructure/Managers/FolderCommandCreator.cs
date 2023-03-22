@@ -1,21 +1,22 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using SODP.Domain.Managers;
 using SODP.Model.Enums;
-using System;
-using System.Threading.Tasks;
 
 namespace SODP.Infrastructure.Managers
 {
-    public class FolderCommandCreator : IFolderCommandCreator
+	public class FolderCommandCreator : IFolderCommandCreator
     {
         private readonly IConfiguration _configuration;
         private readonly FolderConfigurator _folderConfigurator;
+		private readonly ILogger<FolderCommandCreator> _logger;
 
-        public FolderCommandCreator(IConfiguration configuration, FolderConfigurator folderConfigurator)
+		public FolderCommandCreator(IConfiguration configuration, FolderConfigurator folderConfigurator, ILogger<FolderCommandCreator> logger)
         {
             _configuration = configuration;
             _folderConfigurator = folderConfigurator;
-        }
+			_logger = logger;
+		}
 
         public string GetCommandCreateFolder(string folder)
         {
@@ -59,7 +60,8 @@ namespace SODP.Infrastructure.Managers
 
         public async Task<string> RunCommand(string command)
         {
-            var result = await Task.Run(() => command.RunShell());
+            var result = await Task.Run(() => command.RunShell(_logger));
+
             return result;
         }
     }

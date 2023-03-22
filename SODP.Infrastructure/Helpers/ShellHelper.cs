@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using SODP.Infrastructure.Managers;
+using System;
 using System.Diagnostics;
 
 public static class ShellHelper
@@ -16,20 +18,31 @@ public static class ShellHelper
         }
     }
 
-    public static string RunShell(this string cmd)
+    public static string RunShell(this string cmd, ILogger logger)
     {
-        var p = new Process();
-        
-        p.StartInfo.FileName = commandProcessor;               // for linux  "/bin/bash", for windows  "cmd.exe"
-        p.StartInfo.Arguments = cmd;
-        p.StartInfo.UseShellExecute = false;
-        p.StartInfo.RedirectStandardOutput = true;
-        p.Start();
+        var startInfo = new ProcessStartInfo()
+        {
+            FileName = commandProcessor,
+            Arguments = cmd,
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+        };
 
-        string output = commandProcessor + cmd + "\n ";// +p.StandardOutput.ReadToEnd() +"\n ";
-        p.WaitForExit();
+		var p = new Process
+		{
+			StartInfo = startInfo
+		};
+        if (p.Start())
+        {
+		    logger.LogInformation($"[RunShell,command started] : {commandProcessor} {cmd} ");
+		}
+		else
+		{
+		    logger.LogError($"[RunShell,command fail] : {commandProcessor} {cmd} ");
+		}
+		p.WaitForExit();
 
-        return output;
+		return commandProcessor + cmd;
     }
 
     private static string getOsPlatform()
@@ -43,7 +56,7 @@ public static class ShellHelper
                 result = "cmd ";
                 break;
             case PlatformID.Unix:
-                result = "/bin/bash ";
+                result = "/bin/bash";
                 break;
             default:
                 result = os.VersionString;
