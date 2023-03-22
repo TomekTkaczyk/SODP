@@ -7,6 +7,8 @@ using SODP.Shared.DTO;
 using SODP.Shared.DTO.Requests;
 using SODP.Shared.Enums;
 using System.Reflection.Metadata.Ecma335;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers
@@ -52,16 +54,22 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateAsync([FromBody] NewProjectDTO project)
         {
-            return Ok(await _service.CreateAsync(project));
-            //var result = await _service.CreateAsync(project);
-            //return result.StatusCode switch
-            //{
-            //    StatusCodes.Status200OK => Ok(result),
-            //    StatusCodes.Status403Forbidden => Forbid(),
-            //    StatusCodes.Status409Conflict => Conflict(result),
-            //    //StatusCodes.Status500InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
-            //    _ => BadRequest(result),
-            //};
+            //return Ok(await _service.CreateAsync(project));
+
+            _logger.LogInformation($"{JsonSerializer.Serialize(project)}");
+
+            var result = await _service.CreateAsync(project);
+			
+            _logger.LogInformation($"{JsonSerializer.Serialize(result)}");
+
+			return result.StatusCode switch
+            {
+                StatusCodes.Status200OK => Ok(result),
+                StatusCodes.Status403Forbidden => Forbid(),
+                StatusCodes.Status409Conflict => Conflict(result),
+                StatusCodes.Status500InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
+                _ => BadRequest(result),
+            };
         }
 
 

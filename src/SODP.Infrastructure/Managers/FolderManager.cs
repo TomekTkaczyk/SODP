@@ -1,18 +1,22 @@
-﻿using SODP.Domain.Entities;
+﻿using Microsoft.Extensions.Logging;
+using SODP.Domain.Managers;
+using SODP.Model;
+using SODP.Model.Enums;
 using SODP.Model.Extensions;
-using SODP.Shared.Enums;
 
 namespace SODP.Infrastructure.Managers
 {
 	public class FolderManager : IFolderManager
     {
         private readonly IFolderCommandCreator _folderCommandCreator;
-        private readonly IFolderConfigurator _folderConfigurator;
+		private readonly ILogger<FolderManager> _logger;
+		private readonly FolderConfigurator _folderConfigurator;
 
-        public FolderManager(IFolderConfigurator folderConfigurator, IFolderCommandCreator folderCommandCreator)
+        public FolderManager(FolderConfigurator folderConfigurator, IFolderCommandCreator folderCommandCreator, ILogger<FolderManager> logger)
         {
             _folderCommandCreator = folderCommandCreator;
-            _folderConfigurator = folderConfigurator;
+			_logger = logger;
+			_folderConfigurator = folderConfigurator;
         }
 
         public async Task<(bool Success, string Message)> CreateFolderAsync(Project project)

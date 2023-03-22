@@ -16,10 +16,11 @@ using SODP.UI.Services;
 using System;
 using System.IO;
 using System.Linq;
+using Serilog;
 
 namespace SODP.UI
 {
-    public class Startup
+	public class Startup
     {
         private readonly string _appPrefix;
         
@@ -118,10 +119,12 @@ namespace SODP.UI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+			app.UseMySwagger();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
             }
             else
             {

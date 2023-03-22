@@ -51,11 +51,17 @@ namespace SODP.UI.Pages.ActiveProjects
             if (ModelState.IsValid)
             {
                 var apiResponse = await _apiProvider.PostAsync(_endpoint, project.ToHttpContent());
+                
+                _logger.LogInformation($"apiResponse {apiResponse}");
+                
                 switch (apiResponse.StatusCode)
                 {
                     case System.Net.HttpStatusCode.OK:
                         var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
-                        project.Id = response.Data.Id;
+
+						_logger.LogInformation($"response {response}");
+
+						project.Id = response.Data.Id;
                         if (!response.Success)
                         {
                             SetModelErrors(response);
