@@ -5,11 +5,10 @@ using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Linq.Dynamic.Core;
 
 namespace SODP.Infrastructure.Services
 {
-    public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity, new() where TDto : BaseDTO
+	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity, new() where TDto : BaseDTO
     {
         protected IQueryable<TEntity> _query;
         protected int _totalCount;

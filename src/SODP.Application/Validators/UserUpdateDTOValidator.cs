@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using SODP.Shared.DTO;
 
-namespace SODP.Domain.Validators
+namespace SODP.Application.Validators
 {
     public class UserUpdateDTOValidator : AbstractValidator<UserUpdateDTO>
     {

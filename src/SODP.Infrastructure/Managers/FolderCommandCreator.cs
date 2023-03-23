@@ -1,17 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SODP.Domain.Managers;
-using SODP.Model.Enums;
+using SODP.Shared.Enums;
 
 namespace SODP.Infrastructure.Managers
 {
 	public class FolderCommandCreator : IFolderCommandCreator
     {
         private readonly IConfiguration _configuration;
-        private readonly FolderConfigurator _folderConfigurator;
-		private readonly ILogger<FolderCommandCreator> _logger;
+        private readonly IFolderConfigurator _folderConfigurator;
+		private readonly ILogger<IFolderCommandCreator> _logger;
 
-		public FolderCommandCreator(IConfiguration configuration, FolderConfigurator folderConfigurator, ILogger<FolderCommandCreator> logger)
+		public FolderCommandCreator(IConfiguration configuration, IFolderConfigurator folderConfigurator, ILogger<IFolderCommandCreator> logger)
         {
             _configuration = configuration;
             _folderConfigurator = folderConfigurator;

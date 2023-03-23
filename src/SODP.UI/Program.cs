@@ -1,4 +1,3 @@
-using DocumentFormat.OpenXml.Office.Word;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,8 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using SODP.DataAccess;
-using SODP.Infrastructure;
-using System.Diagnostics;
 
 namespace SODP.UI
 {
@@ -35,10 +32,11 @@ namespace SODP.UI
 					webBuilder.UseUrls(configuration.GetSection("AppSettings:applicationUrl").Value);
 
 				})
-				.UseSerilog((hostingContext, loggerConfiguration) =>
-				{
-					loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration);
-				});
+				.UseSerilog((context, services, configuration) => configuration
+					.ReadFrom.Configuration(context.Configuration)
+					.ReadFrom.Services(services)
+					.Enrich.FromLogContext()
+					.WriteTo.Console());
 
 			var host = hostBuilder.Build();
 
@@ -49,10 +47,10 @@ namespace SODP.UI
 
                 db.Database.Migrate();
                 db.Database.EnsureCreated();
-                
-                provider.GetRequiredService<UserInitializer>().UserInit();
-                provider.GetRequiredService<DataInitializer>().LoadData();
-            }
+
+				//provider.GetRequiredService<UserInitializer>().UserInit();
+				//provider.GetRequiredService<DataInitializer>().LoadData();
+			}
 
 			host.Run();
 		}

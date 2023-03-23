@@ -1,22 +1,21 @@
 ﻿using Microsoft.Extensions.Logging;
-using SODP.Domain.Managers;
-using SODP.Model;
-using SODP.Model.Enums;
+using SODP.Domain.Entities;
 using SODP.Model.Extensions;
+using SODP.Shared.Enums;
 
 namespace SODP.Infrastructure.Managers
 {
 	public class FolderManager : IFolderManager
     {
         private readonly IFolderCommandCreator _folderCommandCreator;
-		private readonly ILogger<FolderManager> _logger;
-		private readonly FolderConfigurator _folderConfigurator;
+		private readonly ILogger<IFolderManager> _logger;
+		private readonly IFolderConfigurator _folderConfigurator;
 
-        public FolderManager(FolderConfigurator folderConfigurator, IFolderCommandCreator folderCommandCreator, ILogger<FolderManager> logger)
+        public FolderManager(IFolderConfigurator folderConfigurator, IFolderCommandCreator folderCommandCreator, ILogger<IFolderManager> logger)
         {
             _folderCommandCreator = folderCommandCreator;
-			_logger = logger;
 			_folderConfigurator = folderConfigurator;
+			_logger = logger;
         }
 
         public async Task<(bool Success, string Message)> CreateFolderAsync(Project project)
@@ -26,20 +25,22 @@ namespace SODP.Infrastructure.Managers
             string folder = project.ToString();
             var catalog = GetMatchingFolders(_folderConfigurator.ActiveFolder, project);
 
-            switch (catalog.Count())
+            switch (catalog.Count)
             {
                 case 0:
                     command = _folderCommandCreator.GetCommandCreateFolder(folder);
                     message = await _folderCommandCreator.RunCommand(command);
+                    _logger.LogInformation($"[FolderManager,Create folder] : {message}");
 
                     return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
                 case 1:
                     command = _folderCommandCreator.GetCommandRenameFolder(folder, catalog[0]);
                     message = await _folderCommandCreator.RunCommand(command);
+					_logger.LogInformation($"[FolderManager,Rename folder] : {message}");
 
-                    return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
+					return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
                 default:
-                    return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
+                    return (false, $"More than one folder with symbol {project.Symbol}");
             }
         }
 
@@ -54,10 +55,11 @@ namespace SODP.Infrastructure.Managers
                 case 1:
                     var command = _folderCommandCreator.GetCommandRenameFolder(folder, catalog[0], source);
                     var message = await _folderCommandCreator.RunCommand(command);
+					_logger.LogInformation($"[FolderManager,Rename folder] : {message}");
 
-                    return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + folder), $"{command} {message}");
+					return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + folder), $"{command} {message}");
                 default:
-                    return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
+                    return (false, $"More than one folder with symbol {project.Symbol}");
             }
         }
 
@@ -66,8 +68,9 @@ namespace SODP.Infrastructure.Managers
             string folder = project.ToString();
             var command = _folderCommandCreator.GetCommandRenameFolder(folder, oldName, source);
             var message = await _folderCommandCreator.RunCommand(command);
+			_logger.LogInformation($"[FolderManager,Rename folder] : {message}");
 
-            return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + folder), $"{command} {message}");
+			return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + folder), $"{command} {message}");
         }
 
         public async Task<(bool Success, string Message)> DeleteFolderAsync(Project project)
@@ -77,18 +80,19 @@ namespace SODP.Infrastructure.Managers
             switch(folders.Count())
             {
                 case 0:
-                    return(true, $"Folder projektu {project.Symbol} nie istnieje.");
+                    return(true, $"Folder {project.Symbol} not exist.");
                 case 1:
                     if (!FolderIsEmpty($"{_folderConfigurator.ActiveFolder}{folders[0]}"))
                     {
-                        return (false,$"Folder projektu {project.Symbol} nie jest pusty.");
+                        return (false,$"Folder {project.Symbol} not empty.");
                     }
                     var command = _folderCommandCreator.GetCommandDeleteFolder(folders[0]);
                     var message = await _folderCommandCreator.RunCommand(command);
+					_logger.LogInformation($"[FolderManager,Delete folder] : {message}");
 
-                    return (!Directory.Exists(_folderConfigurator.ActiveFolder + folders[0]), $"{command} {message}");
+					return (!Directory.Exists(_folderConfigurator.ActiveFolder + folders[0]), $"{command} {message}");
                 default:
-                    return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
+                    return (false, $"More than one folder with symbol {project.Symbol}.");
             }
         }
 
@@ -100,11 +104,11 @@ namespace SODP.Infrastructure.Managers
             switch(folders.Count())
             {
                 case 0:
-                    return(false, $"Folder projektu {project.Symbol} nie istnieje.");
+                    return(false, $"Folder {project.Symbol} not exist.");
                 case 1:
                     if(FolderIsEmpty(_folderConfigurator.ActiveFolder + folders[0]))
                     {
-                        return (false, $"Folder projektu {project.Symbol} jest pusty.");
+                        return (false, $"Folder {project.Symbol} is empty.");
                     }
                     if(!folders[0].Equals(project.ToString()))
                     {
@@ -116,10 +120,11 @@ namespace SODP.Infrastructure.Managers
                     }
                     var command = _folderCommandCreator.GetCommandArchiveFolder(folder);
                     var message = await _folderCommandCreator.RunCommand(command);
+					_logger.LogInformation($"[FolderManager,Archive folder] : {message}");
 
-                    return (Directory.Exists(_folderConfigurator.ArchiveFolder + folder), $"{command} {message}");
+					return (Directory.Exists(_folderConfigurator.ArchiveFolder + folder), $"{command} {message}");
                 default:
-                    return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
+                    return (false, $"More than one folder with symbol {project.Symbol}.");
             }
         }
 
@@ -131,7 +136,7 @@ namespace SODP.Infrastructure.Managers
             switch(catalog.Count())
             {
                 case 0:
-                    return(false, $"Folder projektu {project.Symbol} nie istnieje.");
+                    return(false, $"Folder {project.Symbol} not exist.");
                 case 1:
                     if (!catalog[0].Equals(project.ToString()))
                     {
@@ -143,10 +148,11 @@ namespace SODP.Infrastructure.Managers
                     }
                     var command = _folderCommandCreator.GetCommandRestoreFolder(folder);
                     var message = await _folderCommandCreator.RunCommand(command);
+					_logger.LogInformation($"[FolderManager,Restore folder] : {message}");
 
-                    return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
+					return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
                 default:
-                    return (false, $"Istnieje więcej niż 1 folder projektu {project.Symbol}");
+                    return (false, $"More than one folder with symbol {project.Symbol}.");
             }
         }
 

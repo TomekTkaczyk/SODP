@@ -1,20 +1,16 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Services;
 using SODP.Shared.DTO;
 using SODP.Shared.DTO.Requests;
 using SODP.Shared.Enums;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers
 {
-    // [Authorize]
-    [ApiController]
+	// [Authorize]
+	[ApiController]
     [Route("api/v0_01/projects")]
     public class ProjectController : ApiControllerBase
     {

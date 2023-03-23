@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace SODP.Shared.Response
 {
-    public class PageInfo
+	public class PageInfo
     {
         public int TotalItems { get; set; }
         public int ItemsPerPage { get; set; }

@@ -9,6 +9,7 @@ using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SODP.Application.Interfaces;
 using SODP.Application.Services;
 using SODP.DataAccess;
+using SODP.Domain.Repositories;
 using SODP.Infrastructure.Managers;
 using SODP.Infrastructure.Services;
 
@@ -19,24 +20,26 @@ namespace SODP.Infrastructure
 		public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
 		{
             services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
-			
-            services.AddDbContext<SODPDBContext>(options =>
+
+			services.AddDbContext<SODPDBContext>(options =>
 			{
 				options.EnableDetailedErrors();
-                var aaa = services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment();
-                if (services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment())
-                {
-                    options.EnableSensitiveDataLogging();
-                }
-                options.UseMySql(
+				//var aaa = services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment();
+				if (services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment())
+				{
+					options.EnableSensitiveDataLogging();
+				}
+				options.UseMySql(
 					configuration.GetConnectionString("DefaultDbConnection"),
 					b =>
 					{
-                        b.SchemaBehavior(MySqlSchemaBehavior.Ignore);
+						b.SchemaBehavior(MySqlSchemaBehavior.Ignore);
 						b.CharSetBehavior(CharSetBehavior.NeverAppend);
 						b.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MariaDb));
 					});
 			});
+
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 			services.AddScoped<SODPDBContext>();
 			services.AddScoped<UserInitializer>();
@@ -104,7 +107,7 @@ namespace SODP.Infrastructure
             return services;
         }
 
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
 			services.AddTransient<IDateTime, DateTimeService>();
 

@@ -1,7 +1,9 @@
 ﻿using SODP.Model.Extensions;
+using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
-namespace SODP.Infrastructure
+namespace SODP.Application.Validators
 {
     public class ProjectNameValidator
     {

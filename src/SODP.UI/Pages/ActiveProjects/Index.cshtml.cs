@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
@@ -13,7 +12,7 @@ using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,26 +50,25 @@ namespace SODP.UI.Pages.ActiveProjects
             if (ModelState.IsValid)
             {
                 var apiResponse = await _apiProvider.PostAsync(_endpoint, project.ToHttpContent());
-                
-                _logger.LogInformation($"apiResponse {apiResponse}");
-                
                 switch (apiResponse.StatusCode)
                 {
                     case System.Net.HttpStatusCode.OK:
                         var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
-
-						_logger.LogInformation($"response {response}");
-
 						project.Id = response.Data.Id;
                         if (!response.Success)
                         {
-                            SetModelErrors(response);
+							project.Stages = await GetStagesItems();
+							SetModelErrors(response);
                         }
                         break;
                     default:
                         break;
                 }
             }
+            else
+            {
+				project.Stages = await GetStagesItems();
+			}
 			
             return GetPartialView(project, _newProjectModalViewName);
 		}
@@ -88,20 +86,21 @@ namespace SODP.UI.Pages.ActiveProjects
 
         private async Task<IActionResult> GetNewProjectPartialViewAsync(NewProjectVM project)
         {
-            var apiResponse = await _apiProvider.GetAsync("stages");
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                var stages = await _apiProvider.GetContent<ServicePageResponse<StageDTO>>(apiResponse);
-                project.Stages = stages.Data.Collection
-                    .Where(x => x.ActiveStatus)
-                    .Select(x => new SelectListItem
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.ToString()
-                    }).ToList();
-            }
-
+			project.Stages = await GetStagesItems();
+			
 			return GetPartialView(project, _newProjectModalViewName);
         }
+
+        private async Task<IEnumerable<SelectListItem>> GetStagesItems()
+        {
+			var apiResponse = await _apiProvider.GetAsync("stages");
+			var stages = await _apiProvider.GetContent<ServicePageResponse<StageDTO>>(apiResponse);
+            return stages.Data.Collection.Where(x => x.ActiveStatus)
+                .Select(x => new SelectListItem
+			{
+				Value = x.Id.ToString(),
+				Text = x.ToString()
+			}); ;
+		}
 	}
 }

@@ -7,16 +7,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SODP.Application.Services;
 using SODP.DataAccess;
+using SODP.Domain.Entities;
 using SODP.Infrastructure;
 using SODP.Infrastructure.Managers;
-using SODP.Domain.Entities;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using System;
 using System.IO;
 using System.Linq;
-using Serilog;
 
 namespace SODP.UI
 {
@@ -48,7 +47,7 @@ namespace SODP.UI
 
             services.AddDataAccess(Configuration);
 
-            services.AddInfrastructure(Configuration);
+            services.AddInfrastructure();
 
             var app = AppDomain.CurrentDomain
                     .GetAssemblies()
@@ -120,7 +119,7 @@ namespace SODP.UI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-			app.UseMySwagger();
+			app.UseSwagger();
             
             if (env.IsDevelopment())
             {

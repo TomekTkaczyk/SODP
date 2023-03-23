@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using SODP.Application.Validators;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Infrastructure.Managers;
@@ -9,17 +10,15 @@ namespace SODP.Infrastructure
 {
 	public class DataInitializer
     {
-        private readonly IConfiguration _configuration;
         private readonly SODPDBContext _context;
+        private readonly IConfiguration _configuration;
         private readonly IFolderCommandCreator _folderCommandCreator;
-        private readonly IFolderManager _folderManager;
 
-        public DataInitializer(IConfiguration configuration, SODPDBContext context, IFolderCommandCreator folderCommandCreator, IFolderManager folderManager)
+        public DataInitializer(IConfiguration configuration, SODPDBContext context, IFolderCommandCreator folderCommandCreator)
         {
             _configuration = configuration;
             _context = context;
             _folderCommandCreator = folderCommandCreator;
-            _folderManager = folderManager;
         }
 
         public void LoadData()
