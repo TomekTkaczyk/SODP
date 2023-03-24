@@ -1,12 +1,9 @@
-﻿using SODP.Model.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SODP.Shared.Extensions;
 using Xunit;
 
 namespace Tests.ExtensionsTests
 {
-    public class StringExtensionsTests
+	public class StringExtensionsTests
     {
         [Theory]
         [InlineData(null)]

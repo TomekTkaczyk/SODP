@@ -1,6 +1,5 @@
-﻿using SODP.Model.Extensions;
-using SODP.Model.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SODP.Shared.Extensions;
 
 namespace SODP.Domain.Entities;
 

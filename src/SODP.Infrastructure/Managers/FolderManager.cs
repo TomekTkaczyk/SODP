@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SODP.Domain.Entities;
-using SODP.Model.Extensions;
 using SODP.Shared.Enums;
+using SODP.Shared.Extensions;
 
 namespace SODP.Infrastructure.Managers
 {

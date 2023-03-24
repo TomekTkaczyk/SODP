@@ -7,14 +7,9 @@ using SODP.Infrastructure.Specyfications;
 
 namespace SODP.Infrastructure.Repositories
 {
-	internal class InvestorRepository : IInvestorRepository
+	internal class InvestorRepository : PagedRepository<Investor>, IInvestorRepository
 	{
-		private readonly SODPDBContext _dbContext;
-
-		public InvestorRepository(SODPDBContext dbContext)
-        {
-			_dbContext = dbContext;
-		}
+		public InvestorRepository(SODPDBContext dbContext) : base(dbContext) { }
 
 		public async Task<Investor> Create(Investor investor, CancellationToken cancellationToken = default)
 		{
@@ -31,29 +26,24 @@ namespace SODP.Infrastructure.Repositories
 
 		public async Task Remove(Investor investor, CancellationToken cancellationToken = default)
 		{
-			var entity = await _dbContext.Set<Investor>().FirstOrDefaultAsync(x => x.Id == investor.Id, cancellationToken);
-			if (entity == null)
-			{
-				throw new InvestorNotFoundException();
-			}
-
+			var entity = await _dbContext.Set<Investor>()
+				.FirstOrDefaultAsync(x => x.Id == investor.Id, cancellationToken) 
+				?? throw new InvestorNotFoundException();
 			_dbContext.Set<Investor>().Remove(entity);
 		}
 
 		public async Task Update(Investor investor, CancellationToken cancellationToken)
 		{
-			var entity = await _dbContext.Set<Investor>().FirstOrDefaultAsync(x => x.Id == investor.Id, cancellationToken);
-			if (entity == null)
-			{
-				throw new InvestorNotFoundException();
-			}
-
+			var entity = await _dbContext.Set<Investor>()
+				.FirstOrDefaultAsync(x => x.Id == investor.Id, cancellationToken)
+				?? throw new InvestorNotFoundException();
 			_dbContext.Set<Investor>().Update(entity);
 		}
 
 		public async Task SetActiveStatusAsync(int id, bool status, CancellationToken cancellationToken = default)
 		{
-			var entity = await _dbContext.Set<Investor>().SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+			var entity = await _dbContext.Set<Investor>()
+				.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
 
 			entity.ActiveStatus = status;
 			_dbContext.Entry(entity).State = EntityState.Modified;
@@ -65,12 +55,7 @@ namespace SODP.Infrastructure.Repositories
 			var entity = await ApplySpecyfication(new InvestorByIdSpecyfication(id))
 				.SingleOrDefaultAsync(cancellationToken);
 
-			if(entity == null)
-			{
-				throw new InvestorNotFoundException();
-			}
-
-			return entity;
+			return entity ?? throw new InvestorNotFoundException();
 		}
 
 		public async Task<ICollection<Investor>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize, CancellationToken cancellationToken = default)

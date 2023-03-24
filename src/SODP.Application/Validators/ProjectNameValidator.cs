@@ -1,4 +1,4 @@
-﻿using SODP.Model.Extensions;
+﻿using SODP.Shared.Extensions;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -17,7 +17,7 @@ namespace SODP.Application.Validators
             var regex2 = new Regex(@"^([a-zA-Z]{1,1})([1-9a-zA-Z_ ]{0,})$");
             result = result && 
                 !String.IsNullOrEmpty(sign) && 
-                regex1.Match(sign.Substring(0, 4)).Success &&
+                regex1.Match(sign[..4]).Success &&
                 regex2.Match(localization[(sign.Length+1)..]).Success;
 
             return result;

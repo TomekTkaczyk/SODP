@@ -32,10 +32,10 @@
     </PackageReference>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Microsoft.CodeCoverage" Version="17.4.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.15" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.15" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.15" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="3.1.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.32" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.32" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.32" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="3.1.32" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.0" />
     <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="17.4.1" />
@@ -57,7 +57,6 @@
     <ProjectReference Include="..\src\SODP.DataAccess\SODP.DataAccess.csproj" />
     <ProjectReference Include="..\src\SODP.Domain\SODP.Domain.csproj" />
     <ProjectReference Include="..\src\SODP.Infrastructure\SODP.Infrastructure.csproj" />
-    <ProjectReference Include="..\src\SODP.Model\SODP.Model.csproj" />
     <ProjectReference Include="..\src\SODP.Shared\SODP.Shared.csproj" />
     <ProjectReference Include="..\src\SODP.UI\SODP.UI.csproj" />
     <ProjectReference Include="..\src\SODP.WebApi\SODP.WebApi.csproj" />

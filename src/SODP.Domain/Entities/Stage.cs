@@ -1,5 +1,4 @@
-﻿using SODP.Model.Extensions;
-using SODP.Model.Interfaces;
+﻿using SODP.Shared.Extensions;
 
 namespace SODP.Domain.Entities;
 

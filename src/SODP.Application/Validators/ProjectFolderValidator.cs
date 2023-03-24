@@ -1,12 +1,9 @@
 ﻿using FluentValidation;
-using SODP.Model.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SODP.Shared.Extensions;
 
 namespace SODP.Application.Validators
 {
-    public class ProjectFolderValidator : AbstractValidator<string>
+	public class ProjectFolderValidator : AbstractValidator<string>
     {
         public ProjectFolderValidator()
         {

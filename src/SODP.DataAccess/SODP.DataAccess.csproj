@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.15">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.32">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -46,8 +46,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SODP.Application\SODP.Application.csproj" />
-    <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
-    <ProjectReference Include="..\SODP.Model\SODP.Model.csproj" />
   </ItemGroup>
 
 </Project>

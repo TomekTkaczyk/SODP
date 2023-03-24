@@ -1,6 +1,4 @@
-﻿using SODP.Model.Interfaces;
-
-namespace SODP.Domain.Entities;
+﻿namespace SODP.Domain.Entities;
 
 public class Investor : BaseEntity, IActiveStatus
 {

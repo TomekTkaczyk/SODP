@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SODP.Application\SODP.Application.csproj" />
-    <ProjectReference Include="..\SODP.Shared\SODP.Shared.csproj" />
   </ItemGroup>
 
 </Project>

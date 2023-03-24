@@ -1,5 +1,5 @@
-﻿using SODP.Model.Extensions;
-using SODP.Shared.Enums;
+﻿using SODP.Shared.Enums;
+using SODP.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -65,7 +65,7 @@ public class Project : BaseEntity
 
     public void Normalize()
     {
-        Regex regex = new Regex("[ ]", RegexOptions.None);
+        var regex = new Regex("[ ]", RegexOptions.None);
         Name = regex.Replace(Name, "_");
         regex = new Regex("[_]{2,}", RegexOptions.None);
         Name = regex.Replace(Name, "_");

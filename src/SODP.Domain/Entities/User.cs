@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SODP.Model.Interfaces;
 
 namespace SODP.Domain.Entities;
 

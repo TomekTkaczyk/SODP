@@ -4,30 +4,25 @@ using SODP.Domain.Entities;
 
 namespace SODP.Infrastructure.Repositories
 {
-	internal abstract class PagedRepository<T> where T : BaseEntity
+	public abstract class PagedRepository<TEntity> : Repository<TEntity> where TEntity : BaseEntity
 	{
-		private readonly SODPDBContext _dbContext;
+		public PagedRepository(SODPDBContext dbContext)	: base(dbContext) { }
 
-		public PagedRepository(SODPDBContext dbContext)
-        {
-			_dbContext = dbContext;
-		}
-
-        public async Task<List<T>> GetPageAsync(IQueryable<T> collection, int currentPage, int pageSize, CancellationToken cancellationToken) 
+        public async Task<List<TEntity>> GetPageAsync(IQueryable<TEntity> collection, int currentPage, int pageSize, CancellationToken cancellationToken) 
 		{
-			return await collection.Skip((currentPage - 1) * pageSize).Take(pageSize).ToListAsync();
+			return await collection.Skip((currentPage - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
 		}
 
-		private IQueryable<T> PageQuery(IQueryable<T> query, int currentPage, int pageSize)
+		protected IQueryable<TEntity> GetPageQuery(IQueryable<TEntity> query, int currentPage, int pageSize)
 		{
 			if (currentPage < 1)
 			{
 				throw new ArgumentOutOfRangeException(nameof(currentPage), "Error: Required currentPage > 0");
 			}
 
-			if (query is IOrderedQueryable<T>)
+			if (query is IOrderedQueryable<TEntity>)
 			{
-				query = (query as IOrderedQueryable<T>).ThenBy(x => x.Id);
+				query = (query as IOrderedQueryable<TEntity>).ThenBy(x => x.Id);
 			}
 			else
 			{
