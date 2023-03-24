@@ -27,7 +27,6 @@ namespace SODP.Infrastructure.Services
             _totalCount = _query.Count();
         }
 
-
         public virtual async Task<ServiceResponse> DeleteAsync(int id)
         {
             var serviceResponse = new ServiceResponse();

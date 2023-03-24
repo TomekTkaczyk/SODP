@@ -37,10 +37,10 @@ public class Project : BaseEntity
 
     public string Number { get; set; }           // Project number
     public int StageId { get; set; }             // Project stage Id
-    public virtual Stage Stage { get; set; }     // Stage object
+    public Stage Stage { get; set; }             // Stage object
     public string Name { get; set; }             // Project name (file system - directory name)
     public string Title { get; set; }            // The name of the construction project 
-    public string Address { get; set; }         // Address
+    public string Address { get; set; }          // Address
     public string LocationUnit { get; set; }     // Location record unit
     public string BuildingCategory { get; set; }
     public string Investor { get; set; }
@@ -48,7 +48,7 @@ public class Project : BaseEntity
     public string Description { get; set; }     
     public DateTime? DevelopmentDate { get; set; }
     public ProjectStatus Status { get; set; }
-    public ICollection<ProjectPart> Parts { get; set; }
+    public IReadOnlyCollection<ProjectPart> Parts { get; private set; }
 
     public virtual string Symbol 
     {
@@ -85,5 +85,10 @@ public class Project : BaseEntity
         Number = number;
         Stage = new Stage(stageSign);
         Name = name;
+    }
+
+    public void AddPart(Part part)
+    {
+
     }
 }

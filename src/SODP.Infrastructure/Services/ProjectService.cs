@@ -18,7 +18,13 @@ namespace SODP.Application.Services
         private readonly IFolderManager _folderManager;
 		private readonly ILogger<ProjectService> _logger;
 
-		public ProjectService(IMapper mapper, IFolderManager folderManager, IValidator<Project> validator, SODPDBContext context, ILogger<ProjectService> logger) : base(mapper, validator, context)
+		public ProjectService(
+            IMapper mapper, 
+            IFolderManager folderManager, 
+            IValidator<Project> validator, 
+            SODPDBContext context, 
+            ILogger<ProjectService> logger) 
+            : base(mapper, validator, context)
         {
             _folderManager = folderManager;
 			_logger = logger;
