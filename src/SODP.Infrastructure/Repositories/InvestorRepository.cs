@@ -3,7 +3,7 @@ using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
-using SODP.Infrastructure.Specyfications;
+using SODP.Infrastructure.Specifications.Investors;
 
 namespace SODP.Infrastructure.Repositories
 {
@@ -11,68 +11,64 @@ namespace SODP.Infrastructure.Repositories
 	{
 		public InvestorRepository(SODPDBContext dbContext) : base(dbContext) { }
 
-		public async Task<Investor> Create(Investor investor, CancellationToken cancellationToken = default)
+		public Investor Add(Investor investor)
 		{
-			var entity = _dbContext.Set<Investor>().FirstOrDefaultAsync(x => x.Name.Equals(investor.Name), cancellationToken);
-			if (entity != null)
-			{
-				throw new InvestorExistException();
-			}
-
-			var entry = await _dbContext.Set<Investor>().AddAsync(investor, cancellationToken);
+			var entry = _dbContext.Set<Investor>().Add(investor);
 
 			return entry.Entity;
 		}
 
-		public async Task Remove(Investor investor, CancellationToken cancellationToken = default)
+		public void Remove(Investor investor)
 		{
-			var entity = await _dbContext.Set<Investor>()
-				.FirstOrDefaultAsync(x => x.Id == investor.Id, cancellationToken) 
-				?? throw new InvestorNotFoundException();
-			_dbContext.Set<Investor>().Remove(entity);
+			_dbContext.Entry(investor).State = EntityState.Deleted;
 		}
 
-		public async Task Update(Investor investor, CancellationToken cancellationToken)
+		public void Update(Investor investor)
 		{
-			var entity = await _dbContext.Set<Investor>()
-				.FirstOrDefaultAsync(x => x.Id == investor.Id, cancellationToken)
-				?? throw new InvestorNotFoundException();
-			_dbContext.Set<Investor>().Update(entity);
-		}
-
-		public async Task SetActiveStatusAsync(int id, bool status, CancellationToken cancellationToken = default)
-		{
-			var entity = await _dbContext.Set<Investor>()
-				.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
-
-			entity.ActiveStatus = status;
-			_dbContext.Entry(entity).State = EntityState.Modified;
+			_dbContext.Set<Investor>().Update(investor);
+			_dbContext.Entry(investor).State = EntityState.Modified;
 		}
 
 
-		public async Task<Investor> GetById(int id, CancellationToken cancellationToken)
+		public void SetActiveStatus(int id, bool status)
 		{
-			var entity = await ApplySpecyfication(new InvestorByIdSpecyfication(id))
-				.SingleOrDefaultAsync(cancellationToken);
+			throw new NotImplementedException();
+		}
+
+		public void SetActiveStatus(Investor investor, bool status)
+		{
+			var entry = _dbContext.Entry(investor);
+			entry.Entity.ActiveStatus = status;
+			_dbContext.Entry(investor).State = EntityState.Modified;
+		}
+
+
+		public async Task<Investor> GetByIdAsync(int id, CancellationToken cancellationToken)
+		{
+			var specyfication = new InvestorByIdSpecification(id);
+			var entity = await ApplySpecyfication(specyfication).SingleOrDefaultAsync(cancellationToken);
+
+			return entity ?? throw new InvestorNotFoundException();
+		}
+
+		public async Task<Investor> GetByNameAsync(string name, CancellationToken cancellationToken)
+		{
+			var specyfication = new InvestorByNameSpecification(null, name);
+			var entity = await ApplySpecyfication(specyfication).FirstOrDefaultAsync(cancellationToken);
 
 			return entity ?? throw new InvestorNotFoundException();
 		}
 
 		public async Task<ICollection<Investor>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize, CancellationToken cancellationToken = default)
 		{
-			var queryable = ApplySpecyfication(new InvestorByNameSpecyfication(active, searchString));
+			var specification = new InvestorByNameSpecification(active, searchString);
+			var queryable = ApplySpecyfication(specification);
 			if (pageSize > 0)
 			{
 				queryable = queryable.Skip((currentPage - 1) * pageSize).Take(pageSize);
 			}
 
 			return await queryable.ToListAsync(cancellationToken);
-		}
-
-
-		private IQueryable<Investor> ApplySpecyfication(Specification<Investor> specification)
-		{
-			return SpecificationEvaluator.GetQuery(_dbContext.Set<Investor>(),specification);
 		}
 	}
 }

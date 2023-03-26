@@ -1,4 +1,5 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -41,6 +42,8 @@ namespace SODP.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMediatR(Application.AssemblyReference.Assembly);
+
             services.AddSwagger(Configuration);
 
             services.AddCors(options => options.AddPolicy(name: "SODPOriginsSpecification", builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
@@ -63,12 +66,18 @@ namespace SODP.UI
                     .AddClasses(classes => classes.AssignableTo(typeof(IAppService)))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime();
-
                 scan
                     .FromAssemblies(app)
                     .AddClasses(classes => classes.AssignableTo(typeof(IValidator)))
                     .AsImplementedInterfaces()
                     .WithTransientLifetime();
+                scan
+                    .FromAssemblies(
+                        SODP.Infrastructure.AssemblyReference.Assembly,
+                        SODP.DataAccess.AssemblyReference.Assembly)
+                    .AddClasses(false)
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime();
             });
 
             services.AddSingleton<LanguageTranslatorFactory>();
@@ -110,7 +119,8 @@ namespace SODP.UI
 
             services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
-			services.AddControllers();
+            services.AddControllers()
+                .AddApplicationPart(Application.AssemblyReference.Assembly);
 
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();

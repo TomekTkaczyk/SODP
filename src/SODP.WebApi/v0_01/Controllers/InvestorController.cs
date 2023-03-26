@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.Commands.Investors;
 using SODP.Application.Services;
+using SODP.Domain.Entities;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
 using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers
@@ -10,15 +14,16 @@ namespace SODP.WebApi.v0_01.Controllers
     // [Authorize]
     [ApiController]
     [Route("api/v0_01/investors")]
-    public class InvestorController : ControllerBase
-    {
-        private readonly IInvestorService _service;
-        private readonly ILogger<InvestorController> _logger;
+    public class InvestorController : ApiControllerBase
+	{
+		//private readonly ISender _sender;
+		private readonly IInvestorService _service;
 
-        public InvestorController(IInvestorService service, ILogger<InvestorController> logger)
+        public InvestorController(IInvestorService service, ILogger<InvestorController> logger) 
+            : base(logger)
         {
-            _service = (IInvestorService)service;
-            _logger = logger;
+			//_sender = sender;
+			_service = service;
         }
 
         [HttpGet]
@@ -44,9 +49,15 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateAsync([FromBody] InvestorDTO entity)
+        public async Task<IActionResult> CreateAsync(CancellationToken cancellationToken, [FromBody] InvestorDTO investor)
         {
-            return Ok(await _service.CreateAsync(entity));
+            //var command = new CreateInvestorCommand(investor.Name);
+
+            //var result = await _sender.Send(command, cancellationToken);
+
+            //return Ok(result.Data);
+
+            return Ok(await _service.CreateAsync(investor));
         }
 
 

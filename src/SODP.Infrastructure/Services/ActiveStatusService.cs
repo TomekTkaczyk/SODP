@@ -38,7 +38,7 @@ namespace SODP.Infrastructure.Services
 					return serviceResponse;
 				}
 
-				((IActiveStatus)entity).ActiveStatus = status;
+				((IActiveStatus)entity).SetActiveStatus(status);
 				dbset.Update(entity);
 				await _context.SaveChangesAsync();
 			}

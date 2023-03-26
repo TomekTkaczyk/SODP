@@ -165,7 +165,7 @@ namespace SODP.Infrastructure.Services
         public override async Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
         {
             _query = _context.Stages
-                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => !active.HasValue || x.ActiveStatus.Equals(active))
                 .Where(x => string.IsNullOrWhiteSpace(searchString) || x.Sign.Contains(searchString) || x.Name.Contains(searchString))
                 .OrderBy(x => x.Order)
                 .ThenBy(x => x.Sign);

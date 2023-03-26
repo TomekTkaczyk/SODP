@@ -2,13 +2,14 @@
 using SODP.Shared.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace SODP.Domain.Entities;
 
 public class Project : BaseEntity
 {
-    public Project() { }
+    private Project() { }
 
     public Project(string number, string stageSign, string name)
     {
@@ -28,7 +29,7 @@ public class Project : BaseEntity
         if (string.IsNullOrEmpty(Stage.Sign))
         {
             sign = foldername.GetLastUntilOrEmpty("_");
-            Stage.Sign = sign;
+            Stage = new Stage(sign, "");
             var nameLength = Name.Length - Stage.Sign.Length - 1;
             Name = Name[0..nameLength];
         }
@@ -48,7 +49,7 @@ public class Project : BaseEntity
     public string Description { get; set; }     
     public DateTime? DevelopmentDate { get; set; }
     public ProjectStatus Status { get; set; }
-    public IReadOnlyCollection<ProjectPart> Parts { get; private set; }
+    public IReadOnlyCollection<ProjectPart> Parts { get; private set; } = new List<ProjectPart>();
 
     public virtual string Symbol 
     {
@@ -83,12 +84,12 @@ public class Project : BaseEntity
     private void RequiredPropertiesInit(string number, string stageSign, string name)
     {
         Number = number;
-        Stage = new Stage(stageSign);
+        Stage = new Stage(stageSign, "");
         Name = name;
     }
 
     public void AddPart(Part part)
     {
-
+        Parts.Append(new ProjectPart(this, part));
     }
 }

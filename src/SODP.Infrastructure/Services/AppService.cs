@@ -8,7 +8,7 @@ using SODP.Shared.Response;
 
 namespace SODP.Infrastructure.Services
 {
-	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity, new() where TDto : BaseDTO
+	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity where TDto : BaseDTO
     {
         protected IQueryable<TEntity> _query;
         protected int _totalCount;
@@ -33,10 +33,14 @@ namespace SODP.Infrastructure.Services
 
             try
             {
-                var entity = new TEntity() { Id = id };
-                _context.Entry(entity).State = EntityState.Deleted;
-
-                if (await _context.SaveChangesAsync() == 0)
+                var entity = await _context.Set<TEntity>()
+                    .FirstOrDefaultAsync(x => x.Id == id);
+                if(entity != null)
+                {
+                    _context.Entry(entity).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
+                }
+                else 
                 {
                     serviceResponse.SetError($"Error: Entity Id:{id} not found.", 404);
                 }

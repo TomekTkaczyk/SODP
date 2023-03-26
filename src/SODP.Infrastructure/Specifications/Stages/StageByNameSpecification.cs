@@ -6,7 +6,7 @@ namespace SODP.Infrastructure.Specifications.Stages
 	{
 		internal StageByNameSpecification(bool? active, string name)
 			: base(stage =>
-			(!stage.ActiveStatus.HasValue || stage.ActiveStatus.Value.Equals(active)) &&
+			(!active.HasValue || stage.ActiveStatus.Equals(active)) &&
 			(string.IsNullOrWhiteSpace(name) || stage.Name.Contains(name) || stage.Sign.Contains(name)))
 		{
 			AddOrderBy(x => x.Order);

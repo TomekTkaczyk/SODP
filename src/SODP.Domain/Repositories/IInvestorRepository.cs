@@ -7,10 +7,11 @@ namespace SODP.Domain.Repositories
 {
 	public interface IInvestorRepository : IActiveStatusRepository
 	{
-		Task<Investor> Create(Investor investor, CancellationToken cancellationToken);
-		Task Remove(Investor investor, CancellationToken cancellationToken);
-		Task Update(Investor investor, CancellationToken cancellationToken);
-		Task<Investor> GetById(int id, CancellationToken cancellationToken);
+		Investor Add(Investor investor);
+		void Remove(Investor investor);
+		void Update(Investor investor);
+		Task<Investor> GetByIdAsync(int id, CancellationToken cancellationToken);
+		Task<Investor> GetByNameAsync(string name, CancellationToken cancellationToken);
 		Task<ICollection<Investor>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize, CancellationToken cancellationToken);
 	}
 }

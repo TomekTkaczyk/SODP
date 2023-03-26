@@ -406,13 +406,8 @@ namespace SODP.Application.Services
 
 				if (project.Parts.SingleOrDefault(x => x.Sign == part.Sign) == null)
 				{
-					_context.ProjectParts.Add(
-						new ProjectPart()
-						{
-							Project = project,
-							Sign = part.Sign,
-							Name = part.Name,
-						});
+                    _context.ProjectParts.Add(
+                        new ProjectPart(project, new Part(part.Sign, part.Name)));
 				}
                 else
                 {
@@ -463,9 +458,14 @@ namespace SODP.Application.Services
 			var response = new ServiceResponse();
             try
             {
-                var part = new ProjectPart { Id = partId };
-                _context.Entry(part).State = EntityState.Deleted;
-                if (await _context.SaveChangesAsync() == 0)
+                var part = await _context.Set<ProjectPart>()
+                    .FirstOrDefaultAsync(x => x.Id == partId);
+                if(part != null)
+                {
+                    _context.Entry(part).State = EntityState.Deleted;
+                    await _context.SaveChangesAsync();
+                }
+                else
                 {
                     response.SetError($"Error: Part {partId} not found.", 404);
                 };

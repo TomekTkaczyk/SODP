@@ -67,7 +67,7 @@ namespace SODP.Infrastructure.Services
         public override async Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
         {
 			_query = _context.Investors
-				.Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+				.Where(x => !active.HasValue || x.ActiveStatus.Equals(active))
 				.Where(x => string.IsNullOrWhiteSpace(searchString) || x.Name.Contains(searchString))
 				.OrderBy(x => x.Name)
 				.ThenBy(x => x.Id);

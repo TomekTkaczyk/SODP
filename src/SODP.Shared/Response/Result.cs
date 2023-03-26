@@ -9,7 +9,6 @@ namespace SODP.Shared.Response
 		public int StatusCode { get; set; } = StatusCodes.Status204NoContent;
 		public IDictionary<string, string> ValidationErrors { get; set; } = new Dictionary<string, string>();
 
-
 		public void SetError(string message)
 		{
 			SetError(message, StatusCodes.Status500InternalServerError);
@@ -20,20 +19,16 @@ namespace SODP.Shared.Response
 			Message += message;
 			StatusCode = statusCode;
 		}
-
-		public static Result Success()
-		{
-			return new Result();
-		}
 	}
 
 	public class Result<TResponse> : Result
 	{
-		public TResponse Data { get; set; }
-		public void SetData(TResponse data)
-		{
+        public TResponse Data { get; private set; }
+
+        public Result(TResponse data)
+        {
 			Data = data;
 			StatusCode = StatusCodes.Status200OK;
-		}
+        }
 	}
 }

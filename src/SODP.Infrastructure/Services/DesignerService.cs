@@ -151,7 +151,7 @@ namespace SODP.Infrastructure.Services
         public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
         {
             _query = _context.Designers                    
-                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => x.ActiveStatus.Equals(active))
                 .Where(x => string.IsNullOrWhiteSpace(searchString) || x.Firstname.Contains(searchString) || x.Lastname.Contains(searchString))
                 .OrderBy(x => x.Lastname)
                 .ThenBy(x => x.Firstname)

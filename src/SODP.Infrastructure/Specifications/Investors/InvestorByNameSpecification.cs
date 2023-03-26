@@ -2,11 +2,11 @@
 
 namespace SODP.Infrastructure.Specifications.Investors
 {
-    internal class InvestorByNameSpecyfication : Specification<Investor>
+    internal class InvestorByNameSpecification : Specification<Investor>
     {
-        internal InvestorByNameSpecyfication(bool? active, string name)
+        internal InvestorByNameSpecification(bool? active, string name)
             : base(investor =>
-            (!investor.ActiveStatus.HasValue || investor.ActiveStatus.Value.Equals(active)) &&
+            investor.ActiveStatus.Equals(active) &&
             (string.IsNullOrWhiteSpace(name) || investor.Name.Contains(name)))
         {
             AddOrderBy(x => x.Name);

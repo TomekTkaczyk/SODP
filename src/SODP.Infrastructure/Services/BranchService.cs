@@ -131,7 +131,7 @@ namespace SODP.Infrastructure.Services
         public override async Task<ServicePageResponse<BranchDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
         {
             _query = _context.Branches
-                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => x.ActiveStatus.Equals(active))
                 .Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString))
                 .OrderBy(x => x.Order)
                 .ThenBy(x => x.Id);

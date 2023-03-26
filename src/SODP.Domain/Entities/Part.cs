@@ -2,7 +2,7 @@
 
 namespace SODP.Domain.Entities;
 
-public class Part : BaseEntity, IActiveStatus, IOrdered
+public class Part : ActivatedEntity, IOrdered
 {
 	public Part() : this("", "") { }
 
@@ -16,7 +16,6 @@ public class Part : BaseEntity, IActiveStatus, IOrdered
 
     public string Sign { get; set; }
     public string Name { get; set; }
-    public bool? ActiveStatus { get; set; }
     public int Order { get; set; }
 
     public void Normalize()

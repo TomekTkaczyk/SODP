@@ -103,7 +103,7 @@ namespace SODP.Infrastructure
                     var stage = _context.Stages.SingleOrDefault(x => x.Sign == currentProject.Stage.Sign);
                     if (stage == null)
                     {
-                        stage = new Stage(currentProject.Stage.Sign);
+                        stage = new Stage(currentProject.Stage.Sign, "");
                     }
                     currentProject.Stage = stage;
 

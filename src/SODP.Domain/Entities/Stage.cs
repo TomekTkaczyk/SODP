@@ -2,12 +2,8 @@
 
 namespace SODP.Domain.Entities;
 
-public class Stage : BaseEntity, IActiveStatus, IOrdered
+public class Stage : ActivatedEntity, IOrdered
 {
-	public Stage() : this("", "") { }
-
-	public Stage(string sign) : this(sign, "") { }
-
 	public Stage(string sign, string name)
     {
         Sign = sign;
@@ -17,7 +13,6 @@ public class Stage : BaseEntity, IActiveStatus, IOrdered
     public int Order { get; set; }
     public string Sign { get; set; }
     public string Name { get; set; }
-	public bool? ActiveStatus { get; set; }
 
     public void Normalize()
     {

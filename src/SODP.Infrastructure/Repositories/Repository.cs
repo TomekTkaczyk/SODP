@@ -13,7 +13,8 @@ namespace SODP.Infrastructure.Repositories
 			_dbContext = dbContext;
 		}
 
-        protected IQueryable<TEntity> ApplySpecyfication(Specification<TEntity> specification)
+
+		public IQueryable<TEntity> ApplySpecyfication(Specification<TEntity> specification)
 		{
 			return SpecificationEvaluator.GetQuery(_dbContext.Set<TEntity>(), specification);
 		}

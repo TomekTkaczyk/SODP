@@ -22,8 +22,15 @@ public class AppDictionary : BaseEntity, IActiveStatus, IEquatable<AppDictionary
 
     public virtual ICollection<AppDictionary> Children { get; set; }
 
-    public bool Equals(AppDictionary other)
+	bool IActiveStatus.ActiveStatus => throw new NotImplementedException();
+
+	public bool Equals(AppDictionary other)
     {
         return this.Sign.Equals(other.Sign) && this.ParentId.Equals(other.ParentId);
     }
+
+	public void SetActiveStatus(bool activeStatus)
+	{
+		ActiveStatus = activeStatus;
+	}
 }
