@@ -7,18 +7,16 @@ using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Investors.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
-using SODP.UI.Pages.Stages.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Investors
 {
-    public class IndexModel : ListPageModel<InvestorDTO>
+	public class IndexModel : ListPageModel<InvestorDTO>
     {
 		const string _editInvestorModalViewName = "ModalView/_EditInvestorModalView";
 

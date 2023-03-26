@@ -1,7 +1,5 @@
-﻿using MediatR;
-using SODP.Application.Abstractions;
+﻿using SODP.Application.Abstractions;
 using SODP.Domain.Entities;
-using SODP.Shared.Response;
 
 namespace SODP.Application.Commands.Investors
 {

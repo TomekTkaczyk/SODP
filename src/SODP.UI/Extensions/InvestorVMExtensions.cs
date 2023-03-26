@@ -14,7 +14,7 @@ namespace SODP.UI.Extensions
                                   JsonSerializer.Serialize(new InvestorDTO
                                   {
                                       Id = investor.Id,
-                                      Name = investor.Name
+									  Name = investor.Name
                                   }),
                                   Encoding.UTF8,
                                   "application/json"

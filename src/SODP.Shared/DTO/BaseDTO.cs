@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SODP.Shared.DTO
+﻿namespace SODP.Shared.DTO
 {
-    public abstract class BaseDTO
+	public abstract class BaseDTO
     {
         public int Id { get; set; }
     }

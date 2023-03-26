@@ -46,17 +46,18 @@ namespace SODP.Infrastructure.Repositories
 		public async Task<Investor> GetByIdAsync(int id, CancellationToken cancellationToken)
 		{
 			var specyfication = new InvestorByIdSpecification(id);
-			var entity = await ApplySpecyfication(specyfication).SingleOrDefaultAsync(cancellationToken);
 
-			return entity ?? throw new InvestorNotFoundException();
+			//return await ApplySpecyfication(specyfication).SingleOrDefaultAsync(cancellationToken);
+
+			return await _dbContext.Set<Investor>().SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
 		}
 
 		public async Task<Investor> GetByNameAsync(string name, CancellationToken cancellationToken)
 		{
-			var specyfication = new InvestorByNameSpecification(null, name);
-			var entity = await ApplySpecyfication(specyfication).FirstOrDefaultAsync(cancellationToken);
+			//var specyfication = new InvestorByNameSpecification(null, name);
+			//var entity = await ApplySpecyfication(specyfication).FirstOrDefaultAsync(cancellationToken);
 
-			return entity ?? throw new InvestorNotFoundException();
+			return await _dbContext.Set<Investor>().FirstOrDefaultAsync(x => x.Name.Equals(name), cancellationToken);
 		}
 
 		public async Task<ICollection<Investor>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize, CancellationToken cancellationToken = default)

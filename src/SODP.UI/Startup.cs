@@ -124,6 +124,9 @@ namespace SODP.UI
 
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
+
+            // remove if use .net core 5 or higher
+            services.AddMvc(options => options.SuppressAsyncSuffixInActionNames = false);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,15 +17,17 @@ namespace SODP.WebApi.v0_01.Controllers
     [Route("api/v0_01/investors")]
     public class InvestorController : ApiControllerBase
 	{
-		//private readonly ISender _sender;
-		private readonly IInvestorService _service;
+        private readonly ISender _sender;
+        private readonly IInvestorService _service;
+		private readonly IMapper _mapper;
 
-        public InvestorController(IInvestorService service, ILogger<InvestorController> logger) 
+		public InvestorController(ISender sender, IInvestorService service, ILogger<InvestorController> logger, IMapper mapper) 
             : base(logger)
         {
-			//_sender = sender;
-			_service = service;
-        }
+            _sender = sender;
+            _service = service;
+			_mapper = mapper;
+		}
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -46,19 +49,17 @@ namespace SODP.WebApi.v0_01.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result<InvestorDTO>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateAsync(CancellationToken cancellationToken, [FromBody] InvestorDTO investor)
+        public async Task<IActionResult> CreateAsync(CancellationToken cancellationToken, [FromBody] CreateInvestorCommand command)
         {
-            //var command = new CreateInvestorCommand(investor.Name);
+            // var command = new CreateInvestorCommand(investor.Name);
 
-            //var result = await _sender.Send(command, cancellationToken);
+            var result = await _sender.Send(command, cancellationToken);
 
-            //return Ok(result.Data);
-
-            return Ok(await _service.CreateAsync(investor));
-        }
+            return CreatedAtAction(nameof(GetAsync), new { result.Data.Id }, _mapper.Map<Investor,InvestorDTO>(result.Data));
+		}
 
 
         [HttpPut("{id}")]
@@ -71,8 +72,9 @@ namespace SODP.WebApi.v0_01.Controllers
             {
                 return BadRequest();
             }
+            await _service.UpdateAsync(entity);
 
-            return Ok(await _service.UpdateAsync(entity));
+			return NoContent();
         }
 
 
