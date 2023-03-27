@@ -60,7 +60,7 @@ namespace SODP.Infrastructure.Services
                 }
 
                 stage.Normalize();
-                stage.ActiveStatus = true;
+                stage.SetActiveStatus(true);
                 var entity = _context.Stages.Add(stage);
                 await _context.SaveChangesAsync();
 
@@ -162,7 +162,7 @@ namespace SODP.Infrastructure.Services
             return ( await _context.Stages.SingleOrDefaultAsync(x => x.Sign == sign) != null);
         }
 
-        public override async Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<StageDTO>> GetPageAsync(bool? active, string searchString, int pageNumber = 1, int pageSize = 0)
         {
             _query = _context.Stages
                 .Where(x => !active.HasValue || x.ActiveStatus.Equals(active))
@@ -170,7 +170,7 @@ namespace SODP.Infrastructure.Services
                 .OrderBy(x => x.Order)
                 .ThenBy(x => x.Sign);
 
-            return await GetPageAsync(currentPage, pageSize);
+            return await GetPageAsync(pageNumber, pageSize);
         }
     }
 }

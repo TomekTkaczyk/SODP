@@ -33,9 +33,9 @@ namespace SODP.Infrastructure.Services
             return await GetPageAsync(false, 1, 0);
         }
 
-        public async Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int pageNumber = 1, int pageSize = 0)
         {
-            return await GetPageAsync(active, currentPage, pageSize, "");
+            return await GetPageAsync(active, pageNumber, pageSize, "");
         }
 
         public async Task<ServiceResponse<UserDTO>> GetAsync(int id)
@@ -198,12 +198,12 @@ namespace SODP.Infrastructure.Services
 			throw new NotImplementedException();
 		}
 
-        public Task<ServicePageResponse<UserDTO>> GetPageAsync(int currentPage, int pageSize)
+        public Task<ServicePageResponse<UserDTO>> GetPageAsync(int pageNumber, int pageSize)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int currentPage, int pageSize, string searchString)
+        public async Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int pageNumber, int pageSize, string searchString)
         {
             var serviceResponse = new ServicePageResponse<UserDTO>();
 
@@ -218,10 +218,10 @@ namespace SODP.Infrastructure.Services
                     pageSize = serviceResponse.Data.TotalCount;
                 }
 
-                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageNumber = pageNumber;
                 serviceResponse.Data.PageSize = pageSize;
 
-                serviceResponse.Data.Collection = _mapper.Map<IList<UserDTO>>(await users.ToListAsync());
+                serviceResponse.Data.Collection = _mapper.Map<IReadOnlyCollection<UserDTO>>(await users.ToListAsync());
                 serviceResponse.StatusCode = 200;
             }
             catch (Exception ex)

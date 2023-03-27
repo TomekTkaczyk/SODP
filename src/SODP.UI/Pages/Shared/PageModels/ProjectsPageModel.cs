@@ -21,9 +21,9 @@ namespace SODP.UI.Pages.Shared.PageModels
             _endpoint = "projects";
         }
 
-        protected async Task<IActionResult> OnGetAsync(ProjectStatus status, int currentPage = 1, int pageSize = 0, string searchString = "")
+        protected async Task<IActionResult> OnGetAsync(ProjectStatus status, int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-            var endpoint = GetUrl(currentPage, pageSize, searchString);
+            var endpoint = GetUrl(pageNumber, pageSize, searchString);
             endpoint += $"&status={status}";
             var apiResponse = await GetApiResponseAsync(endpoint);
 

@@ -83,7 +83,7 @@ namespace SODP.Application.Services
         }
 
 
-        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status, string searchString, int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<ProjectDTO>> GetPageAsync(ProjectStatus status, string searchString, int pageNumber = 1, int pageSize = 0)
         {
             _query = _context.Projects
                 .Include(x => x.Stage)
@@ -92,7 +92,7 @@ namespace SODP.Application.Services
                 .OrderBy(x => x.Number)
                 .ThenBy(x => x.Stage.Sign);
 
-            return await GetPageAsync(currentPage, pageSize);
+            return await GetPageAsync(pageNumber, pageSize);
         }
 
 
@@ -166,7 +166,7 @@ namespace SODP.Application.Services
                 oldProject.Investor = project.Investor;
                 oldProject.BuildingPermit = project.BuildingPermit;
                 oldProject.Description = project.Description;
-                oldProject.ModifyTimeStamp = DateTime.UtcNow;
+                oldProject.SetModifyTimeStamp(DateTime.UtcNow);
                 oldProject.DevelopmentDate = project.DevelopmentDate;
                 _context.Projects.Update(oldProject);
                 await _context.SaveChangesAsync();
@@ -204,7 +204,7 @@ namespace SODP.Application.Services
                 }
                 
                 project.Status = ProjectStatus.Archival;
-                project.ModifyTimeStamp = DateTime.UtcNow;
+                project.SetModifyTimeStamp(DateTime.UtcNow);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)

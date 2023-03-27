@@ -36,7 +36,7 @@ namespace SODP.Infrastructure.Services
                 }
 
                 part.Normalize();
-                part.ActiveStatus = true;
+                part.SetActiveStatus(true);
                 part.Order = await GetMaxOrderAsync() + 1;
                 
                 var entity = await _context.Parts.AddAsync(part);
@@ -107,14 +107,14 @@ namespace SODP.Infrastructure.Services
         }
 
 
-        public override async Task<ServicePageResponse<PartDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<PartDTO>> GetPageAsync(bool? active, string searchString, int pageNumber = 1, int pageSize = 0)
         {
             _query = _context.Parts
                 .Where(x => x.ActiveStatus.Equals(active))
                 .Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString))
                 .OrderBy(x => x.Sign);
 
-            return await GetPageAsync(currentPage, pageSize);
+            return await GetPageAsync(pageNumber, pageSize);
         }
 
 

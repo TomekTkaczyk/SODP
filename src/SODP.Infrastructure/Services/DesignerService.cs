@@ -43,7 +43,7 @@ namespace SODP.Infrastructure.Services
                 }
 
                 designer.Normalize();
-                designer.ActiveStatus = true;
+                designer.SetActiveStatus(true);
                 var entity = _context.Designers.Add(designer);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<DesignerDTO>(entity.Entity));
@@ -110,7 +110,7 @@ namespace SODP.Infrastructure.Services
                     .Where(z => z.DesignerId == id)
                     .ToListAsync();
 
-                serviceResponse.SetData(_mapper.Map<IList<LicenseWithBranchesDTO>>(licenses));
+                serviceResponse.SetData(_mapper.Map<IReadOnlyCollection<LicenseWithBranchesDTO>>(licenses));
             }
             catch (Exception ex)
             {
@@ -148,7 +148,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, string searchString, int pageNumber = 1, int pageSize = 0)
         {
             _query = _context.Designers                    
                 .Where(x => x.ActiveStatus.Equals(active))
@@ -157,7 +157,7 @@ namespace SODP.Infrastructure.Services
                 .ThenBy(x => x.Firstname)
                 .ThenBy(x => x.Id);
 
-            return await GetPageAsync(currentPage,pageSize);
+            return await GetPageAsync(pageNumber,pageSize);
         }
     }
 }

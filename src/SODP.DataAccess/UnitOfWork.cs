@@ -19,7 +19,7 @@ namespace SODP.DataAccess
 			_dbContext = dbContext;
 		}
 
-		public Task SaveChangesAsync(CancellationToken cancellationToken = default)
+		public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 		{
 			UpdateAuditableEntities();
 

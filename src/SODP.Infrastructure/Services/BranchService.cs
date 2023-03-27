@@ -37,7 +37,7 @@ namespace SODP.Infrastructure.Services
                 }
 
                 branch.Normalize();
-                branch.ActiveStatus = true;
+                branch.SetActiveStatus(true);
                 var entity = await _context.Branches.AddAsync(branch);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<BranchDTO>(entity.Entity));
@@ -118,7 +118,7 @@ namespace SODP.Infrastructure.Services
                     .Where(k => k.BranchId == id)
                     .ToListAsync();
 
-                serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(branch.Select(x => x.License)));
+                serviceResponse.SetData(_mapper.Map<IReadOnlyCollection<LicenseDTO>>(branch.Select(x => x.License)));
             }
             catch (Exception ex)
             {
@@ -128,7 +128,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public override async Task<ServicePageResponse<BranchDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<BranchDTO>> GetPageAsync(bool? active, string searchString, int pageNumber = 1, int pageSize = 0)
         {
             _query = _context.Branches
                 .Where(x => x.ActiveStatus.Equals(active))
@@ -136,7 +136,7 @@ namespace SODP.Infrastructure.Services
                 .OrderBy(x => x.Order)
                 .ThenBy(x => x.Id);
 
-            return await GetPageAsync(currentPage, pageSize);
+            return await GetPageAsync(pageNumber, pageSize);
         }
 
 

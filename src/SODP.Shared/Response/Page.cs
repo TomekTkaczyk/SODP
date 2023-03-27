@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace SODP.Shared.Response
+namespace SODP.Shared.Response;
+
+public sealed class Page<T>
 {
-    public class Page<T>
-    {
-        public ICollection<T> Collection { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
-        public int TotalCount { get; set; }
-    }
+	public IReadOnlyCollection<T> Collection { get; set; }
+	
+	public int PageNumber { get; set; }
+
+	public int PageSize { get; set; }
+
+	public int TotalCount { get; set; }
 }

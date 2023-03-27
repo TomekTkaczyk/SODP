@@ -43,14 +43,14 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(int pageNumber = 1, int pageSize = 0)
         {
             _query = _context.Licenses
                 .Include(x => x.Designer)
                 .Include(x => x.Branches)
                 .ThenInclude(x => x.Branch);
 
-            return await base.GetPageAsync(currentPage, pageSize);
+            return await base.GetPageAsync(pageNumber, pageSize);
         }
 
         public override async Task<ServiceResponse> DeleteAsync(int id)
@@ -229,7 +229,7 @@ namespace SODP.Infrastructure.Services
                     .Include(x => x.Designer)
                     .Where(x => x.Branches.SingleOrDefault(y => y.BranchId == branchId) != null)
                     .ToListAsync();
-                serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(licenses));
+                serviceResponse.SetData(_mapper.Map<IReadOnlyCollection<LicenseDTO>>(licenses));
             }
             catch (Exception ex)
             {
@@ -239,17 +239,17 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, string searchString, int pageNumber = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<LicenseDTO>();
 
             var pageCollection = _query
-                .Skip((currentPage - 1) * pageSize)
+                .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize);
 
-            serviceResponse.SetData(_mapper.Map<IList<LicenseDTO>>(await pageCollection.ToListAsync()));
+            serviceResponse.SetData(_mapper.Map<IReadOnlyCollection<LicenseDTO>>(await pageCollection.ToListAsync()));
 
-            return await GetPageAsync(currentPage, pageSize);
+            return await GetPageAsync(pageNumber, pageSize);
         }
 
     }

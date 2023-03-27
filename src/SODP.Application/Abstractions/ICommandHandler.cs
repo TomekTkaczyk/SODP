@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SODP.Shared.Response;
+using SODP.Domain.Shared;
 
 namespace SODP.Application.Abstractions
 {

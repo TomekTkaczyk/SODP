@@ -33,9 +33,9 @@ namespace SODP.UI.Pages.ActiveProjects
         }
 
 
-        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-            return await OnGetAsync(ProjectStatus.Active, currentPage, pageSize, searchString);
+            return await OnGetAsync(ProjectStatus.Active, pageNumber, pageSize, searchString);
         }
 
 

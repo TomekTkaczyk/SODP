@@ -8406,21 +8406,21 @@ function pageOrientation(pageOrientationString, currentPageOrientation) {
 	}
 }
 
-var getPageSize = function (currentPage, newPageOrientation) {
+var getPageSize = function (pageNumber, newPageOrientation) {
 
-	newPageOrientation = pageOrientation(newPageOrientation, currentPage.pageSize.orientation);
+	newPageOrientation = pageOrientation(newPageOrientation, pageNumber.pageSize.orientation);
 
-	if (newPageOrientation !== currentPage.pageSize.orientation) {
+	if (newPageOrientation !== pageNumber.pageSize.orientation) {
 		return {
 			orientation: newPageOrientation,
-			width: currentPage.pageSize.height,
-			height: currentPage.pageSize.width
+			width: pageNumber.pageSize.height,
+			height: pageNumber.pageSize.width
 		};
 	} else {
 		return {
-			orientation: currentPage.pageSize.orientation,
-			width: currentPage.pageSize.width,
-			height: currentPage.pageSize.height
+			orientation: pageNumber.pageSize.orientation,
+			width: pageNumber.pageSize.width,
+			height: pageNumber.pageSize.height
 		};
 	}
 
@@ -13373,10 +13373,10 @@ function pageSize2widthAndHeight(pageSize) {
 	return pageSize;
 }
 
-function updatePageOrientationInOptions(currentPage, pdfKitDoc) {
+function updatePageOrientationInOptions(pageNumber, pdfKitDoc) {
 	var previousPageOrientation = pdfKitDoc.options.size[0] > pdfKitDoc.options.size[1] ? 'landscape' : 'portrait';
 
-	if (currentPage.pageSize.orientation !== previousPageOrientation) {
+	if (pageNumber.pageSize.orientation !== previousPageOrientation) {
 		var width = pdfKitDoc.options.size[0];
 		var height = pdfKitDoc.options.size[1];
 		pdfKitDoc.options.size = [height, width];

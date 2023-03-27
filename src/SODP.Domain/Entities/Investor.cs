@@ -1,16 +1,19 @@
-﻿using SODP.Shared.Response;
+﻿namespace SODP.Domain.Entities;
 
-namespace SODP.Domain.Entities;
-
-public class Investor : ActivatedEntity
+public sealed class Investor : ActivatedEntity
 {
     private Investor(string name)
     {
         Name = name;
     }
 
-    public string Name { get; set; }
+    public string Name { get; private set; }
 
+	public void SetName(string name)
+	{
+		Name = name;
+	}
+	
     public static Investor Create(string name)
     {
         return new Investor(name);

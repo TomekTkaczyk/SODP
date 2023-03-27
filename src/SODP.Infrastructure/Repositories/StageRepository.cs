@@ -47,12 +47,12 @@ namespace SODP.Infrastructure.Repositories
 				?? throw new StageNotFoundException();
 		}
 
-		public async Task<ICollection<Stage>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize, CancellationToken cancellationToken)
+		public async Task<ICollection<Stage>> GetPageAsync(bool? active, string searchString, int pageNumber, int pageSize, CancellationToken cancellationToken)
 		{
 			var queryable = ApplySpecyfication(new StageByNameSpecification(active, searchString));
 			if (pageSize > 0)
 			{
-				queryable = GetPageQuery(queryable, currentPage, pageSize);
+				queryable = GetPageQuery(queryable, pageNumber, pageSize);
 			}
 
 			return await queryable.ToListAsync(cancellationToken);

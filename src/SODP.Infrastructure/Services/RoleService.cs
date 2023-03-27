@@ -24,14 +24,14 @@ namespace SODP.Infrastructure.Services
             return await GetPageAsync(active, 1, 0);
         }
 
-        public async Task<ServicePageResponse<RoleDTO>> GetPageAsync(bool? active, int currentPage = 1, int pageSize = 0)
+        public async Task<ServicePageResponse<RoleDTO>> GetPageAsync(bool? active, int pageNumber = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<RoleDTO>();
 
             try
             {
                 var response = await _roleManager.Roles.OrderBy(x => x.Name).ToListAsync();
-                serviceResponse.Data.Collection = _mapper.Map<IList<RoleDTO>>(response);
+                serviceResponse.Data.Collection = _mapper.Map<IReadOnlyCollection<RoleDTO>>(response);
                 serviceResponse.StatusCode = 200;
                 serviceResponse.Data.PageNumber = 1;
                 serviceResponse.Data.PageSize = serviceResponse.Data.Collection.Count;
@@ -69,7 +69,7 @@ namespace SODP.Infrastructure.Services
 			throw new NotImplementedException();
 		}
 
-        public Task<ServicePageResponse<RoleDTO>> GetPageAsync(int currentPage, int pageSize)
+        public Task<ServicePageResponse<RoleDTO>> GetPageAsync(int pageNumber, int pageSize)
         {
             throw new NotImplementedException();
         }

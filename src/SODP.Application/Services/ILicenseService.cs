@@ -6,7 +6,7 @@ namespace SODP.Application.Services
 {
     public interface ILicenseService : IGetEntityService<LicenseDTO>, IActiveStatusService
     {
-        Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize);
+        Task<ServicePageResponse<LicenseDTO>> GetPageAsync(bool? active, string searchString, int pageNumber, int pageSize);
 
         Task<ServiceResponse<LicenseDTO>> GetBranchesAsync(int id);
 

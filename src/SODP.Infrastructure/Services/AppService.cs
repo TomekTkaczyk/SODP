@@ -79,20 +79,20 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(int currentPage = 1, int pageSize = 0)
+        public virtual async Task<ServicePageResponse<TDto>> GetPageAsync(int pageNumber = 1, int pageSize = 0)
         {
-            return await GetPageAsync(_query, currentPage, pageSize);
+            return await GetPageAsync(_query, pageNumber, pageSize);
         }
 
-        private async Task<ServicePageResponse<TDto>> GetPageAsync(IQueryable<TEntity> query, int currentPage = 1, int pageSize = 0)
+        private async Task<ServicePageResponse<TDto>> GetPageAsync(IQueryable<TEntity> query, int pageNumber = 1, int pageSize = 0)
         {
             var serviceResponse = new ServicePageResponse<TDto>();
             try
             {
                 serviceResponse.Data.TotalCount = await query.CountAsync();
-                serviceResponse.Data.PageNumber = currentPage;
+                serviceResponse.Data.PageNumber = pageNumber;
                 serviceResponse.Data.PageSize = pageSize;
-                serviceResponse.SetData(_mapper.Map<IList<TDto>>(await PageQuery(query, currentPage, pageSize).ToListAsync()));
+                serviceResponse.SetData(_mapper.Map<IReadOnlyCollection<TDto>>(await PageQuery(query, pageNumber, pageSize).ToListAsync()));
             }
             catch (Exception ex)
             {
@@ -102,11 +102,11 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        private static IQueryable<TEntity> PageQuery(IQueryable<TEntity> query, int currentPage, int pageSize)
+        private static IQueryable<TEntity> PageQuery(IQueryable<TEntity> query, int pageNumber, int pageSize)
         {
-            if (currentPage < 1)
+            if (pageNumber < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(currentPage), "Error: Required currentPage > 0");
+                throw new ArgumentOutOfRangeException(nameof(pageNumber), "Error: Required pageNumber > 0");
             }
 
             if (query is IOrderedQueryable<TEntity>) 
@@ -120,7 +120,7 @@ namespace SODP.Infrastructure.Services
 
 			if (pageSize > 0)
             {
-                query = query.Skip((currentPage - 1) * pageSize).Take(pageSize);
+                query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
             }
 
             return query.AsNoTracking();

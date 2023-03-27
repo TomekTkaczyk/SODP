@@ -24,9 +24,9 @@ namespace SODP.UI.Pages.ArchiveProjects
         }
 		public ProjectVM Project { get; set; }
 
-		public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
+		public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-            return await base.OnGetAsync(ProjectStatus.Archival, currentPage, pageSize, searchString);
+            return await base.OnGetAsync(ProjectStatus.Archival, pageNumber, pageSize, searchString);
         }
 
 		public async Task<PartialViewResult> OnGetProjectPartialAsync(int id)

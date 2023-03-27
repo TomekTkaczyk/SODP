@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.ValueObjects;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Investors
 {
-	public class IndexModel : ListPageModel<InvestorDTO>
+	public class IndexModel : ListPageModel<InvestorValueObject>
     {
 		const string _editInvestorModalViewName = "ModalView/_EditInvestorModalView";
 
@@ -30,9 +31,9 @@ namespace SODP.UI.Pages.Investors
 		public InvestorsVM Investors { get; set; }
 
 
-		public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
+		public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-            var endpoint = GetUrl(currentPage, pageSize, searchString);
+            var endpoint = GetUrl(pageNumber, pageSize, searchString);
             var apiResponse = await GetApiResponseAsync(endpoint);
             
 			PageInfo = GetPageInfo(apiResponse, searchString);
@@ -94,14 +95,14 @@ namespace SODP.UI.Pages.Investors
 		{
 			var result = new InvestorsVM
 			{
-				Investors = new List<InvestorDTO>()
+				Investors = new List<InvestorValueObject>()
 			};
 
-			var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?currentPage={PageInfo.CurrentPage}&pageSize={PageInfo.ItemsPerPage}");
+			var apiResponse = await _apiProvider.GetAsync($"{_endpoint}?pageNumber={PageInfo.CurrentPage}&pageSize={PageInfo.ItemsPerPage}");
 
 			if (apiResponse.IsSuccessStatusCode)
 			{
-				var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<InvestorDTO>>();
+				var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<InvestorValueObject>>();
 				result.Investors = response.Data.Collection.ToList();
 			}
 

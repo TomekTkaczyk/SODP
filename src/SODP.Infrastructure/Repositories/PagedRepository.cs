@@ -8,16 +8,16 @@ namespace SODP.Infrastructure.Repositories
 	{
 		public PagedRepository(SODPDBContext dbContext)	: base(dbContext) { }
 
-        public async Task<List<TEntity>> GetPageAsync(IQueryable<TEntity> collection, int currentPage, int pageSize, CancellationToken cancellationToken) 
+        public async Task<List<TEntity>> GetPageAsync(IQueryable<TEntity> collection, int pageNumber, int pageSize, CancellationToken cancellationToken) 
 		{
-			return await collection.Skip((currentPage - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
+			return await collection.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
 		}
 
-		protected IQueryable<TEntity> GetPageQuery(IQueryable<TEntity> query, int currentPage, int pageSize)
+		protected IQueryable<TEntity> GetPageQuery(IQueryable<TEntity> query, int pageNumber, int pageSize)
 		{
-			if (currentPage < 1)
+			if (pageNumber < 1)
 			{
-				throw new ArgumentOutOfRangeException(nameof(currentPage), "Error: Required currentPage > 0");
+				throw new ArgumentOutOfRangeException(nameof(pageNumber), "Error: Required pageNumber > 0");
 			}
 
 			if (query is IOrderedQueryable<TEntity>)
@@ -31,7 +31,7 @@ namespace SODP.Infrastructure.Repositories
 
 			if (pageSize > 0)
 			{
-				query = query.Skip((currentPage - 1) * pageSize).Take(pageSize);
+				query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 			}
 
 			return query.AsNoTracking();

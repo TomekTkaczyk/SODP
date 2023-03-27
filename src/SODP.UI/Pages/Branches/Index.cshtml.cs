@@ -34,9 +34,9 @@ namespace SODP.UI.Pages.Branches
 
         public DesignersVM Designers { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int currentPage = 1, int pageSize = 0, string searchString = "")
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-            var endpoint = GetUrl(currentPage, pageSize, searchString);
+            var endpoint = GetUrl(pageNumber, pageSize, searchString);
 			var apiResponse = await GetApiResponseAsync(endpoint);
 			
             PageInfo = GetPageInfo(apiResponse, searchString);

@@ -19,8 +19,8 @@ namespace Tests
             {
                 Sign = "PARTS",
                 Name = "CZĘŚCI PROJEKTU",
-                ActiveStatus = false
             };
+            dictionary.SetActiveStatus(true);
 
             var entity = _context.AppDictionary.Add(dictionary);
             _context.SaveChanges();
@@ -38,8 +38,9 @@ namespace Tests
             {
                 Sign = "PARTS",
                 Name = "CZĘŚCI PROJEKTU",
-                ActiveStatus = true
             };
+
+            dictionary.SetActiveStatus(true);
 
             var entity = _context.AppDictionary.Add(dictionary);
             _context.SaveChanges();

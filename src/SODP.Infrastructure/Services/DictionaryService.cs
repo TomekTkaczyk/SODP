@@ -62,7 +62,7 @@ namespace SODP.Infrastructure.Services
             return serviceResponse;
         }
 
-        //public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(int? parent = null, bool? active = null, int currentPage = 1, int pageSize = 0, string searchString = "")
+        //public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(int? parent = null, bool? active = null, int pageNumber = 1, int pageSize = 0, string searchString = "")
         //{
         //    ActiveFilter(active);
         //    _query = _query.Where(x => x.ParentId == parent);
@@ -71,15 +71,15 @@ namespace SODP.Infrastructure.Services
         //        _query = _query.Where(x => x.Name.ToUpper().Contains(searchString.ToUpper()));
         //    }
 
-        //    return await GetResponse(currentPage, pageSize);
+        //    return await GetResponse(pageNumber, pageSize);
         //}
 
-        //public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(string parent, bool? active, int currentPage, int pageSize, string searchString)
+        //public async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(string parent, bool? active, int pageNumber, int pageSize, string searchString)
         //{
         //    ActiveFilter(active);
         //    _query = _query.Where(x => x.Parent.Sign == parent);
 
-        //    return await GetResponse(currentPage,pageSize);
+        //    return await GetResponse(pageNumber,pageSize);
         //}
 
         //public override DictionaryService WithSearchString(string searchString)
@@ -237,15 +237,15 @@ namespace SODP.Infrastructure.Services
         //    return serviceResponse;
         //}
 
-        public override async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<DictionaryDTO>> GetPageAsync(bool? active, string searchString, int pageNumber = 1, int pageSize = 0)
         {
             _query = _context.AppDictionary
-                .Where(x => !active.HasValue || x.ActiveStatus.Value.Equals(active))
+                .Where(x => !active.HasValue || x.ActiveStatus.Equals(active))
                 .Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString))
                 .OrderBy(x => x.Parent)
                 .ThenBy(x => x.Id);
 
-            return await GetPageAsync(currentPage, pageSize);
+            return await GetPageAsync(pageNumber, pageSize);
         }
 
     }

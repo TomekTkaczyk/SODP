@@ -19,7 +19,7 @@ namespace SODP.Infrastructure.Services
 			try
 			{
 				var investor = _mapper.Map<Investor>(newInvestor);
-				investor.ActiveStatus = true;
+				investor.SetActiveStatus(true);
 				var entity = await _context.Investors.AddAsync(investor);
 				await _context.SaveChangesAsync();
 				serviceResponse.SetData(_mapper.Map<InvestorDTO>(entity.Entity));
@@ -53,7 +53,7 @@ namespace SODP.Infrastructure.Services
 					serviceResponse.ValidationErrors.Add("Sign", "Inwestor nie odnaleziony.");
 					return serviceResponse;
 				}
-				investor.Name = updateInvestor.Name;
+				investor.SetName(updateInvestor.Name);
 				_context.Investors.Update(investor);
 				await _context.SaveChangesAsync();
 			}
@@ -64,7 +64,7 @@ namespace SODP.Infrastructure.Services
 			return serviceResponse;
 		}
 
-        public override async Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, string searchString, int currentPage = 1, int pageSize = 0)
+        public override async Task<ServicePageResponse<InvestorDTO>> GetPageAsync(bool? active, string searchString, int pageNumber = 1, int pageSize = 0)
         {
 			_query = _context.Investors
 				.Where(x => !active.HasValue || x.ActiveStatus.Equals(active))
@@ -72,7 +72,7 @@ namespace SODP.Infrastructure.Services
 				.OrderBy(x => x.Name)
 				.ThenBy(x => x.Id);
 
-			return await GetPageAsync(currentPage, pageSize);
+			return await GetPageAsync(pageNumber, pageSize);
         }
     }
 }

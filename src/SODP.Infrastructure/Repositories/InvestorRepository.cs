@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
-using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
+using SODP.Domain.ValueObjects;
 using SODP.Infrastructure.Specifications.Investors;
 
 namespace SODP.Infrastructure.Repositories
@@ -29,20 +29,6 @@ namespace SODP.Infrastructure.Repositories
 			_dbContext.Entry(investor).State = EntityState.Modified;
 		}
 
-
-		public void SetActiveStatus(int id, bool status)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void SetActiveStatus(Investor investor, bool status)
-		{
-			var entry = _dbContext.Entry(investor);
-			entry.Entity.ActiveStatus = status;
-			_dbContext.Entry(investor).State = EntityState.Modified;
-		}
-
-
 		public async Task<Investor> GetByIdAsync(int id, CancellationToken cancellationToken)
 		{
 			var specyfication = new InvestorByIdSpecification(id);
@@ -60,16 +46,24 @@ namespace SODP.Infrastructure.Repositories
 			return await _dbContext.Set<Investor>().FirstOrDefaultAsync(x => x.Name.Equals(name), cancellationToken);
 		}
 
-		public async Task<ICollection<Investor>> GetPageAsync(bool? active, string searchString, int currentPage, int pageSize, CancellationToken cancellationToken = default)
+		public async Task<Page<Investor>> GetPageAsync(bool? active, string searchString, int pageNumber, int pageSize, CancellationToken cancellationToken = default)
 		{
 			var specification = new InvestorByNameSpecification(active, searchString);
 			var queryable = ApplySpecyfication(specification);
+			var totalItems = await queryable.CountAsync(cancellationToken);
+
 			if (pageSize > 0)
 			{
-				queryable = queryable.Skip((currentPage - 1) * pageSize).Take(pageSize);
+				queryable = queryable.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 			}
 
-			return await queryable.ToListAsync(cancellationToken);
+			var collection = await queryable.ToListAsync(cancellationToken);
+
+			return new Page<Investor>(
+				collection,
+				pageNumber,
+				pageSize,
+				totalItems);
 		}
 	}
 }

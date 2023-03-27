@@ -36,11 +36,11 @@ namespace SODP.DataAccess
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreateTimeStamp = _dateTime.Now;
+                        entry.Entity.SetCreateTimeStamp(_dateTime.Now);
                         break;
 
                     case EntityState.Modified:
-                        entry.Entity.ModifyTimeStamp = _dateTime.Now;
+                        entry.Entity.SetModifyTimeStamp(_dateTime.Now);
                         break;
                 }
             }

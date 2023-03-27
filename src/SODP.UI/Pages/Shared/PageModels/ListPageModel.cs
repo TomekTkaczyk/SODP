@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.Shared.PageModels
 {
 
-    public abstract class ListPageModel<T> : ListPageModel where T : BaseDTO
+    public abstract class ListPageModel<T> : ListPageModel //where T : BaseDTO
     {
         protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory) { }
 
@@ -25,11 +25,11 @@ namespace SODP.UI.Pages.Shared.PageModels
             SearchString = searchString;
         }
 
-        protected string GetUrl(int currentPage, int pageSize, string searchString)
+        protected string GetUrl(int pageNumber, int pageSize, string searchString)
         {
             var url = new StringBuilder();
             url.Append(_endpoint);
-            url.Append($"?currentPage={currentPage}");
+            url.Append($"?pageNumber={pageNumber}");
             pageSize = pageSize < 1 ? PageSizeSelectList.PageSizeList[0] : pageSize;
             url.Append($"&pageSize={pageSize}");
             if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrWhiteSpace(searchString))
@@ -55,7 +55,7 @@ namespace SODP.UI.Pages.Shared.PageModels
                 TotalItems = response.Data.TotalCount,
                 CurrentPage = response.Data.PageNumber,
                 ItemsPerPage = response.Data.PageSize,
-                Url = $"{ReturnUrl}?currentPage=:&pageSize={response.Data.PageSize}"
+                Url = $"{ReturnUrl}?pageNumber=:&pageSize={response.Data.PageSize}"
             };
             if (!string.IsNullOrEmpty(searchString))
             {
