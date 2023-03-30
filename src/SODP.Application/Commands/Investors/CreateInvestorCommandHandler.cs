@@ -1,8 +1,7 @@
 ﻿using SODP.Application.Abstractions;
 using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
-using SODP.Domain.Shared;
-using SODP.Domain.ValueObjects;
+using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,16 +18,16 @@ public sealed class CreateInvestorCommandHandler : ICommandHandler<CreateInvesto
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task<Result<Investor>> Handle(CreateInvestorCommand request, CancellationToken cancellationToken)
+	public async Task<ApiResponse<Investor>> Handle(CreateInvestorCommand request, CancellationToken cancellationToken)
 	{
 		var investor = await _investorRepository.GetByNameAsync(request.Name, cancellationToken);
 		if (investor != null)
 		{
-			return Result.Failure<Investor>(new Error("InvestorCreator",$"Investor already exist."));
+			return ApiResponse.Failure<Investor>(new Error("InvestorCreator","Investor already exist."));
 		}
 		investor = _investorRepository.Add(Investor.Create(request.Name));
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		return Result.Success(investor);
+		return ApiResponse.Success(investor);
 	}
 }

@@ -4,15 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Commands.Investors;
+using SODP.Application.Queries.Investors;
 using SODP.Application.Services;
 using SODP.Domain.Entities;
-using SODP.Shared.DTO;
 using SODP.Domain.Shared;
-using System.Threading.Tasks;
-using SODP.Application.Queries.Investors;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using SODP.Application.ValueObjects;
-using SODP.Domain.ValueObjects;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -23,12 +20,14 @@ public class InvestorController : ApiControllerBase
 {
 	private readonly ISender _sender;
 	private readonly IMapper _mapper;
+	private readonly IInvestorService _service;
 
-	public InvestorController(ISender sender, ILogger<InvestorController> logger, IMapper mapper)
+	public InvestorController(IInvestorService service, ISender sender, ILogger<InvestorController> logger, IMapper mapper)
 			: base(logger)
 	{
 		_sender = sender;
 		_mapper = mapper;
+		_service = service;
 	}
 
 	[HttpGet]
@@ -41,19 +40,22 @@ public class InvestorController : ApiControllerBase
 		int pageSize = 0, 
 		CancellationToken cancellationToken = default)
 	{
-		if(pageSize == 0 && pageNumber != 1)
-		{
-			var error = Result.Failure(new Error("Investor.BadRequest", "pageNumber and/or pageSize is invalid."));
-			return BadRequest(error.Error);
-		}
+		var result = await _service.GetPageAsync(active, searchString, pageNumber, pageSize);
 
-		var query = new GetInvestorsPageQuery(active, searchString, pageNumber, pageSize);
+		return Ok(result);
+		//if(pageSize == 0 && pageNumber != 1)
+		//{
+		//	var error = Result.Failure(new Error("Investor.BadRequest", "pageNumber and/or pageSize is invalid."));
+		//	return BadRequest(error.Error);
+		//}
 
-		var response = await _sender.Send(query, cancellationToken);
+		//var query = new GetInvestorsPageQuery(active, searchString, pageNumber, pageSize);
 
-		return response.IsSuccess 
-			? Ok(response.Value) 
-			: NotFound(response.Error);
+		//var response = await _sender.Send(query, cancellationToken);
+
+		//return response.IsSuccess 
+		//	? Ok(response) 
+		//	: NotFound(response.Errors);
 	}
 
 
@@ -65,13 +67,15 @@ public class InvestorController : ApiControllerBase
 		int id, 
 		CancellationToken cancellationToken = default)
 	{
-		var query = new GetInvestorByIdQuery(id);
+		return Ok(await _service.GetAsync(id));
 
-		var response = await _sender.Send(query, cancellationToken);
+		//var query = new GetInvestorByIdQuery(id);
 
-		return response.IsSuccess 
-			? Ok(response.Value) 
-			: NotFound(response.Error);
+		//var response = await _sender.Send(query, cancellationToken);
+
+		//return response.IsSuccess 
+		//	? Ok(response) 
+		//	: NotFound(response.Errors);
 	}
 
 
@@ -88,7 +92,7 @@ public class InvestorController : ApiControllerBase
 		return CreatedAtAction(
 			nameof(GetAsync), 
 			new { result.Value.Id }, 
-			_mapper.Map<Investor, InvestorValueObject>(result.Value));
+			_mapper.Map<Investor, InvestorDTO>(result.Value));
 	}
 
 
@@ -98,18 +102,25 @@ public class InvestorController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> UpdateAsync(
 		int id, 
-		[FromBody] ChangeInvestorNameCommand command, 
+		[FromBody] InvestorDTO entity, 
 		CancellationToken cancellationToken = default)
 	{
-		if (id != command.Id)
+		if (id != entity.Id)
 		{
 			return BadRequest();
 		}
-		var result = await _sender.Send(command, cancellationToken);
 
-		return result.IsSuccess 
-			? NoContent() 
-			: NotFound();
+		return Ok(await _service.UpdateAsync(entity));
+
+		//if (id != command.Id)
+		//{
+		//	return BadRequest();
+		//}
+		//var result = await _sender.Send(command, cancellationToken);
+
+		//return result.IsSuccess 
+		//	? NoContent() 
+		//	: NotFound();
 	}
 
 
@@ -127,7 +138,7 @@ public class InvestorController : ApiControllerBase
 
 		return result.IsSuccess 
 			? NoContent() 
-			: NotFound(result.Error);
+			: NotFound(result.Errors);
 	}
 
 

@@ -7,7 +7,7 @@ namespace SODP.Shared.Response
     {
         public ServicePageResponse()
         {
-            Data = new Page<T>();
+            Data = Page<T>.Create(0,0,0,new List<T>());
         }
 
         public void SetData(IReadOnlyCollection<T> data)

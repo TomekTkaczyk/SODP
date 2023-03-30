@@ -1,9 +1,9 @@
-﻿using System;
-using SODP.Domain.ValueObjects;
+﻿using SODP.Shared.Response;
+using System;
 
 namespace SODP.Domain.Shared
 {
-    public class Result
+	public class Result
 	{
 		public bool IsSuccess { get; }
 		

@@ -304,13 +304,13 @@ $.extend( Scroller.prototype, {
 	},
 
 	/**
-	 * Get information about current displayed record range. This corresponds to
+	 * Get information about current displayed class range. This corresponds to
 	 * the information usually displayed in the "Info" block of the table.
 	 *
 	 * @returns {object} info as an object:
 	 *  {
-	 *      start: {int}, // the 0-indexed record at the top of the viewport
-	 *      end:   {int}, // the 0-indexed record at the bottom of the viewport
+	 *      start: {int}, // the 0-indexed class at the top of the viewport
+	 *      end:   {int}, // the 0-indexed class at the bottom of the viewport
 	 *  }
 	*/
 	pageInfo: function()
@@ -840,19 +840,19 @@ $.extend( Scroller.prototype, {
 		if ( dt.fnRecordsDisplay() === 0 &&
 			   dt.fnRecordsDisplay() == dt.fnRecordsTotal() )
 		{
-			/* Empty record set */
+			/* Empty class set */
 			sOut = language.sInfoEmpty+ language.sInfoPostFix;
 		}
 		else if ( dt.fnRecordsDisplay() === 0 )
 		{
-			/* Empty record set after filtering */
+			/* Empty class set after filtering */
 			sOut = language.sInfoEmpty +' '+
 				language.sInfoFiltered.replace('_MAX_', sMax)+
 					language.sInfoPostFix;
 		}
 		else if ( dt.fnRecordsDisplay() == dt.fnRecordsTotal() )
 		{
-			/* Normal record set */
+			/* Normal class set */
 			sOut = language.sInfo.
 					replace('_START_', sStart).
 					replace('_END_',   sEnd).

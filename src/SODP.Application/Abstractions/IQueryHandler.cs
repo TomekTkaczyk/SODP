@@ -1,10 +1,10 @@
 ﻿using MediatR;
-using SODP.Domain.Shared;
+using SODP.Shared.Response;
 
 namespace SODP.Application.Abstractions;
 
 public interface IQueryHandler<TQuery,TResponse> 
-	: IRequestHandler<TQuery,Result<TResponse>> 
+	: IRequestHandler<TQuery,ApiResponse<TResponse>> 
 	where TQuery : IQuery<TResponse>
 {
 }

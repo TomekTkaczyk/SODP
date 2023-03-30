@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using SODP.Application.ValueObjects;
 using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using System.Linq;
 
 namespace SODP.Domain
 {
-    public class AutoMapperProfile : Profile
+	public class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()
         {
@@ -34,8 +33,6 @@ namespace SODP.Domain
 
             CreateMap<Investor, InvestorDTO>()
                 .ReverseMap();
-
-			CreateMap<Investor, InvestorValueObject>();
 
 			#region Part
 

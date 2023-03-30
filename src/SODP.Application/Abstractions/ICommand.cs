@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using SODP.Domain.Shared;
+using SODP.Shared.Response;
 
-namespace SODP.Application.Abstractions
-{
-	public interface ICommand : IRequest<Result> { }
+namespace SODP.Application.Abstractions;
 
-	public interface ICommand<TResponse> : IRequest<Result<TResponse>> { }
-}
+public interface ICommand : IRequest<ApiResponse> { }
+
+public interface ICommand<TResponse> : IRequest<ApiResponse<TResponse>> { }

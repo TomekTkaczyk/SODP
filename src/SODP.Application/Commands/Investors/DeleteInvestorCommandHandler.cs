@@ -1,7 +1,6 @@
 ﻿using SODP.Application.Abstractions;
 using SODP.Domain.Repositories;
-using SODP.Domain.Shared;
-using SODP.Domain.ValueObjects;
+using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +16,7 @@ public sealed class DeleteInvestorCommandHandler : ICommandHandler<DeleteInvesto
 		_unitOfWork = unitOfWork;
 		_investorRepository = investorRepository;
 	}
-    public async Task<Result> Handle(DeleteInvestorCommand request, CancellationToken cancellationToken)
+    public async Task<ApiResponse> Handle(DeleteInvestorCommand request, CancellationToken cancellationToken)
 	{
 		var investor = await _investorRepository.GetByIdAsync(request.Id, cancellationToken);
 		if (investor is not null)
@@ -26,11 +25,11 @@ public sealed class DeleteInvestorCommandHandler : ICommandHandler<DeleteInvesto
 			var result = await _unitOfWork.SaveChangesAsync(cancellationToken);
 			if(result > 0)
 			{
-				return Result.Success();
+				return ApiResponse.Success();
 			}
-			return Result.Failure(new Error("Investor.Delete", "Unknow delete error."));
+			return ApiResponse.Failure(new Error("Investor.Delete", "Unknow delete error."));
 		}
 
-		return Result.Failure(new Error("Investor.Delete", "Investor not found."));
+		return ApiResponse.Failure(new Error("Investor.Delete", "Investor not found."));
 	}
 }

@@ -22,7 +22,12 @@ namespace SODP.WebApi.v0_01.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetPageAsync(bool? active, string searchString = "", int pageNumber = 1, int pageSize = 0)
+        public async Task<IActionResult> GetPageAsync(
+            bool? active, 
+            string searchString = "", 
+            int pageNumber = 1, 
+            int pageSize = 0, 
+            CancellationToken cancellationToken = default)
         {
             var result = await _service.GetPageAsync(active, searchString, pageNumber, pageSize);
 
@@ -54,7 +59,10 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public virtual async Task<IActionResult> UpdateAsync(int id, [FromBody] StageDTO entity)
+        public virtual async Task<IActionResult> UpdateAsync(
+            int id, 
+            [FromBody] StageDTO entity,
+			CancellationToken cancellationToken = default)
         {
             if (id != entity.Id)
             {

@@ -1,8 +1,6 @@
 ﻿using MediatR;
-using SODP.Domain.Shared;
+using SODP.Shared.Response;
 
 namespace SODP.Application.Abstractions;
 
-public interface IQuery<TResponse> : IRequest<Result<TResponse>>
-{
-}
+public interface IQuery<TResponse> : IRequest<ApiResponse<TResponse>> { }

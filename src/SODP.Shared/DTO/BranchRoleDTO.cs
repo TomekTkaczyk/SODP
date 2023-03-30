@@ -1,11 +1,10 @@
-﻿namespace SODP.Shared.DTO
+﻿namespace SODP.Shared.DTO;
+
+public class BranchRoleDTO : BaseDTO
 {
-    public class BranchRoleDTO : BaseDTO
-    {
-        //public int PartBranchId { get; set; }
+	//public int PartBranchId { get; set; }
 
-        public string Role { get; set; }
+	public string Role { get; set; }
 
-        public virtual LicenseDTO License { get; set; }
-    }
+	public virtual LicenseDTO License { get; set; }
 }

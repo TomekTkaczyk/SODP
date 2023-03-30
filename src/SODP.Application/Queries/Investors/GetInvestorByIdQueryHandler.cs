@@ -1,15 +1,13 @@
 ﻿using SODP.Application.Abstractions;
-using SODP.Application.ValueObjects;
 using SODP.Domain.Repositories;
-using SODP.Domain.Shared;
-using SODP.Domain.ValueObjects;
-using System;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Queries.Investors;
 
-public sealed class GetInvestorByIdQueryHandler : IQueryHandler<GetInvestorByIdQuery, InvestorValueObject>
+public sealed class GetInvestorByIdQueryHandler : IQueryHandler<GetInvestorByIdQuery, InvestorDTO>
 {
 	private readonly IInvestorRepository _investorRepository;
 
@@ -18,7 +16,7 @@ public sealed class GetInvestorByIdQueryHandler : IQueryHandler<GetInvestorByIdQ
 		_investorRepository = investorRepository;
 	}
 
-    public async Task<Result<InvestorValueObject>> Handle(
+    public async Task<ApiResponse<InvestorDTO>> Handle(
 		GetInvestorByIdQuery request, 
 		CancellationToken cancellationToken)
 	{
@@ -26,13 +24,13 @@ public sealed class GetInvestorByIdQueryHandler : IQueryHandler<GetInvestorByIdQ
 
 		if (investor is null)
 		{
-			return Result.Failure<InvestorValueObject>(new Error(
+			return ApiResponse.Failure<InvestorDTO>(new Error(
 				"Investor.NotFound",
 				$"The investor with Id:{request.Id} was not found."));
 		}
 
-		var response = new InvestorValueObject(investor.Id, investor.Name, investor.ActiveStatus);
+		var response = new InvestorDTO { Id = investor.Id, Name = investor.Name, ActiveStatus = investor.ActiveStatus };
 
-		return Result.Success(response);
+		return ApiResponse.Success(response);
 	}
 }

@@ -1,5 +1,4 @@
-
-using AutoMapper;
+ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,25 +21,26 @@ namespace SODP.UI.Pages.Stages
     {
         const string _editStageModalViewName = "ModalView/_EditStageModalView";
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
+        public IndexModel(
+            IWebAPIProvider apiProvider, 
+            ILogger<IndexModel> logger, 
+            IMapper mapper, 
+            LanguageTranslatorFactory translatorFactory) 
+            : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/Stages";
             _endpoint = "stages";
         }
 
-        public StagesVM Stages { get; set; }
+        public StagesVM Stages { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-            var endpoint = GetUrl(pageNumber, pageSize, searchString);
+            var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
             var apiResponse = await GetApiResponseAsync(endpoint);
-            
-            PageInfo = GetPageInfo(apiResponse, searchString);
-			Stages = new StagesVM
-			{
-				Stages = apiResponse.Data.Collection.ToList(),
-                PageInfo = PageInfo
-			};
+
+            Stages.Stages = apiResponse.Data.Collection.ToList();
+			Stages.PageInfo = GetPageInfo(apiResponse, searchString);
 
 			return Page();
 		}
@@ -48,12 +48,13 @@ namespace SODP.UI.Pages.Stages
         public async Task<PartialViewResult> OnGetEditStageAsync(int? id)
         {
             var model = new StageVM();
-            if (id == null)
+            if (!id.HasValue)
             {
                 return GetPartialView(model, _editStageModalViewName);
             }
 
-            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}");
+            var endpoint = $"{_endpoint}/{id}";
+			var apiResponse = await _apiProvider.GetAsync(endpoint);
             if (!apiResponse.IsSuccessStatusCode)
             {
 				RedirectToPage($"Errors/{(int)apiResponse.StatusCode}");

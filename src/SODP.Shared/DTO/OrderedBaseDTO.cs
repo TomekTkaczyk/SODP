@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SODP.Shared.DTO
+namespace SODP.Shared.DTO;
+
+public abstract class OrderedBaseDTO : BaseDTO
 {
-    public abstract class OrderedBaseDTO : BaseDTO
-    {
-        public int Order { get; set; }
-    }
+	public int Order { get; set; }
 }

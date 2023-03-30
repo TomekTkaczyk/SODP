@@ -8,7 +8,7 @@ using SODP.Shared.Response;
 
 namespace SODP.Infrastructure.Services
 {
-	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity where TDto : BaseDTO
+	public abstract class AppService<TEntity,TDto> where TEntity : BaseEntity // where TDto : BaseDTO
     {
         protected IQueryable<TEntity> _query;
         protected int _totalCount;

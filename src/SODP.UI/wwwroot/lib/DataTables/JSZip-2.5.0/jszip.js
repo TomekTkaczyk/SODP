@@ -2412,11 +2412,11 @@ ZipEntries.prototype = {
 
         /* extract from the zip spec :
             4)  If one of the fields in the end of central directory
-                record is too small to hold required data, the field
+                class is too small to hold required data, the field
                 should be set to -1 (0xFFFF or 0xFFFFFFFF) and the
-                ZIP64 format record should be created.
-            5)  The end of central directory record and the
-                Zip64 end of central directory locator record must
+                ZIP64 format class should be created.
+            5)  The end of central directory class and the
+                Zip64 end of central directory locator class must
                 reside on the same disk when splitting or spanning
                 an archive.
          */
@@ -2441,7 +2441,7 @@ ZipEntries.prototype = {
             this.checkSignature(sig.ZIP64_CENTRAL_DIRECTORY_LOCATOR);
             this.readBlockZip64EndOfCentralLocator();
 
-            // now the zip64 EOCD record
+            // now the zip64 EOCD class
             this.reader.setIndex(this.relativeOffsetEndOfZip64CentralDir);
             this.checkSignature(sig.ZIP64_CENTRAL_DIRECTORY_END);
             this.readBlockZip64EndOfCentral();

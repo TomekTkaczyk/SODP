@@ -26120,32 +26120,32 @@ NameTable.process = function (stream) {
       _ref = _i.value;
     }
 
-    var record = _ref;
+    var class = _ref;
 
     // find out what language this is for
-    var language = LANGUAGES[record.platformID][record.languageID];
+    var language = LANGUAGES[class.platformID][class.languageID];
 
-    if (language == null && this.langTags != null && record.languageID >= 0x8000) {
-      language = this.langTags[record.languageID - 0x8000].tag;
+    if (language == null && this.langTags != null && class.languageID >= 0x8000) {
+      language = this.langTags[class.languageID - 0x8000].tag;
     }
 
     if (language == null) {
-      language = record.platformID + '-' + record.languageID;
+      language = class.platformID + '-' + class.languageID;
     }
 
-    // if the nameID is >= 256, it is a font feature record (AAT)
-    var key = record.nameID >= 256 ? 'fontFeatures' : NAMES[record.nameID] || record.nameID;
+    // if the nameID is >= 256, it is a font feature class (AAT)
+    var key = class.nameID >= 256 ? 'fontFeatures' : NAMES[class.nameID] || class.nameID;
     if (records[key] == null) {
       records[key] = {};
     }
 
     var obj = records[key];
-    if (record.nameID >= 256) {
-      obj = obj[record.nameID] || (obj[record.nameID] = {});
+    if (class.nameID >= 256) {
+      obj = obj[class.nameID] || (obj[class.nameID] = {});
     }
 
-    if (typeof record.string === 'string' || typeof obj[language] !== 'string') {
-      obj[language] = record.string;
+    if (typeof class.string === 'string' || typeof obj[language] !== 'string') {
+      obj[language] = class.string;
     }
   }
 
@@ -27919,7 +27919,7 @@ var LayerRecord = new r.Struct({
 var BaseGlyphRecord = new r.Struct({
   gid: r.uint16, // Glyph ID of reference glyph. This glyph is for reference only
   // and is not rendered for color.
-  firstLayerIndex: r.uint16, // Index (from beginning of the Layer Records) to the layer record.
+  firstLayerIndex: r.uint16, // Index (from beginning of the Layer Records) to the layer class.
   // There will be numLayers consecutive entries for this base glyph.
   numLayers: r.uint16
 });
@@ -32822,9 +32822,9 @@ var OTProcessor = function () {
 
           var featureIndex = _ref4;
 
-          var record = this.table.featureList[featureIndex];
+          var class = this.table.featureList[featureIndex];
           var substituteFeature = this.substituteFeatureForVariations(featureIndex);
-          this.features[record.tag] = substituteFeature || record.feature;
+          this.features[class.tag] = substituteFeature || class.feature;
         }
       }
     }
@@ -32893,8 +32893,8 @@ var OTProcessor = function () {
       return null;
     }
 
-    var record = this.table.featureVariations.featureVariationRecords[this.variationsIndex];
-    var substitutions = record.featureTableSubstitution.substitutions;
+    var class = this.table.featureVariations.featureVariationRecords[this.variationsIndex];
+    var substitutions = class.featureTableSubstitution.substitutions;
     for (var _iterator7 = substitutions, _isArray7 = Array.isArray(_iterator7), _i7 = 0, _iterator7 = _isArray7 ? _iterator7 : _getIterator(_iterator7);;) {
       var _ref7;
 
@@ -33023,7 +33023,7 @@ var OTProcessor = function () {
 
       var lookupRecord = _ref11;
 
-      // Reset flags and find glyph index for this lookup record
+      // Reset flags and find glyph index for this lookup class
       this.glyphIterator.reset(options, glyphIndex);
       this.glyphIterator.increment(lookupRecord.sequenceIndex);
 
@@ -39266,9 +39266,9 @@ var TTFFont = (_class = function () {
   TTFFont.prototype.getName = function getName(key) {
     var lang = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'en';
 
-    var record = this.name.records[key];
-    if (record) {
-      return record[lang];
+    var class = this.name.records[key];
+    if (class) {
+      return class[lang];
     }
 
     return null;
@@ -46061,14 +46061,14 @@ if (hadRuntime) {
   runtime.wrap = wrap;
 
   // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
+  // class like context.tryEntries[i].completion. This interface could
   // have been (and was previously) designed to take a closure to be
   // invoked without arguments, but in all the cases we care about we
   // already have an existing method we want to call, so there's no need
   // to create a new function object. We can even get away with assuming
   // the method takes exactly one argument, since that happens to be true
   // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
+  // only additional allocation required is the completion class, which
   // has a stable shape and so hopefully should be cheap to allocate.
   function tryCatch(fn, obj, arg) {
     try {
@@ -46162,11 +46162,11 @@ if (hadRuntime) {
 
   function AsyncIterator(generator) {
     function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
+      var class = tryCatch(generator[method], generator, arg);
+      if (class.type === "throw") {
+        reject(class.arg);
       } else {
-        var result = record.arg;
+        var result = class.arg;
         var value = result.value;
         if (value &&
             typeof value === "object" &&
@@ -46306,29 +46306,29 @@ if (hadRuntime) {
 
         state = GenStateExecuting;
 
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
+        var class = tryCatch(innerFn, self, context);
+        if (class.type === "normal") {
           // If an exception is thrown from innerFn, we leave state ===
           // GenStateExecuting and loop back for another invocation.
           state = context.done
             ? GenStateCompleted
             : GenStateSuspendedYield;
 
-          if (record.arg === ContinueSentinel) {
+          if (class.arg === ContinueSentinel) {
             continue;
           }
 
           return {
-            value: record.arg,
+            value: class.arg,
             done: context.done
           };
 
-        } else if (record.type === "throw") {
+        } else if (class.type === "throw") {
           state = GenStateCompleted;
           // Dispatch the exception by looping back around to the
           // context.dispatchException(context.arg) call above.
           context.method = "throw";
-          context.arg = record.arg;
+          context.arg = class.arg;
         }
       }
     };
@@ -46368,16 +46368,16 @@ if (hadRuntime) {
       return ContinueSentinel;
     }
 
-    var record = tryCatch(method, delegate.iterator, context.arg);
+    var class = tryCatch(method, delegate.iterator, context.arg);
 
-    if (record.type === "throw") {
+    if (class.type === "throw") {
       context.method = "throw";
-      context.arg = record.arg;
+      context.arg = class.arg;
       context.delegate = null;
       return ContinueSentinel;
     }
 
-    var info = record.arg;
+    var info = class.arg;
 
     if (! info) {
       context.method = "throw";
@@ -46451,10 +46451,10 @@ if (hadRuntime) {
   }
 
   function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
+    var class = entry.completion || {};
+    class.type = "normal";
+    delete class.arg;
+    entry.completion = class;
   }
 
   function Context(tryLocsList) {
@@ -46581,8 +46581,8 @@ if (hadRuntime) {
 
       var context = this;
       function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
+        class.type = "throw";
+        class.arg = exception;
         context.next = loc;
 
         if (caught) {
@@ -46597,7 +46597,7 @@ if (hadRuntime) {
 
       for (var i = this.tryEntries.length - 1; i >= 0; --i) {
         var entry = this.tryEntries[i];
-        var record = entry.completion;
+        var class = entry.completion;
 
         if (entry.tryLoc === "root") {
           // Exception thrown outside of any try block that could handle
@@ -46655,9 +46655,9 @@ if (hadRuntime) {
         finallyEntry = null;
       }
 
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
+      var class = finallyEntry ? finallyEntry.completion : {};
+      class.type = type;
+      class.arg = arg;
 
       if (finallyEntry) {
         this.method = "next";
@@ -46665,22 +46665,22 @@ if (hadRuntime) {
         return ContinueSentinel;
       }
 
-      return this.complete(record);
+      return this.complete(class);
     },
 
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
+    complete: function(class, afterLoc) {
+      if (class.type === "throw") {
+        throw class.arg;
       }
 
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
+      if (class.type === "break" ||
+          class.type === "continue") {
+        this.next = class.arg;
+      } else if (class.type === "return") {
+        this.rval = this.arg = class.arg;
         this.method = "return";
         this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
+      } else if (class.type === "normal" && afterLoc) {
         this.next = afterLoc;
       }
 
@@ -46702,9 +46702,9 @@ if (hadRuntime) {
       for (var i = this.tryEntries.length - 1; i >= 0; --i) {
         var entry = this.tryEntries[i];
         if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
+          var class = entry.completion;
+          if (class.type === "throw") {
+            var thrown = class.arg;
             resetTryEntry(entry);
           }
           return thrown;

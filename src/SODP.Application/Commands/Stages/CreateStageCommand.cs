@@ -2,7 +2,7 @@
 
 //namespace SODP.Application.Commands.Stages
 //{
-//    public sealed record CreateStageCommand(
+//    public sealed class CreateStageCommand(
 //        string Sign,
 //        string Name) : ICommand;
 //}

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace SODP.Shared.DTO
+namespace SODP.Shared.DTO;
+
+public class DesignerWithLicensesDTO : DesignerDTO
 {
-    public class DesignerWithLicensesDTO : DesignerDTO
-    {
-        public IList<LicenseDTO> Licenses { get; set; }
-    }
+	public IList<LicenseDTO> Licenses { get; set; }
 }

@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace SODP.Shared.DTO;
 
-namespace SODP.Shared.DTO
-{
-    public class StageDTO  : BaseDTO
+public class StageDTO  : BaseDTO
     {
         //[Required]
         //[MinLength(2)]
@@ -18,4 +16,3 @@ namespace SODP.Shared.DTO
             return $"({Sign.Trim()}) {Name.Trim()}";
         }
     }
-}

@@ -1,5 +1,5 @@
 ﻿using SODP.Domain.Entities;
-using SODP.Domain.ValueObjects;
+using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,5 +12,10 @@ public interface IInvestorRepository
 	void Update(Investor investor);
 	Task<Investor> GetByIdAsync(int id, CancellationToken cancellationToken);
 	Task<Investor> GetByNameAsync(string name, CancellationToken cancellationToken);
-	Task<Page<Investor>> GetPageAsync(bool? active, string searchString, int pageNumber, int pageSize, CancellationToken cancellationToken);
+	Task<Page<Investor>> GetPageAsync(
+		bool? active, 
+		string searchString, 
+		int pageNumber,
+		int pageSize, 
+		CancellationToken cancellationToken);
 }

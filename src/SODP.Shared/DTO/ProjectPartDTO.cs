@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 
-namespace SODP.Shared.DTO
+namespace SODP.Shared.DTO;
+
+public class ProjectPartDTO : BaseDTO
 {
-    public class ProjectPartDTO  : BaseDTO
-    {
-		public string Sign { get; set; }
-		
-        public string Name { get; set; }
+	public string Sign { get; set; }
 
-        public int Order { get; set; }
+	public string Name { get; set; }
 
-		public ICollection<PartBranchDTO> Branches { get; set; }
+	public int Order { get; set; }
 
-    }
+	public ICollection<PartBranchDTO> Branches { get; set; }
+
 }

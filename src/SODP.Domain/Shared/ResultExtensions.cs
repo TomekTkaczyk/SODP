@@ -1,10 +1,10 @@
-﻿using System;
+﻿using SODP.Shared.Response;
+using System;
 using System.Threading.Tasks;
-using SODP.Domain.ValueObjects;
 
 namespace SODP.Domain.Shared
 {
-    public static class ResultExtensions
+	public static class ResultExtensions
 	{
 		public static Result<T> Ensure<T>(this Result<T> result, Func<T, bool> predicate, Error error)
 		{

@@ -42,7 +42,7 @@ namespace SODP.UI.Pages.Designers
 
         public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-			var endpoint = GetUrl(pageNumber, pageSize, searchString);
+			var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
 			var apiResponse = await GetApiResponseAsync(endpoint);
 			
             PageInfo = GetPageInfo(apiResponse, searchString);

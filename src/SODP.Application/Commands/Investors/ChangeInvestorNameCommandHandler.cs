@@ -1,7 +1,7 @@
 ﻿using SODP.Application.Abstractions;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
-using SODP.Domain.Shared;
+using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,7 +18,7 @@ namespace SODP.Application.Commands.Investors
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<Result> Handle(ChangeInvestorNameCommand request, CancellationToken cancellationToken)
+		public async Task<ApiResponse> Handle(ChangeInvestorNameCommand request, CancellationToken cancellationToken)
 		{
 			var investor = await _investorRepository.GetByNameAsync(request.Name, cancellationToken);
 			if(investor != null && investor.Id != request.Id)
@@ -36,7 +36,7 @@ namespace SODP.Application.Commands.Investors
 			_investorRepository.Update(investor);
 			await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-			return Result.Success();
+			return ApiResponse.Success();
 		}
 	}
 }

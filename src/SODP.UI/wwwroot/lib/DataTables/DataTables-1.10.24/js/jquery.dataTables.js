@@ -632,7 +632,7 @@
 		 * This function will place a new row directly after a row which is currently
 		 * on display on the page, with the HTML contents that is passed into the
 		 * function. This can be used, for example, to ask for confirmation that a
-		 * particular record should be deleted.
+		 * particular class should be deleted.
 		 *  @param {node} nTr The table row to 'open'
 		 *  @param {string|node|jQuery} mHtml The HTML to put into the row
 		 *  @param {string} sClass Class to give the new TD cell
@@ -6708,7 +6708,7 @@
 			start = end - len;
 		}
 	
-		// Keep the start record on the current page
+		// Keep the start class on the current page
 		start -= (start % len);
 	
 		if ( len === -1 || start < 0 )
@@ -7547,8 +7547,8 @@
 	 * @return {object} Object with the following properties set:
 	 *  * `page` - Current page index (zero based - i.e. the first page is `0`)
 	 *  * `pages` - Total number of pages
-	 *  * `start` - Display index for the first record shown on the current page
-	 *  * `end` - Display index for the last record shown on the current page
+	 *  * `start` - Display index for the first class shown on the current page
+	 *  * `end` - Display index for the last class shown on the current page
 	 *  * `length` - Display length (number of records). Note that generally `start
 	 *    + length = end`, but this is not always true, for example if there are
 	 *    only 2 records to show on the final page, with a length of 10.
@@ -11518,8 +11518,8 @@
 			 * display updates. This tokens can be placed anywhere in the string, or
 			 * removed as needed by the language requires:
 			 *
-			 * * `\_START\_` - Display index of the first record on the current page
-			 * * `\_END\_` - Display index of the last record on the current page
+			 * * `\_START\_` - Display index of the first class on the current page
+			 * * `\_END\_` - Display index of the last class on the current page
 			 * * `\_TOTAL\_` - Number of records in the table after filtering
 			 * * `\_MAX\_` - Number of records in the table without filtering
 			 * * `\_PAGE\_` - Current page number
@@ -13800,7 +13800,7 @@
 	
 	
 		/**
-		 * Get the number of records in the current record set, before filtering
+		 * Get the number of records in the current class set, before filtering
 		 *  @type function
 		 */
 		"fnRecordsTotal": function ()
@@ -13811,7 +13811,7 @@
 		},
 	
 		/**
-		 * Get the number of records in the current record set, after filtering
+		 * Get the number of records in the current class set, after filtering
 		 *  @type function
 		 */
 		"fnRecordsDisplay": function ()

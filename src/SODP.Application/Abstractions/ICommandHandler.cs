@@ -1,15 +1,14 @@
 ﻿using MediatR;
-using SODP.Domain.Shared;
+using SODP.Shared.Response;
 
-namespace SODP.Application.Abstractions
+namespace SODP.Application.Abstractions;
+
+public interface ICommandHandler<TCommand>
+	: IRequestHandler<TCommand, ApiResponse> where TCommand : ICommand
 {
-	public interface ICommandHandler<TCommand>
-		: IRequestHandler<TCommand, Result> where TCommand : ICommand
-	{
-	}
+}
 
-	public interface ICommandHandler<TCommand, TResponse>
-		: IRequestHandler<TCommand, Result<TResponse>> where TCommand : ICommand<TResponse>
-	{
-	}
+public interface ICommandHandler<TCommand, TResponse>
+	: IRequestHandler<TCommand, ApiResponse<TResponse>> where TCommand : ICommand<TResponse>
+{
 }

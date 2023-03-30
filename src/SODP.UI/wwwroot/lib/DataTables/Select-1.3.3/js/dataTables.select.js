@@ -243,18 +243,18 @@ function cellRange( dt, idx, last )
 			start = tmp;
 		}
 		
-		var record = false;
+		var class = false;
 		return dt.columns( ':visible' ).indexes().filter( function (i) {
 			if ( i === start ) {
-				record = true;
+				class = true;
 			}
 			
 			if ( i === end ) { // not else if, as start might === end
-				record = false;
+				class = false;
 				return true;
 			}
 
-			return record;
+			return class;
 		} );
 	};
 
@@ -268,18 +268,18 @@ function cellRange( dt, idx, last )
 			start = tmp;
 		}
 
-		var record = false;
+		var class = false;
 		return indexes.filter( function (i) {
 			if ( i === start ) {
-				record = true;
+				class = true;
 			}
 			
 			if ( i === end ) {
-				record = false;
+				class = false;
 				return true;
 			}
 
-			return record;
+			return class;
 		} );
 	};
 

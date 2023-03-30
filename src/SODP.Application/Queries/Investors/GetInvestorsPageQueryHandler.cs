@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
 using SODP.Application.Abstractions;
-using SODP.Application.ValueObjects;
 using SODP.Domain.Repositories;
-using SODP.Domain.Shared;
-using SODP.Domain.ValueObjects;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace SODP.Application.Queries.Investors;
 
-public sealed class GetInvestorsPageQueryHandler : IQueryHandler<GetInvestorsPageQuery, Page<InvestorValueObject>>
+public sealed class GetInvestorsPageQueryHandler : IQueryHandler<GetInvestorsPageQuery, Page<InvestorDTO>>
 {
 	private readonly IInvestorRepository _investorRepository;
 	private readonly IMapper _mapper;
@@ -22,7 +20,7 @@ public sealed class GetInvestorsPageQueryHandler : IQueryHandler<GetInvestorsPag
 		_mapper = mapper;
 	}
 
-    public async Task<Result<Page<InvestorValueObject>>> Handle(
+    public async Task<ApiResponse<Page<InvestorDTO>>> Handle(
 		GetInvestorsPageQuery request, 
 		CancellationToken cancellationToken)
 	{
@@ -33,18 +31,11 @@ public sealed class GetInvestorsPageQueryHandler : IQueryHandler<GetInvestorsPag
 			request.PageSize,
 			cancellationToken);
 
-		if(investorsPage.Collection.Count == 0)
-		{
-			return Result.Failure<Page<InvestorValueObject>>(new Error(
-				"Investor.NotFound", 
-				"List of investors is empty."));
-		}
-
-		return Result.Success(
-			new Page<InvestorValueObject>(
-				_mapper.Map<IReadOnlyCollection<InvestorValueObject>>(investorsPage.Collection),
-				investorsPage.PageNumber,
-				investorsPage.PageSize,
-				investorsPage.TotalCount));
+		return ApiResponse.Success(
+			Page<InvestorDTO>.Create(
+				investorsPage.PageNumber, 
+				investorsPage.PageSize, 
+				investorsPage.TotalCount,
+				_mapper.Map<IReadOnlyCollection<InvestorDTO>>(investorsPage.Collection)));
 	}
 }

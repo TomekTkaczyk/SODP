@@ -1,4 +1,4 @@
-﻿using SODP.Domain.ValueObjects;
+﻿using SODP.Shared.Response;
 using System;
 
 namespace SODP.Domain.Shared;

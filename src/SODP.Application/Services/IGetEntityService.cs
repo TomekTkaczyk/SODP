@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Services
 {
-    public interface IGetEntityService<T> : IAppService where T : BaseDTO
+    public interface IGetEntityService<T> : IAppService // where T : BaseDTO
     {
         Task<ServiceResponse<T>> GetAsync(int id);
         Task<ServiceResponse> UpdateAsync(T entity);

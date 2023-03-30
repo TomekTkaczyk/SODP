@@ -1,6 +1,6 @@
 ﻿using SODP.Application.Abstractions;
-using SODP.Application.ValueObjects;
-using SODP.Domain.ValueObjects;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 
 namespace SODP.Application.Queries.Investors;
 
@@ -8,5 +8,5 @@ public sealed record GetInvestorsPageQuery(
 	bool? ActiveStatus,
 	string SearchString,
 	int PageNumber,
-	int PageSize) : IQuery<Page<InvestorValueObject>>
+	int PageSize) : IQuery<Page<InvestorDTO>>
 { }
