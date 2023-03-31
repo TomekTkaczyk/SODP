@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Services;
@@ -13,9 +15,14 @@ namespace SODP.WebApi.v0_01.Controllers
     {
         private readonly IDesignerService _service;
 
-        public DesignerController(IDesignerService service, ILogger<DesignerController> logger) : base(logger)
+        public DesignerController(
+            IDesignerService service, 
+            ISender sender, 
+            IMapper mapper, 
+            ILogger<DesignerController> logger) 
+            : base(sender, mapper, logger)
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         [HttpGet]

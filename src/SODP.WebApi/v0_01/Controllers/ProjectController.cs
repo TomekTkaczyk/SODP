@@ -1,24 +1,30 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Services;
 using SODP.Shared.DTO;
-using SODP.Shared.DTO.Requests;
 using SODP.Shared.Enums;
 using System.Text.Json;
 
 namespace SODP.WebApi.v0_01.Controllers
 {
-	// [Authorize]
-	[ApiController]
+    // [Authorize]
+    [ApiController]
     [Route("api/v0_01/projects")]
     public class ProjectController : ApiControllerBase
     {
         private readonly IProjectService _service;
 
-        public ProjectController(IProjectService service, ILogger<ProjectController> logger) : base(logger) 
+        public ProjectController(
+            IProjectService service, 
+            ISender sender, 
+            IMapper mapper, 
+            ILogger<ProjectController> logger) 
+            : base(sender, mapper, logger) 
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
 

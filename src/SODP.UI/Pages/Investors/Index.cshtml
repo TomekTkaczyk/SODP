@@ -33,7 +33,7 @@
 </div>
 
 
-<partial name="_SearchString" />
+<partial name="_CollectionSearchString" />
 @if (Model.Investors.Investors.Count() > 0)
 {
 	<table id="StagesTable" class="table table-sm table-hover">
@@ -114,20 +114,22 @@ else
 				success: function (data) {
 					$('#modal-placeholder').html(data);
 					$('#editInvestor').modal('show');
+				},
+				error: function (jqXHR, exception) {
+					console.log(jqXHR);
+					console.log(exception);
 				}
 			})
 		}
 
 		function handleChange(id, checked) {
-			let c = checked ? 1 : 0;
+			var content = {Id: id, activeStatus: checked};
 			$.ajax({
 				type: "PATCH",
 				url: `/api/v0_01/investors/${id}/status`,
-				contentType: "application/json; charset=utf-8",
+				contentType: "application/json",
 				dataType: 'json',
-				data: JSON.stringify(c),
-				success: function (response) {
-				},
+				data: JSON.stringify(content),
 				error: function (jqXHR, exception) {
 					console.log(jqXHR);
 					console.log(exception);

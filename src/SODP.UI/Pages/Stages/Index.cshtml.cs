@@ -1,7 +1,8 @@
- using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -14,81 +15,80 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace SODP.UI.Pages.Stages
+namespace SODP.UI.Pages.Stages;
+
+[Authorize(Roles = "ProjectManager")]
+public class IndexModel : CollectionPageModel
 {
-    [Authorize(Roles = "ProjectManager")]
-    public class IndexModel : ListPageModel<StageDTO>
-    {
-        const string _editStageModalViewName = "ModalView/_EditStageModalView";
+	const string _editStageModalViewName = "ModalView/_EditStageModalView";
 
-        public IndexModel(
-            IWebAPIProvider apiProvider, 
-            ILogger<IndexModel> logger, 
-            IMapper mapper, 
-            LanguageTranslatorFactory translatorFactory) 
-            : base(apiProvider, logger, mapper, translatorFactory)
-        {
-            ReturnUrl = "/Stages";
-            _endpoint = "stages";
-        }
+	public IndexModel(
+		IWebAPIProvider apiProvider,
+		ILogger<IndexModel> logger,
+		IMapper mapper,
+		LanguageTranslatorFactory translatorFactory)
+		: base(apiProvider, logger, mapper, translatorFactory)
+	{
+		ReturnUrl = "/Stages";
+		_endpoint = "stages";
+	}
 
-        public StagesVM Stages { get; set; } = new();
 
-        public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
-        {
-            var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
-            var apiResponse = await GetApiResponseAsync(endpoint);
+	public StagesVM Stages { get; set; } = new();
 
-            Stages.Stages = apiResponse.Data.Collection.ToList();
-			Stages.PageInfo = GetPageInfo(apiResponse, searchString);
 
-			return Page();
+	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
+	{
+		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
+		var apiResponse = await GetApiResponseAsync<Page<StageDTO>>(endpoint);
+
+		Stages.Stages = GetCollection(apiResponse);
+		Stages.PageInfo = GetPageInfo(apiResponse, searchString);
+
+		return Page();
+	}
+
+	public async Task<PartialViewResult> OnGetEditStageAsync(int? id)
+	{
+		if (!id.HasValue)
+		{
+			return GetPartialView(new StageVM(), _editStageModalViewName);
 		}
 
-        public async Task<PartialViewResult> OnGetEditStageAsync(int? id)
-        {
-            var model = new StageVM();
-            if (!id.HasValue)
-            {
-                return GetPartialView(model, _editStageModalViewName);
-            }
+		var endpoint = $"{_endpoint}/{id}";
+		var apiResponse = await _apiProvider.GetAsync(endpoint);
 
-            var endpoint = $"{_endpoint}/{id}";
-			var apiResponse = await _apiProvider.GetAsync(endpoint);
-            if (!apiResponse.IsSuccessStatusCode)
-            {
-				RedirectToPage($"Errors/{(int)apiResponse.StatusCode}");
-			}
+		if (!apiResponse.IsSuccessStatusCode)
+		{
+			RedirectToPage($"Errors/{(int)apiResponse.StatusCode}");
+		}
 
-			var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<StageDTO>>();
-            model = _mapper.Map<StageVM>(result.Data);
+		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<StageDTO>>();
 
-            return GetPartialView(model, _editStageModalViewName);
-        }
+		return GetPartialView(_mapper.Map<StageVM>(result.Value), _editStageModalViewName);
+	}
 
-        public async Task<PartialViewResult> OnPostEditStageAsync(StageVM stage)
-        {
-            if (ModelState.IsValid)
-            {
-                var apiResponse = stage.Id == 0
-                    ? await _apiProvider.PostAsync($"{_endpoint}", stage.ToHttpContent())
-                    : await _apiProvider.PutAsync($"{_endpoint}/{stage.Id}", stage.ToHttpContent());
-                switch (apiResponse.StatusCode)
-                {
-                    case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<ServiceResponse<StageDTO>>(apiResponse);
-                        if (!response.Success)
-                        {
-                            SetModelErrors(response);
-                        }
-                        break;
-                    default:
-                        // redirect to ErrorPage
-                        break;
-                }
-            }
+	public async Task<PartialViewResult> OnPostEditStageAsync(StageVM stage)
+	{
+		if (ModelState.IsValid)
+		{
+			return GetPartialView(stage, _editStageModalViewName);
+		}
 
-            return  GetPartialView(stage, _editStageModalViewName);
-        }
-    }
+		HttpResponseMessage apiResponse;
+
+		var content = stage.ToHttpContent();
+		apiResponse = stage.Id == 0
+			? await _apiProvider.PostAsync($"{_endpoint}", content)
+			: await _apiProvider.PatchAsync($"{_endpoint}/{stage.Id}", content);
+
+		if (!apiResponse.IsSuccessStatusCode)
+		{
+			var response = apiResponse.Content.ReadAsAsync<ApiResponse>();
+			// SetModelErrors(response);
+		}
+
+		return GetPartialView(stage, _editStageModalViewName);
+
+	}
 }

@@ -23,7 +23,7 @@ public sealed class CreateInvestorCommandHandler : ICommandHandler<CreateInvesto
 		var investor = await _investorRepository.GetByNameAsync(request.Name, cancellationToken);
 		if (investor != null)
 		{
-			return ApiResponse.Failure<Investor>(new Error("InvestorCreator","Investor already exist."));
+			return ApiResponse.Failure<Investor>(new Error("CreateInvestor",$"Investor {request.Name} already exist."));
 		}
 		investor = _investorRepository.Add(Investor.Create(request.Name));
 		await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -4,7 +4,6 @@
         event.preventDefault();
         var url = $(this).data('url');
         $.get(url).done(function (data) {
-            console.log(data);
             var placeholderElement = $('#modal-placeholder');
             placeholderElement.html(data);
             placeholderElement.find('.modal').modal('show');

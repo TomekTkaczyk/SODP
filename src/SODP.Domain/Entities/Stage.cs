@@ -4,7 +4,7 @@ namespace SODP.Domain.Entities;
 
 public class Stage : ActivatedEntity, IOrdered
 {
-	public Stage(string sign, string name)
+	private Stage(string sign, string name)
     {
         Sign = sign;
         Name = name;
@@ -24,4 +24,9 @@ public class Stage : ActivatedEntity, IOrdered
 	{
 		return $"{Sign.Trim()} {Name.Trim()}";
 	}
+
+    public static Stage Create(string sign, string name)
+    {
+        return new Stage(sign, name);
+    }
 }

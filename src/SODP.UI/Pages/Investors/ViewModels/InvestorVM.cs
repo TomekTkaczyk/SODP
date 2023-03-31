@@ -2,7 +2,7 @@
 
 namespace SODP.UI.Pages.Investors.ViewModels;
 
-public class InvestorVM
+public record InvestorVM
 {
     public int Id { get; set; }
 

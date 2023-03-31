@@ -65,5 +65,32 @@ public abstract class AppPageModel : PageModel
 		return content;
 	}
 
+	protected async Task<ApiResponse<TValue>> PostApiResponseAsync<TValue>(string url, StringContent content)
+	{
+		var apiResponse = await _apiProvider.PostAsync(url, content);
+
+		return await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>();
+	}
+								
+	protected async Task<ApiResponse> PatchApiResponseAsync(string url, StringContent content)
+	{
+		var apiResponse = await _apiProvider.PatchAsync(url, content);
+
+		return await apiResponse.Content.ReadAsAsync<ApiResponse>();
+	}
+
+	protected async Task<ApiResponse> PutApiResponseAsync(string url, StringContent content)
+	{
+		var apiResponse = await _apiProvider.PutAsync(url, content);
+
+		return await apiResponse.Content.ReadAsAsync<ApiResponse>();
+	}
+
+	protected async Task<ApiResponse> DeleteApiResponseAsync(string url, StringContent content)
+	{
+		var apiResponse = await _apiProvider.DeleteAsync(url);
+
+		return await apiResponse.Content.ReadAsAsync<ApiResponse>();
+	}
 }
 

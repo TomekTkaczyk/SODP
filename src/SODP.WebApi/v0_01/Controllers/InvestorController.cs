@@ -16,19 +16,13 @@ namespace SODP.WebApi.v0_01.Controllers;
 // [Authorize]
 [ApiController]
 [Route("api/v0_01/investors")]
-public class InvestorController : ApiControllerBase
+public class InvestorController : ActiveStatusController
 {
-	private readonly ISender _sender;
-	private readonly IMapper _mapper;
-	private readonly IInvestorService _service;
-
-	public InvestorController(IInvestorService service, ISender sender, ILogger<InvestorController> logger, IMapper mapper)
-			: base(logger)
-	{
-		_sender = sender;
-		_mapper = mapper;
-		_service = service;
-	}
+	public InvestorController(
+		ISender sender, 
+		IMapper mapper, 
+		ILogger<InvestorController> logger)
+		: base(sender, mapper, logger) { }
 
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -40,22 +34,25 @@ public class InvestorController : ApiControllerBase
 		int pageSize = 0, 
 		CancellationToken cancellationToken = default)
 	{
-		var result = await _service.GetPageAsync(active, searchString, pageNumber, pageSize);
+		if (pageSize == 0 && pageNumber != 1)
+		{
+			var error = Result.Failure(new Error("Investor.BadRequest", "pageNumber and/or pageSize is invalid."));
+			return BadRequest(error.Error);
+		}
 
-		return Ok(result);
-		//if(pageSize == 0 && pageNumber != 1)
-		//{
-		//	var error = Result.Failure(new Error("Investor.BadRequest", "pageNumber and/or pageSize is invalid."));
-		//	return BadRequest(error.Error);
-		//}
+		var query = new GetInvestorsPageQuery(active, searchString, pageNumber, pageSize);
+		try
+		{
+			var response = await _sender.Send(query, cancellationToken);
 
-		//var query = new GetInvestorsPageQuery(active, searchString, pageNumber, pageSize);
-
-		//var response = await _sender.Send(query, cancellationToken);
-
-		//return response.IsSuccess 
-		//	? Ok(response) 
-		//	: NotFound(response.Errors);
+			return response.IsSuccess
+				? Ok(response)
+				: NotFound(response.Errors);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
@@ -67,15 +64,20 @@ public class InvestorController : ApiControllerBase
 		int id, 
 		CancellationToken cancellationToken = default)
 	{
-		return Ok(await _service.GetAsync(id));
+		var query = new GetInvestorByIdQuery(id);
+		try
+		{
+			var response = await _sender.Send(query, cancellationToken);
 
-		//var query = new GetInvestorByIdQuery(id);
+			return response.IsSuccess
+				? Ok(response)
+				: NotFound(response.Errors);
 
-		//var response = await _sender.Send(query, cancellationToken);
-
-		//return response.IsSuccess 
-		//	? Ok(response) 
-		//	: NotFound(response.Errors);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
@@ -87,40 +89,48 @@ public class InvestorController : ApiControllerBase
 		[FromBody] CreateInvestorCommand command, 
 		CancellationToken cancellationToken = default)
 	{
-		var result = await _sender.Send(command, cancellationToken);
-
-		return CreatedAtAction(
-			nameof(GetAsync), 
-			new { result.Value.Id }, 
-			_mapper.Map<Investor, InvestorDTO>(result.Value));
+		try
+		{
+			var result = await _sender.Send(command, cancellationToken);
+			return result.IsSuccess 
+				? CreatedAtAction(
+					nameof(GetAsync), 
+					new { result.Value.Id }, 
+					_mapper.Map<Investor, InvestorDTO>(result.Value))
+				: Conflict(result.Errors);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
-	[HttpPut("{id}")]
+	[HttpPatch("{id}")]
 	[ProducesResponseType(typeof(Result), StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> UpdateAsync(
+	public async Task<IActionResult> ChangeNameAsync(
 		int id, 
-		[FromBody] InvestorDTO entity, 
+		[FromBody] ChangeInvestorNameCommand command, 
 		CancellationToken cancellationToken = default)
 	{
-		if (id != entity.Id)
+		if (id != command.Id)
 		{
-			return BadRequest();
+			return BadRequest(command);
 		}
 
-		return Ok(await _service.UpdateAsync(entity));
-
-		//if (id != command.Id)
-		//{
-		//	return BadRequest();
-		//}
-		//var result = await _sender.Send(command, cancellationToken);
-
-		//return result.IsSuccess 
-		//	? NoContent() 
-		//	: NotFound();
+		try
+		{
+			var result = await _sender.Send(command, cancellationToken);
+			return result.IsSuccess
+				? NoContent()
+				: Conflict(result);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
@@ -133,29 +143,16 @@ public class InvestorController : ApiControllerBase
 		CancellationToken cancellationToken = default)
 	{
 		var command = new DeleteInvestorCommand(id);
-
-		var result = await _sender.Send(command, cancellationToken);
-
-		return result.IsSuccess 
-			? NoContent() 
-			: NotFound(result.Errors);
+		try
+		{
+			var result = await _sender.Send(command, cancellationToken);
+			return result.IsSuccess
+				? NoContent()
+				: NotFound(result.Errors);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
-
-
-	[HttpPatch("{id}/status")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> SetActiveStatusAsync(
-		int id,
-		[FromBody] SetActiveStatusCommand command, 
-		CancellationToken cancellationToke = default)
-	{
-		var result = await _sender.Send(command, cancellationToke);
-
-		return result.IsSuccess 
-			? NoContent() 
-			: NotFound();
-	}
-
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Services;
@@ -19,9 +21,14 @@ namespace SODP.WebApi.v0_01.Controllers
 	{
 		private readonly IPartService _service;
 
-		public PartController(IPartService service, ILogger<PartController> logger) : base(logger)
+		public PartController(
+			IPartService service,
+			ISender sender,
+			IMapper mapper,
+			ILogger<PartController> logger)
+			: base(sender, mapper, logger)
 		{
-			_service = service;
+			_service = service ?? throw new ArgumentNullException(nameof(service));
 		}
 
 		[HttpGet]

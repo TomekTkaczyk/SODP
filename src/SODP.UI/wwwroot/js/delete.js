@@ -13,13 +13,17 @@
             $.ajax({
                 type: "DELETE",
                 url: url,
-                success: function (data) {
-                    if (data.success) {
-                        window.location.reload();
-                    }
-                    else {
-                        toastr.error(data.message);
-                    }
+                success: function () {
+                    window.location.reload();
+                },
+                done: function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(jqXHR);
+                },
+                error: function (jqXHR, exception) {
+                    console.log(jqXHR);
+                    console.log(exception);
                 }
             })
         }

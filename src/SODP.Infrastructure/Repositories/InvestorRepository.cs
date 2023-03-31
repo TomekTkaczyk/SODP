@@ -54,7 +54,8 @@ internal class InvestorRepository : PagedRepository<Investor>, IInvestorReposito
 
 		if (pageSize > 0)
 		{
-			queryable = queryable.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+			//queryable = queryable.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+			queryable = GetPageQuery(queryable, pageNumber, pageSize);
 		}
 
 		var collection = await queryable.ToListAsync(cancellationToken);

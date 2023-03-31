@@ -7,17 +7,15 @@ using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Investors.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
-using SODP.UI.Pages.Stages.ViewModels;
 using SODP.UI.Services;
-using System.Collections.Immutable;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Investors;
 
-public class IndexModel : ListPageModel<InvestorDTO>
+public class IndexModel : CollectionPageModel
 {
 	const string _editInvestorModalViewName = "ModalView/_EditInvestorModalView";
 
@@ -39,9 +37,9 @@ public class IndexModel : ListPageModel<InvestorDTO>
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
 	{
 		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
-		var apiResponse = await GetApiResponseAsync(endpoint);
+		var apiResponse = await GetApiResponseAsync<Page<InvestorDTO>>(endpoint);
 
-		Investors.Investors = apiResponse.Data.Collection.ToList();
+		Investors.Investors = GetCollection(apiResponse);
 		Investors.PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();
@@ -50,55 +48,45 @@ public class IndexModel : ListPageModel<InvestorDTO>
 
 	public async Task<PartialViewResult> OnGetEditInvestorAsync(int? id)
 	{
-		var model = new InvestorVM();
 		if (!id.HasValue)
 		{
-			return GetPartialView(model, _editInvestorModalViewName);
+			return GetPartialView(new InvestorVM(), _editInvestorModalViewName);
 		}
 
 		var endpoint = $"{_endpoint}/{id}";
 		var apiResponse = await _apiProvider.GetAsync(endpoint);
+
 		if (!apiResponse.IsSuccessStatusCode)
 		{
-			RedirectToPage($"Errors/{(int)apiResponse.StatusCode}");
+			RedirectToPage($"Errors/{apiResponse.StatusCode}");
 		}
 
-		var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<InvestorDTO>>();
-		try
-		{
-			model = _mapper.Map<InvestorVM>(result.Data);
-		}
-		catch (System.Exception ex)
-		{
-			throw;
-		}
+		var response = await apiResponse.Content.ReadAsAsync<ApiResponse<InvestorDTO>>();
 
-		return GetPartialView(model, _editInvestorModalViewName);
+		return GetPartialView(_mapper.Map<InvestorVM>(response.Value), _editInvestorModalViewName);
 	}
 
 
 	public async Task<PartialViewResult> OnPostEditInvestorAsync(InvestorVM investor)
 	{
-		if (ModelState.IsValid)
+		if (!ModelState.IsValid)
 		{
-			var apiResponse = investor.Id == 0
-				? await _apiProvider.PostAsync($"{_endpoint}", investor.ToHttpContent())
-				: await _apiProvider.PutAsync($"{_endpoint}/{investor.Id}", investor.ToHttpContent());
-			switch (apiResponse.StatusCode)
-			{
-				case HttpStatusCode.OK:
-					var response = await _apiProvider.GetContent<ServiceResponse<InvestorDTO>>(apiResponse);
-					if (!response.Success)
-					{
-						SetModelErrors(response);
-					}
-					break;
-				default:
-					// redirect to ErrorPage
-					break;
-			}
+			return GetPartialView(investor, _editInvestorModalViewName);
 		}
-		return GetPartialView(investor, _editInvestorModalViewName);
 
+		HttpResponseMessage apiResponse;
+
+		var content = investor.ToHttpContent();
+		apiResponse = investor.Id == 0
+			? await _apiProvider.PostAsync($"{_endpoint}", content)
+			: await _apiProvider.PatchAsync($"{_endpoint}/{investor.Id}", content);
+			
+		if(!apiResponse.IsSuccessStatusCode)
+		{
+			var response = apiResponse.Content.ReadAsAsync<ApiResponse>();
+			// SetModelErrors(response);
+		}
+		
+		return GetPartialView(investor, _editInvestorModalViewName);
 	}
 }

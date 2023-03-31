@@ -2,12 +2,11 @@
 using SODP.Shared.Response;
 using System.Collections.Generic;
 
-namespace SODP.UI.Pages.Stages.ViewModels
-{
-	public class StagesVM
-	{
-		public IList<StageDTO> Stages { get; set; }
+namespace SODP.UI.Pages.Stages.ViewModels;
 
-		public PageInfo PageInfo { get; set; }
-	}
+public class StagesVM
+{
+	public ICollection<StageDTO> Stages { get; set; }
+
+	public PageInfo PageInfo { get; set; }
 }

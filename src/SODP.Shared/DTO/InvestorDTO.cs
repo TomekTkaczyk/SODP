@@ -1,8 +1,9 @@
 ﻿namespace SODP.Shared.DTO
 {
-    public class InvestorDTO : BaseDTO
+    public record InvestorDTO // : BaseDTO
     {
-        public string Name { get; set; } 
+		public int Id { get; set; }
+		public string Name { get; set; } 
         public bool ActiveStatus { get; set; }
 	}
 }

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
-using SODP.Shared.DTO.Requests;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -25,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects
 {
-    [Authorize(Roles = "Administrator,ProjectManager")]
+	[Authorize(Roles = "Administrator,ProjectManager")]
 	public class EditModel : ProjectEditPageModel
 	{
 		const string _editProjectPartViewName = "ModalView/_EditProjectPartModalView";

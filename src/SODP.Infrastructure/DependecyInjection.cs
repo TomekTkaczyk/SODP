@@ -24,7 +24,6 @@ namespace SODP.Infrastructure
 			services.AddDbContext<SODPDBContext>(options =>
 			{
 				options.EnableDetailedErrors();
-				//var aaa = services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment();
 				if (services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment())
 				{
 					options.EnableSensitiveDataLogging();

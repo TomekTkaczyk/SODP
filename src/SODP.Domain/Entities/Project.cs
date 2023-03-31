@@ -29,7 +29,7 @@ public class Project : BaseEntity
         if (string.IsNullOrEmpty(Stage.Sign))
         {
             sign = foldername.GetLastUntilOrEmpty("_");
-            Stage = new Stage(sign, "");
+            Stage = Stage.Create(sign, "");
             var nameLength = Name.Length - Stage.Sign.Length - 1;
             Name = Name[0..nameLength];
         }
@@ -84,7 +84,7 @@ public class Project : BaseEntity
     private void RequiredPropertiesInit(string number, string stageSign, string name)
     {
         Number = number;
-        Stage = new Stage(stageSign, "");
+        Stage = Stage.Create(stageSign, "");
         Name = name;
     }
 

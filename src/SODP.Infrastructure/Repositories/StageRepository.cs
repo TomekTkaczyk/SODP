@@ -1,61 +1,64 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
-using SODP.Domain.Exceptions.Stages;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Stages;
+using SODP.Shared.Response;
 
-namespace SODP.Infrastructure.Repositories
+namespace SODP.Infrastructure.Repositories;
+
+public sealed class StageRepository : PagedRepository<Stage>, IStageRepository
 {
-	public sealed class StageRepository : PagedRepository<Stage>, IStageRepository
+	public StageRepository(SODPDBContext dbContext) : base(dbContext) { }
+
+	public Stage Add(Stage stage)
 	{
-		public StageRepository(SODPDBContext dbContext) : base(dbContext) { }
+		var entry = _dbContext.Set<Stage>().Add(stage);
 
-		public async Task<Stage> Create(Stage stage, CancellationToken cancellationToken = default)
-		{
-			var entity = _dbContext.Set<Stage>().FirstOrDefaultAsync(x => x.Name.Equals(stage.Sign), cancellationToken);
-			if (entity != null)
-			{
-				throw new StageExistException();
-			}
-
-			var entry = await _dbContext.Set<Stage>().AddAsync(stage, cancellationToken);
-
-			return entry.Entity;
-		}
-
-		public async Task Remove(Stage stage, CancellationToken cancellationToken = default)
-		{
-			var entity = await _dbContext.Set<Stage>()
-				.FirstOrDefaultAsync(x => x.Id == stage.Id, cancellationToken) 
-				?? throw new StageNotFoundException();
-			_dbContext.Set<Stage>().Remove(entity);
-		}
-
-		public async Task Update(Stage stage, CancellationToken cancellationToken)
-		{
-			var entity = await _dbContext.Set<Stage>()
-				.FirstOrDefaultAsync(x => x.Id == stage.Id, cancellationToken) 
-				?? throw new StageNotFoundException();
-			_dbContext.Set<Stage>().Update(entity);
-		}
-
-		public async Task<Stage> GetById(int id, CancellationToken cancellationToken)
-		{
-			return await _dbContext.Set<Stage>()
-				.SingleOrDefaultAsync(x => x.Id == id, cancellationToken)
-				?? throw new StageNotFoundException();
-		}
-
-		public async Task<ICollection<Stage>> GetPageAsync(bool? active, string searchString, int pageNumber, int pageSize, CancellationToken cancellationToken)
-		{
-			var queryable = ApplySpecyfication(new StageByNameSpecification(active, searchString));
-			if (pageSize > 0)
-			{
-				queryable = GetPageQuery(queryable, pageNumber, pageSize);
-			}
-
-			return await queryable.ToListAsync(cancellationToken);
-		}
+		return entry.Entity;
 	}
+
+	public void Remove(Stage stage)
+	{
+		_dbContext.Entry(stage).State = EntityState.Deleted;
+	}
+
+	public void Update(Stage stage)
+	{
+		_dbContext.Set<Stage>().Update(stage);
+		_dbContext.Entry(stage).State = EntityState.Modified;
+	}
+
+	public async Task<Stage> GetByIdAsync(int id, CancellationToken cancellationToken)
+	{
+		return await _dbContext.Set<Stage>()
+			.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+	}
+
+	public async Task<Stage> GetBySignAsync(string sign, CancellationToken cancellationToken)
+	{
+		return await _dbContext.Set<Stage>()
+			.SingleOrDefaultAsync(x => x.Sign == sign, cancellationToken);
+	}
+
+	public async Task<Page<Stage>> GetPageAsync(bool? active, string searchString, int pageNumber, int pageSize, CancellationToken cancellationToken)
+	{
+		var specyfication = new StageByNameSpecification(active, searchString);
+		var queryable = ApplySpecyfication(specyfication);
+		var totalItems = await queryable.CountAsync(cancellationToken);
+
+		if (pageSize > 0)
+		{
+			queryable = GetPageQuery(queryable, pageNumber, pageSize);
+		}
+
+		var collection = await queryable.ToListAsync(cancellationToken);
+
+		return Page<Stage>.Create(
+			pageNumber,
+			pageSize,
+			totalItems,
+			collection);
+	}
+
 }

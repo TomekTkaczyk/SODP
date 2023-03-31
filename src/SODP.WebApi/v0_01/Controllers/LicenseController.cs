@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Services;
@@ -14,7 +16,12 @@ namespace SODP.WebApi.v0_01.Controllers
     {
         private readonly ILicenseService _service;
 
-        public LicenseController(ILicenseService service, ILogger<LicenseController> logger) : base(logger)
+        public LicenseController(
+            ILicenseService service, 
+            ISender sender, 
+            IMapper mapper, 
+            ILogger<LicenseController> logger) 
+            : base(sender, mapper, logger)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }

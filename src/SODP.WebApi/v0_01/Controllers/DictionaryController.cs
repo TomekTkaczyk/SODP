@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Services;
 using SODP.Shared.DTO;
@@ -15,9 +17,14 @@ namespace SODP.WebApi.v0_01.Controllers
     public class DictionaryController : ApiControllerBase
     {
         private readonly IDictionaryService _service;
-        public DictionaryController(IDictionaryService service, ILogger<DictionaryController> logger) : base(logger) 
+        public DictionaryController(
+            IDictionaryService service, 
+            ISender sender, 
+            IMapper mapper, 
+            ILogger<DictionaryController> logger) 
+            : base(sender, mapper, logger) 
         {
-            _service = service;
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 	}
 }

@@ -21,18 +21,18 @@ namespace SODP.Application.Commands.Investors
 		public async Task<ApiResponse> Handle(ChangeInvestorNameCommand request, CancellationToken cancellationToken)
 		{
 			var investor = await _investorRepository.GetByNameAsync(request.Name, cancellationToken);
-			if(investor != null && investor.Id != request.Id)
+			if((investor is not null) && (investor.Id != request.Id))
 			{
-				throw new InvestorExistException(); 
+				return ApiResponse.Failure(new Error("ChangeInvestorName",$"Investor {request.Name} already exist.")); 
 			}
 
 			investor = await _investorRepository.GetByIdAsync(request.Id, cancellationToken);
-			if(investor == null)
+			if(investor is null)
 			{
-				throw new InvestorNotFoundException();
+				return ApiResponse.Failure(new Error("ChangeNameInvestor", $"Investor Id:{request.Id} not found."));
 			}
-			investor.SetName(request.Name);
 
+			investor.SetName(request.Name);
 			_investorRepository.Update(investor);
 			await _unitOfWork.SaveChangesAsync(cancellationToken);
 

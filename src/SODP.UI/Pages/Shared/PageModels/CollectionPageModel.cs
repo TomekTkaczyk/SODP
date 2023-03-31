@@ -5,6 +5,7 @@ using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SODP.UI.Pages.Shared.PageModels;
@@ -46,14 +47,14 @@ public abstract class CollectionPageModel : AppPageModel
 		return url.ToString();
 	}
 
-	protected PageInfo GetPageInfo(Page response, string searchString)
+	protected PageInfo GetPageInfo<T>(ApiResponse<Page<T>> response, string searchString)
 	{
 		var pageInfo = new PageInfo
 		{
-			TotalItems = response.TotalCount,
-			CurrentPage = response.PageNumber,
-			ItemsPerPage = response.PageSize,
-			Url = $"{ReturnUrl}?pageNumber=:&pageSize={response.PageSize}"
+			TotalItems = response.Value.TotalCount,
+			CurrentPage = response.Value.PageNumber,
+			ItemsPerPage = response.Value.PageSize,
+			Url = $"{ReturnUrl}?pageNumber=:&pageSize={response.Value.PageSize}"
 		};
 		if (!string.IsNullOrWhiteSpace(searchString))
 		{
@@ -61,5 +62,9 @@ public abstract class CollectionPageModel : AppPageModel
 		}
 
 		return pageInfo;
+	}
+	protected ICollection<T> GetCollection<T>(ApiResponse<Page<T>> response)
+	{
+		return response.Value.Collection.ToList();
 	}
 }
