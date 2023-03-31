@@ -16,7 +16,7 @@ public class WebAPIProvider : IWebAPIProvider
 	{
 		var apiResponse = await _httpClient.GetAsync(endPoint);
 
-		apiResponse.EnsureSuccessStatusCode();
+		// apiResponse.EnsureSuccessStatusCode();
 
 		return apiResponse;
 	}
@@ -25,7 +25,7 @@ public class WebAPIProvider : IWebAPIProvider
 	{
 		var apiResponse = await new HttpClient().PostAsync($"{_httpClient.BaseAddress}{endPoint}", content);
 
-		apiResponse.EnsureSuccessStatusCode();
+		// apiResponse.EnsureSuccessStatusCode();
 
 		return apiResponse;
 	}
@@ -34,7 +34,7 @@ public class WebAPIProvider : IWebAPIProvider
 	{
 		var apiResponse = await new HttpClient().PutAsync($"{_httpClient.BaseAddress}{endPoint}", content);
 
-		apiResponse.EnsureSuccessStatusCode();
+		// apiResponse.EnsureSuccessStatusCode();
 
 		return apiResponse;
 	}
@@ -43,7 +43,7 @@ public class WebAPIProvider : IWebAPIProvider
 	{
 		var apiResponse = await new HttpClient().PatchAsync($"{_httpClient.BaseAddress}{endPoint}", content);
 
-		apiResponse.EnsureSuccessStatusCode();
+		// apiResponse.EnsureSuccessStatusCode();
 
 		return apiResponse;
 	}
@@ -52,7 +52,7 @@ public class WebAPIProvider : IWebAPIProvider
 	{
 		var apiResponse = await new HttpClient().DeleteAsync($"{_httpClient.BaseAddress}{endPoint}");
 
-		apiResponse.EnsureSuccessStatusCode();
+		// apiResponse.EnsureSuccessStatusCode();
 
 		return apiResponse;
 	}

@@ -6,6 +6,8 @@ namespace SODP.Shared.Response;
 
 public record ApiResponse
 {
+	public string Message { get; set; }
+
 	public bool IsSuccess { get; set; }
 	
 	public bool IsFailure;

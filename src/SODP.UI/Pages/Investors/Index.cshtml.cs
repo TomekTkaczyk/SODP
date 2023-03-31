@@ -8,6 +8,7 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Investors.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Security.Policy;
@@ -75,18 +76,19 @@ public class IndexModel : CollectionPageModel
 		}
 
 		HttpResponseMessage apiResponse;
-
-		var content = investor.ToHttpContent();
-		apiResponse = investor.Id == 0
-			? await _apiProvider.PostAsync($"{_endpoint}", content)
-			: await _apiProvider.PatchAsync($"{_endpoint}/{investor.Id}", content);
-			
-		if(!apiResponse.IsSuccessStatusCode)
+		try
 		{
+			var content = investor.ToHttpContent();
+			apiResponse = investor.Id == 0
+				? await _apiProvider.PostAsync($"{_endpoint}", content)
+				: await _apiProvider.PatchAsync($"{_endpoint}/{investor.Id}", content);
+
 			var response = apiResponse.Content.ReadAsAsync<ApiResponse>();
-			// SetModelErrors(response);
+			return GetPartialView(investor, _editInvestorModalViewName);
 		}
-		
-		return GetPartialView(investor, _editInvestorModalViewName);
+		catch (Exception ex)
+		{
+			throw;
+		}
 	}
 }
