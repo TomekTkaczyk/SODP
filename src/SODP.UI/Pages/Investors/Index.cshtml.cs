@@ -75,20 +75,13 @@ public class IndexModel : CollectionPageModel
 			return GetPartialView(investor, _editInvestorModalViewName);
 		}
 
-		HttpResponseMessage apiResponse;
-		try
-		{
-			var content = investor.ToHttpContent();
-			apiResponse = investor.Id == 0
-				? await _apiProvider.PostAsync($"{_endpoint}", content)
-				: await _apiProvider.PatchAsync($"{_endpoint}/{investor.Id}", content);
+		var content = investor.ToHttpContent();
+		var apiResponse = investor.Id == 0
+			? await _apiProvider.PostAsync($"{_endpoint}", content)
+			: await _apiProvider.PatchAsync($"{_endpoint}/{investor.Id}", content);
 
-			var response = apiResponse.Content.ReadAsAsync<ApiResponse>();
-			return GetPartialView(investor, _editInvestorModalViewName);
-		}
-		catch (Exception ex)
-		{
-			throw;
-		}
+		var response = apiResponse.Content.ReadAsAsync<ApiResponse>();
+		
+		return GetPartialView(investor, _editInvestorModalViewName);
 	}
 }
