@@ -20,10 +20,12 @@
                     console.log(data);
                     console.log(textStatus);
                     console.log(jqXHR);
+                    toastr.error(data.message);
                 },
                 error: function (jqXHR, exception) {
                     console.log(jqXHR);
                     console.log(exception);
+                    toastr.error(exception);
                 }
             })
         }

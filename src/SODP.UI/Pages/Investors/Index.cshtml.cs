@@ -80,7 +80,14 @@ public class IndexModel : CollectionPageModel
 			? await _apiProvider.PostAsync($"{_endpoint}", content)
 			: await _apiProvider.PatchAsync($"{_endpoint}/{investor.Id}", content);
 
-		var response = apiResponse.Content.ReadAsAsync<ApiResponse>();
+		var response = await apiResponse.Content.ReadAsAsync<ApiResponse>();
+		if (!response.IsSuccess)
+		{
+			foreach(var message in response.Errors)
+			{
+				investor.
+			}
+		}
 		
 		return GetPartialView(investor, _editInvestorModalViewName);
 	}
