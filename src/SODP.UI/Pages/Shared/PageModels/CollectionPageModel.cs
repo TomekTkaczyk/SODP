@@ -14,9 +14,9 @@ public abstract class CollectionPageModel : AppPageModel
 {
 
 	public int SelectedPageSize { get; set; }
-	public List<SelectListItem> PageSizeList { get; set; } = new List<SelectListItem> { };
-	public string SearchString { get; set; }
-	public PageInfo PageInfo { get; set; } = new PageInfo();
+	public List<SelectListItem> PageSizeList { get; set; } = new();
+	public string SearchString { get; set; } = string.Empty;
+	public PageInfo PageInfo { get; set; } = new();
 	public int PageSize { get; set; }
 
 	protected CollectionPageModel(

@@ -17,7 +17,7 @@ internal class ProjectByNameSpecyfication : Specification<Project>
 	{
 		AddInclude(i => i.Stage);
 
-		AddOrderBy(o => o.Number);
-		AddOrderBy(o => o.Stage);
+		AddOrderBy(x => x.Number, false);
+		AddOrderBy(x => x.Stage.Sign, false);
 	}
 }

@@ -7,6 +7,7 @@ using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace SODP.UI.Pages.Shared.PageModels;
 public abstract class ProjectsPageModel : CollectionPageModel
 {
 
-	public PageCollection<ProjectDTO> Projects { get; set; } = new();
+	public ICollection<ProjectDTO> Projects { get; set; }
 
 	protected ProjectsPageModel(
 		IWebAPIProvider apiProvider,
@@ -32,9 +33,8 @@ public abstract class ProjectsPageModel : CollectionPageModel
 		var endpoint = GetPageUrl(status, pageNumber, pageSize, searchString);
 		var apiResponse = await GetApiResponseAsync<Page<ProjectDTO>>(endpoint);
 
-		var c = GetCollection(apiResponse);
-		Projects.Collection = c;
-		Projects.PageInfo = GetPageInfo(apiResponse, searchString);
+		Projects = GetCollection(apiResponse);
+		PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();
 	}
