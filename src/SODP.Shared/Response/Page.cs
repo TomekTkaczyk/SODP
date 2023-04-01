@@ -20,15 +20,15 @@ public class Page
 
 public class Page<T> : Page
 {
-    public Page(int pageNumber, int pageSize, int tootalCount, IReadOnlyCollection<T> collection) : base(pageNumber, pageSize, tootalCount)	
+    public Page(IReadOnlyCollection<T> collection, int pageNumber, int pageSize, int tootalCount) : base(pageNumber, pageSize, tootalCount)	
     {
 		Collection = collection;
     }
 
     public IReadOnlyCollection<T> Collection { get; set; }
 	
-	public static Page<T> Create(int pageNumber, int pageSize, int tootalCount, IReadOnlyCollection<T> collection)
+	public static Page<T> Create(IReadOnlyCollection<T> collection, int pageNumber, int pageSize, int tootalCount)
 	{
-		 return new Page<T>(pageNumber, pageSize, tootalCount, collection);
+		 return new Page<T>(collection, pageNumber, pageSize, tootalCount);
 	}
 }

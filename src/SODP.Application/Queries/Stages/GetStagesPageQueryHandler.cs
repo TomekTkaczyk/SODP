@@ -33,9 +33,9 @@ public sealed class GetStagesPageQueryHandler : IQueryHandler<GetStagesPageQuery
 
 		return ApiResponse.Success(
 			Page<StageDTO>.Create(
-				investorsPage.PageNumber, 
-				investorsPage.PageSize, 
-				investorsPage.TotalCount,
-				_mapper.Map<IReadOnlyCollection<StageDTO>>(investorsPage.Collection)));
+				_mapper.Map<IReadOnlyCollection<StageDTO>>(investorsPage.Collection),
+				investorsPage.PageNumber,
+				investorsPage.PageSize,
+				investorsPage.TotalCount));
 	}
 }

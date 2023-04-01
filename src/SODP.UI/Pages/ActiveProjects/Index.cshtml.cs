@@ -19,15 +19,20 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.ActiveProjects
 {
 	[Authorize(Roles = "User, ProjectManager")]
-    public class IndexModel : ProjectsPageModel
-    {
+    public class IndexModel :  ProjectsPageModel
+	{
         const string _newProjectModalViewName = "ModalView/_NewProjectModalView";
         const string _projectPartialViewName = "PartialView/_ProjectPartialView";
 
         public ProjectVM Project { get; set; }
 
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
+        public IndexModel(
+            IWebAPIProvider apiProvider, 
+            ILogger<IndexModel> logger, 
+            IMapper mapper, 
+            LanguageTranslatorFactory translatorFactory) 
+            : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/ActiveProjects";
         }
@@ -35,7 +40,7 @@ namespace SODP.UI.Pages.ActiveProjects
 
         public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-            return await OnGetAsync(ProjectStatus.Active, pageNumber, pageSize, searchString);
+			return await OnGetAsync(ProjectStatus.Active, pageNumber, pageSize, searchString);
         }
 
 
@@ -58,7 +63,7 @@ namespace SODP.UI.Pages.ActiveProjects
                         if (!response.Success)
                         {
 							project.Stages = await GetStagesItems();
-							SetModelErrors(response);
+							//SetModelErrors(response);
                         }
                         break;
                     default:
@@ -94,8 +99,8 @@ namespace SODP.UI.Pages.ActiveProjects
         private async Task<IEnumerable<SelectListItem>> GetStagesItems()
         {
 			var apiResponse = await _apiProvider.GetAsync("stages");
-			var stages = await _apiProvider.GetContent<ServicePageResponse<StageDTO>>(apiResponse);
-            return stages.Data.Collection.Where(x => x.ActiveStatus)
+			var stages = await _apiProvider.GetContent<Page<StageDTO>>(apiResponse);
+            return stages.Collection.Where(x => x.ActiveStatus)
                 .Select(x => new SelectListItem
 			{
 				Value = x.Id.ToString(),

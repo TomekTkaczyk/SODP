@@ -16,6 +16,8 @@ namespace SODP.Infrastructure.Specifications
 
 		public List<Expression<Func<TEntity, object>>> IncludeExpressions { get; } = new();
 
+		public List<Expression<Func<TEntity, object>>> ThenByExpressions { get; } = new();
+
 		public Expression<Func<TEntity, object>> OrderByExpression { get; private set; }
 
 		public Expression<Func<TEntity, object>> OrderByDescendingExpression { get; private set; }
@@ -23,7 +25,11 @@ namespace SODP.Infrastructure.Specifications
 		protected void AddInclude(Expression<Func<TEntity, object>> includeExpression) => IncludeExpressions.Add(includeExpression);
 		
 		protected void AddOrderBy(Expression<Func<TEntity, object>> orderByExpression) => OrderByExpression = orderByExpression;
-		
+
+		protected void AddThenBy(Expression<Func<TEntity, object>> thenByExpression) => ThenByExpressions.Add(thenByExpression);
+
 		protected void AddOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression) => OrderByDescendingExpression = orderByDescendingExpression;
+
+		protected void AddThenByDescending(Expression<Func<TEntity, object>> thenByDescendingExpression) => ThenByExpressions.Add(thenByDescendingExpression);
 	}
 }

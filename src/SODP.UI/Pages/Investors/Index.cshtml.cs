@@ -85,7 +85,6 @@ public class IndexModel : CollectionPageModel
 		{
 			foreach(var message in response.Errors)
 			{
-				investor.
 			}
 		}
 		

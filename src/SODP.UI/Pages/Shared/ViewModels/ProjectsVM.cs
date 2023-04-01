@@ -6,7 +6,7 @@ namespace SODP.UI.Pages.Shared.ViewModels
 {
     public class ProjectsVM
     {
-        public IList<ProjectDTO> Projects { get; set; }
+        public ICollection<ProjectDTO> Projects { get; set; }
 
         public PageInfo PageInfo { get; set; }
 

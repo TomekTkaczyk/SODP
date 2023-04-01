@@ -55,10 +55,10 @@ public sealed class StageRepository : PagedRepository<Stage>, IStageRepository
 		var collection = await queryable.ToListAsync(cancellationToken);
 
 		return Page<Stage>.Create(
+			collection,
 			pageNumber,
 			pageSize,
-			totalItems,
-			collection);
+			totalItems);
 	}
 
 }

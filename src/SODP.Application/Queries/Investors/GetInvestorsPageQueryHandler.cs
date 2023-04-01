@@ -33,9 +33,9 @@ public sealed class GetInvestorsPageQueryHandler : IQueryHandler<GetInvestorsPag
 
 		return ApiResponse.Success(
 			Page<InvestorDTO>.Create(
+				_mapper.Map<IReadOnlyCollection<InvestorDTO>>(investorsPage.Collection),
 				investorsPage.PageNumber, 
 				investorsPage.PageSize, 
-				investorsPage.TotalCount,
-				_mapper.Map<IReadOnlyCollection<InvestorDTO>>(investorsPage.Collection)));
+				investorsPage.TotalCount));
 	}
 }

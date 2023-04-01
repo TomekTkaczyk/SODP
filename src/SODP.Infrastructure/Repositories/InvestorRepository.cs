@@ -61,9 +61,9 @@ internal class InvestorRepository : PagedRepository<Investor>, IInvestorReposito
 		var collection = await queryable.ToListAsync(cancellationToken);
 
 		return Page<Investor>.Create(
+			collection,
 			pageNumber,
 			pageSize,
-			totalItems,
-			collection);
+			totalItems);
 	}
 }
