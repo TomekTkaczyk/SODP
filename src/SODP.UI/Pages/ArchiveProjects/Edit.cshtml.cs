@@ -17,7 +17,12 @@ namespace SODP.UI.Pages.ArchiveProjects;
 public class EditModel : ProjectEditPageModel
 {
 
-	public EditModel(IWebAPIProvider apiProvider, ILogger<EditModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory) { }
+	public EditModel(
+		IWebAPIProvider apiProvider, 
+		ILogger<EditModel> logger, 
+		IMapper mapper, 
+		LanguageTranslatorFactory translatorFactory) 
+		: base(apiProvider, logger, mapper, translatorFactory) { }
 
 	public ProjectDTO Project { get; set; }
 

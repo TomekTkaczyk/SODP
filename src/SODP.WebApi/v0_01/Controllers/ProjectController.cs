@@ -73,7 +73,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetAsync(
-		int id, 
+		int id,
 		CancellationToken cancellationToken = default)
 	{
 		var query = new GetProjectByIdQuery(id);
@@ -124,7 +124,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status409Conflict)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 	public async Task<IActionResult> CreateAsync(
-		[FromBody] CreateProjectCommand command, 
+		[FromBody] CreateProjectCommand command,
 		CancellationToken cancellationToken = default)
 	{
 		try
@@ -135,7 +135,7 @@ public class ProjectController : ApiControllerBase
 			{
 				switch (result.StatusCode)
 				{
-					case HttpStatusCode.NotFound: 
+					case HttpStatusCode.NotFound:
 						return NotFound(result.Errors);
 					case HttpStatusCode.Conflict:
 						return Conflict(result.Errors);
@@ -151,15 +151,6 @@ public class ProjectController : ApiControllerBase
 		{
 			return InternalServerErrorStatusCode(ex);
 		}
-		//var result = await _service.CreateAsync(project);
-		//return result.StatusCode switch
-		//{
-		//	StatusCodes.Status200OK => Ok(result),
-		//	StatusCodes.Status403Forbidden => Forbid(),
-		//	StatusCodes.Status409Conflict => Conflict(result),
-		//	StatusCodes.Status500InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
-		//	_ => BadRequest(result),
-		//};
 	}
 
 
@@ -167,9 +158,23 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> DeleteAsync(int id)
+	public async Task<IActionResult> DeleteAsync(
+		int id,
+		CancellationToken cancellationToken = default)
 	{
-		return Ok(await _service.DeleteAsync(id));
+		var command = new DeleteProjectCommand(id);
+		try
+		{
+			var result = await _sender.Send(command, cancellationToken);
+
+			return result.IsSuccess
+				? NoContent()
+				: NotFound(result.Errors);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
@@ -177,20 +182,50 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> Update(int id, [FromBody] ProjectDTO project)
+	public async Task<IActionResult> Update(
+		int id,
+		[FromBody] UpdateProjectCommand command,
+		CancellationToken cancellationToken)
 	{
-		if (id != project.Id)
+		if (id != command.Id)
 		{
 			return BadRequest();
 		}
 
-		var response = await _service.UpdateAsync(project);
-		if (!response.Success)
+		try
 		{
-			return StatusCode(response.StatusCode, response);
+			var result = await _sender.Send(command, cancellationToken);
+
+			if (result.IsFailure)
+			{
+				switch(result.StatusCode)
+				{
+					case HttpStatusCode.NotFound:
+						return NotFound(result.Errors);
+					case HttpStatusCode.Conflict:
+						return Conflict(result.Errors);
+				}
+			}
+			return NoContent();
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
 		}
 
-		return NoContent();
+
+		//if (id != project.Id)
+		//{
+		//	return BadRequest();
+		//}
+
+		//var response = await _service.UpdateAsync(project);
+		//if (!response.Success)
+		//{
+		//	return StatusCode(response.StatusCode, response);
+		//}
+
+		//return NoContent();
 	}
 
 

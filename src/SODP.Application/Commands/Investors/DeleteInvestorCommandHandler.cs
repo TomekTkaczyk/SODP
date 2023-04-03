@@ -22,23 +22,26 @@ public sealed class DeleteInvestorCommandHandler : ICommandHandler<DeleteInvesto
     public async Task<ApiResponse> Handle(DeleteInvestorCommand request, CancellationToken cancellationToken)
 	{
 		Error error;
+		
 		var investor = await _investorRepository
 			.ApplySpecyfication(new InvestorByIdSpecification(request.Id))
 			.SingleOrDefaultAsync(cancellationToken);
 
-		if (investor is not null)
+		if (investor is null)
 		{
-			_investorRepository.Delete(investor);
-			var result = await _unitOfWork.SaveChangesAsync(cancellationToken);
-			if(result > 0)
-			{
-				return ApiResponse.Success(HttpStatusCode.NoContent);
-			}
 			error = new Error("Investor.Delete", "Unknow delete error.", HttpStatusCode.InternalServerError);
 			return ApiResponse.Failure(error, HttpStatusCode.InternalServerError);
 		}
 
-		error = new Error("Investor.Delete", "Investor not found.");
-		return ApiResponse.Failure(error, HttpStatusCode.NotFound);
+		_investorRepository.Delete(investor);
+		var result = await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+		if(result == 0)
+		{
+			error = new Error("Investor.Delete", "Investor not found.");
+			return ApiResponse.Failure(error, HttpStatusCode.NotFound);
+		}
+
+		return ApiResponse.Success(HttpStatusCode.NoContent);
 	}
 }
