@@ -2,7 +2,7 @@
 
 namespace SODP.Domain.Entities;
 
-public class Stage : ActivatedEntity, IOrdered
+public class Stage : ActiveStatusEntity, IOrdered
 {
 	private Stage(string sign, string name)
     {

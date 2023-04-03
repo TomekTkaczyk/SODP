@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net;
 
 namespace SODP.Shared.Response;
 
@@ -12,9 +13,14 @@ public record ApiResponse
 	
 	public bool IsFailure;
 
+	public HttpStatusCode StatusCode { get; }
+
 	public ICollection<Error> Errors { get; } = new Collection<Error>();
 
-	public ApiResponse(bool isSuccess, ICollection<Error> errors) 
+	public ApiResponse(
+		bool isSuccess, 
+		ICollection<Error> errors, 
+		HttpStatusCode statusCode = HttpStatusCode.NoContent) 
 	{
 		if (isSuccess && errors != null && errors.Count > 0)
 		{
@@ -29,10 +35,11 @@ public record ApiResponse
 		IsSuccess = isSuccess;
 		IsFailure = !IsSuccess;
 		Errors = errors;
+		StatusCode = statusCode;
 	}
 
-	public static ApiResponse Success() => new(true, new Collection<Error>());
-	public static ApiResponse Failure(Error error) => new(false, new Collection<Error>() { error });
+	public static ApiResponse Success(HttpStatusCode statusCode = HttpStatusCode.OK) => new(true, new Collection<Error>(), statusCode);
+	public static ApiResponse Failure(Error error, HttpStatusCode statusCode) => new(false, new Collection<Error>() { error }, statusCode);
 
 	public ApiResponse AddError(Error error)
 	{
@@ -41,8 +48,8 @@ public record ApiResponse
 		return this;
 	}
 
-	public static ApiResponse<TValue> Success<TValue>(TValue value) => new(value, true, new Collection<Error>());
-	public static ApiResponse<TValue> Failure<TValue>(Error error) => new(default!, false, new Collection<Error>() { error });
+	public static ApiResponse<TValue> Success<TValue>(TValue value, HttpStatusCode statusCode = HttpStatusCode.OK) => new(value, true, new Collection<Error>(), statusCode);
+	public static ApiResponse<TValue> Failure<TValue>(Error error, HttpStatusCode statusCode) => new(default!, false, new Collection<Error>() { error }, statusCode);
 
 }
 
@@ -54,10 +61,10 @@ public record ApiResponse<TValue> : ApiResponse
 		? _value
 		: throw new InvalidOperationException("The value of a failure result can not be accessed.");
 
-	public ApiResponse(TValue value,  bool isSuccess, ICollection<Error> errors) 
-		: base(isSuccess, errors) => _value = value;
+	public ApiResponse(TValue value,  bool isSuccess, ICollection<Error> errors, HttpStatusCode statusCode) 
+		: base(isSuccess, errors, statusCode) => _value = value;
 
-	public static implicit operator ApiResponse<TValue>(TValue value) => Success(value);
+	//public static implicit operator ApiResponse<TValue>(TValue value, HttpStatusCode statusCode) => Success(value, statusCode);
 
 
 }

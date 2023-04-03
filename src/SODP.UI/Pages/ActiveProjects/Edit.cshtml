@@ -18,9 +18,9 @@
 		<input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
 		<input asp-for="Project.Id" type="hidden" />
 		<input asp-for="Project.Number" type="hidden" />
-		<input asp-for="Project.StageId" type="hidden" />
-		<input asp-for="Project.StageSign" type="hidden" />
-		<input asp-for="Project.StageName" type="hidden" />
+		<input asp-for="Project.Stage.Id" type="hidden" />
+		<input asp-for="Project.Stage.Sign" type="hidden" />
+		<input asp-for="Project.Stage.Name" type="hidden" />
 
 		<div class="col-lg-7 justify-content-end font-weight-bold p-0">
 			<div>

@@ -3,7 +3,7 @@ using SODP.Shared.Extensions;
 
 namespace SODP.Domain.Entities;
 
-public class Designer : ActivatedEntity
+public class Designer : ActiveStatusEntity
 {
     public string Title { get; set; }
     public string Firstname { get; set; }

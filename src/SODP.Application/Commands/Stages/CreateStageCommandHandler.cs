@@ -2,6 +2,7 @@
 using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Shared.Response;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,9 @@ public sealed class CreateStageCommandHandler : ICommandHandler<CreateStageComma
 	private readonly IStageRepository _stageRepository;
 	private readonly IUnitOfWork _unitOfWork;
 
-	public CreateStageCommandHandler(IStageRepository stageRepository, IUnitOfWork unitOfWork)
+	public CreateStageCommandHandler(
+		IStageRepository stageRepository, 
+		IUnitOfWork unitOfWork)
     {
 		_stageRepository = stageRepository;
 		_unitOfWork = unitOfWork;
@@ -24,7 +27,8 @@ public sealed class CreateStageCommandHandler : ICommandHandler<CreateStageComma
 
 		if (stage is not null)
 		{
-			return ApiResponse.Failure<Stage>(new Error("StageCreator", "Stage already exist."));
+			var error = new Error("StageCreator", "Stage already exist.", HttpStatusCode.Conflict);
+			return ApiResponse.Failure<Stage>(error, HttpStatusCode.Conflict);
 		}
 
 		stage = _stageRepository.Add(Stage.Create(request.Sign, request.Name));

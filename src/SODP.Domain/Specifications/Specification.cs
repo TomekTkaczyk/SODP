@@ -1,7 +1,9 @@
 ﻿using SODP.Domain.Entities;
+using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace SODP.Infrastructure.Specifications;
+namespace SODP.Domain.Specifications;
 
 public abstract class Specification<TEntity> where TEntity : BaseEntity
 {

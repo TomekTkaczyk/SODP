@@ -1,7 +1,7 @@
 ﻿@using SODP.UI.Pages.Shared.ViewModels;
 @using SODP.UI.Services;
 
-@model ProjectVM
+@model ProjectDTO
 @inject LanguageTranslatorFactory _translatorFactory;
 
 <div>
@@ -38,13 +38,13 @@
 	<div>
 		<label class="text-secondary">Data opracowania:</label>
 		<div class="row font-weight-bold ml-2 text-primary" ">
-			@if (String.IsNullOrEmpty(Model.DevelopmentDate))
+			@if (Model.DevelopmentDate.HasValue)
 			{
-				<span style="white-space: pre-line">Do ustalenia</span>
+				<span style="white-space: pre-line">@Model.DevelopmentDate</span>
 			}
 			else
 			{
-				<span style="white-space: pre-line">@Model.DevelopmentDate</span>
+				<span style="white-space: pre-line">Do ustalenia</span>
 			}
 		</div>
 	</div>
@@ -69,7 +69,7 @@
 				@foreach(var role in branch.Roles)
 				{
 					<div class="row">
-						<div class="col my-auto ml-2 text-primary">@_translatorFactory.GetTranslator().Translate(role.Role) : @role.Designer (@role.Content)</div>
+						<div class="col my-auto ml-2 text-primary">@_translatorFactory.GetTranslator().Translate(role.Role) : @role.License.Designer (@role.License.Content)</div>
 					</div>
 				}
 			}

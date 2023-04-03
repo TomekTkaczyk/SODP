@@ -11,7 +11,7 @@ public class Project : BaseEntity
 {
     private Project() { }
 
-    public Project(string number, string stageSign, string name)
+    private Project(string number, string stageSign, string name)
     {
         RequiredPropertiesInit(number, stageSign, name);
         EmptyPropertiesInit();
@@ -33,6 +33,11 @@ public class Project : BaseEntity
             var nameLength = Name.Length - Stage.Sign.Length - 1;
             Name = Name[0..nameLength];
         }
+    }
+
+    public static Project Create(string number, string stageSign, string name)
+    {
+        return new Project(number, stageSign, name);
     }
 
 

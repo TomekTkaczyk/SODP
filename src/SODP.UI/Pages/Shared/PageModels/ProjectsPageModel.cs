@@ -8,6 +8,7 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,8 +16,11 @@ namespace SODP.UI.Pages.Shared.PageModels;
 
 public abstract class ProjectsPageModel : CollectionPageModel
 {
+	protected const string _projectPartialViewName = "PartialView/_ProjectPartialView";
 
-	public ICollection<ProjectDTO> Projects { get; set; }
+	public ProjectDTO Project { get; protected set; }
+
+	public IReadOnlyCollection<ProjectDTO> Projects { get; protected set; }
 
 	protected ProjectsPageModel(
 		IWebAPIProvider apiProvider,
@@ -37,6 +41,14 @@ public abstract class ProjectsPageModel : CollectionPageModel
 		PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();
+	}
+
+	protected async Task<IActionResult> GetProjectPartialAsync(int id)
+	{
+		var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
+		var response = await _apiProvider.GetContent<ApiResponse<ProjectDTO>>(apiResponse);
+
+		return GetPartialView(response.Value, _projectPartialViewName);
 	}
 
 	private string GetPageUrl(ProjectStatus status, int pageNumber, int pageSize, string searchString)

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SODP.Domain.Entities;
-using System.Linq.Dynamic.Core;
+using System.Linq;
 
-namespace SODP.Infrastructure.Specifications;
+namespace SODP.Domain.Specifications;
 
 public static class SpecificationEvaluator
 {

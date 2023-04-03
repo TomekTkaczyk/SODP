@@ -9,6 +9,7 @@ using SODP.UI.Pages.Investors.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Security.Policy;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Investors;
 
-public class IndexModel : CollectionPageModel
+public sealed class IndexModel : CollectionPageModel
 {
 	const string _editInvestorModalViewName = "ModalView/_EditInvestorModalView";
 
@@ -32,7 +33,7 @@ public class IndexModel : CollectionPageModel
 	}
 
 
-	public InvestorsVM Investors { get; } = new();
+	public IReadOnlyCollection<InvestorDTO> Investors { get; private set; }
 
 
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
@@ -40,8 +41,8 @@ public class IndexModel : CollectionPageModel
 		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
 		var apiResponse = await GetApiResponseAsync<Page<InvestorDTO>>(endpoint);
 
-		Investors.Investors = GetCollection(apiResponse);
-		Investors.PageInfo = GetPageInfo(apiResponse, searchString);
+		Investors = GetCollection(apiResponse);
+		PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();
 	}

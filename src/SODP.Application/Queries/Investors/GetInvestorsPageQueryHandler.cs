@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
+using SODP.Application.Specifications.Investors;
+using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
+using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using System.Collections.Generic;
 using System.Threading;
@@ -24,18 +28,23 @@ public sealed class GetInvestorsPageQueryHandler : IQueryHandler<GetInvestorsPag
 		GetInvestorsPageQuery request, 
 		CancellationToken cancellationToken)
 	{
-		var investorsPage = await _investorRepository.GetPageAsync(
-			request.ActiveStatus,
-			request.SearchString,
-			request.PageNumber,
-			request.PageSize,
-			cancellationToken);
+		var queryable = _investorRepository
+			.ApplySpecyfication(new InvestorByNameSpecification(request.ActiveStatus, request.SearchString));
+
+		var totalItems = await queryable.CountAsync(cancellationToken);
+		
+		if(request.PageSize > 0)
+		{
+			queryable = _investorRepository.GetPageQuery(queryable, request.PageNumber, request.PageSize);
+		}
+
+		var collection = await queryable.ToListAsync(cancellationToken);
 
 		return ApiResponse.Success(
 			Page<InvestorDTO>.Create(
-				_mapper.Map<IReadOnlyCollection<InvestorDTO>>(investorsPage.Collection),
-				investorsPage.PageNumber, 
-				investorsPage.PageSize, 
-				investorsPage.TotalCount));
+				_mapper.Map<IReadOnlyCollection<InvestorDTO>>(collection),
+				request.PageNumber,
+				request.PageSize,
+				totalItems));
 	}
 }

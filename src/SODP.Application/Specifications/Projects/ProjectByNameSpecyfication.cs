@@ -1,11 +1,12 @@
 ﻿using SODP.Domain.Entities;
+using SODP.Domain.Specifications;
 using SODP.Shared.Enums;
 
 namespace SODP.Infrastructure.Specifications.Projects;
 
-internal class ProjectByNameSpecyfication : Specification<Project>
+public class ProjectByNameSpecyfication : Specification<Project>
 {
-	internal ProjectByNameSpecyfication(ProjectStatus status, string searchString)
+	public ProjectByNameSpecyfication(ProjectStatus status, string searchString)
 		: base(project =>
 		project.Status == status && (
 		string.IsNullOrWhiteSpace(searchString) 

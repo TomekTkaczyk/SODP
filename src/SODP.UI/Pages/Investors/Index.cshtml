@@ -34,7 +34,7 @@
 
 
 <partial name="_CollectionSearchString" />
-@if (Model.Investors.Investors.Count() > 0)
+@if (Model.Investors.Count() > 0)
 {
 	<table id="StagesTable" class="table table-sm table-hover">
 		<thead class="thead-light">
@@ -44,7 +44,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var item in Model.Investors.Investors)
+			@foreach (var item in Model.Investors)
 			{
 				<tr class="m-0 p-0">
 					<td onclick='@(User.IsInRole("ProjectManager") ? "EditInvestor("+@item.Id+")" : "")'

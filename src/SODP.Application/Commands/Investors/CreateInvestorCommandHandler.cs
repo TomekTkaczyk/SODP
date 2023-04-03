@@ -1,7 +1,10 @@
-﻿using SODP.Application.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+using SODP.Application.Abstractions;
+using SODP.Application.Specifications.Investors;
 using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Shared.Response;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +15,9 @@ public sealed class CreateInvestorCommandHandler : ICommandHandler<CreateInvesto
 	private readonly IInvestorRepository _investorRepository;
 	private readonly IUnitOfWork _unitOfWork;
 
-	public CreateInvestorCommandHandler(IInvestorRepository investorRepository, IUnitOfWork unitOfWork)
+	public CreateInvestorCommandHandler(
+		IInvestorRepository investorRepository, 
+		IUnitOfWork unitOfWork)
 	{
 		_investorRepository = investorRepository;
 		_unitOfWork = unitOfWork;
@@ -20,14 +25,19 @@ public sealed class CreateInvestorCommandHandler : ICommandHandler<CreateInvesto
 
 	public async Task<ApiResponse<Investor>> Handle(CreateInvestorCommand request, CancellationToken cancellationToken)
 	{
-		var investor = await _investorRepository.GetByNameAsync(request.Name, cancellationToken);
-		if (investor != null)
+		var investorExist = await _investorRepository
+			.ApplySpecyfication(new InvestorByNameSpecification(null, request.Name))
+			.AnyAsync(cancellationToken);
+
+		if (investorExist)
 		{
-			return ApiResponse.Failure<Investor>(new Error("CreateInvestor",$"Investor {request.Name} already exist."));
+			var error = new Error("CreateInvestor", $"Investor {request.Name} already exist.", HttpStatusCode.Conflict);
+			return ApiResponse.Failure<Investor>(error, HttpStatusCode.Conflict);
 		}
-		investor = _investorRepository.Add(Investor.Create(request.Name));
+
+		var investor = _investorRepository.Add(Investor.Create(request.Name));
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		return ApiResponse.Success(investor);
+		return ApiResponse.Success(investor, HttpStatusCode.Created);
 	}
 }

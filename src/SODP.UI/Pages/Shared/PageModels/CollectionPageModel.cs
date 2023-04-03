@@ -63,8 +63,8 @@ public abstract class CollectionPageModel : AppPageModel
 
 		return pageInfo;
 	}
-	protected ICollection<T> GetCollection<T>(ApiResponse<Page<T>> response)
+	protected IReadOnlyCollection<T> GetCollection<T>(ApiResponse<Page<T>> response)
 	{
-		return response.Value.Collection.ToList();
+		return response.Value.Collection;
 	}
 }

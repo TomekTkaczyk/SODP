@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SODP.Domain.Entities;
 
-public class AppDictionary : ActivatedEntity, IActiveStatus, IEquatable<AppDictionary>
+public class AppDictionary : ActiveStatusEntity, IActiveStatus, IEquatable<AppDictionary>
 {
 	public int? ParentId { get; set; }
 	public AppDictionary Parent { get; set; }

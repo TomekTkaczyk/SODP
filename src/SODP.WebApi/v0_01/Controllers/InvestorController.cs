@@ -19,8 +19,8 @@ namespace SODP.WebApi.v0_01.Controllers;
 public class InvestorController : ActiveStatusController
 {
 	public InvestorController(
-		ISender sender, 
-		IMapper mapper, 
+		ISender sender,
+		IMapper mapper,
 		ILogger<InvestorController> logger)
 		: base(sender, mapper, logger) { }
 
@@ -28,10 +28,10 @@ public class InvestorController : ActiveStatusController
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetPageAsync(
-		bool? active, 
-		string searchString, 
-		int pageNumber = 1, 
-		int pageSize = 0, 
+		bool? active,
+		string searchString,
+		int pageNumber = 1,
+		int pageSize = 0,
 		CancellationToken cancellationToken = default)
 	{
 		if (pageSize == 0 && pageNumber != 1)
@@ -61,7 +61,7 @@ public class InvestorController : ActiveStatusController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetAsync(
-		int id, 
+		int id,
 		CancellationToken cancellationToken = default)
 	{
 		var query = new GetInvestorByIdQuery(id);
@@ -86,16 +86,16 @@ public class InvestorController : ActiveStatusController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
-		[FromBody] CreateInvestorCommand command, 
+		[FromBody] CreateInvestorCommand command,
 		CancellationToken cancellationToken = default)
 	{
 		try
 		{
 			var result = await _sender.Send(command, cancellationToken);
-			return result.IsSuccess 
+			return result.IsSuccess
 				? CreatedAtAction(
-					nameof(GetAsync), 
-					new { result.Value.Id }, 
+					nameof(GetAsync),
+					new { result.Value.Id },
 					_mapper.Map<Investor, InvestorDTO>(result.Value))
 				: Conflict(result.Errors);
 		}
@@ -111,8 +111,8 @@ public class InvestorController : ActiveStatusController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> ChangeNameAsync(
-		int id, 
-		[FromBody] ChangeInvestorNameCommand command, 
+		int id,
+		[FromBody] ChangeInvestorNameCommand command,
 		CancellationToken cancellationToken = default)
 	{
 		if (id != command.Id)
@@ -139,7 +139,7 @@ public class InvestorController : ActiveStatusController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> DeleteAsync(
-		int id, 
+		int id,
 		CancellationToken cancellationToken = default)
 	{
 		var command = new DeleteInvestorCommand(id);

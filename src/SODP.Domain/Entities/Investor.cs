@@ -1,6 +1,6 @@
 ﻿namespace SODP.Domain.Entities;
 
-public sealed class Investor : ActivatedEntity
+public sealed class Investor : ActiveStatusEntity
 {
     private Investor(string name)
     {

@@ -3,13 +3,17 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.Commands.Projects;
 using SODP.Application.Queries.Projects;
 using SODP.Application.Services;
+using SODP.Domain.Entities;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
+using System.Net;
 using System.Text.Json;
+using System.Threading;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -61,8 +65,6 @@ public class ProjectController : ApiControllerBase
 		{
 			return InternalServerErrorStatusCode(ex);
 		}
-
-		// return Ok(await ((IProjectService)_service).GetPageAsync(status, searchString, pageNumber, pageSize));
 	}
 
 
@@ -70,9 +72,48 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetAsync(int id)
+	public async Task<IActionResult> GetAsync(
+		int id, 
+		CancellationToken cancellationToken = default)
 	{
-		return Ok(await _service.GetAsync(id));
+		var query = new GetProjectByIdQuery(id);
+		try
+		{
+			var response = await _sender.Send(query, cancellationToken);
+
+			return response.IsSuccess
+				? Ok(response)
+				: NotFound(response.Errors);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
+	}
+
+
+
+	[HttpGet("{id}/details")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
+	public async Task<IActionResult> GetWithDetailsAsync(
+		int id,
+		CancellationToken cancellationToken)
+	{
+		var query = new GetProjectByIdWithDetailsQuery(id);
+		try
+		{
+			var response = await _sender.Send(query, cancellationToken);
+
+			return response.IsSuccess
+				? Ok(response)
+				: NotFound(response.Errors);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
@@ -82,24 +123,43 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status409Conflict)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-	public async Task<IActionResult> CreateAsync([FromBody] NewProjectDTO project)
+	public async Task<IActionResult> CreateAsync(
+		[FromBody] CreateProjectCommand command, 
+		CancellationToken cancellationToken = default)
 	{
-		//return Ok(await _service.CreateAsync(project));
-
-		_logger.LogInformation($"{JsonSerializer.Serialize(project)}");
-
-		var result = await _service.CreateAsync(project);
-
-		_logger.LogInformation($"{JsonSerializer.Serialize(result)}");
-
-		return result.StatusCode switch
+		try
 		{
-			StatusCodes.Status200OK => Ok(result),
-			StatusCodes.Status403Forbidden => Forbid(),
-			StatusCodes.Status409Conflict => Conflict(result),
-			StatusCodes.Status500InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
-			_ => BadRequest(result),
-		};
+			var result = await _sender.Send(command, cancellationToken);
+
+			if (result.IsFailure)
+			{
+				switch (result.StatusCode)
+				{
+					case HttpStatusCode.NotFound: 
+						return NotFound(result.Errors);
+					case HttpStatusCode.Conflict:
+						return Conflict(result.Errors);
+				}
+			}
+
+			return CreatedAtAction(
+				nameof(GetAsync),
+				new { result.Value.Id },
+				_mapper.Map<ProjectDTO>(result.Value));
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
+		//var result = await _service.CreateAsync(project);
+		//return result.StatusCode switch
+		//{
+		//	StatusCodes.Status200OK => Ok(result),
+		//	StatusCodes.Status403Forbidden => Forbid(),
+		//	StatusCodes.Status409Conflict => Conflict(result),
+		//	StatusCodes.Status500InternalServerError => StatusCode(StatusCodes.Status500InternalServerError),
+		//	_ => BadRequest(result),
+		//};
 	}
 
 
@@ -110,16 +170,6 @@ public class ProjectController : ApiControllerBase
 	public async Task<IActionResult> DeleteAsync(int id)
 	{
 		return Ok(await _service.DeleteAsync(id));
-	}
-
-
-	[HttpGet("{id}/details")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetWithDetailsAsync(int id)
-	{
-		return Ok(await ((IProjectService)_service).GetWithDetailsAsync(id));
 	}
 
 

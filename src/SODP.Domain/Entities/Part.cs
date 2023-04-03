@@ -2,7 +2,7 @@
 
 namespace SODP.Domain.Entities;
 
-public class Part : ActivatedEntity, IOrdered
+public class Part : ActiveStatusEntity, IOrdered
 {
 	public Part() : this("", "") { }
 

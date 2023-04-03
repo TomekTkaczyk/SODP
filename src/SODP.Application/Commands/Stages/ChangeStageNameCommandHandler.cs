@@ -1,8 +1,10 @@
-﻿using SODP.Application.Abstractions;
-using SODP.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SODP.Application.Abstractions;
+using SODP.Application.Specifications.Investors;
+using SODP.Application.Specifications.Stages;
 using SODP.Domain.Repositories;
 using SODP.Shared.Response;
-using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,17 +15,34 @@ internal sealed class ChangeStageNameCommandHandler : ICommandHandler<ChangeStag
 	private readonly IStageRepository _stageRepository;
 	private readonly IUnitOfWork _unitOfWork;
 
-	public ChangeStageNameCommandHandler(IStageRepository stageRepository, IUnitOfWork unitOfWork)
+	public ChangeStageNameCommandHandler(
+		IStageRepository stageRepository, 
+		IUnitOfWork unitOfWork)
     {
 		_stageRepository = stageRepository;
 		_unitOfWork = unitOfWork;
 	}
+
     public async Task<ApiResponse> Handle(ChangeStageNameCommand request, CancellationToken cancellationToken)
 	{
-		var stage = await _stageRepository.GetByIdAsync(request.Id, cancellationToken);
+		var stage = await _stageRepository
+			.ApplySpecyfication(new StageByNameAndDifferentIdSpecification(request.Id, request.Name))
+			.FirstOrDefaultAsync(cancellationToken);
+
+		if(stage is not null)
+		{
+			var error = new Error("ChangeStageName", $"Different stage has the same name.", HttpStatusCode.NotFound);
+			return ApiResponse.Failure(error, HttpStatusCode.NotFound);
+		}
+
+		stage = await _stageRepository
+			.ApplySpecyfication(new StageByIdSpecyfication(request.Id))
+			.SingleOrDefaultAsync(cancellationToken);
+
 		if(stage is null)
 		{
-			return ApiResponse.Failure(new Error("UpdateStage",$"Stage Id:{request.Id} not exist."));
+			var error = new Error("CahngeStageName", $"Stage id:{request.Id} not found.", HttpStatusCode.NotFound);
+			return ApiResponse.Failure(error, HttpStatusCode.NotFound);
 		}
 
 		stage.Name = request.Name;

@@ -7,6 +7,8 @@ using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Shared.PageModels;
@@ -18,9 +20,9 @@ public abstract class AppPageModel : PageModel
 	protected readonly IWebAPIProvider _apiProvider;
 	protected readonly ILogger<AppPageModel> _logger;
 	protected readonly IMapper _mapper;
-	public readonly ITranslator _translator;
+	protected readonly ITranslator _translator;
 
-	public string ReturnUrl { get; protected set; }
+	protected string ReturnUrl { get; set; }
 
 	protected AppPageModel(
 		IWebAPIProvider apiProvider,
@@ -54,6 +56,15 @@ public abstract class AppPageModel : PageModel
 			ViewName = partialViewName,
 			ViewData = new ViewDataDictionary<T>(ViewData, model)
 		};
+	}
+
+	protected StringContent GetRequestContent<T>(T obj)
+	{
+		return new StringContent(
+				  JsonSerializer.Serialize(obj),
+				  Encoding.UTF8,
+				  "application/json"
+			  );
 	}
 
 	protected async Task<ApiResponse<TValue>> GetApiResponseAsync<TValue>(string url)

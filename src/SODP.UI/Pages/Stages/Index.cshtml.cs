@@ -10,6 +10,7 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Pages.Stages.ViewModels;
 using SODP.UI.Services;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.Stages;
 
 [Authorize(Roles = "ProjectManager")]
-public class IndexModel : CollectionPageModel
+public sealed class IndexModel : CollectionPageModel
 {
 	const string _editStageModalViewName = "ModalView/_EditStageModalView";
 
@@ -34,7 +35,7 @@ public class IndexModel : CollectionPageModel
 	}
 
 
-	public StagesVM Stages { get; set; } = new();
+	public IReadOnlyCollection<StageDTO> Stages { get; set; }
 
 
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
@@ -42,8 +43,8 @@ public class IndexModel : CollectionPageModel
 		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
 		var apiResponse = await GetApiResponseAsync<Page<StageDTO>>(endpoint);
 
-		Stages.Stages = GetCollection(apiResponse);
-		Stages.PageInfo = GetPageInfo(apiResponse, searchString);
+		Stages = GetCollection(apiResponse);
+		PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();
 	}

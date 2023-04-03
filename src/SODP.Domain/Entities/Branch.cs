@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SODP.Domain.Entities;
 
-public class Branch : ActivatedEntity, IOrdered
+public class Branch : ActiveStatusEntity, IOrdered
 {
     public string Sign { get; set; }
     public string Name { get; set; }

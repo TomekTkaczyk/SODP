@@ -11,31 +11,28 @@ using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Threading.Tasks;
 
-namespace SODP.UI.Pages.ArchiveProjects
+namespace SODP.UI.Pages.ArchiveProjects;
+
+[Authorize(Roles = "User, ProjectManager")]
+public sealed class IndexModel : ProjectsPageModel
 {
-    [Authorize(Roles = "User, ProjectManager")]
-    public class IndexModel : ProjectsPageModel
-    {
-		const string _projectPartialViewName = "PartialView/_ProjectPartialView";
+	public IndexModel(
+		IWebAPIProvider apiProvider,
+		ILogger<IndexModel> logger,
+		IMapper mapper,
+		LanguageTranslatorFactory translatorFactory)
+		: base(apiProvider, logger, mapper, translatorFactory)
+	{
+		ReturnUrl = "/ArchiveProjects";
+	}
 
-		public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
-        {
-            ReturnUrl = "/ArchiveProjects";
-        }
-		public ProjectVM Project { get; set; }
+	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
+	{
+		return await OnGetAsync(ProjectStatus.Archival, pageNumber, pageSize, searchString);
+	}
 
-		public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
-        {
-            return await base.OnGetAsync(ProjectStatus.Archival, pageNumber, pageSize, searchString);
-        }
-
-		public async Task<PartialViewResult> OnGetProjectPartialAsync(int id)
-		{
-			var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
-			var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
-			Project = _mapper.Map<ProjectVM>(response.Data);
-
-			return GetPartialView(Project, _projectPartialViewName);
-		}
+	public async Task<IActionResult> OnGetProjectPartialAsync(int id)
+	{
+		return await GetProjectPartialAsync(id);
 	}
 }
