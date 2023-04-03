@@ -233,9 +233,39 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> AddPartAsync(int id, PartDTO part)
+	public async Task<IActionResult> AddPartAsync(
+		int id, 
+		[FromBody] AddPartCommand command,
+		CancellationToken cancellationToken)
 	{
-		return Ok(await _service.AddPartAsync(id, part));
+		if(id != command.Id)
+		{
+			return BadRequest();
+		}
+
+		try
+		{
+			var result = await _sender.Send(command, cancellationToken);
+
+			if (result.IsFailure)
+			{
+				switch (result.StatusCode) 
+				{
+					case HttpStatusCode.NotFound:
+						return NotFound(result.Errors);
+					case HttpStatusCode.Conflict:
+						return Conflict(result.Errors);
+
+				}
+			}
+			return NoContent();
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
+
+		//return Ok(await _service.AddPartAsync(id, part));
 	}
 
 
