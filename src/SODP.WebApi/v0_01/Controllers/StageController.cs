@@ -17,15 +17,13 @@ namespace SODP.WebApi.v0_01.Controllers;
 
 [ApiController]
 [Route("api/v0_01/stages")]
-public class StageController : ActiveStatusController
+public class StageController : ActiveStatusController<Stage>
 {
 	public StageController(
 		ISender sender,
 		IMapper mapper,
-		ILogger<StageController> logger) 
-		: base(sender, mapper, logger)
-	{
-	}
+		ILogger<StageController> logger)
+		: base(sender, mapper, logger) { }
 
 
 	[HttpGet]
@@ -48,9 +46,12 @@ public class StageController : ActiveStatusController
 		try
 		{
 			var response = await _sender.Send(query, cancellationToken);
-			return response.IsSuccess
-				? Ok(response)
-				: NotFound(response.Errors);
+			if (response.IsSuccess)
+			{
+				return Ok(response);
+			}
+
+			return GetActionResult(response);
 		}
 		catch (Exception ex)
 		{
@@ -71,9 +72,13 @@ public class StageController : ActiveStatusController
 		try
 		{
 			var response = await _sender.Send(query, cancellationToken);
-			return response.IsSuccess
-				? Ok(response)
-				: NotFound(response.Errors);
+
+			if (response.IsSuccess)
+			{
+				return Ok(response);
+			}
+
+			return GetActionResult(response);
 		}
 		catch (Exception ex)
 		{
@@ -92,13 +97,16 @@ public class StageController : ActiveStatusController
 	{
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-			return result.IsSuccess
-				? CreatedAtAction(
-					nameof(GetAsync),
-					new { result.Value.Id },
-					_mapper.Map<Stage, StageDTO>(result.Value))
-				: Conflict(result.Errors);
+			var response = await _sender.Send(command, cancellationToken);
+			if (response.IsSuccess)
+			{
+				return CreatedAtAction(
+						nameof(GetAsync),
+						new { response.Value.Id },
+						_mapper.Map<Stage, StageDTO>(response.Value));
+			}
+
+			return GetActionResult(response);
 		}
 		catch (Exception ex)
 		{
@@ -123,10 +131,7 @@ public class StageController : ActiveStatusController
 
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-			return result.IsSuccess
-				? NoContent()
-				: Conflict();
+			return GetActionResult(await _sender.Send(command, cancellationToken));
 		}
 		catch (Exception ex)
 		{
@@ -146,10 +151,7 @@ public class StageController : ActiveStatusController
 		var command = new DeleteStageCommad(id);
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-			return result.IsSuccess
-				? NoContent() 					 
-				: NotFound(result.Errors);
+			return GetActionResult(await _sender.Send(command, cancellationToken));
 		}
 		catch (Exception ex)
 		{

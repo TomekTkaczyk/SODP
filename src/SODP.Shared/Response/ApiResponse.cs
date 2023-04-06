@@ -17,7 +17,7 @@ public record ApiResponse
 
 	public ICollection<Error> Errors { get; } = new Collection<Error>();
 
-	public ApiResponse(
+    public ApiResponse(
 		bool isSuccess, 
 		ICollection<Error> errors, 
 		HttpStatusCode statusCode = HttpStatusCode.NoContent) 

@@ -14,7 +14,7 @@ namespace Tests.Model
         public void New_project_created_from_foldername_has_valid_stage_PB(string foldername)
         {
             var project = new Project(foldername);
-            var expected = new Project("1101", "PB", "SomeName_Project");
+            var expected = Project.Create("1101", "PB", "SomeName_Project");
 
             Assert.Equal(expected.Symbol, project.Symbol);
             // Assert.Equal(expected.Title, project.Title);

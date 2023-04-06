@@ -6,15 +6,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SODP.Application.Commands.Common;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Infrastructure;
 using SODP.Infrastructure.Managers;
+using SODP.Shared.Response;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -43,8 +46,14 @@ namespace SODP.UI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMediatR(Application.AssemblyReference.Assembly);
+            services.AddTransient(
+                typeof(IRequestHandler<SetActiveStatusCommand<Stage>, ApiResponse>),
+                typeof(SetActiveStatusCommandHandler<Stage>));
+			services.AddTransient(
+				typeof(IRequestHandler<SetActiveStatusCommand<Investor>, ApiResponse>),
+				typeof(SetActiveStatusCommandHandler<Investor>));
 
-            services.AddSwagger(Configuration);
+			services.AddSwagger(Configuration);
 
             services.AddCors(options => options.AddPolicy(name: "SODPOriginsSpecification", builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
 

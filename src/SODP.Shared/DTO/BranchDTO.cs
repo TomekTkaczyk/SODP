@@ -1,6 +1,6 @@
 ﻿namespace SODP.Shared.DTO;
 
-public class BranchDTO : NewBranchDTO
+public record BranchDTO : NewBranchDTO
 {
 	public int Order { get; set; }
 

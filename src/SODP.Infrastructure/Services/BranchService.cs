@@ -59,18 +59,17 @@ namespace SODP.Infrastructure.Services
                 var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Id != updateBranch.Id && x.Sign.Equals(updateBranch.Sign));
                 if (branch != null)
                 {
-                    serviceResponse.SetError("Branża już istnieje", 409);
+                    serviceResponse.SetError("Branch already exist.", 409);
                     return serviceResponse;
                 }
 
                 branch = await _context.Branches.SingleOrDefaultAsync(x => x.Id == updateBranch.Id);
                 if (branch == null)
                 {
-                    serviceResponse.SetError($"Branża {updateBranch.Id} nie odnaleziona.", 404);
-                    serviceResponse.ValidationErrors.Add("Sign", "Branża nie odnaleziona.");
+                    serviceResponse.SetError($"Branch Id:{updateBranch.Id} not found.", 404);
+                    serviceResponse.ValidationErrors.Add("Branch.Sign", "Branch not found.");
                     return serviceResponse;
                 }
-                branch.Sign = updateBranch.Sign;
                 branch.Name = updateBranch.Name;
                 branch.Normalize();
                 _context.Branches.Update(branch);

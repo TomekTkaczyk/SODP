@@ -1,4 +1,6 @@
-﻿using SODP.Application.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+using SODP.Application.Abstractions;
+using SODP.Application.Specifications.Stages;
 using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Shared.Response;
@@ -23,7 +25,9 @@ public sealed class CreateStageCommandHandler : ICommandHandler<CreateStageComma
 
     public async Task<ApiResponse<Stage>> Handle(CreateStageCommand request, CancellationToken cancellationToken)
 	{
-		var stage = await _stageRepository.GetBySignAsync(request.Sign, cancellationToken);
+		var stage = await _stageRepository
+			.ApplySpecyfication(new StageBySignSpecyfication(request.Sign.ToUpper()))
+			.SingleOrDefaultAsync(cancellationToken);
 
 		if (stage is not null)
 		{
@@ -31,7 +35,7 @@ public sealed class CreateStageCommandHandler : ICommandHandler<CreateStageComma
 			return ApiResponse.Failure<Stage>(error, HttpStatusCode.Conflict);
 		}
 
-		stage = _stageRepository.Add(Stage.Create(request.Sign, request.Name));
+		stage = _stageRepository.Add(Stage.Create(request.Sign.ToUpper(), request.Name.ToUpper()));
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 		return ApiResponse.Success(stage);

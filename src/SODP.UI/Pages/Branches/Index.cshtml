@@ -112,7 +112,7 @@ else
 			let c = checked ? 1 : 0;
 			$.ajax({
 				type: "PATCH",
-				url: `/api/v0_01/branches/${id}/status`,
+				url: `/api/v0_01/branches/${id}/status/${c}`,
 				contentType: "application/json; charset=utf-8",
 				dataType: 'json',
 				data: JSON.stringify(c),

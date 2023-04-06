@@ -14,11 +14,14 @@ public sealed class DeleteInvestorCommandHandler : ICommandHandler<DeleteInvesto
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IInvestorRepository _investorRepository;
 
-	public DeleteInvestorCommandHandler(IUnitOfWork unitOfWork, IInvestorRepository investorRepository)
+	public DeleteInvestorCommandHandler(
+		IInvestorRepository investorRepository, 
+		IUnitOfWork unitOfWork)
     {
 		_unitOfWork = unitOfWork;
 		_investorRepository = investorRepository;
 	}
+
     public async Task<ApiResponse> Handle(DeleteInvestorCommand request, CancellationToken cancellationToken)
 	{
 		Error error;

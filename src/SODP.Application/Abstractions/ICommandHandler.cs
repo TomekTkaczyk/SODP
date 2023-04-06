@@ -3,12 +3,12 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.Abstractions;
 
-public interface ICommandHandler<TCommand>
+public interface ICommandHandler<in TCommand>
 	: IRequestHandler<TCommand, ApiResponse> where TCommand : ICommand
 {
 }
 
-public interface ICommandHandler<TCommand, TResponse>
+public interface ICommandHandler<in TCommand, TResponse>
 	: IRequestHandler<TCommand, ApiResponse<TResponse>> where TCommand : ICommand<TResponse>
 {
 }

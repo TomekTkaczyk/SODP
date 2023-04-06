@@ -40,7 +40,8 @@ namespace SODP.Application.Services
                 if (exist != null)
                 {
                     serviceResponse.SetData(_mapper.Map<ProjectDTO>(exist));
-                    serviceResponse.SetError($"Error: Project {exist.Symbol} exist.", 409);
+                    _logger.LogError($"[CreateProject] : Project {exist.Symbol} already exist.");
+					serviceResponse.SetError($"Error: Project {exist.Symbol} already exist.", 409);
                     return serviceResponse;
                 }
 
@@ -63,7 +64,7 @@ namespace SODP.Application.Services
                 var (Success, Message) = await _folderManager.CreateFolderAsync(project);
                 if (!Success)
                 {
-                    _logger.LogError("[CreateFolderAsync] : Create folder fail.");
+                    _logger.LogError("[CreateFolder] : Create folder fail.");
                     throw new ApplicationException($"Error: {Message}");
                 }
 
@@ -137,7 +138,7 @@ namespace SODP.Application.Services
                 var oldProject = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Id == updateProject.Id);
                 if(oldProject == null)
                 {
-                    serviceResponse.SetError($"Błąd: Project Id:{updateProject.Id} nie odnaleziony.", 404);
+                    serviceResponse.SetError($"Error: Project Id:{updateProject.Id} not found.", 404);
                     return serviceResponse;
                 }
                 var project = _mapper.Map<Project>(updateProject);
@@ -155,7 +156,7 @@ namespace SODP.Application.Services
                 var (Success, Message) = await _folderManager.RenameFolderAsync(project, ProjectsFolder.Active);
                 if (!Success)
                 {
-                    throw new ApplicationException($"Błąd: {Message}");
+                    throw new ApplicationException($"Error: {Message}");
                 }
 
                 oldProject.Name = project.Name;
@@ -188,11 +189,17 @@ namespace SODP.Application.Services
                 var project = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Id == id);
                 if (project == null)
                 {
-                    serviceResponse.SetError($"Błąd: Project Id:{id} nie odnaleziony.", 401);
+                    serviceResponse.SetError($"Error: Project Id:{id} nie odnaleziony.", 401);
                     return serviceResponse;
                 }
 
-                project.Status = ProjectStatus.DuringArchive;
+                if(project.Status is not ProjectStatus.Active)
+                {
+					serviceResponse.SetError($"Error: Project Id:{id} during process.", 409);
+					return serviceResponse;
+				}
+
+				project.Status = ProjectStatus.DuringArchive;
                 await _context.SaveChangesAsync();
 
                 var (Success, Message) = await _folderManager.ArchiveFolderAsync(project);
@@ -200,39 +207,11 @@ namespace SODP.Application.Services
                 {
                     project.Status = ProjectStatus.Active;
                     await _context.SaveChangesAsync();
-                    throw new ApplicationException($"Błąd: {Message}");
+                    throw new ApplicationException($"Error: {Message}");
                 }
                 
                 project.Status = ProjectStatus.Archival;
                 project.SetModifyTimeStamp(DateTime.UtcNow);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
-
-
-        public override async Task<ServiceResponse> DeleteAsync(int id)
-        {
-            var serviceResponse = new ServiceResponse();
-            try
-            {
-                var project = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Id == id); 
-                if(project == null)
-                {
-                    serviceResponse.SetError($"Błąd: Projekt Id:{id} nie odnaleziony.", 401);
-                    return serviceResponse;
-                }
-                var (Success, Message) = await _folderManager.DeleteFolderAsync(project);
-                if (!Success)
-                {
-                    throw new ApplicationException($"Błąd: {Message}");
-                }
-                _context.Projects.Remove(project);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -252,16 +231,23 @@ namespace SODP.Application.Services
                 var project = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Id == id); 
                 if(project == null)
                 {
-                    serviceResponse.SetError($"Błąd: Project Id:{id} nie odnaleziony.", 401);
+                    serviceResponse.SetError($"Error: Project Id:{id} not found.", 401);
                     return serviceResponse;
                 }
-                project.Status = ProjectStatus.DuringRestore;
+
+				if (project.Status is not ProjectStatus.Archival)
+				{
+					serviceResponse.SetError($"Error: Project Id:{id} during process.", 409);
+					return serviceResponse;
+				}
+
+				project.Status = ProjectStatus.DuringRestore;
                 await _context.SaveChangesAsync();
                 
                 var (Success, Message) = await _folderManager.RestoreFolderAsync(project);
                 if (!Success)
                 {
-                    throw new ApplicationException($"Błąd: {Message}");
+                    throw new ApplicationException($"Error: {Message}");
                 }
                 project.Status = ProjectStatus.Active;
                 _context.Projects.Update(project);
@@ -274,6 +260,41 @@ namespace SODP.Application.Services
 
             return serviceResponse;
         }
+
+		public override async Task<ServiceResponse> DeleteAsync(int id)
+		{
+			var serviceResponse = new ServiceResponse();
+			try
+			{
+				var project = await _context.Projects.Include(x => x.Stage).SingleOrDefaultAsync(x => x.Id == id);
+				if (project == null)
+				{
+					serviceResponse.SetError($"Error: Project Id:{id} not found.", 401);
+					return serviceResponse;
+				}
+
+				if (project.Status is not ProjectStatus.Active)
+				{
+					serviceResponse.SetError($"Error: Project Id:{id} during process.", 409);
+					return serviceResponse;
+				}
+
+				var (Success, Message) = await _folderManager.DeleteFolderAsync(project);
+				if (!Success)
+				{
+					throw new ApplicationException($"Error: {Message}");
+				}
+				_context.Projects.Remove(project);
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				serviceResponse.SetError(ex.Message, 500);
+			}
+
+			return serviceResponse;
+		}
+
 
 		public async Task<ServiceResponse<ProjectPartDTO>> GetProjectPartAsync(int partId)
 		{

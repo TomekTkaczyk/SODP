@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Shared.Response;
+using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -19,8 +21,23 @@ public abstract class ApiControllerBase : ControllerBase
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 	}
 
-	public ObjectResult InternalServerErrorStatusCode(object value)
+	protected ObjectResult InternalServerErrorStatusCode(object value)
 	{
 		return StatusCode(StatusCodes.Status500InternalServerError, value);
+	}
+
+	protected IActionResult GetActionResult(ApiResponse response)
+	{
+		switch(response.StatusCode)
+		{
+			case HttpStatusCode.NoContent:
+				return NoContent();
+			case HttpStatusCode.NotFound:
+				return NotFound(response.Errors);
+			case HttpStatusCode.Conflict:
+				return Conflict(response.Errors);
+			default:
+				throw new Exception($"{response.StatusCode} not implemented.");
+		}
 	}
 }

@@ -3,8 +3,18 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.Commands.Branches;
+using SODP.Application.Commands.Investors;
+using SODP.Application.Commands.Stages;
+using SODP.Application.Queries.Branczes;
+using SODP.Application.Queries.Investors;
 using SODP.Application.Services;
+using SODP.Domain.Entities;
+using SODP.Domain.Shared;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers;
@@ -17,20 +27,47 @@ public class BranchController : ApiControllerBase
 
 	public BranchController(
 		IBranchService service,
-	ISender sender,
-	IMapper mapper,
-	ILogger<BranchController> logger)
+		ISender sender,
+		IMapper mapper,
+		ILogger<BranchController> logger)
 		: base(sender, mapper, logger)
 	{
 		_service = service ?? throw new ArgumentNullException(nameof(service));
 	}
 
+
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetPageAsync(bool? active, string searchString = "", int pageNumber = 1, int pageSize = 0)
+	public async Task<IActionResult> GetPageAsync(
+		bool? active, 
+		string searchString = "", 
+		int pageNumber = 1, 
+		int pageSize = 0,
+		CancellationToken cancellationToken = default)
 	{
-		return Ok(await _service.GetPageAsync(active, searchString, pageNumber, pageSize));
+		if (pageSize == 0 && pageNumber != 1)
+		{
+			var error = Result.Failure(new Error("Branch.BadRequest", "pageNumber and/or pageSize is invalid."));
+			return BadRequest(error.Error);
+		}
+
+		var query = new GetBranchesPageQuery(active, searchString, pageNumber, pageSize);
+		try
+		{
+			var response = await _sender.Send(query, cancellationToken);
+
+			if(response.IsSuccess) 
+			{
+				return Ok(response);
+			}
+
+			return GetActionResult(response);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
@@ -38,9 +75,26 @@ public class BranchController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetAsync(int id)
+	public async Task<IActionResult> GetAsync(
+		int id,
+		CancellationToken cancellationToken)
 	{
-		return Ok(await _service.GetAsync(id));
+		var query = new GetBranchByIdQuery(id);
+		try
+		{
+			var response = await _sender.Send(query, cancellationToken);
+
+			if (response.IsSuccess)
+			{
+				return Ok(response);
+			}
+
+			return GetActionResult(response);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
@@ -48,9 +102,27 @@ public class BranchController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> CreateAsync([FromBody] BranchDTO entity)
+	public async Task<IActionResult> CreateAsync(
+		[FromBody] CreateBranchCommand command,
+		CancellationToken cancellationToken = default)
 	{
-		return Ok(await _service.CreateAsync(entity));
+		try
+		{
+			var result = await _sender.Send(command, cancellationToken);
+			if (result.IsSuccess)
+			{
+				return CreatedAtAction(
+					nameof(GetAsync),
+					new { result.Value.Id },
+					_mapper.Map<Branch, BranchDTO>(result.Value));
+			}
+
+			return GetActionResult(result);
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
@@ -58,14 +130,24 @@ public class BranchController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public virtual async Task<IActionResult> UpdateAsync(int id, [FromBody] BranchDTO entity)
+	public virtual async Task<IActionResult> UpdateAsync(
+		int id, 
+		[FromBody] UpdateBranchCommand command,
+		CancellationToken cancellationToken)
 	{
-		if (id != entity.Id)
+		if(id != command.Id)
 		{
 			return BadRequest();
 		}
 
-		return Ok(await _service.UpdateAsync(entity));
+		try
+		{
+			return GetActionResult(await _sender.Send(command, cancellationToken));
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
@@ -73,17 +155,29 @@ public class BranchController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> DeleteAsync(int id)
+	public async Task<IActionResult> DeleteAsync(
+		int id,
+		CancellationToken cancellationToken)
 	{
-		return Ok(await _service.DeleteAsync(id));
+		var command = new DeleteBranchCommand(id);
+		try
+		{
+			return GetActionResult(await _sender.Send(command, cancellationToken));
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 
 
-	[HttpPatch("{id}/status")]
+	[HttpPatch("{id}/status/{status}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> SetActiveStatusAsync(int id, [FromBody] int status)
+	public async Task<IActionResult> SetActiveStatusAsync(
+		int id, 
+		int status)
 	{
 		if (_service is IActiveStatusService)
 		{

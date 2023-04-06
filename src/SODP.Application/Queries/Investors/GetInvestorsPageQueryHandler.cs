@@ -18,7 +18,9 @@ public sealed class GetInvestorsPageQueryHandler : IQueryHandler<GetInvestorsPag
 	private readonly IInvestorRepository _investorRepository;
 	private readonly IMapper _mapper;
 
-	public GetInvestorsPageQueryHandler(IInvestorRepository investorRepository, IMapper mapper)
+	public GetInvestorsPageQueryHandler(
+		IInvestorRepository investorRepository, 
+		IMapper mapper)
     {
 		_investorRepository = investorRepository;
 		_mapper = mapper;

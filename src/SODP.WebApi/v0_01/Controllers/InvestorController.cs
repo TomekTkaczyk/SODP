@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Commands.Investors;
 using SODP.Application.Queries.Investors;
-using SODP.Application.Services;
 using SODP.Domain.Entities;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
@@ -16,7 +15,7 @@ namespace SODP.WebApi.v0_01.Controllers;
 // [Authorize]
 [ApiController]
 [Route("api/v0_01/investors")]
-public class InvestorController : ActiveStatusController
+public class InvestorController : ActiveStatusController<Investor>
 {
 	public InvestorController(
 		ISender sender,
@@ -44,10 +43,12 @@ public class InvestorController : ActiveStatusController
 		try
 		{
 			var response = await _sender.Send(query, cancellationToken);
+			if (response.IsSuccess)
+			{
+				return Ok(response);
+			}
 
-			return response.IsSuccess
-				? Ok(response)
-				: NotFound(response.Errors);
+			return GetActionResult(response);
 		}
 		catch (Exception ex)
 		{
@@ -68,11 +69,12 @@ public class InvestorController : ActiveStatusController
 		try
 		{
 			var response = await _sender.Send(query, cancellationToken);
+			if (response.IsSuccess)
+			{
+				return Ok(response);
+			}
 
-			return response.IsSuccess
-				? Ok(response)
-				: NotFound(response.Errors);
-
+			return GetActionResult(response);
 		}
 		catch (Exception ex)
 		{
@@ -91,13 +93,16 @@ public class InvestorController : ActiveStatusController
 	{
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-			return result.IsSuccess
-				? CreatedAtAction(
+			var response = await _sender.Send(command, cancellationToken);
+			if (response.IsSuccess)
+			{
+				return CreatedAtAction(
 					nameof(GetAsync),
-					new { result.Value.Id },
-					_mapper.Map<Investor, InvestorDTO>(result.Value))
-				: Conflict(result.Errors);
+					new { response.Value.Id },
+					_mapper.Map<Investor, InvestorDTO>(response.Value));
+			}
+
+			return GetActionResult(response);
 		}
 		catch (Exception ex)
 		{
@@ -122,10 +127,9 @@ public class InvestorController : ActiveStatusController
 
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-			return result.IsSuccess
-				? NoContent()
-				: Conflict(result);
+			var response = await _sender.Send(command, cancellationToken);
+
+			return GetActionResult(response);
 		}
 		catch (Exception ex)
 		{
@@ -145,10 +149,7 @@ public class InvestorController : ActiveStatusController
 		var command = new DeleteInvestorCommand(id);
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-			return result.IsSuccess
-				? NoContent()
-				: NotFound(result.Errors);
+			return GetActionResult( await _sender.Send(command, cancellationToken));
 		}
 		catch (Exception ex)
 		{

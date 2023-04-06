@@ -126,7 +126,7 @@ else
 			var content = {Id: id, activeStatus: checked};
 			$.ajax({
 				type: "PATCH",
-				url: `/api/v0_01/investors/${id}/status`,
+				url: `/api/v0_01/investors/${id}/status/${c}`,
 				contentType: "application/json",
 				dataType: 'json',
 				data: JSON.stringify(content),

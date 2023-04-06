@@ -14,7 +14,9 @@ public class ChangeInvestorNameCommandHandler : ICommandHandler<ChangeInvestorNa
 	private readonly IInvestorRepository _investorRepository;
 	private readonly IUnitOfWork _unitOfWork;
 
-	public ChangeInvestorNameCommandHandler(IInvestorRepository investorRepository, IUnitOfWork unitOfWork)
+	public ChangeInvestorNameCommandHandler(
+		IInvestorRepository investorRepository, 
+		IUnitOfWork unitOfWork)
 	{
 		_investorRepository = investorRepository;
 		_unitOfWork = unitOfWork;

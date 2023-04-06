@@ -3,8 +3,10 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.Commands.Common;
 using SODP.Application.Commands.Investors;
 using SODP.Application.Services;
+using SODP.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +14,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers;
-
-public class ActiveStatusController : ApiControllerBase
+																			  
+public abstract class ActiveStatusController<TEntity> : ApiControllerBase where TEntity : BaseEntity, IActiveStatus
 {
 	public ActiveStatusController(
 		ISender sender,
@@ -24,15 +26,17 @@ public class ActiveStatusController : ApiControllerBase
 	}
 
 
-	[HttpPatch("{id}/status")]
+	[HttpPatch("{id}/status/{status}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> SetActiveStatusAsync(
 		int id,
-		[FromBody] SetActiveStatusCommand command,
+		int status,
 		CancellationToken cancellationToke = default)
 	{
+		var command = new SetActiveStatusCommand<TEntity>(id, status == 1);
+
 		if (id != command.Id)
 		{
 			return BadRequest();
@@ -41,9 +45,7 @@ public class ActiveStatusController : ApiControllerBase
 		try
 		{
 			var result = await _sender.Send(command, cancellationToke);
-			return result.IsSuccess
-				? NoContent()
-				: NotFound();
+			return NoContent();
 		}
 		catch (Exception ex)
 		{
