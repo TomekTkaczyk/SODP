@@ -6,4 +6,4 @@ namespace SODP.Application.Commands.Common;
 
 public sealed record SetActiveStatusCommand<TEntity>(
     int Id,
-    bool ActiveStatus) : IRequest<ApiResponse> where TEntity : BaseEntity, IActiveStatus;
+    bool ActiveStatus) : IRequest<ApiResponse> where TEntity : IActiveStatus;

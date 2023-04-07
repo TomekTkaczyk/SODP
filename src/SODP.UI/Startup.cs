@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SODP.Application;
 using SODP.Application.Commands.Common;
 using SODP.Application.Services;
 using SODP.DataAccess;
@@ -45,13 +46,11 @@ namespace SODP.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMediatR(Application.AssemblyReference.Assembly);
-            services.AddTransient(
-                typeof(IRequestHandler<SetActiveStatusCommand<Stage>, ApiResponse>),
-                typeof(SetActiveStatusCommandHandler<Stage>));
-			services.AddTransient(
-				typeof(IRequestHandler<SetActiveStatusCommand<Investor>, ApiResponse>),
-				typeof(SetActiveStatusCommandHandler<Investor>));
+			services.AddMediatR(Application.AssemblyReference.Assembly);
+
+             // Warning: Generic handlers must be manually registered in the MS DI container
+			services.AddActiveStatusCommandHandlers(Domain.AssemblyReference.Assembly);
+
 
 			services.AddSwagger(Configuration);
 

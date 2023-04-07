@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers;
 																			  
-public abstract class ActiveStatusController<TEntity> : ApiControllerBase where TEntity : BaseEntity, IActiveStatus
+public abstract class ActiveStatusController<TEntity> : ApiControllerBase where TEntity : IActiveStatus
 {
 	public ActiveStatusController(
 		ISender sender,
@@ -36,12 +36,6 @@ public abstract class ActiveStatusController<TEntity> : ApiControllerBase where 
 		CancellationToken cancellationToke = default)
 	{
 		var command = new SetActiveStatusCommand<TEntity>(id, status == 1);
-
-		if (id != command.Id)
-		{
-			return BadRequest();
-		}
-
 		try
 		{
 			var result = await _sender.Send(command, cancellationToke);
