@@ -43,7 +43,7 @@ public abstract class ActiveStatusController<TEntity> : ApiControllerBase where 
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 }

@@ -59,7 +59,7 @@ public class ProjectController : ApiControllerBase
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -80,7 +80,7 @@ public class ProjectController : ApiControllerBase
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class ProjectController : ApiControllerBase
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class ProjectController : ApiControllerBase
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class ProjectController : ApiControllerBase
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -173,7 +173,7 @@ public class ProjectController : ApiControllerBase
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -202,7 +202,7 @@ public class ProjectController : ApiControllerBase
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 

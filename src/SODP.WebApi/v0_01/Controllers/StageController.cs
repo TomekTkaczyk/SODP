@@ -51,7 +51,7 @@ public class StageController : ActiveStatusController<Stage>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -72,7 +72,7 @@ public class StageController : ActiveStatusController<Stage>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -95,7 +95,7 @@ public class StageController : ActiveStatusController<Stage>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class StageController : ActiveStatusController<Stage>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -142,7 +142,7 @@ public class StageController : ActiveStatusController<Stage>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 }

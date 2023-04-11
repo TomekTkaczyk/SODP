@@ -49,7 +49,7 @@ public class InvestorController : ActiveStatusController<Investor>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -70,7 +70,7 @@ public class InvestorController : ActiveStatusController<Investor>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class InvestorController : ActiveStatusController<Investor>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -129,7 +129,7 @@ public class InvestorController : ActiveStatusController<Investor>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -158,7 +158,7 @@ public class InvestorController : ActiveStatusController<Investor>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 }

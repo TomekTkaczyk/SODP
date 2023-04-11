@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace SODP.Shared.DTO
+namespace SODP.Shared.DTO;
+
+public record LicenseDTO // : BaseDTO
 {
-    public class NewLicenseDTO
-    {
-        public int DesignerId { get; set; }
-        public string Content { get; set; }
-    }
+	public int Id { get; set; }
+
+	public DesignerDTO Designer { get; set; }
+
+	public string Content { get; set; }
+
+	public IList<BranchDTO> Branches { get; set; }
 }

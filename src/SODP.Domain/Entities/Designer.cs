@@ -49,7 +49,7 @@ public class Designer : ActiveStatusEntity
         Licenses.Add(license);
     }
 
-    public void Remove(License license)
+    public void RemoveLicense(License license)
     {
         Licenses.Remove(license);
     }

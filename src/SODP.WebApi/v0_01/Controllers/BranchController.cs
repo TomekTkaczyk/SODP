@@ -57,7 +57,7 @@ public class BranchController : ActiveStatusController<Branch>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -78,7 +78,7 @@ public class BranchController : ActiveStatusController<Branch>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class BranchController : ActiveStatusController<Branch>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -135,7 +135,7 @@ public class BranchController : ActiveStatusController<Branch>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -156,7 +156,7 @@ public class BranchController : ActiveStatusController<Branch>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 
@@ -182,7 +182,7 @@ public class BranchController : ActiveStatusController<Branch>
 		}
 		catch (Exception ex)
 		{
-			return InternalServerErrorStatusCode(ex);
+			return UnknowServerError(ex);
 		}
 	}
 }

@@ -11,14 +11,15 @@ using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System;
 using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers
 {
     [ApiController]
     [Route("api/v0_01/designers")]
-    public class DesignerController : ApiControllerBase
-    {
+    public class DesignerController : ActiveStatusController<Designer>
+	{
         private readonly IDesignerService _service;
 
         public DesignerController(
@@ -49,7 +50,7 @@ namespace SODP.WebApi.v0_01.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerErrorStatusCode(ex);
+                return UnknowServerError(ex);
             }
         }
 
@@ -58,7 +59,9 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetAsync(
+            int id, 
+            CancellationToken cancellationToken = default)
         {
             var query = new GetDesignerByIdQuery(id);
             try
@@ -72,7 +75,7 @@ namespace SODP.WebApi.v0_01.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerErrorStatusCode(ex);
+                return UnknowServerError(ex);
             }
         }
 
@@ -82,7 +85,9 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> CreateAsync([FromBody] CreateDesignerCommand command, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> CreateAsync(
+            [FromBody] CreateDesignerCommand command, 
+            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -100,7 +105,7 @@ namespace SODP.WebApi.v0_01.Controllers
             }
 			catch (Exception ex)
             {
-                return InternalServerErrorStatusCode(ex.Message);
+                return UnknowServerError(ex.Message);
             }
         }
 
@@ -134,7 +139,7 @@ namespace SODP.WebApi.v0_01.Controllers
 			}
 			catch (Exception ex)
 			{
-				return InternalServerErrorStatusCode(ex);
+				return UnknowServerError(ex);
 			}
 		}
 
@@ -143,36 +148,55 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(
+            int id,
+            CancellationToken cancellationToken)
         {
-            return Ok(await _service.DeleteAsync(id));
-        }
-
-
-        [HttpPatch("{id}/status")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> SetActiveStatusAsync(int id, [FromBody] int status)
-        {
-            if (_service is IActiveStatusService)
+            var command = new DeleteDesignerCommand(id);
+            try
             {
-                return Ok(await _service.SetActiveStatusAsync(id, status == 1));
+                await _sender.Send(command, cancellationToken);
+                return NoContent();
             }
-
-            return BadRequest();
+			catch (NotFoundException ex)
+			{
+				return NotFound(ex.Message);
+			}
+			catch (Exception ex)
+            {
+                return UnknowServerError(ex.Message);
+            }
         }
+
 
         [HttpGet("{id}/licenses")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetLicensesAsync(int id)
+        public async Task<IActionResult> GetDesignerWithLicensesAsync(
+            int id,
+            CancellationToken cancellationToken)
         {
-            var response = await _service.GetLicensesAsync(id);
+			var query = new GetDesignerWithDetailsQuery(id);
+			try
+			{
+				var designer = await _sender.Send(query, cancellationToken);
 
-            return Ok(response);
-        }
+                var response = new DesigenrLicensesDTO(
+                    _mapper.Map<DesignerDTO>(designer),
+                    _mapper.Map<ICollection<LicenseDTO>>(designer.Licenses));
+
+				return Ok(ApiResponse.Success(response));
+			}
+			catch (NotFoundException ex)
+			{
+				return NotFound(ex.Message);
+			}
+			catch (Exception ex)
+			{
+				return UnknowServerError(ex);
+			}
+		}
 
         [HttpPost("{id}/licenses")]
         [ProducesResponseType(StatusCodes.Status200OK)]

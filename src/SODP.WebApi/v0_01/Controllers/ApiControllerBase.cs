@@ -21,7 +21,7 @@ public abstract class ApiControllerBase : ControllerBase
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 	}
 
-	protected ObjectResult InternalServerErrorStatusCode(object value)
+	protected ObjectResult UnknowServerError(object value)
 	{
 		return StatusCode(StatusCodes.Status500InternalServerError, value);
 	}
