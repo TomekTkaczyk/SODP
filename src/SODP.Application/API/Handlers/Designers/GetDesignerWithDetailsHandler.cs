@@ -6,13 +6,15 @@ using SODP.Application.Specifications.Designers;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Designers;
 
-public class GetDesignerWithDetailsHandler : IRequestHandler<GetDesignerWithDetailsRequest, Designer>
+public class GetDesignerWithDetailsHandler : IRequestHandler<GetDesignerWithDetailsRequest, ApiResponse<DesignerLicensesDTO>>
 {
     private readonly IDesignerRepository _designerRepository;
     private readonly IMapper _mapper;
@@ -24,7 +26,7 @@ public class GetDesignerWithDetailsHandler : IRequestHandler<GetDesignerWithDeta
         _designerRepository = designerRepository;
         _mapper = mapper;
     }
-    public async Task<Designer> Handle(GetDesignerWithDetailsRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<DesignerLicensesDTO>> Handle(GetDesignerWithDetailsRequest request, CancellationToken cancellationToken)
     {
         var designer = await _designerRepository
             .ApplySpecyfication(new DesignerLicensesSpecification(request.DesignerId))
@@ -35,6 +37,11 @@ public class GetDesignerWithDetailsHandler : IRequestHandler<GetDesignerWithDeta
             throw new NotFoundException(nameof(Designer));
         }
 
-        return designer;
+		var designerLicenses = new DesignerLicensesDTO(
+	        _mapper.Map<DesignerDTO>(designer),
+	        _mapper.Map<ICollection<LicenseDTO>>(designer.Licenses));
+
+
+		return ApiResponse.Success(designerLicenses);
     }
 }

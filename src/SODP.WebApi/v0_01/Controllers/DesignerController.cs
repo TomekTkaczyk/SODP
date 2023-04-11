@@ -39,11 +39,11 @@ namespace SODP.WebApi.v0_01.Controllers
             int pageSize = 0, 
             CancellationToken cancellationToken = default)
 		{
-            var query = new GetDesignersPageRequest(active, searchString, pageNumber, pageSize);
+            var request = new GetDesignersPageRequest(active, searchString, pageNumber, pageSize);
             try
             {
-                var designers = await _sender.Send(query, cancellationToken);
-                return Ok(ApiResponse.Success(_mapper.Map<Page<DesignerDTO>>(designers)));
+                var response = await _sender.Send(request, cancellationToken);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -83,18 +83,17 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> CreateAsync(
-            [FromBody] CreateDesignerRequest command, 
+            [FromBody] CreateDesignerRequest request, 
             CancellationToken cancellationToken = default)
         {
             try
             {
-                var designer = await _sender.Send(command, cancellationToken);
-                var apiResponse = ApiResponse.Success(_mapper.Map<DesignerDTO>(designer));
+                var response = await _sender.Send(request, cancellationToken);
 
 				return CreatedAtAction(
 					   nameof(GetAsync),
-					   new { apiResponse.Value.Id },
-					   apiResponse);
+					   new { response.Value.Id },
+					   response);
 			}
 			catch (DesignerConflictException ex)
             {
@@ -113,17 +112,17 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public virtual async Task<IActionResult> UpdateAsync(
             int id, 
-            [FromBody] ChangeDesignerNameRequest command,
-            CancellationToken cancellationToken)
+            [FromBody] ChangeDesignerNameRequest request,
+            CancellationToken cancellationToken = default)
         {
-			if (id != command.Id)
+			if (id != request.Id)
 			{
-				return BadRequest(command);
+				return BadRequest(request);
 			}
 			
             try
 			{
-				var response = await _sender.Send(command, cancellationToken);
+				var response = await _sender.Send(request, cancellationToken);
 				return NoContent();
 			}
 			catch (ConflictException ex)
@@ -147,12 +146,12 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteAsync(
             int id,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
-            var command = new DeleteDesignerRequest(id);
+            var request = new DeleteDesignerRequest(id);
             try
             {
-                await _sender.Send(command, cancellationToken);
+                await _sender.Send(request, cancellationToken);
                 return NoContent();
             }
 			catch (NotFoundException ex)
@@ -172,18 +171,15 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetDesignerWithLicensesAsync(
             int id,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
-			var query = new GetDesignerWithDetailsRequest(id);
+			var request = new GetDesignerWithDetailsRequest(id);
 			try
 			{
-				var designer = await _sender.Send(query, cancellationToken);
+				var response = await _sender.Send(request, cancellationToken);
 
-                var response = new DesignerLicensesDTO(
-                    _mapper.Map<DesignerDTO>(designer),
-                    _mapper.Map<ICollection<LicenseDTO>>(designer.Licenses));
 
-				return Ok(ApiResponse.Success(response));
+				return Ok(response);
 			}
 			catch (NotFoundException ex)
 			{
@@ -195,11 +191,15 @@ namespace SODP.WebApi.v0_01.Controllers
 			}
 		}
 
+
         [HttpPost("{id}/licenses")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> AddLicense(int id, [FromBody] LicenseDTO license)
+        public async Task<IActionResult> AddLicense(
+            int id, 
+            [FromBody] LicenseDTO license, 
+            CancellationToken cancellationToken = default)
         {
             return Ok(await _service.AddLicenseAsync(id, license));
         }

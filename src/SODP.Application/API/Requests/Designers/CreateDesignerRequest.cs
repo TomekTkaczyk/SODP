@@ -1,9 +1,10 @@
 ﻿using MediatR;
-using SODP.Domain.Entities;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Designers;
 
-public record CreateDesignerRequest(
+public sealed record CreateDesignerRequest(
     string Title,
     string Firstname,
-    string Lastname) : IRequest<Designer>;
+    string Lastname) : IRequest<ApiResponse<DesignerDTO>>;

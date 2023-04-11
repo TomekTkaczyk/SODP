@@ -2,7 +2,7 @@
 
 namespace SODP.Application.API.Requests.Designers;
 
-public record ChangeDesignerNameRequest(
+public sealed record ChangeDesignerNameRequest(
     int Id,
     string Title,
     string Firstname,

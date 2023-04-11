@@ -2,5 +2,5 @@
 
 namespace SODP.Application.API.Requests.Designers;
 
-public record DeleteDesignerRequest(
+public sealed record DeleteDesignerRequest(
 	int Id) : IRequest;

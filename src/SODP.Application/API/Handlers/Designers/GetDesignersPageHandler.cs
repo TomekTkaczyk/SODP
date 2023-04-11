@@ -1,9 +1,11 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
 using SODP.Application.Specifications.Designers;
 using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
+using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -11,17 +13,20 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Designers;
 
-public sealed class GetDesignersPageHandler : IRequestHandler<GetDesignersPageRequest, Page<Designer>>
+public sealed class GetDesignersPageHandler : IRequestHandler<GetDesignersPageRequest, ApiResponse<Page<DesignerDTO>>>
 {
     private readonly IDesignerRepository _designerRepository;
+	private readonly IMapper _mapper;
 
-    public GetDesignersPageHandler(
-        IDesignerRepository designerRepository)
+	public GetDesignersPageHandler(
+        IDesignerRepository designerRepository,
+        IMapper mapper)
     {
         _designerRepository = designerRepository;
-    }
+		_mapper = mapper;
+	}
 
-    public async Task<Page<Designer>> Handle(
+    public async Task<ApiResponse<Page<DesignerDTO>>> Handle(
         GetDesignersPageRequest request,
         CancellationToken cancellationToken)
     {
@@ -37,10 +42,12 @@ public sealed class GetDesignersPageHandler : IRequestHandler<GetDesignersPageRe
 
         var collection = new ReadOnlyCollection<Designer>(await queryable.ToListAsync(cancellationToken));
 
-        return Page<Designer>.Create(
-                collection,
+        var page = Page<DesignerDTO>.Create(
+                _mapper.Map<ReadOnlyCollection<DesignerDTO>>(collection),
                 request.PageNumber,
                 request.PageSize,
                 totalItems);
+
+        return ApiResponse.Success(page);
     }
 }

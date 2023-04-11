@@ -3,5 +3,5 @@ using SODP.Domain.Entities;
 
 namespace SODP.Application.API.Requests.Designers;
 
-public record GetDesignerByIdRequest(
+public sealed record GetDesignerByIdRequest(
 	int Id) : IRequest<Designer>;
