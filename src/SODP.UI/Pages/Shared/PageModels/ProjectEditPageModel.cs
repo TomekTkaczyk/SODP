@@ -3,11 +3,7 @@ using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Shared.PageModels;

@@ -3,20 +3,16 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
-using SODP.Application.Commands.Designers;
-using SODP.Application.Queries.Designers;
+using SODP.Application.API.Requests.Designers;
 using SODP.Application.Services;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers
 {
-    [ApiController]
+	[ApiController]
     [Route("api/v0_01/designers")]
     public class DesignerController : ActiveStatusController<Designer>
 	{
@@ -32,7 +28,8 @@ namespace SODP.WebApi.v0_01.Controllers
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        [HttpGet]
+
+		[HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetPageAsync(
@@ -42,7 +39,7 @@ namespace SODP.WebApi.v0_01.Controllers
             int pageSize = 0, 
             CancellationToken cancellationToken = default)
 		{
-            var query = new GetDesignersPageQuery(active, searchString, pageNumber, pageSize);
+            var query = new GetDesignersPageRequest(active, searchString, pageNumber, pageSize);
             try
             {
                 var designers = await _sender.Send(query, cancellationToken);
@@ -60,16 +57,16 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetAsync(
-            int id, 
+            int id,
             CancellationToken cancellationToken = default)
         {
-            var query = new GetDesignerByIdQuery(id);
+            var request = new GetDesignerRequest(id);
             try
             {
-                var designer = await _sender.Send(query, cancellationToken);
-                return Ok(ApiResponse.Success(_mapper.Map<DesignerDTO>(designer)));
+                var response = await _sender.Send(request, cancellationToken);
+                return Ok(response);
             }
-            catch(NotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -86,7 +83,7 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> CreateAsync(
-            [FromBody] CreateDesignerCommand command, 
+            [FromBody] CreateDesignerRequest command, 
             CancellationToken cancellationToken = default)
         {
             try
@@ -116,7 +113,7 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public virtual async Task<IActionResult> UpdateAsync(
             int id, 
-            [FromBody] ChangeDesignerNameCommand command,
+            [FromBody] ChangeDesignerNameRequest command,
             CancellationToken cancellationToken)
         {
 			if (id != command.Id)
@@ -152,7 +149,7 @@ namespace SODP.WebApi.v0_01.Controllers
             int id,
             CancellationToken cancellationToken)
         {
-            var command = new DeleteDesignerCommand(id);
+            var command = new DeleteDesignerRequest(id);
             try
             {
                 await _sender.Send(command, cancellationToken);
@@ -177,7 +174,7 @@ namespace SODP.WebApi.v0_01.Controllers
             int id,
             CancellationToken cancellationToken)
         {
-			var query = new GetDesignerWithDetailsQuery(id);
+			var query = new GetDesignerWithDetailsRequest(id);
 			try
 			{
 				var designer = await _sender.Send(query, cancellationToken);

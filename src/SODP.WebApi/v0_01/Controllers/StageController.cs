@@ -3,16 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Application.Commands.Stages;
-using SODP.Application.Queries.Stages;
-using SODP.Application.Services;
+using SODP.Application.API.Requests.Stages;
 using SODP.Domain.Entities;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -43,7 +38,7 @@ public class StageController : ActiveStatusController<Stage>
 			return BadRequest(error.Error);
 		}
 
-		var query = new GetStagesPageQuery(active, searchString, pageNumber, pageSize);
+		var query = new GetStagesPageRequest(active, searchString, pageNumber, pageSize);
 		try
 		{
 			var stages = await _sender.Send(query, cancellationToken);
@@ -64,7 +59,7 @@ public class StageController : ActiveStatusController<Stage>
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetStageByIdQuery(id);
+		var query = new GetStageByIdRequest(id);
 		try
 		{
 			var stage = await _sender.Send(query, cancellationToken);
@@ -82,7 +77,7 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
-		[FromBody] CreateStageCommand command, 
+		[FromBody] CreateStageRequest command, 
 		CancellationToken cancellationToken = default)
 	{
 		try
@@ -106,7 +101,7 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public virtual async Task<IActionResult> ChangeNameAsync(
 		int id,
-		[FromBody] ChangeStageNameCommand command,
+		[FromBody] ChangeStageNameRequest command,
 		CancellationToken cancellationToken = default)
 	{
 		if (id != command.Id)
@@ -134,7 +129,7 @@ public class StageController : ActiveStatusController<Stage>
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var command = new DeleteStageCommad(id);
+		var command = new DeleteStageRequest(id);
 		try
 		{
 			await _sender.Send(command, cancellationToken);

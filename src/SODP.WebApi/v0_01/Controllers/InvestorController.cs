@@ -3,14 +3,12 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Application.Commands.Investors;
-using SODP.Application.Queries.Investors;
+using SODP.Application.API.Requests.Investors;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -40,7 +38,7 @@ public class InvestorController : ActiveStatusController<Investor>
 			return BadRequest(ApiResponse.Failure("pageNumber and/or pageSize is invalid."));
 		}
 
-		var query = new GetInvestorsPageQuery(active, searchString, pageNumber, pageSize);
+		var query = new GetInvestorsPageRequest(active, searchString, pageNumber, pageSize);
 		try
 		{
 			var investors = await _sender.Send(query, cancellationToken);
@@ -62,7 +60,7 @@ public class InvestorController : ActiveStatusController<Investor>
 		int id,
 		CancellationToken cancellationToken = default)
 	{
-		var query = new GetInvestorByIdQuery(id);
+		var query = new GetInvestorByIdRequest(id);
 		try
 		{
 			var investor = await _sender.Send(query, cancellationToken);
@@ -80,7 +78,7 @@ public class InvestorController : ActiveStatusController<Investor>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
-		[FromBody] CreateInvestorCommand command,
+		[FromBody] CreateInvestorRequest command,
 		CancellationToken cancellationToken = default)
 	{
 		try
@@ -110,7 +108,7 @@ public class InvestorController : ActiveStatusController<Investor>
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> ChangeNameAsync(
 		int id,
-		[FromBody] ChangeInvestorNameCommand command,
+		[FromBody] ChangeInvestorNameRequest command,
 		CancellationToken cancellationToken = default)
 	{
 		if (id != command.Id)
@@ -142,7 +140,7 @@ public class InvestorController : ActiveStatusController<Investor>
 		int id,
 		CancellationToken cancellationToken = default)
 	{
-		var command = new DeleteInvestorCommand(id);
+		var command = new DeleteInvestorRequest(id);
 		try
 		{
 			await _sender.Send(command, cancellationToken);

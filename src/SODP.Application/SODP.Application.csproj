@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SODP.DataAccess\SODP.DataAccess.csproj" />
     <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
   </ItemGroup>
 

@@ -3,17 +3,11 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Application.Commands.Projects;
-using SODP.Application.Queries.Projects;
+using SODP.Application.API.Requests.Projects;
 using SODP.Application.Services;
-using SODP.Domain.Entities;
-using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
-using System.Net;
-using System.Text.Json;
-using System.Threading;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -51,7 +45,7 @@ public class ProjectController : ApiControllerBase
 			return BadRequest($"pageNumber and/or pageSize is invalid.");
 		}
 
-		var query = new GetProjectsPageQuery(status, searchString, pageNumber, pageSize);
+		var query = new GetProjectsPageRequest(status, searchString, pageNumber, pageSize);
 		try
 		{
 			var projects = await _sender.Send(query, cancellationToken);
@@ -72,7 +66,7 @@ public class ProjectController : ApiControllerBase
 		int id,
 		CancellationToken cancellationToken = default)
 	{
-		var query = new GetProjectByIdQuery(id);
+		var query = new GetProjectByIdRequest(id);
 		try
 		{
 			var project = await _sender.Send(query, cancellationToken);
@@ -94,7 +88,7 @@ public class ProjectController : ApiControllerBase
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetProjectByIdWithDetailsQuery(id);
+		var query = new GetProjectByIdWithDetailsRequest(id);
 		try
 		{
 			var project = await _sender.Send(query, cancellationToken);
@@ -114,7 +108,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status409Conflict)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 	public async Task<IActionResult> CreateAsync(
-		[FromBody] CreateProjectCommand command,
+		[FromBody] CreateProjectRequest command,
 		CancellationToken cancellationToken = default)
 	{
 		try
@@ -140,7 +134,7 @@ public class ProjectController : ApiControllerBase
 		int id,
 		CancellationToken cancellationToken = default)
 	{
-		var command = new DeleteProjectCommand(id);
+		var command = new DeleteProjectRequest(id);
 		try
 		{
 			await _sender.Send(command, cancellationToken);
@@ -159,7 +153,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Update(
 		int id,
-		[FromBody] UpdateProjectCommand command,
+		[FromBody] UpdateProjectRequest command,
 		CancellationToken cancellationToken)
 	{
 		if (id != command.Id)
@@ -184,7 +178,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> AddPartAsync(
 		int id, 
-		[FromBody] AddPartCommand command,
+		[FromBody] AddPartRequest command,
 		CancellationToken cancellationToken)
 	{
 		if(id != command.Id)

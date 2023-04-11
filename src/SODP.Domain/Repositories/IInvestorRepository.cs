@@ -8,10 +8,4 @@ namespace SODP.Domain.Repositories;
 
 public interface IInvestorRepository : IPageRepository<Investor>
 {
-	//	Task<Page<Investor>> GetPageAsync(
-	//		bool? active, 
-	//		string searchString, 
-	//		int pageNumber,
-	//		int pageSize, 
-	//		CancellationToken cancellationToken);
 }

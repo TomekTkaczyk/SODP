@@ -1,7 +1,8 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using SODP.Application.Commands.Common;
+using SODP.Application.API.Handlers.Common;
+using SODP.Application.API.Requests.Common;
 using SODP.Domain.Entities;
 using SODP.Shared.Response;
 using System;
@@ -22,8 +23,8 @@ public static class DependecyInjection
 
 		foreach (var type in types)
 		{
-			var requestType = typeof(SetActiveStatusCommand<>).MakeGenericType(type);
-			var handlerType = typeof(SetActiveStatusCommandHandler<>).MakeGenericType(type);
+			var requestType = typeof(SetActiveStatusRequest<>).MakeGenericType(type);
+			var handlerType = typeof(SetActiveStatusHandler<>).MakeGenericType(type);
 			services.AddTransient(
 				typeof(IRequestHandler<,>).MakeGenericType(requestType, typeof(Unit)), 
 				handlerType);

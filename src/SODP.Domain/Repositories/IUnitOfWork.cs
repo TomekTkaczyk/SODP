@@ -1,10 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace SODP.Domain.Repositories
+namespace SODP.Domain.Repositories;
+
+public interface IUnitOfWork
 {
-	public interface IUnitOfWork
-	{
-		Task<int> SaveChangesAsync(CancellationToken cancellationToken);
-	}
+	Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
