@@ -182,7 +182,7 @@ namespace SODP.WebApi.v0_01.Controllers
 			{
 				var designer = await _sender.Send(query, cancellationToken);
 
-                var response = new DesigenrLicensesDTO(
+                var response = new DesignerLicensesDTO(
                     _mapper.Map<DesignerDTO>(designer),
                     _mapper.Map<ICollection<LicenseDTO>>(designer.Licenses));
 

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Specifications.Designers;
 using SODP.Domain.Entities;
@@ -13,11 +14,14 @@ namespace SODP.Application.Queries.Designers;
 public class GetDesignerWithDetailsQueryHandler : IRequestHandler<GetDesignerWithDetailsQuery, Designer>
 {
 	private readonly IDesignerRepository _designerRepository;
+	private readonly IMapper _mapper;
 
 	public GetDesignerWithDetailsQueryHandler(
-        IDesignerRepository designerRepository)
+        IDesignerRepository designerRepository,
+		IMapper mapper)
     {
 		_designerRepository = designerRepository;
+		_mapper = mapper;
 	}
     public async Task<Designer> Handle(GetDesignerWithDetailsQuery request, CancellationToken cancellationToken)
 	{

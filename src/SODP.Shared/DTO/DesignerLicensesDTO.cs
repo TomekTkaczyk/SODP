@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace SODP.Shared.DTO;
 
-public record DesigenrLicensesDTO(DesignerDTO designer, ICollection<LicenseDTO> licenses)
+public record DesignerLicensesDTO(
+	DesignerDTO designer, 
+	ICollection<LicenseDTO> licenses)
 {
 }
