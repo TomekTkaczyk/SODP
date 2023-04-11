@@ -1,7 +1,6 @@
-﻿namespace SODP.Domain.Exceptions
+﻿namespace SODP.Domain.Exceptions;
+
+public class InvestorNotFoundException : DomainException
 {
-	public class InvestorNotFoundException : AppException
-	{
-		public InvestorNotFoundException() : base("Investor not found.") { }
-	}
+	public InvestorNotFoundException() : base("Investor not found.") { }
 }

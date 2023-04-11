@@ -1,8 +1,6 @@
-﻿using SODP.Application.Abstractions;
-using SODP.Shared.DTO;
+﻿using MediatR;
+using SODP.Domain.Entities;
 
 namespace SODP.Application.Queries.Stages;
 
-public record GetStageByIdQuery(int Id) : IQuery<StageDTO>
-{
-}
+public record GetStageByIdQuery(int Id) : IRequest<Stage> { }

@@ -1,5 +1,5 @@
-﻿using SODP.Application.Abstractions;
+﻿using MediatR;
 
 namespace SODP.Application.Commands.Projects;
 
-public sealed record DeleteProjectCommand(int Id) : ICommand;
+public sealed record DeleteProjectCommand(int Id) : IRequest;

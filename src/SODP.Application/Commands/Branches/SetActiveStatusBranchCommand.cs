@@ -1,8 +1,8 @@
-﻿using SODP.Application.Abstractions;
+﻿using MediatR;
 
 namespace SODP.Application.Commands.Branches;
 
 public sealed record SetActiveStatusBranchCommand(
 	int Id,
-	bool ActiveStatus) : ICommand;
+	bool ActiveStatus) : IRequest;
 

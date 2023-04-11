@@ -1,5 +1,5 @@
-﻿using SODP.Application.Abstractions;
-using SODP.Shared.DTO;
+﻿using MediatR;
+using SODP.Domain.Entities;
 using SODP.Shared.Response;
 
 namespace SODP.Application.Queries.Stages;
@@ -8,5 +8,4 @@ public sealed record GetStagesPageQuery(
 	bool? ActiveStatus,
 	string SearchString,
 	int PageNumber,
-	int PageSize) : IQuery<Page<StageDTO>>
-{ }
+	int PageSize) : IRequest<Page<Stage>> { }

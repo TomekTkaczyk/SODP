@@ -3,8 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
+using SODP.Application.Commands.Designers;
+using SODP.Application.Queries.Designers;
 using SODP.Application.Services;
+using SODP.Domain.Entities;
+using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
 using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers
@@ -28,9 +34,23 @@ namespace SODP.WebApi.v0_01.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetPageAsync(bool? active, string searchString = "", int pageNumber = 1, int pageSize = 0)
-        {
-            return Ok(await _service.GetPageAsync(active, searchString, pageNumber, pageSize));
+        public async Task<IActionResult> GetPageAsync(
+            bool? active, 
+            string searchString = "", 
+            int pageNumber = 1, 
+            int pageSize = 0, 
+            CancellationToken cancellationToken = default)
+		{
+            var query = new GetDesignersPageQuery(active, searchString, pageNumber, pageSize);
+            try
+            {
+                var designers = await _sender.Send(query, cancellationToken);
+                return Ok(ApiResponse.Success(_mapper.Map<Page<DesignerDTO>>(designers)));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerErrorStatusCode(ex);
+            }
         }
 
 
@@ -38,9 +58,22 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAsync(int id)
+        public async Task<IActionResult> GetAsync(int id, CancellationToken cancellationToken = default)
         {
-            return Ok(await _service.GetAsync(id));
+            var query = new GetDesignerByIdQuery(id);
+            try
+            {
+                var designer = await _sender.Send(query, cancellationToken);
+                return Ok(ApiResponse.Success(_mapper.Map<DesignerDTO>(designer)));
+            }
+            catch(NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerErrorStatusCode(ex);
+            }
         }
 
 
@@ -49,28 +82,64 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> CreateAsync([FromBody] DesignerDTO designer)
+        public async Task<IActionResult> CreateAsync([FromBody] CreateDesignerCommand command, CancellationToken cancellationToken = default)
         {
-            return Ok(await _service.CreateAsync(designer));
+            try
+            {
+                var designer = await _sender.Send(command, cancellationToken);
+                var apiResponse = ApiResponse.Success(_mapper.Map<DesignerDTO>(designer));
+
+				return CreatedAtAction(
+					   nameof(GetAsync),
+					   new { apiResponse.Value.Id },
+					   apiResponse);
+			}
+			catch (DesignerConflictException ex)
+            {
+                return Conflict(ex.Message);
+            }
+			catch (Exception ex)
+            {
+                return InternalServerErrorStatusCode(ex.Message);
+            }
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public virtual async Task<IActionResult> UpdateAsync(int id, [FromBody] DesignerDTO entity)
+        public virtual async Task<IActionResult> UpdateAsync(
+            int id, 
+            [FromBody] ChangeDesignerNameCommand command,
+            CancellationToken cancellationToken)
         {
-            if (id != entity.Id)
-            {
-                return BadRequest();
-            }
+			if (id != command.Id)
+			{
+				return BadRequest(command);
+			}
+			
+            try
+			{
+				var response = await _sender.Send(command, cancellationToken);
+				return NoContent();
+			}
+			catch (ConflictException ex)
+			{
+				return Conflict(ApiResponse.Failure(ex.Message));
+			}
+			catch (NotFoundException ex)
+			{
+				return NotFound(ApiResponse.Failure(ex.Message));
+			}
+			catch (Exception ex)
+			{
+				return InternalServerErrorStatusCode(ex);
+			}
+		}
 
-            return Ok(await _service.UpdateAsync(entity));
-        }
 
-
-        [HttpDelete("{id}")]
+		[HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

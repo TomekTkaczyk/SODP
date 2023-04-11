@@ -1,17 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SODP.Application.Abstractions;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.Specifications.Stages;
 using SODP.Domain.Entities;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
-using SODP.Shared.Response;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Commands.Projects;
 
-internal class CreateProjectCommandHandler : ICommandHandler<CreateProjectCommand, Project>
+internal class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Project>
 {
 	private readonly IProjectRepository _projectRepository;
 	private readonly IStageRepository _stageRepository;
@@ -27,7 +26,7 @@ internal class CreateProjectCommandHandler : ICommandHandler<CreateProjectComman
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<ApiResponse<Project>> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
+    public async Task<Project> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
 	{
 		var projectExist = await _projectRepository
 			.ApplySpecyfication(new ProjectBySymbolSpecyfication(request.Number, request.StageSign))
@@ -35,8 +34,7 @@ internal class CreateProjectCommandHandler : ICommandHandler<CreateProjectComman
 
 		if(projectExist)
 		{
-			var error = new Error("ProjectCreator", "Project already exist.", HttpStatusCode.Conflict);
-			return ApiResponse.Failure<Project>(error, HttpStatusCode.Conflict);
+			throw new ConflictException("Project");
 		}
 
 		var stage = await _stageRepository
@@ -45,16 +43,14 @@ internal class CreateProjectCommandHandler : ICommandHandler<CreateProjectComman
 
 		if(stage is null)
 		{
-			var error = new Error("ProjectCreator", "Stage not found.", HttpStatusCode.NotFound);
-			return ApiResponse.Failure<Project>(error, HttpStatusCode.NotFound);
+			throw new NotFoundException("Project:Stage");
 		}
-
 
 		var project = Project.Create(request.Number, request.StageSign, request.Name);
 		project.Description = request.Description;
 		project = _projectRepository.Add(project);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		return ApiResponse.Success(project, HttpStatusCode.Created);
+		return project;
 	}
 }

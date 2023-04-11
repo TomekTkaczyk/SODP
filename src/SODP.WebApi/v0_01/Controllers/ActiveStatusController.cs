@@ -38,7 +38,7 @@ public abstract class ActiveStatusController<TEntity> : ApiControllerBase where 
 		var command = new SetActiveStatusCommand<TEntity>(id, status == 1);
 		try
 		{
-			var result = await _sender.Send(command, cancellationToke);
+			await _sender.Send(command, cancellationToke);
 			return NoContent();
 		}
 		catch (Exception ex)

@@ -1,7 +1,6 @@
-﻿namespace SODP.Domain.Exceptions
+﻿namespace SODP.Domain.Exceptions;
+
+public class InvestorExistException : DomainException
 {
-	public class InvestorExistException : AppException
-	{
-		public InvestorExistException() : base("Investor already exist.") { }
-	}
+	public InvestorExistException() : base("Investor already exist.") { }
 }

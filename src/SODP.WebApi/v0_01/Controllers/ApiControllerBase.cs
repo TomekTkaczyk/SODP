@@ -25,19 +25,4 @@ public abstract class ApiControllerBase : ControllerBase
 	{
 		return StatusCode(StatusCodes.Status500InternalServerError, value);
 	}
-
-	protected IActionResult GetActionResult(ApiResponse response)
-	{
-		switch(response.StatusCode)
-		{
-			case HttpStatusCode.NoContent:
-				return NoContent();
-			case HttpStatusCode.NotFound:
-				return NotFound(response.Errors);
-			case HttpStatusCode.Conflict:
-				return Conflict(response.Errors);
-			default:
-				throw new Exception($"{response.StatusCode} not implemented.");
-		}
-	}
 }

@@ -29,4 +29,14 @@ public class Stage : ActiveStatusEntity, IOrdered
     {
         return new Stage(sign, name);
     }
+
+	public void Up()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void Down()
+	{
+		throw new System.NotImplementedException();
+	}
 }

@@ -1,32 +1,32 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Application.Extensions;
+using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Stages;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Queries.Stages;
 
-public sealed class GetStagesPageQueryHandler : IQueryHandler<GetStagesPageQuery, Page<StageDTO>>
+public sealed class GetStagesPageQueryHandler : IRequestHandler<GetStagesPageQuery, Page<Stage>>
 {
 	private readonly IStageRepository _stageRepository;
-	private readonly IMapper _mapper;
 
 	public GetStagesPageQueryHandler(
-		IStageRepository stageRepository, 
-		IMapper mapper)
+		IStageRepository stageRepository)
     {
 		_stageRepository = stageRepository;
-		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<Page<StageDTO>>> Handle(
+    public async Task<Page<Stage>> Handle(
 		GetStagesPageQuery request, 
 		CancellationToken cancellationToken)
 	{
@@ -40,13 +40,12 @@ public sealed class GetStagesPageQueryHandler : IQueryHandler<GetStagesPageQuery
 			queryable = _stageRepository.GetPageQuery(queryable, request.PageNumber, request.PageSize);
 		}
 
-		var collection = await queryable.ToListAsync(cancellationToken);
+		var collection = new ReadOnlyCollection<Stage>(await queryable.ToListAsync(cancellationToken));
 
-		return ApiResponse.Success(
-			Page<StageDTO>.Create(
-				_mapper.Map<IReadOnlyCollection<StageDTO>>(collection),
+		return Page<Stage>.Create(
+				collection,
 				request.PageNumber,
 				request.PageSize,
-				totalCount));
+				totalCount);
 	}
 }

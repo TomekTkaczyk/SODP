@@ -1,15 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SODP.Application.Abstractions;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.Specifications.Investors;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
-using SODP.Shared.Response;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Commands.Investors;
 
-public sealed class DeleteInvestorCommandHandler : ICommandHandler<DeleteInvestorCommand>
+public sealed class DeleteInvestorCommandHandler : IRequestHandler<DeleteInvestorCommand>
 {
 	private readonly IUnitOfWork _unitOfWork;
 	private readonly IInvestorRepository _investorRepository;
@@ -22,18 +21,15 @@ public sealed class DeleteInvestorCommandHandler : ICommandHandler<DeleteInvesto
 		_investorRepository = investorRepository;
 	}
 
-    public async Task<ApiResponse> Handle(DeleteInvestorCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteInvestorCommand request, CancellationToken cancellationToken)
 	{
-		Error error;
-		
 		var investor = await _investorRepository
 			.ApplySpecyfication(new InvestorByIdSpecification(request.Id))
 			.SingleOrDefaultAsync(cancellationToken);
 
 		if (investor is null)
 		{
-			error = new Error("Investor.Delete", "Unknow delete error.", HttpStatusCode.InternalServerError);
-			return ApiResponse.Failure(error, HttpStatusCode.InternalServerError);
+			throw new InvestorNotFoundException();
 		}
 
 		_investorRepository.Delete(investor);
@@ -41,10 +37,9 @@ public sealed class DeleteInvestorCommandHandler : ICommandHandler<DeleteInvesto
 
 		if(result == 0)
 		{
-			error = new Error("Investor.Delete", "Investor not found.");
-			return ApiResponse.Failure(error, HttpStatusCode.NotFound);
+			throw new UnknowDeleteException("Error while deleting investor entity.");
 		}
 
-		return ApiResponse.Success(HttpStatusCode.NoContent);
+		return new Unit();
 	}
 }

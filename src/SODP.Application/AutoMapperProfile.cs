@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using SODP.Domain.Entities;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SODP.Domain
@@ -9,14 +11,17 @@ namespace SODP.Domain
     {
         public AutoMapperProfile()
         {
-            CreateMap<User, UserDTO>()
+			CreateMap(typeof(Page<>), typeof(Page<>)).ConvertUsing(typeof(PageConverter<,>));
+
+			
+			CreateMap<User, UserDTO>()
                 .ForMember(dest => dest.ActiveStatus, opt => opt.MapFrom(src => src.LockoutEnabled))
                 .ForMember(dest => dest.Roles, act => act.Ignore())
                 .ReverseMap();
 
 
             CreateMap<Role, RoleDTO>()
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Name));
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Name));	
 
 
 			CreateMap<AppDictionary, DictionaryDTO>()
@@ -93,6 +98,7 @@ namespace SODP.Domain
                .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
                .ForMember(dest => dest.Order, opt => opt.MapFrom(x => x.Order))
+			   .ForMember(dest => dest.Licenses, opt => opt.MapFrom(x => x.Licenses))
                .PreserveReferences();
 
 			CreateMap<BranchDTO, Branch>()
@@ -101,6 +107,11 @@ namespace SODP.Domain
 				.ForMember(dest => dest.Licenses, act => act.Ignore())
 				.ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
 				.ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
+
+			CreateMap<BranchLicense, LicenseDTO>()
+				.ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.License.Id))
+				.ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.License.Designer))
+				.ForMember(dest => dest.Content, opt => opt.MapFrom(x => x.License.Content));
 
 			#endregion
 
@@ -171,5 +182,20 @@ namespace SODP.Domain
 
             #endregion
         }
-    }
+
+		private class PageConverter<TSource, TDestination> : ITypeConverter<Page<TSource>, Page<TDestination>>
+		{
+			public Page<TDestination> Convert(
+				Page<TSource> source, 
+				Page<TDestination> destination, 
+				ResolutionContext context)
+			{
+				return Page<TDestination>.Create(
+					context.Mapper.Map<IReadOnlyCollection<TSource>, IReadOnlyCollection<TDestination>>(source.Collection),
+					source.PageNumber, 
+					source.PageSize, 
+					source.TotalCount);
+			}
+		}
+	}
 }

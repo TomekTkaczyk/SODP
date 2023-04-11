@@ -2,7 +2,7 @@
 
 namespace SODP.Shared.Response;
 
-public class Page
+public record Page
 {
 	public int PageNumber { get; set; }
 
@@ -18,7 +18,7 @@ public class Page
     }
 }
 
-public class Page<T> : Page
+public record Page<T> : Page
 {
     public Page(IReadOnlyCollection<T> collection, int pageNumber, int pageSize, int tootalCount) : base(pageNumber, pageSize, tootalCount)	
     {

@@ -2,6 +2,6 @@
 
 namespace SODP.Domain.Repositories;
 
-public interface IDesignerRepository : IRepository<Designer>
+public interface IDesignerRepository : IPageRepository<Designer>
 {
 }

@@ -48,18 +48,14 @@ public class ProjectController : ApiControllerBase
 	{
 		if (pageSize == 0 && pageNumber != 1)
 		{
-			var error = Result.Failure(new Error("Project.BadRequest", "pageNumber and/or pageSize is invalid."));
-			return BadRequest(error.Error);
+			return BadRequest($"pageNumber and/or pageSize is invalid.");
 		}
 
 		var query = new GetProjectsPageQuery(status, searchString, pageNumber, pageSize);
 		try
 		{
-			var response = await _sender.Send(query, cancellationToken);
-
-			return response.IsSuccess
-				? Ok(response)
-				: NotFound(response.Errors);
+			var projects = await _sender.Send(query, cancellationToken);
+			return Ok(ApiResponse.Success(_mapper.Map<Page<ProjectDTO>>(projects)));
 		}
 		catch (Exception ex)
 		{
@@ -79,11 +75,8 @@ public class ProjectController : ApiControllerBase
 		var query = new GetProjectByIdQuery(id);
 		try
 		{
-			var response = await _sender.Send(query, cancellationToken);
-
-			return response.IsSuccess
-				? Ok(response)
-				: NotFound(response.Errors);
+			var project = await _sender.Send(query, cancellationToken);
+			return Ok(ApiResponse.Success(_mapper.Map<ProjectDTO>(project)));
 		}
 		catch (Exception ex)
 		{
@@ -104,11 +97,8 @@ public class ProjectController : ApiControllerBase
 		var query = new GetProjectByIdWithDetailsQuery(id);
 		try
 		{
-			var response = await _sender.Send(query, cancellationToken);
-
-			return response.IsSuccess
-				? Ok(response)
-				: NotFound(response.Errors);
+			var project = await _sender.Send(query, cancellationToken);
+			return Ok(ApiResponse.Success(_mapper.Map<ProjectDTO>(project)));
 		}
 		catch (Exception ex)
 		{
@@ -129,23 +119,11 @@ public class ProjectController : ApiControllerBase
 	{
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-
-			if (result.IsFailure)
-			{
-				switch (result.StatusCode)
-				{
-					case HttpStatusCode.NotFound:
-						return NotFound(result.Errors);
-					case HttpStatusCode.Conflict:
-						return Conflict(result.Errors);
-				}
-			}
-
+			var project = await _sender.Send(command, cancellationToken);
 			return CreatedAtAction(
 				nameof(GetAsync),
-				new { result.Value.Id },
-				_mapper.Map<ProjectDTO>(result.Value));
+				new { project.Id },
+				_mapper.Map<ProjectDTO>(project));
 		}
 		catch (Exception ex)
 		{
@@ -165,11 +143,8 @@ public class ProjectController : ApiControllerBase
 		var command = new DeleteProjectCommand(id);
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-
-			return result.IsSuccess
-				? NoContent()
-				: NotFound(result.Errors);
+			await _sender.Send(command, cancellationToken);
+			return NoContent();
 		}
 		catch (Exception ex)
 		{
@@ -191,41 +166,15 @@ public class ProjectController : ApiControllerBase
 		{
 			return BadRequest();
 		}
-
 		try
 		{
 			var result = await _sender.Send(command, cancellationToken);
-
-			if (result.IsFailure)
-			{
-				switch(result.StatusCode)
-				{
-					case HttpStatusCode.NotFound:
-						return NotFound(result.Errors);
-					case HttpStatusCode.Conflict:
-						return Conflict(result.Errors);
-				}
-			}
 			return NoContent();
 		}
 		catch (Exception ex)
 		{
 			return InternalServerErrorStatusCode(ex);
 		}
-
-
-		//if (id != project.Id)
-		//{
-		//	return BadRequest();
-		//}
-
-		//var response = await _service.UpdateAsync(project);
-		//if (!response.Success)
-		//{
-		//	return StatusCode(response.StatusCode, response);
-		//}
-
-		//return NoContent();
 	}
 
 
@@ -245,27 +194,16 @@ public class ProjectController : ApiControllerBase
 
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-
-			if (result.IsFailure)
-			{
-				switch (result.StatusCode) 
-				{
-					case HttpStatusCode.NotFound:
-						return NotFound(result.Errors);
-					case HttpStatusCode.Conflict:
-						return Conflict(result.Errors);
-
-				}
-			}
-			return NoContent();
+			var part = await _sender.Send(command, cancellationToken);
+			return CreatedAtAction(
+				nameof(GetAsync),
+				new { part.Id },
+				_mapper.Map<PartDTO>(part));
 		}
 		catch (Exception ex)
 		{
 			return InternalServerErrorStatusCode(ex);
 		}
-
-		//return Ok(await _service.AddPartAsync(id, part));
 	}
 
 

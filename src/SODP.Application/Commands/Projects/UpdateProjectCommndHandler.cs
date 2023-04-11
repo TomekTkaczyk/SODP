@@ -1,14 +1,13 @@
-﻿using SODP.Application.Abstractions;
-using SODP.Shared.Response;
+﻿using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Commands.Projects;
 
-public sealed class UpdateProjectCommndHandler : ICommandHandler<UpdateProjectCommand>
+public sealed class UpdateProjectCommndHandler : IRequestHandler<UpdateProjectCommand>
 {
-	public Task<ApiResponse> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
+	public Task<Unit> Handle(UpdateProjectCommand request, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
 	}

@@ -1,6 +1,5 @@
-﻿using SODP.Application.Abstractions;
+﻿using MediatR;
 
-namespace SODP.Application.Commands.Branches
-{
-	public sealed record DeleteBranchCommand(int Id) : ICommand;
-}
+namespace SODP.Application.Commands.Branches;
+
+public sealed record DeleteBranchCommand(int Id) : IRequest;

@@ -4,24 +4,21 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.Commands.Branches;
-using SODP.Application.Commands.Investors;
-using SODP.Application.Commands.Stages;
-using SODP.Application.Queries.Branczes;
-using SODP.Application.Queries.Investors;
+using SODP.Application.Queries.Branches;
 using SODP.Application.Services;
 using SODP.Domain.Entities;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
 [ApiController]
 [Route("/api/v0_01/branches")]
-public class BranchController : ApiControllerBase
+public class BranchController : ActiveStatusController<Branch>
 {
 	private readonly IBranchService _service;
 
@@ -40,9 +37,9 @@ public class BranchController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetPageAsync(
-		bool? active, 
-		string searchString = "", 
-		int pageNumber = 1, 
+		bool? active,
+		string searchString = "",
+		int pageNumber = 1,
 		int pageSize = 0,
 		CancellationToken cancellationToken = default)
 	{
@@ -55,14 +52,8 @@ public class BranchController : ApiControllerBase
 		var query = new GetBranchesPageQuery(active, searchString, pageNumber, pageSize);
 		try
 		{
-			var response = await _sender.Send(query, cancellationToken);
-
-			if(response.IsSuccess) 
-			{
-				return Ok(response);
-			}
-
-			return GetActionResult(response);
+			var branches = await _sender.Send(query, cancellationToken);
+			return Ok(ApiResponse.Success(_mapper.Map<Page<BranchDTO>>(branches)));
 		}
 		catch (Exception ex)
 		{
@@ -82,14 +73,8 @@ public class BranchController : ApiControllerBase
 		var query = new GetBranchByIdQuery(id);
 		try
 		{
-			var response = await _sender.Send(query, cancellationToken);
-
-			if (response.IsSuccess)
-			{
-				return Ok(response);
-			}
-
-			return GetActionResult(response);
+			var branch = await _sender.Send(query, cancellationToken);
+			return Ok(ApiResponse.Success<BranchDTO>(_mapper.Map<BranchDTO>(branch)));
 		}
 		catch (Exception ex)
 		{
@@ -108,16 +93,15 @@ public class BranchController : ApiControllerBase
 	{
 		try
 		{
-			var result = await _sender.Send(command, cancellationToken);
-			if (result.IsSuccess)
-			{
-				return CreatedAtAction(
-					nameof(GetAsync),
-					new { result.Value.Id },
-					_mapper.Map<Branch, BranchDTO>(result.Value));
-			}
-
-			return GetActionResult(result);
+			var branch = await _sender.Send(command, cancellationToken);
+			return CreatedAtAction(
+				nameof(GetAsync),
+				new { branch.Id },
+				_mapper.Map<BranchDTO>(branch));
+		}
+		catch (ConflictException ex) 
+		{
+			return Conflict(ex.Message);
 		}
 		catch (Exception ex)
 		{
@@ -131,18 +115,23 @@ public class BranchController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public virtual async Task<IActionResult> UpdateAsync(
-		int id, 
+		int id,
 		[FromBody] UpdateBranchCommand command,
 		CancellationToken cancellationToken)
 	{
-		if(id != command.Id)
+		if (id != command.Id)
 		{
 			return BadRequest();
 		}
 
 		try
 		{
-			return GetActionResult(await _sender.Send(command, cancellationToken));
+			await _sender.Send(command, cancellationToken);
+			return NoContent();
+		}
+		catch (ConflictException ex)
+		{
+			return Conflict(ex.Message);
 		}
 		catch (Exception ex)
 		{
@@ -162,7 +151,8 @@ public class BranchController : ApiControllerBase
 		var command = new DeleteBranchCommand(id);
 		try
 		{
-			return GetActionResult(await _sender.Send(command, cancellationToken));
+			await _sender.Send(command, cancellationToken);
+			return NoContent();
 		}
 		catch (Exception ex)
 		{
@@ -171,29 +161,28 @@ public class BranchController : ApiControllerBase
 	}
 
 
-	[HttpPatch("{id}/status/{status}")]
+	[HttpGet("{id}/licenses")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> SetActiveStatusAsync(
-		int id, 
-		int status)
+	public async Task<IActionResult> GetLicensesAsync(
+		int id,
+		CancellationToken cancellationToken)
 	{
-		if (_service is IActiveStatusService)
+		var query = new GetBranchByIdWithLicensesQuery(id);
+		try
 		{
-			return Ok(await (_service as IActiveStatusService).SetActiveStatusAsync(id, status == 1));
+			var branch = await _sender.Send(query, cancellationToken);
+
+			return Ok(ApiResponse.Success(_mapper.Map<BranchDTO>(branch)));
 		}
-
-		return BadRequest();
-	}
-
-
-	[HttpGet("{id}/designers")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetLicensesAsync(int id)
-	{
-		return Ok(await (_service as IBranchService).GetLicensesAsync(id));
+		catch (NotFoundException ex)
+		{
+			return NotFound(ApiResponse.Failure(ex.Message));
+		}
+		catch (Exception ex)
+		{
+			return InternalServerErrorStatusCode(ex);
+		}
 	}
 }

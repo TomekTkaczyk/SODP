@@ -70,7 +70,7 @@ namespace SODP.Infrastructure.Services
                     serviceResponse.ValidationErrors.Add("Branch.Sign", "Branch not found.");
                     return serviceResponse;
                 }
-                branch.Name = updateBranch.Name;
+                branch.SetName(updateBranch.Name);
                 branch.Normalize();
                 _context.Branches.Update(branch);
                 await _context.SaveChangesAsync();

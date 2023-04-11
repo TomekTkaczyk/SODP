@@ -1,5 +1,6 @@
-﻿using SODP.Application.Abstractions;
+﻿using MediatR;
+using SODP.Application.Abstractions;
 
 namespace SODP.Application.Commands.Investors;
 
-public sealed record DeleteInvestorCommand(int Id) : ICommand;
+public sealed record DeleteInvestorCommand(int Id) : IRequest;

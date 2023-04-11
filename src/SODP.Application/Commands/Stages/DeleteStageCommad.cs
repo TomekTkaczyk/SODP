@@ -1,6 +1,6 @@
-﻿using SODP.Application.Abstractions;
+﻿using MediatR;
 
 namespace SODP.Application.Commands.Stages;
 
-public record DeleteStageCommad(int Id) : ICommand;
+public record DeleteStageCommad(int Id) : IRequest;
 

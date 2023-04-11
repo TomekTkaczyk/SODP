@@ -2,8 +2,10 @@
 
 namespace SODP.Shared.DTO;
 
-public class LicenseDTO : BaseDTO
+public record LicenseDTO // : BaseDTO
 {
+	public int Id { get; set; }
+
 	public DesignerDTO Designer { get; set; }
 	public string Content { get; set; }
 

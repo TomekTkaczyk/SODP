@@ -1,16 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SODP.Application.Abstractions;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.Specifications.Branches;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.Response;
-using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Commands.Branches;
 
-public class UpdateBranchCommandHandler : ICommandHandler<UpdateBranchCommand>
+public class UpdateBranchCommandHandler : IRequestHandler<UpdateBranchCommand>
 {
 	private readonly IBranchRepository _branchRepository;
 	private readonly IUnitOfWork _unitOfWork;
@@ -23,7 +23,7 @@ public class UpdateBranchCommandHandler : ICommandHandler<UpdateBranchCommand>
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<ApiResponse> Handle(UpdateBranchCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateBranchCommand request, CancellationToken cancellationToken)
 	{
 		var branch = await _branchRepository
 			.ApplySpecyfication(new BranchByIdSpecification(request.Id))
@@ -31,13 +31,12 @@ public class UpdateBranchCommandHandler : ICommandHandler<UpdateBranchCommand>
 
 		if(branch is null)
 		{
-			var error = new Error("","",HttpStatusCode.NotFound);
-			return ApiResponse.Failure(error,HttpStatusCode.NotFound);
+			throw new NotFoundException("Branch");
 		}
 
 		_branchRepository.Update(branch);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		return ApiResponse.Success(HttpStatusCode.NoContent);
+		return new Unit();
 	}
 }

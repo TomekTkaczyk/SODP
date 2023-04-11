@@ -1,16 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SODP.Application.Abstractions;
-using SODP.Application.Specifications.Investors;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.Specifications.Stages;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
-using SODP.Shared.Response;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Commands.Stages;
 
-internal sealed class ChangeStageNameCommandHandler : ICommandHandler<ChangeStageNameCommand>
+internal sealed class ChangeStageNameCommandHandler : IRequestHandler<ChangeStageNameCommand>
 {
 	private readonly IStageRepository _stageRepository;
 	private readonly IUnitOfWork _unitOfWork;
@@ -23,7 +21,7 @@ internal sealed class ChangeStageNameCommandHandler : ICommandHandler<ChangeStag
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<ApiResponse> Handle(ChangeStageNameCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(ChangeStageNameCommand request, CancellationToken cancellationToken)
 	{
 		var stage = await _stageRepository
 			.ApplySpecyfication(new StageByIdSpecyfication(request.Id))
@@ -31,14 +29,13 @@ internal sealed class ChangeStageNameCommandHandler : ICommandHandler<ChangeStag
 
 		if(stage is null)
 		{
-			var error = new Error("ChangeStageName", $"Stage id:{request.Id} not found.", HttpStatusCode.NotFound);
-			return ApiResponse.Failure(error, HttpStatusCode.NotFound);
+			throw new NotFoundException("Stage");
 		}
 
 		stage.Name = request.Name.ToUpper();
 		_stageRepository.Update(stage);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		return ApiResponse.Success(HttpStatusCode.NoContent);
+		return new Unit();
 	}
 }

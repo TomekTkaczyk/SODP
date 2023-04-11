@@ -82,9 +82,7 @@ namespace SODP.Infrastructure.Services
 
                 designer.Normalize();
 
-                oldDesigner.Title = designer.Title;
-                oldDesigner.Firstname = designer.Firstname;
-                oldDesigner.Lastname = designer.Lastname;
+                oldDesigner.SetName(designer.Title, designer.Firstname, designer.Lastname);
                 _context.Designers.Update(oldDesigner);
                 await _context.SaveChangesAsync();
             }

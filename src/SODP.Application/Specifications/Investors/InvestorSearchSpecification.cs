@@ -3,9 +3,9 @@ using SODP.Domain.Specifications;
 
 namespace SODP.Application.Specifications.Investors;
 
-internal class InvestorByNameSpecification : Specification<Investor>
+internal class InvestorSearchSpecification : Specification<Investor>
 {
-	internal InvestorByNameSpecification(bool? active, string searchString)
+	internal InvestorSearchSpecification(bool? active, string searchString)
 		: base(investor =>
 		(!active.HasValue || investor.ActiveStatus.Equals(active)) &&
 		(string.IsNullOrWhiteSpace(searchString) || investor.Name.Contains(searchString)))

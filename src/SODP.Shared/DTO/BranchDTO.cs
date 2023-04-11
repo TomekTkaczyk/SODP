@@ -1,4 +1,6 @@
-﻿namespace SODP.Shared.DTO;
+﻿using System.Collections.Generic;
+
+namespace SODP.Shared.DTO;
 
 public record BranchDTO : NewBranchDTO
 {
@@ -6,5 +8,5 @@ public record BranchDTO : NewBranchDTO
 
 	public bool ActiveStatus { get; set; }
 
-
+	public ICollection<LicenseDTO> Licenses { get; set; }
 }

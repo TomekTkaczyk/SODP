@@ -1,8 +1,8 @@
-﻿using SODP.Application.Abstractions;
+﻿using MediatR;
 using SODP.Shared.DTO;
 
 namespace SODP.Application.Commands.Branches;
 
 public sealed record UpdateBranchCommand(
 	int Id,
-	BranchDTO Branch) : ICommand;
+	BranchDTO Branch) : IRequest;

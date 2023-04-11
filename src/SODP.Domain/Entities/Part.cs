@@ -18,7 +18,12 @@ public class Part : ActiveStatusEntity, IOrdered
     public string Name { get; set; }
     public int Order { get; set; }
 
-    public void Normalize()
+	public void Down()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void Normalize()
     {
         Sign = Sign.ToUpper();
         Name = Name.CapitalizeFirstLetter();
@@ -28,4 +33,9 @@ public class Part : ActiveStatusEntity, IOrdered
     {
         return $"{ Sign.Trim()} {Name.Trim()}";
     }
+
+	public void Up()
+	{
+		throw new System.NotImplementedException();
+	}
 }

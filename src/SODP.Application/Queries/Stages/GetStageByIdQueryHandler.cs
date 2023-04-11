@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Application.Specifications.Stages;
+using SODP.Domain.Entities;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -11,20 +14,17 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Queries.Stages;
 
-public class GetStageByIdQueryHandler : IQueryHandler<GetStageByIdQuery, StageDTO>
+public class GetStageByIdQueryHandler : IRequestHandler<GetStageByIdQuery, Stage>
 {
 	private readonly IStageRepository _stageRepository;
-	private readonly IMapper _mapper;
 
 	public GetStageByIdQueryHandler(
-		IStageRepository stageRepository,
-		IMapper mapper)
+		IStageRepository stageRepository)
     {
 		_stageRepository = stageRepository;
-		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<StageDTO>> Handle(
+    public async Task<Stage> Handle(
 		GetStageByIdQuery request, 
 		CancellationToken cancellationToken)
 	{
@@ -32,12 +32,6 @@ public class GetStageByIdQueryHandler : IQueryHandler<GetStageByIdQuery, StageDT
 			.ApplySpecyfication(new StageByIdSpecyfication(request.Id))
 			.SingleOrDefaultAsync(cancellationToken);
 
-		if(stage is null)
-		{
-			var error = new Error("Stage.NotFound", $"The stage with Id:{request.Id} was not found.", HttpStatusCode.NotFound);
-			return ApiResponse.Failure<StageDTO>(error, HttpStatusCode.NotFound);
-		}
-
-		return ApiResponse.Success(_mapper.Map<StageDTO>(stage));
+		return stage ?? throw new NotFoundException("Stage");
 	}
 }

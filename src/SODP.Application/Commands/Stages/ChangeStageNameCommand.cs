@@ -1,8 +1,7 @@
-﻿using SODP.Application.Abstractions;
-using SODP.Domain.Entities;
+﻿using MediatR;
 
 namespace SODP.Application.Commands.Stages;
 
 public sealed record ChangeStageNameCommand(
 	int Id,
-	string Name) : ICommand;
+	string Name) : IRequest;

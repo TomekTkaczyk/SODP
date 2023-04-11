@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SODP.Application.Abstractions;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.Specifications.Branches;
-using SODP.Application.Specifications.Investors;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.Response;
 using System.Net;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Commands.Branches;
 
-internal class SetActiveStatusBranchCommandHandler : ICommandHandler<SetActiveStatusBranchCommand>
+internal class SetActiveStatusBranchCommandHandler : IRequestHandler<SetActiveStatusBranchCommand>
 {
 	private readonly IBranchRepository _branchRepository;
 	private readonly IUnitOfWork _unitOfWork;
@@ -23,20 +23,21 @@ internal class SetActiveStatusBranchCommandHandler : ICommandHandler<SetActiveSt
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<ApiResponse> Handle(SetActiveStatusBranchCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(SetActiveStatusBranchCommand request, CancellationToken cancellationToken)
 	{
 		var investor = await _branchRepository
 			.ApplySpecyfication(new BranchByIdSpecification(request.Id))
 			.SingleOrDefaultAsync(cancellationToken);
+
 		if (investor is null)
 		{
-			var error = new Error("SetActive.Branch", "Branch not found.", HttpStatusCode.NotFound);
-			return ApiResponse.Failure(error, HttpStatusCode.NotFound);
+			throw new NotFoundException("Branch");
 		}
+
 		investor.SetActiveStatus(request.ActiveStatus);
 		_branchRepository.Update(investor);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		return ApiResponse.Success(HttpStatusCode.NoContent);
+		return new Unit();
 	}
 }

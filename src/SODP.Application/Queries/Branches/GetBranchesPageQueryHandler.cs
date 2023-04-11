@@ -1,33 +1,33 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Application.Specifications.Branches;
 using SODP.Application.Specifications.Investors;
+using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Queries.Branczes;
+namespace SODP.Application.Queries.Branches;
 
-public sealed class GetBranchesPageQueryHandler : IQueryHandler<GetBranchesPageQuery, Page<BranchDTO>>
+public sealed class GetBranchesPageQueryHandler : IRequestHandler<GetBranchesPageQuery, Page<Branch>>
 {
 	private readonly IBranchRepository _branchRepository;
-	private readonly IMapper _mapper;
 
 	public GetBranchesPageQueryHandler(
- 		IBranchRepository branchRepository,
-		IMapper mapper)
+ 		IBranchRepository branchRepository)
 	{
 		_branchRepository = branchRepository;
-		_mapper = mapper;
 	}
 
-	public async Task<ApiResponse<Page<BranchDTO>>> Handle(
-		GetBranchesPageQuery request, 
+	public async Task<Page<Branch>> Handle(
+		GetBranchesPageQuery request,
 		CancellationToken cancellationToken)
 	{
 		var queryable = _branchRepository
@@ -40,13 +40,12 @@ public sealed class GetBranchesPageQueryHandler : IQueryHandler<GetBranchesPageQ
 			queryable = _branchRepository.GetPageQuery(queryable, request.PageNumber, request.PageSize);
 		}
 
-		var collection = await queryable.ToListAsync(cancellationToken);
+		var collection = new ReadOnlyCollection<Branch>(await queryable.ToListAsync(cancellationToken));
 
-		return ApiResponse.Success(
-			Page<BranchDTO>.Create(
-				_mapper.Map<IReadOnlyCollection<BranchDTO>>(collection),
+		return Page<Branch>.Create(
+				collection,
 				request.PageNumber,
 				request.PageSize,
-				totalItems));
+				totalItems);
 	}
 }

@@ -1,9 +1,6 @@
-﻿using SODP.Domain.Exceptions;
+﻿namespace SODP.Domain.Exceptions;
 
-namespace SODP.Application.Exceptions
-{
-    public class NotFoundException : AppException
+public class NotFoundException : DomainException
     {
-        public NotFoundException() : base("Entity not found.") { }
-    }
+	public NotFoundException(string entityName) : base($"{entityName} not found.") { }
 }

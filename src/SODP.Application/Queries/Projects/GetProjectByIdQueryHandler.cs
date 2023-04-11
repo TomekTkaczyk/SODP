@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Domain.Entities;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
 using SODP.Shared.DTO;
@@ -12,20 +14,17 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Queries.Projects;
 
-public class GetProjectByIdQueryHandler : IQueryHandler<GetProjectByIdQuery, ProjectDTO>
+public class GetProjectByIdQueryHandler : IRequestHandler<GetProjectByIdQuery, Project>
 {
 	private readonly IProjectRepository _projectRepository;
-	private readonly IMapper _mapper;
 
 	public GetProjectByIdQueryHandler(
-		IProjectRepository projectRepository,
-		IMapper mapper)
+		IProjectRepository projectRepository)
     {
 		_projectRepository = projectRepository;
-		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<ProjectDTO>> Handle(
+    public async Task<Project> Handle(
 		GetProjectByIdQuery request, 
 		CancellationToken cancellationToken)
 	{
@@ -33,15 +32,6 @@ public class GetProjectByIdQueryHandler : IQueryHandler<GetProjectByIdQuery, Pro
 			.ApplySpecyfication(new ProjectByIdSpecification(request.Id))
 			.SingleOrDefaultAsync(cancellationToken);
 
-		if(project is null)
-		{
-			var error = new Error(
-				"Project.NotFound",
-				$"The project with Id:{request.Id} was not found.",
-				HttpStatusCode.NotFound);
-			return ApiResponse.Failure<ProjectDTO>(error,HttpStatusCode.NotFound);
-		}
-
-		return ApiResponse.Success(_mapper.Map<ProjectDTO>(project), HttpStatusCode.OK);
+		return project ?? throw new NotFoundException("Project");
 	}
 }

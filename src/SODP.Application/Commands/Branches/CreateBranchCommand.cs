@@ -1,8 +1,8 @@
-﻿using SODP.Application.Abstractions;
+﻿using MediatR;
 using SODP.Domain.Entities;
 
 namespace SODP.Application.Commands.Branches;
 
 public sealed record CreateBranchCommand(
 	string Sign,
-	string Name) : ICommand<Branch>;
+	string Name) : IRequest<Branch>;

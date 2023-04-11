@@ -1,8 +1,6 @@
-﻿using SODP.Application.Abstractions;
-using SODP.Shared.DTO;
+﻿using MediatR;
+using SODP.Domain.Entities;
 
 namespace SODP.Application.Queries.Investors;
 
-public sealed record GetInvestorByIdQuery(int Id) : IQuery<InvestorDTO>
-{
-}
+public sealed record GetInvestorByIdQuery(int Id) : IRequest<Investor> { }

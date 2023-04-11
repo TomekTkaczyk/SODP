@@ -2,6 +2,10 @@
 {
 	public interface IOrdered
 	{
-		int Order { get; set; }
+		int Order { get; }
+
+		public void Up();
+
+		public void Down();
 	}
 }

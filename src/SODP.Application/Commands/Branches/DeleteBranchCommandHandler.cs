@@ -1,16 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SODP.Application.Abstractions;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.Specifications.Branches;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
-using SODP.Shared.Response;
-using System;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Commands.Branches;
 
-public sealed class DeleteBranchCommandHandler : ICommandHandler<DeleteBranchCommand>
+public sealed class DeleteBranchCommandHandler : IRequestHandler<DeleteBranchCommand>
 {
 	private readonly IBranchRepository _branchRepository;
 	private readonly IUnitOfWork _unitOfWork;
@@ -23,7 +21,7 @@ public sealed class DeleteBranchCommandHandler : ICommandHandler<DeleteBranchCom
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<ApiResponse> Handle(DeleteBranchCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteBranchCommand request, CancellationToken cancellationToken)
 	{
 		var branch = await _branchRepository
 			.ApplySpecyfication(new BranchByIdSpecification(request.Id))
@@ -31,13 +29,12 @@ public sealed class DeleteBranchCommandHandler : ICommandHandler<DeleteBranchCom
 
 		if(branch is  null)
 		{
-			var error = new Error("Delete.Branch",$"Branch Id:{request.Id} not found.",HttpStatusCode.NotFound);
-			return ApiResponse.Failure(error,HttpStatusCode.NotFound);
+			throw new NotFoundException("Branch");
 		}
 
 		_branchRepository.Delete(branch);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		return ApiResponse.Success();
+		return new Unit();
 	}
 }

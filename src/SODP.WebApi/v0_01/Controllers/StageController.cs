@@ -10,6 +10,7 @@ using SODP.Domain.Entities;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,13 +46,8 @@ public class StageController : ActiveStatusController<Stage>
 		var query = new GetStagesPageQuery(active, searchString, pageNumber, pageSize);
 		try
 		{
-			var response = await _sender.Send(query, cancellationToken);
-			if (response.IsSuccess)
-			{
-				return Ok(response);
-			}
-
-			return GetActionResult(response);
+			var stages = await _sender.Send(query, cancellationToken);
+			return Ok(ApiResponse.Success(_mapper.Map<Page<StageDTO>>(stages)));
 		}
 		catch (Exception ex)
 		{
@@ -71,14 +67,8 @@ public class StageController : ActiveStatusController<Stage>
 		var query = new GetStageByIdQuery(id);
 		try
 		{
-			var response = await _sender.Send(query, cancellationToken);
-
-			if (response.IsSuccess)
-			{
-				return Ok(response);
-			}
-
-			return GetActionResult(response);
+			var stage = await _sender.Send(query, cancellationToken);
+			return Ok(ApiResponse.Success(_mapper.Map<BranchDTO>(stage)));
 		}
 		catch (Exception ex)
 		{
@@ -97,16 +87,11 @@ public class StageController : ActiveStatusController<Stage>
 	{
 		try
 		{
-			var response = await _sender.Send(command, cancellationToken);
-			if (response.IsSuccess)
-			{
-				return CreatedAtAction(
-						nameof(GetAsync),
-						new { response.Value.Id },
-						_mapper.Map<Stage, StageDTO>(response.Value));
-			}
-
-			return GetActionResult(response);
+			var stage = await _sender.Send(command, cancellationToken);
+			return CreatedAtAction(
+					nameof(GetAsync),
+					new { stage.Id },
+					_mapper.Map<StageDTO>(stage));
 		}
 		catch (Exception ex)
 		{
@@ -131,7 +116,8 @@ public class StageController : ActiveStatusController<Stage>
 
 		try
 		{
-			return GetActionResult(await _sender.Send(command, cancellationToken));
+			await _sender.Send(command, cancellationToken);
+			return NoContent();
 		}
 		catch (Exception ex)
 		{
@@ -151,7 +137,8 @@ public class StageController : ActiveStatusController<Stage>
 		var command = new DeleteStageCommad(id);
 		try
 		{
-			return GetActionResult(await _sender.Send(command, cancellationToken));
+			await _sender.Send(command, cancellationToken);
+			return NoContent();
 		}
 		catch (Exception ex)
 		{

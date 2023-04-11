@@ -1,5 +1,5 @@
-﻿using SODP.Application.Abstractions;
-using SODP.Shared.DTO;
+﻿using MediatR;
+using SODP.Domain.Entities;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
 
@@ -9,4 +9,4 @@ public record GetProjectsPageQuery(
 	ProjectStatus Status,
 	string SearchString,
 	int PageNumber,
-	int PageSize) : IQuery<Page<ProjectDTO>> { }
+	int PageSize) : IRequest<Page<Project>> { }

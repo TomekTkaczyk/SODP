@@ -1,14 +1,14 @@
-﻿using SODP.Application.Abstractions;
-using SODP.Shared.Response;
+﻿using MediatR;
+using SODP.Domain.Entities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.Commands.Projects;
 
-public sealed class AddPartCommandHandler : ICommandHandler<AddPartCommand>
+public sealed class AddPartCommandHandler : IRequestHandler<AddPartCommand, Part>
 {
-	public Task<ApiResponse> Handle(AddPartCommand request, CancellationToken cancellationToken)
+	public Task<Part> Handle(AddPartCommand request, CancellationToken cancellationToken)
 	{
 		throw new NotImplementedException();
 	}

@@ -6,9 +6,11 @@ using Microsoft.Extensions.Logging;
 using SODP.Application.Commands.Investors;
 using SODP.Application.Queries.Investors;
 using SODP.Domain.Entities;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -35,20 +37,15 @@ public class InvestorController : ActiveStatusController<Investor>
 	{
 		if (pageSize == 0 && pageNumber != 1)
 		{
-			var error = Result.Failure(new Error("Investor.BadRequest", "pageNumber and/or pageSize is invalid."));
-			return BadRequest(error.Error);
+			return BadRequest(ApiResponse.Failure("pageNumber and/or pageSize is invalid."));
 		}
 
 		var query = new GetInvestorsPageQuery(active, searchString, pageNumber, pageSize);
 		try
 		{
-			var response = await _sender.Send(query, cancellationToken);
-			if (response.IsSuccess)
-			{
-				return Ok(response);
-			}
+			var investors = await _sender.Send(query, cancellationToken);
 
-			return GetActionResult(response);
+			return Ok(ApiResponse.Success(_mapper.Map<Page<InvestorDTO>>(investors)));
 		}
 		catch (Exception ex)
 		{
@@ -68,13 +65,8 @@ public class InvestorController : ActiveStatusController<Investor>
 		var query = new GetInvestorByIdQuery(id);
 		try
 		{
-			var response = await _sender.Send(query, cancellationToken);
-			if (response.IsSuccess)
-			{
-				return Ok(response);
-			}
-
-			return GetActionResult(response);
+			var investor = await _sender.Send(query, cancellationToken);
+			return Ok(ApiResponse.Success(_mapper.Map<InvestorDTO>(investor)));
 		}
 		catch (Exception ex)
 		{
@@ -84,7 +76,7 @@ public class InvestorController : ActiveStatusController<Investor>
 
 
 	[HttpPost]
-	[ProducesResponseType(typeof(Result<InvestorDTO>), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ApiResponse<InvestorDTO>), StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
@@ -93,16 +85,17 @@ public class InvestorController : ActiveStatusController<Investor>
 	{
 		try
 		{
-			var response = await _sender.Send(command, cancellationToken);
-			if (response.IsSuccess)
-			{
-				return CreatedAtAction(
-					nameof(GetAsync),
-					new { response.Value.Id },
-					_mapper.Map<Investor, InvestorDTO>(response.Value));
-			}
+			var investor = await _sender.Send(command, cancellationToken);
+			var apiResponse = ApiResponse.Success(_mapper.Map<InvestorDTO>(investor));
 
-			return GetActionResult(response);
+			return CreatedAtAction(
+				   nameof(GetAsync),
+				   new { apiResponse.Value.Id },
+				   apiResponse);
+		}
+		catch (ConflictException ex)
+		{
+			return Conflict(ApiResponse.Failure(ex.Message));
 		}
 		catch (Exception ex)
 		{
@@ -128,8 +121,11 @@ public class InvestorController : ActiveStatusController<Investor>
 		try
 		{
 			var response = await _sender.Send(command, cancellationToken);
-
-			return GetActionResult(response);
+			return NoContent();
+		}
+		catch (ConflictException ex)
+		{
+			return Conflict(ApiResponse.Failure(ex.Message));
 		}
 		catch (Exception ex)
 		{
@@ -149,7 +145,16 @@ public class InvestorController : ActiveStatusController<Investor>
 		var command = new DeleteInvestorCommand(id);
 		try
 		{
-			return GetActionResult( await _sender.Send(command, cancellationToken));
+			await _sender.Send(command, cancellationToken);
+			return NoContent();
+		}
+		catch (InvestorNotFoundException ex)
+		{
+			return NotFound(ex.Message);
+		}
+		catch (UnknowDeleteException ex)
+		{
+			return NotFound(ex.Message);
 		}
 		catch (Exception ex)
 		{

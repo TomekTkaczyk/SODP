@@ -80,21 +80,6 @@ namespace SODP.WebApi.v0_01.Controllers
             return Ok(await _service.DeleteAsync(id));
         }
 
-
-        [HttpPatch("{id}/status")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> SetActiveStatusAsync(int id, [FromBody] int status)
-        {
-            if (_service is IActiveStatusService)
-            {
-                return Ok(await (_service as IActiveStatusService).SetActiveStatusAsync(id, status == 1));
-            }
-
-            return BadRequest();
-        }
-
         [HttpGet("{id}/branches")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
