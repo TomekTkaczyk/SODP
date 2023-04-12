@@ -8,7 +8,7 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.DataAccess.CQRS;
+using SODP.DataAccess.CQRS.Queries;
 using SODP.Domain.Repositories;
 using SODP.Domain.Services;
 using SODP.Infrastructure.Managers;

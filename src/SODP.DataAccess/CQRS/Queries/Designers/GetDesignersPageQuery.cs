@@ -1,6 +1,8 @@
-﻿using SODP.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SODP.DataAccess.Extensions;
+using SODP.Domain.Entities;
 using SODP.Shared.Response;
-using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,8 +27,30 @@ public class GetDesignersPageQuery : QueryBase<Page<Designer>>
 		_searchString = searchString;
 	}
 
-	public override Task<Page<Designer>> ExecuteAsync(SODPDBContext context, CancellationToken cancellationToken)
+	public override async Task<Page<Designer>> ExecuteAsync(SODPDBContext context, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		IQueryable<Designer> queryable = context.Set<Designer>()
+			.Where(designer =>
+				(!_active.HasValue || designer.ActiveStatus.Equals(_active)) &&
+				(string.IsNullOrWhiteSpace(_searchString)
+				|| designer.Firstname.ToLower().Contains(_searchString.ToLower())
+				|| designer.Lastname.ToLower().Contains(_searchString.ToLower())))
+			.OrderBy(x => x.Lastname)
+			.ThenBy(x => x.Firstname);
+
+		var totalCount = await queryable.CountAsync(cancellationToken);
+
+		if(_pageSize > 0)
+		{
+			queryable = queryable.GetPageQuery(_pageNumber, _pageSize);
+		}
+
+		var page = Page<Designer>.Create(
+				queryable.AsNoTracking().ToList(),
+				_pageNumber,
+				_pageSize,
+				totalCount);
+
+		return page;
 	}
 }

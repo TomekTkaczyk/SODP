@@ -2,7 +2,7 @@
 using MediatR;
 using SODP.Application.API;
 using SODP.Application.API.Requests.Designers;
-using SODP.DataAccess.CQRS;
+using SODP.DataAccess.CQRS.Queries;
 using SODP.DataAccess.CQRS.Queries.Designers;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -23,7 +23,9 @@ public class GetDesignerHandler : IRequestHandler<GetDesignerRequest, ApiRespons
 		_queryExecutor = queryExecutor;
 		_mapper = mapper;
 	}
-    public async Task<ApiResponse<DesignerDTO>> Handle(GetDesignerRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<DesignerDTO>> Handle(
+		GetDesignerRequest request, 
+		CancellationToken cancellationToken)
 	{
 		var query = new GetDesignerQuery(request.Id);
 		var designer = await _queryExecutor.ExecuteAsync(query, cancellationToken);
