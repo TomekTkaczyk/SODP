@@ -17,12 +17,12 @@ namespace SODP.Application.API.Handlers.Designers;
 public class CreateDesignerHandler : IRequestHandler<CreateDesignerRequest, ApiResponse<DesignerDTO>>
 {
 	private readonly IMapper _mapper;
-	private readonly ICommandExecutor _commandExecutor;
+	private readonly ICommandExecutor<Designer> _commandExecutor;
 	private readonly IQueryExecutor _queryExecutor;
 
     public CreateDesignerHandler(
         IMapper mapper,
-        ICommandExecutor commandExecutor,
+        ICommandExecutor<Designer> commandExecutor,
         IQueryExecutor queryExecutor)
     {
 		_mapper = mapper;

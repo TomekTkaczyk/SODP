@@ -10,6 +10,7 @@ using SODP.Domain.Exceptions;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -42,7 +43,7 @@ public class BranchController : ActiveStatusController<Branch>
 	{
 		if (pageSize == 0 && pageNumber != 1)
 		{
-			var error = Result.Failure(new Error("Branch.BadRequest", "pageNumber and/or pageSize is invalid."));
+			var error = Result.Failure(new Error("pageNumber and/or pageSize is invalid."));
 			return BadRequest(error.Error);
 		}
 
@@ -175,7 +176,7 @@ public class BranchController : ActiveStatusController<Branch>
 		}
 		catch (NotFoundException ex)
 		{
-			return NotFound(ApiResponse.Failure(ex.Message));
+			return NotFound(ApiResponse.Failure(ex.Message, HttpStatusCode.NotFound));
 		}
 		catch (Exception ex)
 		{

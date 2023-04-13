@@ -9,6 +9,7 @@ using SODP.Domain.Exceptions;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -35,7 +36,7 @@ public class StageController : ActiveStatusController<Stage>
 	{
 		if (pageSize == 0 && pageNumber != 1)
 		{
-			var error = Result.Failure(new Error("Stage.BadRequest", "pageNumber and/or pageSize is invalid."));
+			var error = Result.Failure(new Error("pageNumber and/or pageSize is invalid."));
 			return BadRequest(error.Error);
 		}
 
@@ -138,7 +139,7 @@ public class StageController : ActiveStatusController<Stage>
 		}
 		catch (ResourceIsInUseException ex)
 		{
-			return Conflict(ApiResponse.Failure(ex.Message));
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict));
 		}
 		catch (Exception ex)
 		{

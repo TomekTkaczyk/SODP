@@ -10,6 +10,7 @@ using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Net;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SODP.WebApi.v0_01.Controllers
 {
@@ -69,7 +70,6 @@ namespace SODP.WebApi.v0_01.Controllers
             [FromBody] CreateDesignerRequest request, 
             CancellationToken cancellationToken = default)
         {
-            var response = await HandleRequestAsync<CreateDesignerRequest, ApiResponse<DesignerDTO>>(request, cancellationToken);
             try
             {
                 var response = await _sender.Send(request, cancellationToken);
@@ -81,7 +81,7 @@ namespace SODP.WebApi.v0_01.Controllers
 			}
 			catch (DesignerConflictException ex)
             {
-                return Conflict(ApiResponse.Failure(ex.Message));
+                return Conflict(ApiResponse.Failure(ex.Message,HttpStatusCode.Conflict));
             }
 			catch (Exception ex)
             {
@@ -104,15 +104,7 @@ namespace SODP.WebApi.v0_01.Controllers
 				return BadRequest(request);
 			}
 			
-            try
-			{
-				var response = await _sender.Send(request, cancellationToken);
-                return NoContent();
-			}
-			catch (Exception ex)
-			{
-				return UnknowServerError(ex);
-			}
+            return await HandleRequestAsync(request, cancellationToken);
 		}
 
 
@@ -125,19 +117,8 @@ namespace SODP.WebApi.v0_01.Controllers
             CancellationToken cancellationToken = default)
         {
             var request = new DeleteDesignerRequest(id);
-            try
-            {
-                await _sender.Send(request, cancellationToken);
-                return NoContent();
-            }
-			catch (NotFoundException ex)
-			{
-				return NotFound(ex.Message);
-			}
-			catch (Exception ex)
-            {
-                return UnknowServerError(ex.Message);
-            }
+
+            return await HandleRequestAsync<DeleteDesignerRequest>(request, cancellationToken);
         }
 
 
@@ -150,21 +131,8 @@ namespace SODP.WebApi.v0_01.Controllers
             CancellationToken cancellationToken = default)
         {
 			var request = new GetDesignerWithDetailsRequest(id);
-			try
-			{
-				var response = await _sender.Send(request, cancellationToken);
 
-
-				return Ok(response);
-			}
-			catch (NotFoundException ex)
-			{
-				return NotFound(ex.Message);
-			}
-			catch (Exception ex)
-			{
-				return UnknowServerError(ex);
-			}
+            return await HandleRequestAsync<GetDesignerWithDetailsRequest,ApiResponse<DesignerLicensesDTO>>(request, cancellationToken);
 		}
 
 
@@ -172,12 +140,14 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> AddLicense(
+        public async Task<IActionResult> CreateLicense(
             int id, 
-            [FromBody] LicenseDTO license, 
+            string content, 
             CancellationToken cancellationToken = default)
         {
-            return Ok(await _service.AddLicenseAsync(id, license));
+            var request = new CreateLicenseRequest(id,content);
+
+			return await HandleRequestAsync< CreateLicenseRequest,ApiResponse<LicenseDTO>>(request,cancellationToken);
         }
     }
 }

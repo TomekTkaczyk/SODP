@@ -21,6 +21,6 @@ public class GetDesigerByNameQuery : QueryBase<Designer>
 		return await context.Set<Designer>()
 			.FirstOrDefaultAsync(x =>
 			x.Firstname.ToUpper().Equals(_firstName.ToUpper()) &&
-			x.Lastname.ToUpper().Equals(_lastName.ToUpper()));
+			x.Lastname.ToUpper().Equals(_lastName.ToUpper()),cancellationToken);
 	}
 }

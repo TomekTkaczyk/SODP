@@ -7,3 +7,8 @@ public interface IQueryExecutor
 {
     Task<TResult> ExecuteAsync<TResult>(QueryBase<TResult> query, CancellationToken cancellationToken);
 }
+
+public interface IQueryExecutor<TResult>
+{
+	Task<TResult> ExecuteAsync<TResult>(QueryBase<TResult> query, CancellationToken cancellationToken);
+}

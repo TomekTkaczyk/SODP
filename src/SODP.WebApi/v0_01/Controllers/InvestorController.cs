@@ -9,6 +9,7 @@ using SODP.Domain.Exceptions;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -35,7 +36,7 @@ public class InvestorController : ActiveStatusController<Investor>
 	{
 		if (pageSize == 0 && pageNumber != 1)
 		{
-			return BadRequest(ApiResponse.Failure("pageNumber and/or pageSize is invalid."));
+			return BadRequest(ApiResponse.Failure("pageNumber and/or pageSize is invalid.",HttpStatusCode.BadRequest));
 		}
 
 		var query = new GetInvestorsPageRequest(active, searchString, pageNumber, pageSize);
@@ -92,7 +93,7 @@ public class InvestorController : ActiveStatusController<Investor>
 		}
 		catch (InvestorExistException ex)
 		{
-			return Conflict(ApiResponse.Failure(ex.Message));
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict));
 		}
 		catch (Exception ex)
 		{
@@ -122,7 +123,7 @@ public class InvestorController : ActiveStatusController<Investor>
 		}
 		catch (InvestorExistException ex)
 		{
-			return Conflict(ApiResponse.Failure(ex.Message));
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict));
 		}
 		catch (Exception ex)
 		{

@@ -105,7 +105,7 @@ namespace SODP.Infrastructure.Services
                     .Include(x => x.Designer)
                     .Include(x => x.Branches)
                     .ThenInclude(y => y.Branch)
-                    .Where(z => z.DesignerId == id)
+                    .Where(z => z.Designer.Id == id)
                     .ToListAsync();
 
                 serviceResponse.SetData(_mapper.Map<IReadOnlyCollection<LicenseWithBranchesDTO>>(licenses));
@@ -133,7 +133,7 @@ namespace SODP.Infrastructure.Services
                 }
 
                 license = _mapper.Map<License>(newLicense);
-                license.Designer = await _context.Designers.SingleOrDefaultAsync(x => x.Id == license.DesignerId);
+                license.Designer = await _context.Designers.SingleOrDefaultAsync(x => x.Id == license.Designer.Id);
                 var entity = _context.Licenses.Add(license);
                 await _context.SaveChangesAsync();
                 serviceResponse.SetData(_mapper.Map<LicenseDTO>(entity.Entity));

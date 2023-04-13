@@ -5,5 +5,10 @@ namespace SODP.DataAccess.CQRS.Commands;
 
 public interface ICommandExecutor
 {
-	Task<TResult> ExecuteAsync<TParameter, TResult>(CommandBase<TParameter,TResult> command, CancellationToken cancellationToken);
+	Task ExecuteAsync<TParameter>(CommandBase<TParameter> command, CancellationToken cancellationToken);
+}
+
+public interface ICommandExecutor<TResult>
+{
+	Task<TResult> ExecuteAsync<TParameter>(CommandBase<TParameter,TResult> command, CancellationToken cancellationToken);
 }

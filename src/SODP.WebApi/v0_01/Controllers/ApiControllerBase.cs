@@ -82,7 +82,7 @@ public abstract class ApiControllerBase : ControllerBase
 		}
 	}
 
-	private ObjectResult UnknowServerError(object value)
+	protected ObjectResult UnknowServerError(object value)
 	{
 		return StatusCode(StatusCodes.Status500InternalServerError, value);
 	}
