@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Stages;
 using SODP.Domain.Entities;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -56,7 +57,7 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
 		var query = new GetStageByIdRequest(id);
@@ -100,7 +101,7 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public virtual async Task<IActionResult> ChangeNameAsync(
-		int id,
+		[FromRoute] int id,
 		[FromBody] ChangeStageNameRequest command,
 		CancellationToken cancellationToken = default)
 	{
@@ -126,7 +127,7 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> DeleteAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
 		var command = new DeleteStageRequest(id);
@@ -134,6 +135,10 @@ public class StageController : ActiveStatusController<Stage>
 		{
 			await _sender.Send(command, cancellationToken);
 			return NoContent();
+		}
+		catch (ResourceIsInUseException ex)
+		{
+			return Conflict(ApiResponse.Failure(ex.Message));
 		}
 		catch (Exception ex)
 		{

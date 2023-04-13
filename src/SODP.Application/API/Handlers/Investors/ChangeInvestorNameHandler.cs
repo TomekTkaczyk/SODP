@@ -30,7 +30,7 @@ public class ChangeInvestorNameHandler : IRequestHandler<ChangeInvestorNameReque
 
         if (investor is not null)
         {
-            throw new ConflictException("investor");
+            throw new InvestorExistException();
         }
 
         investor.SetName(request.Name);

@@ -45,7 +45,7 @@ public abstract class AppPageModel : PageModel
 
 		foreach (var error in response.Errors)
 		{
-			ModelState.AddModelError(error.Code, error.Message);
+			ModelState.AddModelError("", error.Message);
 		}
 	}
 

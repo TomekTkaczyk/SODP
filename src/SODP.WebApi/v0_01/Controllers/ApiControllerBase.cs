@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Domain.Exceptions;
 using SODP.Shared.Response;
 using System.Net;
 
@@ -21,7 +22,67 @@ public abstract class ApiControllerBase : ControllerBase
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 	}
 
-	protected ObjectResult UnknowServerError(object value)
+
+	protected async Task<IActionResult> HandleRequestAsync<TRequest>(TRequest request, CancellationToken cancellationToken)
+	where TRequest : IRequest
+	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState
+				.Where(x => x.Value.Errors.Any())
+				.Select(x => new { property = x.Key, errors = x.Value.Errors }));
+		}
+		try
+		{
+			await _sender.Send(request, cancellationToken);
+			return NoContent();
+		}
+		catch (NotFoundException ex)
+		{
+			return NotFound(ex);
+		}
+		catch (ConflictException ex)
+		{
+			return Conflict(ex);
+		}
+		catch (Exception ex)
+		{
+			return UnknowServerError(ex);
+		}
+	}
+
+	protected async Task<IActionResult> HandleRequestAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
+		where TRequest : IRequest<TResponse>
+		where TResponse : ApiResponse
+	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState
+				.Where(x => x.Value.Errors.Any())
+				.Select(x => new { property = x.Key, errors = x.Value.Errors}));
+		}
+
+		try
+		{
+			var response = await _sender.Send(request, cancellationToken);
+
+			return StatusCode((int)response.HttpCode, response);
+		}
+		catch (NotFoundException ex)
+		{
+			return NotFound(ex);
+		}
+		catch (ConflictException ex)
+		{
+			return Conflict(ex);
+		}
+		catch (Exception ex)
+		{
+			return UnknowServerError(ex);
+		}
+	}
+
+	private ObjectResult UnknowServerError(object value)
 	{
 		return StatusCode(StatusCodes.Status500InternalServerError, value);
 	}

@@ -78,20 +78,19 @@ public class InvestorController : ActiveStatusController<Investor>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
-		[FromBody] CreateInvestorRequest command,
+		[FromBody] CreateInvestorRequest request,
 		CancellationToken cancellationToken = default)
 	{
 		try
 		{
-			var investor = await _sender.Send(command, cancellationToken);
-			var apiResponse = ApiResponse.Success(_mapper.Map<InvestorDTO>(investor));
+			var response = await _sender.Send(request, cancellationToken);
 
 			return CreatedAtAction(
 				   nameof(GetAsync),
-				   new { apiResponse.Value.Id },
-				   apiResponse);
+				   new { response.Value.Id },
+				   response);
 		}
-		catch (ConflictException ex)
+		catch (InvestorExistException ex)
 		{
 			return Conflict(ApiResponse.Failure(ex.Message));
 		}
@@ -108,20 +107,20 @@ public class InvestorController : ActiveStatusController<Investor>
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> ChangeNameAsync(
 		int id,
-		[FromBody] ChangeInvestorNameRequest command,
+		[FromBody] ChangeInvestorNameRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		if (id != command.Id)
+		if (id != request.Id)
 		{
-			return BadRequest(command);
+			return BadRequest(request);
 		}
 
 		try
 		{
-			var response = await _sender.Send(command, cancellationToken);
+			var response = await _sender.Send(request, cancellationToken);
 			return NoContent();
 		}
-		catch (ConflictException ex)
+		catch (InvestorExistException ex)
 		{
 			return Conflict(ApiResponse.Failure(ex.Message));
 		}

@@ -9,6 +9,7 @@ using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers
 {
@@ -40,15 +41,8 @@ namespace SODP.WebApi.v0_01.Controllers
             CancellationToken cancellationToken = default)
 		{
             var request = new GetDesignersPageRequest(active, searchString, pageNumber, pageSize);
-            try
-            {
-                var response = await _sender.Send(request, cancellationToken);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                return UnknowServerError(ex);
-            }
+            
+            return await HandleRequestAsync<GetDesignersPageRequest,ApiResponse<Page<DesignerDTO>>>(request, cancellationToken);
         }
 
 
@@ -61,19 +55,8 @@ namespace SODP.WebApi.v0_01.Controllers
             CancellationToken cancellationToken = default)
         {
             var request = new GetDesignerRequest(id);
-            try
-            {
-                var response = await _sender.Send(request, cancellationToken);
-                return Ok(response);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return UnknowServerError(ex);
-            }
+
+            return await HandleRequestAsync<GetDesignerRequest,ApiResponse<DesignerDTO>>(request, cancellationToken);
         }
 
 
@@ -86,6 +69,7 @@ namespace SODP.WebApi.v0_01.Controllers
             [FromBody] CreateDesignerRequest request, 
             CancellationToken cancellationToken = default)
         {
+            var response = await HandleRequestAsync<CreateDesignerRequest, ApiResponse<DesignerDTO>>(request, cancellationToken);
             try
             {
                 var response = await _sender.Send(request, cancellationToken);
@@ -97,7 +81,7 @@ namespace SODP.WebApi.v0_01.Controllers
 			}
 			catch (DesignerConflictException ex)
             {
-                return Conflict(ex.Message);
+                return Conflict(ApiResponse.Failure(ex.Message));
             }
 			catch (Exception ex)
             {
@@ -123,15 +107,7 @@ namespace SODP.WebApi.v0_01.Controllers
             try
 			{
 				var response = await _sender.Send(request, cancellationToken);
-				return NoContent();
-			}
-			catch (ConflictException ex)
-			{
-				return Conflict(ApiResponse.Failure(ex.Message));
-			}
-			catch (NotFoundException ex)
-			{
-				return NotFound(ApiResponse.Failure(ex.Message));
+                return NoContent();
 			}
 			catch (Exception ex)
 			{

@@ -26,17 +26,10 @@ public abstract class ActiveStatusController<TEntity> : ApiControllerBase where 
 	public async Task<IActionResult> SetActiveStatusAsync(
 		int id,
 		int status,
-		CancellationToken cancellationToke = default)
+		CancellationToken cancellationToken = default)
 	{
-		var command = new SetActiveStatusRequest<TEntity>(id, status == 1);
-		try
-		{
-			await _sender.Send(command, cancellationToke);
-			return NoContent();
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new SetActiveStatusRequest<TEntity>(id, status == 1);
+
+		return await HandleRequestAsync<SetActiveStatusRequest<TEntity>>(request, cancellationToken);
 	}
 }
