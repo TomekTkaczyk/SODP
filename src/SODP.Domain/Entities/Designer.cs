@@ -42,7 +42,7 @@ public class Designer : ActiveStatusEntity
 
     public void AddLicense(License license)
     {
-		if (Licenses.Select(x => x.Content.ToUpper().Equals(license.Content.ToUpper())).Any())
+		if (Licenses.Where(x => x.Content.ToUpper().Equals(license.Content.ToUpper())).Any())
         {
             throw new DesignerHaveLicenseException();
 		}

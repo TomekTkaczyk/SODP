@@ -14,7 +14,7 @@ public class License : BaseEntity
         return new License()
         {
             Designer = designer,
-            Content = content
+            Content = content.ToUpper()
         };
     }
 }

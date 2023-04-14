@@ -3,8 +3,12 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.API.Requests.Branches;
+using SODP.Application.API.Requests.Licenses;
 using SODP.Application.Services;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers
@@ -27,36 +31,34 @@ namespace SODP.WebApi.v0_01.Controllers
         }
 
 
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public virtual async Task<IActionResult> GetPageAsync(bool? active, string searchString = "", int pageNumber = 1, int pageSize = 0)
-        {
-            return Ok(await _service.GetPageAsync(active, searchString, pageNumber, pageSize));
-        }
-
-
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetAsync(int id)
-        {
-            return Ok(await _service.GetAsync(id));
-        }
+		public async Task<IActionResult> GetAsync(
+			int id,
+			CancellationToken cancellationToken = default)
+		{
+			var request = new GetLicenseRequest(id);
+
+			return await HandleRequestAsync<GetLicenseRequest, ApiResponse<LicenseDTO>>(request, cancellationToken);
+		}
 
 
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateAsync([FromBody] NewLicenseDTO entity)
-        {
-            return Ok(await _service.CreateAsync(entity));
-        }
+		[HttpPost]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		public async Task<IActionResult> CreateAsync(
+	        int id,
+	        [FromBody] CreateLicenseRequest request,
+	        CancellationToken cancellationToken = default)
+		{
+			return await HandleRequestAsync<CreateLicenseRequest, ApiResponse<LicenseDTO>>(request, cancellationToken);
+		}
 
 
-        [HttpPut("{id}")]
+		[HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -84,10 +86,11 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetBranchesAsync(int id)
+        public async Task<IActionResult> GetWithBranchesAsync(int id)
         {
             return Ok(await _service.GetBranchesAsync(id));
         }
+
 
         [HttpPut("{id}/branches/{branchId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -97,6 +100,7 @@ namespace SODP.WebApi.v0_01.Controllers
         {
             return Ok(await _service.AddBranchAsync(id, branchId));
         }
+
 
         [HttpDelete("{id}/branches/{branchId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

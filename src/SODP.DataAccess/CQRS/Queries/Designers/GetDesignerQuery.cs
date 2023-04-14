@@ -16,9 +16,11 @@ public class GetDesignerQuery : QueryBase<Designer>
 
 	public override async Task<Designer> ExecuteAsync(SODPDBContext context, CancellationToken cancellationToken)
 	{
-		return await context.Set<Designer>()
+		var designer =  await context.Set<Designer>()
 			.Include(x => x.Licenses)
 			.ThenInclude(x => x.Branches)
 			.SingleOrDefaultAsync(x => x.Id == _designerId,cancellationToken);
+
+		return designer;
 	}
 }

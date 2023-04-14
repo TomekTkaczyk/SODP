@@ -126,7 +126,7 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> GetDesignerWithLicensesAsync(
+        public async Task<IActionResult> GetWithLicensesAsync(
             int id,
             CancellationToken cancellationToken = default)
         {
@@ -134,20 +134,5 @@ namespace SODP.WebApi.v0_01.Controllers
 
             return await HandleRequestAsync<GetDesignerWithDetailsRequest,ApiResponse<DesignerLicensesDTO>>(request, cancellationToken);
 		}
-
-
-        [HttpPost("{id}/licenses")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> CreateLicense(
-            int id, 
-            string content, 
-            CancellationToken cancellationToken = default)
-        {
-            var request = new CreateLicenseRequest(id,content);
-
-			return await HandleRequestAsync< CreateLicenseRequest,ApiResponse<LicenseDTO>>(request,cancellationToken);
-        }
-    }
+	}
 }
