@@ -11,8 +11,8 @@ namespace SODP.Application.API.Handlers.Investors;
 
 public sealed class DeleteInvestorHandler : IRequestHandler<DeleteInvestorRequest>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IInvestorRepository _investorRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public DeleteInvestorHandler(
         IInvestorRepository investorRepository,

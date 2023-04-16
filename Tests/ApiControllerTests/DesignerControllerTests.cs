@@ -10,19 +10,5 @@ namespace Tests.ApiControllerTests
 {
     public class DesignerControllerTests
     {
-        [Fact]
-        public async Task Get_OnSuccess_ReturnsStatusCode200()
-        {
-            // Arrange
-            var service = Substitute.For<IDesignerService>();
-            var logger = Substitute.For<ILogger<DesignerController>>();
-            // var controller = new DesignerController(service, logger);
-
-            // Act
-            // var result = await controller.GetPageAsync(true);
-
-            // Assert
-            // Assert.IsType<OkObjectResult>(result);
-        }
     }
 }

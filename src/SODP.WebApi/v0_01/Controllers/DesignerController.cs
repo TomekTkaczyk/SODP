@@ -18,17 +18,10 @@ namespace SODP.WebApi.v0_01.Controllers
     [Route("api/v0_01/designers")]
     public class DesignerController : ActiveStatusController<Designer>
 	{
-        private readonly IDesignerService _service;
-
         public DesignerController(
-            IDesignerService service, 
-            ISender sender, 
-            IMapper mapper, 
-            ILogger<DesignerController> logger) 
-            : base(sender, mapper, logger)
-        {
-            _service = service ?? throw new ArgumentNullException(nameof(service));
-        }
+            ISender sender,
+            IMapper mapper,
+            ILogger<DesignerController> logger) : base(sender, mapper, logger) { }
 
 
 		[HttpGet]
@@ -94,7 +87,7 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public virtual async Task<IActionResult> UpdateAsync(
+        public async Task<IActionResult> UpdateAsync(
             int id, 
             [FromBody] ChangeDesignerNameRequest request,
             CancellationToken cancellationToken = default)

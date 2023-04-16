@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
-using SODP.DataAccess.CQRS.Queries;
-using SODP.DataAccess.CQRS.Queries.Common;
-using SODP.DataAccess.CQRS.Queries.Designers;
+using SODP.Application.Specifications.Common;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Threading;
@@ -15,14 +15,14 @@ namespace SODP.Application.Queries.Designers;
 
 public class GetDesignerHandler : IRequestHandler<GetDesignerRequest, ApiResponse<DesignerDTO>>
 {
-	private readonly IQueryExecutor _queryExecutor;
+	private readonly IDesignerRepository _designerRepository;
 	private readonly IMapper _mapper;
 
 	public GetDesignerHandler(
-		IQueryExecutor queryExecutor,
+		IDesignerRepository designerRepository,
 		IMapper mapper)
     {
-		_queryExecutor = queryExecutor;
+		_designerRepository = designerRepository;
 		_mapper = mapper;
 	}
 
@@ -30,8 +30,9 @@ public class GetDesignerHandler : IRequestHandler<GetDesignerRequest, ApiRespons
 		GetDesignerRequest request, 
 		CancellationToken cancellationToken)
 	{
-		var query = new GetByIdQuery<Designer>(request.Id);
-		var designer = await _queryExecutor.ExecuteAsync(query, cancellationToken);
+		var designer = await _designerRepository
+			.ApplySpecyfication(new ByIdSpecification<Designer>(request.Id))
+			.SingleOrDefaultAsync(cancellationToken);
 		
 		if(designer is null)
 		{

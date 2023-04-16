@@ -24,8 +24,7 @@ namespace SODP.WebApi.v0_01.Controllers
             ILicenseService service, 
             ISender sender, 
             IMapper mapper, 
-            ILogger<LicenseController> logger) 
-            : base(sender, mapper, logger)
+            ILogger<LicenseController> logger) : base(sender, mapper, logger)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
@@ -50,7 +49,6 @@ namespace SODP.WebApi.v0_01.Controllers
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		public async Task<IActionResult> CreateAsync(
-	        int id,
 	        [FromBody] CreateLicenseRequest request,
 	        CancellationToken cancellationToken = default)
 		{
@@ -58,18 +56,21 @@ namespace SODP.WebApi.v0_01.Controllers
 		}
 
 
-		[HttpPut("{id}")]
+		[HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public virtual async Task<IActionResult> UpdateAsync(int id, [FromBody] LicenseDTO entity)
+        public async Task<IActionResult> UpdateAsync(
+            int id, 
+            [FromBody] ChangeLicenseContentRequest request,
+            CancellationToken cancellationToken = default)
         {
-            if (id != entity.Id)
+            if (request.Id != id)
             {
                 return BadRequest();
             }
 
-            return Ok(await _service.UpdateAsync(entity));
+            return await HandleRequestAsync<ChangeLicenseContentRequest>(request, cancellationToken);
         }
 
 
@@ -77,9 +78,13 @@ namespace SODP.WebApi.v0_01.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(
+            int id,
+            CancellationToken cancellationToken)
         {
-            return Ok(await _service.DeleteAsync(id));
+            var request = new DeleteLicenseRerquest(id);
+
+            return await HandleRequestAsync(request, cancellationToken);
         }
 
         [HttpGet("{id}/branches")]

@@ -13,11 +13,9 @@ internal class BranchRepository : PagedRepository<Branch>, IBranchRepository
 		int id, 
 		CancellationToken cancellationToken)
 	{
-		var aaa = await _dbContext.Set<Branch>()
+		return await _dbContext.Set<Branch>()
 			.Include(s => s.Licenses)
 			.ThenInclude(s => s.License)
 			.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
-
-		return aaa;
 	}
 }

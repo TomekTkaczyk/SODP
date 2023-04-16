@@ -50,11 +50,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SODP.Application\SODP.Application.csproj" />
     <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="CQRS\Queries\Projects\" />
   </ItemGroup>
 
 </Project>

@@ -21,8 +21,7 @@ public class InvestorController : ActiveStatusController<Investor>
 	public InvestorController(
 		ISender sender,
 		IMapper mapper,
-		ILogger<InvestorController> logger)
-		: base(sender, mapper, logger) { }
+		ILogger<InvestorController> logger)	: base(sender, mapper, logger) { }
 
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
