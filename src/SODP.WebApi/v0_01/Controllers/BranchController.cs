@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Branches;
+using SODP.Application.API.Requests.Designers;
 using SODP.Application.Services;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
@@ -21,14 +22,10 @@ public class BranchController : ActiveStatusController<Branch>
 	private readonly IBranchService _service;
 
 	public BranchController(
-		IBranchService service,
 		ISender sender,
 		IMapper mapper,
 		ILogger<BranchController> logger)
-		: base(sender, mapper, logger)
-	{
-		_service = service ?? throw new ArgumentNullException(nameof(service));
-	}
+		: base(sender, mapper, logger) { }
 
 
 	[HttpGet]
@@ -41,22 +38,9 @@ public class BranchController : ActiveStatusController<Branch>
 		int pageSize = 0,
 		CancellationToken cancellationToken = default)
 	{
-		if (pageSize == 0 && pageNumber != 1)
-		{
-			var error = Result.Failure(new Error("pageNumber and/or pageSize is invalid."));
-			return BadRequest(error.Error);
-		}
+		var request = new GetBranchesPageRequest(active, searchString, pageNumber, pageSize);
 
-		var query = new GetBranchesPageRequest(active, searchString, pageNumber, pageSize);
-		try
-		{
-			var branches = await _sender.Send(query, cancellationToken);
-			return Ok(ApiResponse.Success(_mapper.Map<Page<BranchDTO>>(branches)));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		return await HandleRequestAsync<GetBranchesPageRequest,ApiResponse<Page<BranchDTO>>>(request, cancellationToken);
 	}
 
 
@@ -68,16 +52,9 @@ public class BranchController : ActiveStatusController<Branch>
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetBranchByIdRequest(id);
-		try
-		{
-			var branch = await _sender.Send(query, cancellationToken);
-			return Ok(ApiResponse.Success<BranchDTO>(_mapper.Map<BranchDTO>(branch)));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new GetBranchRequest(id);
+		
+		return await HandleRequestAsync<GetBranchRequest, ApiResponse<BranchDTO>>(request, cancellationToken);
 	}
 
 
@@ -86,16 +63,16 @@ public class BranchController : ActiveStatusController<Branch>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
-		[FromBody] CreateBranchRequest command,
+		[FromBody] CreateBranchRequest request,
 		CancellationToken cancellationToken = default)
 	{
 		try
 		{
-			var branch = await _sender.Send(command, cancellationToken);
+			var response = await _sender.Send(request, cancellationToken);
 			return CreatedAtAction(
 				nameof(GetAsync),
-				new { branch.Id },
-				_mapper.Map<BranchDTO>(branch));
+				new { response.Value.Id },
+				response.Value);
 		}
 		catch (ConflictException ex) 
 		{
@@ -114,27 +91,15 @@ public class BranchController : ActiveStatusController<Branch>
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public virtual async Task<IActionResult> UpdateAsync(
 		int id,
-		[FromBody] UpdateBranchRequest command,
+		[FromBody] UpdateBranchRequest request,
 		CancellationToken cancellationToken)
 	{
-		if (id != command.Id)
+		if (id != request.Id)
 		{
 			return BadRequest();
 		}
 
-		try
-		{
-			await _sender.Send(command, cancellationToken);
-			return NoContent();
-		}
-		catch (ConflictException ex)
-		{
-			return Conflict(ex.Message);
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 
 
@@ -146,16 +111,9 @@ public class BranchController : ActiveStatusController<Branch>
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var command = new DeleteBranchRequest(id);
-		try
-		{
-			await _sender.Send(command, cancellationToken);
-			return NoContent();
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new DeleteBranchRequest(id);
+
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 
 
@@ -167,7 +125,7 @@ public class BranchController : ActiveStatusController<Branch>
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetBranchByIdWithLicensesRequest(id);
+		var query = new GetBranchWithLicensesRequest(id);
 		try
 		{
 			var branch = await _sender.Send(query, cancellationToken);

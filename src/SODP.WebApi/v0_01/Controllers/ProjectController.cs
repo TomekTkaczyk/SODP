@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.API.Handlers.Projects;
 using SODP.Application.API.Requests.Projects;
 using SODP.Application.Services;
 using SODP.Shared.DTO;
@@ -19,14 +20,10 @@ public class ProjectController : ApiControllerBase
 	private readonly IProjectService _service;
 
 	public ProjectController(
-		IProjectService service,
 		ISender sender,
 		IMapper mapper,
 		ILogger<ProjectController> logger)
-		: base(sender, mapper, logger)
-	{
-		_service = service ?? throw new ArgumentNullException(nameof(service));
-	}
+		: base(sender, mapper, logger) { }
 
 
 	[HttpGet]
@@ -45,16 +42,9 @@ public class ProjectController : ApiControllerBase
 			return BadRequest($"pageNumber and/or pageSize is invalid.");
 		}
 
-		var query = new GetProjectsPageRequest(status, searchString, pageNumber, pageSize);
-		try
-		{
-			var projects = await _sender.Send(query, cancellationToken);
-			return Ok(ApiResponse.Success(_mapper.Map<Page<ProjectDTO>>(projects)));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new GetProjectsPageRequest(status, searchString, pageNumber, pageSize);
+
+		return await HandleRequestAsync<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>(request, cancellationToken);
 	}
 
 
@@ -66,16 +56,9 @@ public class ProjectController : ApiControllerBase
 		int id,
 		CancellationToken cancellationToken = default)
 	{
-		var query = new GetProjectByIdRequest(id);
-		try
-		{
-			var project = await _sender.Send(query, cancellationToken);
-			return Ok(ApiResponse.Success(_mapper.Map<ProjectDTO>(project)));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new GetProjectRequest(id);
+
+		return await HandleRequestAsync<GetProjectRequest, ApiResponse<ProjectDTO>>(request, cancellationToken);
 	}
 
 
@@ -88,16 +71,9 @@ public class ProjectController : ApiControllerBase
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetProjectByIdWithDetailsRequest(id);
-		try
-		{
-			var project = await _sender.Send(query, cancellationToken);
-			return Ok(ApiResponse.Success(_mapper.Map<ProjectDTO>(project)));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new GetProjectWithDetailsRequest(id);
+
+		return await HandleRequestAsync<GetProjectWithDetailsRequest,ApiResponse<ProjectDTO>>(request, cancellationToken);
 	}
 
 
@@ -108,21 +84,10 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status409Conflict)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 	public async Task<IActionResult> CreateAsync(
-		[FromBody] CreateProjectRequest command,
+		[FromBody] CreateProjectRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		try
-		{
-			var project = await _sender.Send(command, cancellationToken);
-			return CreatedAtAction(
-				nameof(GetAsync),
-				new { project.Id },
-				_mapper.Map<ProjectDTO>(project));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		return await HandleRequestAsync<CreateProjectRequest,ApiResponse<ProjectDTO>>(request, cancellationToken);
 	}
 
 
@@ -134,16 +99,9 @@ public class ProjectController : ApiControllerBase
 		int id,
 		CancellationToken cancellationToken = default)
 	{
-		var command = new DeleteProjectRequest(id);
-		try
-		{
-			await _sender.Send(command, cancellationToken);
-			return NoContent();
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new DeleteProjectRequest(id);
+
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 
 
@@ -153,22 +111,15 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Update(
 		int id,
-		[FromBody] UpdateProjectRequest command,
+		[FromBody] UpdateProjectRequest request,
 		CancellationToken cancellationToken)
 	{
-		if (id != command.Id)
+		if (id != request.Id)
 		{
 			return BadRequest();
 		}
-		try
-		{
-			var result = await _sender.Send(command, cancellationToken);
-			return NoContent();
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 
 
@@ -177,27 +128,16 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> AddPartAsync(
-		int id, 
-		[FromBody] AddPartRequest command,
+		int id,
+		[FromBody] AddPartRequest request,
 		CancellationToken cancellationToken)
 	{
-		if(id != command.Id)
+		if (id != request.Id)
 		{
 			return BadRequest();
 		}
 
-		try
-		{
-			var part = await _sender.Send(command, cancellationToken);
-			return CreatedAtAction(
-				nameof(GetAsync),
-				new { part.Id },
-				_mapper.Map<PartDTO>(part));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		return await HandleRequestAsync<AddPartRequest,ApiResponse<PartDTO>>(request, cancellationToken);
 	}
 
 
@@ -205,9 +145,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> UpdatePartAsync(int partId, PartDTO part)
+	public async Task<IActionResult> UpdatePartAsync(
+		int partId, 
+		UpdatePartRequest request,
+		CancellationToken cancellationToken)
 	{
-		return Ok(await _service.UpdatePartAsync(partId, part));
+		return await HandleRequestAsync<UpdatePartRequest>(request, cancellationToken);
 	}
 
 

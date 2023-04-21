@@ -36,7 +36,6 @@ namespace SODP.Infrastructure.Services
                     return serviceResponse;
                 }
 
-                branch.Normalize();
                 branch.SetActiveStatus(true);
                 var entity = await _context.Branches.AddAsync(branch);
                 await _context.SaveChangesAsync();
@@ -70,8 +69,8 @@ namespace SODP.Infrastructure.Services
                     serviceResponse.ValidationErrors.Add("Branch.Sign", "Branch not found.");
                     return serviceResponse;
                 }
-                branch.SetName(updateBranch.Name);
-                branch.Normalize();
+                //branch.SetName(updateBranch.Name);
+                //branch.Normalize();
                 _context.Branches.Update(branch);
                 await _context.SaveChangesAsync();
             }
@@ -131,7 +130,7 @@ namespace SODP.Infrastructure.Services
         {
             _query = _context.Branches
                 .Where(x => x.ActiveStatus.Equals(active))
-                .Where(x => x.Sign.Contains(searchString) || x.Name.Contains(searchString))
+                .Where(x => x.Sign.Contains(searchString) || x.Title.Contains(searchString))
                 .OrderBy(x => x.Order)
                 .ThenBy(x => x.Id);
 

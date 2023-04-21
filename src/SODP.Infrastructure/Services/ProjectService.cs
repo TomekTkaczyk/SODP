@@ -428,7 +428,7 @@ namespace SODP.Application.Services
 				if (project.Parts.SingleOrDefault(x => x.Sign == part.Sign) == null)
 				{
                     _context.ProjectParts.Add(
-                        new ProjectPart(project, new Part(part.Sign, part.Name)));
+                        new ProjectPart(project, new Part(part.Sign, part.Title)));
 				}
                 else
                 {
@@ -460,7 +460,7 @@ namespace SODP.Application.Services
 				}
 
                 projectPart.Sign = part.Sign;
-                projectPart.Name = part.Name;
+                projectPart.Name = part.Title;
 
 				_context.Entry(projectPart).State = EntityState.Modified;
 				await _context.SaveChangesAsync();

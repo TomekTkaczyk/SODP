@@ -1,9 +1,8 @@
-﻿namespace SODP.Domain.Entities
-{
-	public interface IActiveStatus
-	{
-		bool ActiveStatus { get; }
+﻿namespace SODP.Domain.Entities;
 
-		void SetActiveStatus(bool activeStatus);
-	}
+public interface IActiveStatus
+{
+	bool ActiveStatus { get; }
+
+	void SetActiveStatus(bool activeStatus);
 }

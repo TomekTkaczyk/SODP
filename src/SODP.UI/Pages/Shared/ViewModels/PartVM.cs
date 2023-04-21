@@ -14,7 +14,7 @@ namespace SODP.UI.Pages.Shared.ViewModels
         public string Sign { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         public IList<SelectListItem> Items { get; set; }
     }

@@ -1,5 +1,4 @@
-﻿using SODP.Shared.DTO;
-using SODP.UI.Pages.ActiveProjects.ViewModels;
+﻿using SODP.UI.Pages.ActiveProjects.ViewModels;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;

@@ -8,8 +8,10 @@ public class BranchByNameSpecification : Specification<Branch>
 	public BranchByNameSpecification(bool? active, string searchString)
 		: base(branch =>
 		(!active.HasValue || branch.ActiveStatus.Equals(active)) &&
-		(string.IsNullOrWhiteSpace(searchString) || branch.Name.Contains(searchString) || branch.Sign.Contains(searchString)))
+		(string.IsNullOrWhiteSpace(searchString) 
+		|| branch.Sign.ToUpper().Contains(searchString.ToUpper()) 
+		|| branch.Title.ToUpper().Contains(searchString.ToUpper())))
 	{
-		AddOrderBy(x => x.Name);
+		AddOrderBy(x => x.Title.ToUpper());
 	}
 }

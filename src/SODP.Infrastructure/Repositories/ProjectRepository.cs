@@ -12,7 +12,7 @@ public class ProjectRepository : PagedRepository<Project>, IProjectRepository
 {
 	public ProjectRepository(SODPDBContext dbContext) : base(dbContext) { }
 
-	public async Task<Project> GetByIdWithDetailsAsync(
+	public async Task<Project> GetWithDetailsAsync(
 		int id, 
 		CancellationToken cancellationToken)
 	{

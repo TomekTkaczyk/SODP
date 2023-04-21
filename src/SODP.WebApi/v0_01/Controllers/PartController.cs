@@ -3,8 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.API.Requests.Branches;
+using SODP.Application.API.Requests.Parts;
 using SODP.Application.Services;
+using SODP.Domain.Entities;
+using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,26 +22,27 @@ namespace SODP.WebApi.v0_01.Controllers
 	[Route("api/v0_01/parts")]
 
 
-	public class PartController : ApiControllerBase
+	public class PartController : ActiveStatusController<Part>
 	{
-		private readonly IPartService _service;
-
 		public PartController(
-			IPartService service,
 			ISender sender,
 			IMapper mapper,
 			ILogger<PartController> logger)
-			: base(sender, mapper, logger)
-		{
-			_service = service ?? throw new ArgumentNullException(nameof(service));
-		}
+			: base(sender, mapper, logger) { }
 
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> GetPageAsync(bool? active, string searchString = "", int pageNumber = 1, int pageSize = 0)
+		public async Task<IActionResult> GetPageAsync(
+			bool? active, 
+			string searchString = "", 
+			int pageNumber = 1, 
+			int pageSize = 0,
+			CancellationToken cancellationToken = default)
 		{
-			return Ok(await _service.GetPageAsync(active, searchString, pageNumber, pageSize));
+			var request = new GetPartsPageRequest(active, searchString, pageNumber, pageSize);
+
+			return await HandleRequestAsync<GetPartsPageRequest, ApiResponse<Page<PartDTO>>>(request, cancellationToken);
 		}
 
 
@@ -44,34 +50,58 @@ namespace SODP.WebApi.v0_01.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> GetAsync(int id)
+		public async Task<IActionResult> GetAsync(
+			int id,
+			CancellationToken cancellationToken)
 		{
-			return Ok(await _service.GetAsync(id));
-		}
+			var request = new GetPartRequest(id);
 
+			return await HandleRequestAsync<GetPartRequest, ApiResponse<PartDTO>>(request, cancellationToken);
+		}
 
 
 		[HttpPost]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> CreateAsync([FromBody] PartDTO entity)
+		public async Task<IActionResult> CreateAsync(
+			[FromBody] CreatePartRequest request,
+			CancellationToken cancellationToken)
 		{
-			return Ok(await _service.CreateAsync(entity));
+			try
+			{
+				var response = await _sender.Send(request, cancellationToken);
+				return CreatedAtAction(
+					nameof(GetAsync),
+					new { response.Value.Id },
+					response.Value);
+			}
+			catch (ConflictException ex)
+			{
+				return Conflict(ex.Message);
+			}
+			catch (Exception ex)
+			{
+				return UnknowServerError(ex);
+			}
 		}
+
 
 		[HttpPut("{id}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public virtual async Task<IActionResult> UpdateAsync(int id, [FromBody] PartDTO entity)
+		public virtual async Task<IActionResult> UpdateAsync(
+			int id, 
+			[FromBody] UpdatePartRequest request,
+			CancellationToken cancellationToken)
 		{
-			if (id != entity.Id)
+			if (id != request.Id)
 			{
 				return BadRequest();
 			}
 
-			return Ok(await _service.UpdateAsync(entity));
+			return await HandleRequestAsync(request, cancellationToken);
 		}
 
 
@@ -79,26 +109,13 @@ namespace SODP.WebApi.v0_01.Controllers
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> DeleteAsync(int id)
+		public async Task<IActionResult> DeleteAsync(
+			int id,
+			CancellationToken cancellationToken)
 		{
-			return Ok(await _service.DeleteAsync(id));
+			var request = new DeletePartRequest(id);
+
+			return await HandleRequestAsync(request, cancellationToken);
 		}
-
-
-		[HttpPatch("{id}/status")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		[ProducesResponseType(StatusCodes.Status403Forbidden)]
-		public async Task<IActionResult> SetActiveStatusAsync(int id, [FromBody] int status)
-		{
-			if (_service is IActiveStatusService)
-			{
-				return Ok(await (_service as IActiveStatusService).SetActiveStatusAsync(id, status == 1));
-			}
-
-			return BadRequest();
-		}
-
-
 	}
 }

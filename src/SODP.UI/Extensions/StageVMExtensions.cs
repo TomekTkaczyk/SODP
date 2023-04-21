@@ -15,7 +15,7 @@ namespace SODP.UI.Extensions
                                   {
                                       Id = stage.Id,
                                       Sign = stage.Sign,
-                                      Name = stage.Name
+                                      Title = stage.Name
                                   }),
                                   Encoding.UTF8,
                                   "application/json"
@@ -28,7 +28,7 @@ namespace SODP.UI.Extensions
             {
                 Id = stage.Id,
                 Sign = stage.Sign,
-                Name = stage.Name
+                Name = stage.Title
             };
         }
     }

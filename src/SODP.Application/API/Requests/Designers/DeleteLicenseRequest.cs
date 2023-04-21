@@ -2,4 +2,4 @@
 
 namespace SODP.Application.API.Requests.Designers;
 
-public record DeleteLicenseRequest(int LicenseId) : IRequest;
+public sealed record DeleteLicenseRequest(int LicenseId) : IRequest;

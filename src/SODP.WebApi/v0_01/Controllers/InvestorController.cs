@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿	using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +21,8 @@ public class InvestorController : ActiveStatusController<Investor>
 	public InvestorController(
 		ISender sender,
 		IMapper mapper,
-		ILogger<InvestorController> logger)	: base(sender, mapper, logger) { }
+		ILogger<InvestorController> logger)	
+		: base(sender, mapper, logger) { }
 
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,17 +39,9 @@ public class InvestorController : ActiveStatusController<Investor>
 			return BadRequest(ApiResponse.Failure("pageNumber and/or pageSize is invalid.",HttpStatusCode.BadRequest));
 		}
 
-		var query = new GetInvestorsPageRequest(active, searchString, pageNumber, pageSize);
-		try
-		{
-			var investors = await _sender.Send(query, cancellationToken);
+		var request = new GetInvestorsPageRequest(active, searchString, pageNumber, pageSize);
 
-			return Ok(ApiResponse.Success(_mapper.Map<Page<InvestorDTO>>(investors)));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		return await HandleRequestAsync<GetInvestorsPageRequest, ApiResponse<Page<InvestorDTO>>>(request,cancellationToken);
 	}
 
 
@@ -60,16 +53,9 @@ public class InvestorController : ActiveStatusController<Investor>
 		int id,
 		CancellationToken cancellationToken = default)
 	{
-		var query = new GetInvestorByIdRequest(id);
-		try
-		{
-			var investor = await _sender.Send(query, cancellationToken);
-			return Ok(ApiResponse.Success(_mapper.Map<InvestorDTO>(investor)));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new GetInvestorRequest(id);
+
+		return await HandleRequestAsync<GetInvestorRequest,ApiResponse<InvestorDTO>>(request, cancellationToken);
 	}
 
 
@@ -115,19 +101,7 @@ public class InvestorController : ActiveStatusController<Investor>
 			return BadRequest(request);
 		}
 
-		try
-		{
-			var response = await _sender.Send(request, cancellationToken);
-			return NoContent();
-		}
-		catch (InvestorExistException ex)
-		{
-			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 
 
@@ -139,23 +113,8 @@ public class InvestorController : ActiveStatusController<Investor>
 		int id,
 		CancellationToken cancellationToken = default)
 	{
-		var command = new DeleteInvestorRequest(id);
-		try
-		{
-			await _sender.Send(command, cancellationToken);
-			return NoContent();
-		}
-		catch (InvestorNotFoundException ex)
-		{
-			return NotFound(ex.Message);
-		}
-		catch (UnknowDeleteException ex)
-		{
-			return NotFound(ex.Message);
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new DeleteInvestorRequest(id);
+
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 }

@@ -9,9 +9,9 @@ using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
+using SODP.UI.Pages.ActiveProjects.Extensions;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
-using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System;
 using System.Collections.Generic;
@@ -148,7 +148,7 @@ public class EditModel : ProjectEditPageModel
 		if (part != null)
 		{
 			model.Sign = part.Sign;
-			model.Name = part.Name;
+			model.Title = part.Title;
 		}
 
 		return GetPartialView(model, _editProjectPartViewName);
@@ -354,7 +354,7 @@ public class EditModel : ProjectEditPageModel
 			return result.Data.Collection.Select(x => new SelectListItem
 			{
 				Value = x.Sign,
-				Text = x.Name,
+				Text = x.Title,
 			}).ToList();
 		}
 

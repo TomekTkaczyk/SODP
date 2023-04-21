@@ -1,45 +1,43 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using MediatR;
 using SODP.Application.API.Requests.Projects;
-using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
+using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Projects;
 
-public class GetProjectsPageHandler : IRequestHandler<GetProjectsPageRequest, Page<Project>>
+public sealed class GetProjectsPageHandler : IRequestHandler<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>
 {
     private readonly IProjectRepository _projectRepository;
+	private readonly IMapper _mapper;
 
-    public GetProjectsPageHandler(
-        IProjectRepository projectRepository)
+	public GetProjectsPageHandler(
+        IProjectRepository projectRepository,
+        IMapper mapper)
     {
         _projectRepository = projectRepository;
-    }
+		_mapper = mapper;
+	}
 
-    public async Task<Page<Project>> Handle(
+    public async Task<ApiResponse<Page<ProjectDTO>>> Handle(
         GetProjectsPageRequest request,
         CancellationToken cancellationToken)
     {
-        var queryable = _projectRepository.ApplySpecyfication(new ProjectByNameSpecyfication(request.Status, request.SearchString));
+        var specification = new ProjectByNameSpecyfication(
+            request.Status, 
+            request.SearchString);
 
-        var totalCount = await queryable.CountAsync(cancellationToken);
+		var page = await _projectRepository
+            .GetPage(
+                specification,
+                request.PageNumber, 
+                request.PageSize, 
+                cancellationToken);
 
-        if (request.PageSize > 0)
-        {
-            queryable = _projectRepository.GetPageQuery(queryable, request.PageNumber, request.PageSize);
-        }
-
-        var collection = new ReadOnlyCollection<Project>(await queryable.ToListAsync(cancellationToken));
-
-        return Page<Project>.Create(
-                collection,
-                request.PageNumber,
-                request.PageSize,
-                totalCount);
-    }
+		return ApiResponse.Success(_mapper.Map<Page<ProjectDTO>>(page));
+	}
 }

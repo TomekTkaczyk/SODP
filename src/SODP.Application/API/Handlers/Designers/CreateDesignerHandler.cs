@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
-using SODP.DataAccess.CQRS.Commands;
-using SODP.DataAccess.CQRS.Commands.Designers;
-using SODP.DataAccess.CQRS.Queries;
-using SODP.DataAccess.CQRS.Queries.Designers;
+using SODP.Application.Specifications.Designers;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Threading;
@@ -16,37 +15,38 @@ namespace SODP.Application.API.Handlers.Designers;
 
 public class CreateDesignerHandler : IRequestHandler<CreateDesignerRequest, ApiResponse<DesignerDTO>>
 {
+	private readonly IDesignerRepository _designerRepository;
+	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
-	private readonly ICommandExecutor<Designer> _commandExecutor;
-	private readonly IQueryExecutor _queryExecutor;
 
     public CreateDesignerHandler(
-        IMapper mapper,
-        ICommandExecutor<Designer> commandExecutor,
-        IQueryExecutor queryExecutor)
+        IDesignerRepository designerRepository,
+        IUnitOfWork unitOfWork,
+        IMapper mapper)
     {
+		_designerRepository = designerRepository;
+		_unitOfWork = unitOfWork;
 		_mapper = mapper;
-		_commandExecutor = commandExecutor;
-		_queryExecutor = queryExecutor;
     }
 
     public async Task<ApiResponse<DesignerDTO>> Handle(CreateDesignerRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetDesigerByNameQuery(request.Firstname, request.Lastname);
-        var designer = await _queryExecutor.ExecuteAsync(query, cancellationToken);
-        
-        if(designer is not null)
+        var designerExist = await _designerRepository
+            .ApplySpecyfication(new DesignerByNameSpecification(null, request.Firstname, request.Lastname))
+            .AnyAsync(cancellationToken);
+
+        if(designerExist)
         {
             throw new DesignerConflictException();
         }
 
-        designer = Designer.Create(
+        var designer = Designer.Create(
             request.Title,
             request.Firstname,
             request.Lastname);
 
-        var command = new CreateDesignerCommand(designer);
-        designer = await _commandExecutor.ExecuteAsync(command, cancellationToken);
+        _designerRepository.Add(designer);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ApiResponse.Success(_mapper.Map<DesignerDTO>(designer));
     }

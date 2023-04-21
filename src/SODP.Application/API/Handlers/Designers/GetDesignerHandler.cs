@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.Queries.Designers;
 
-public class GetDesignerHandler : IRequestHandler<GetDesignerRequest, ApiResponse<DesignerDTO>>
+public sealed class GetDesignerHandler : IRequestHandler<GetDesignerRequest, ApiResponse<DesignerDTO>>
 {
 	private readonly IDesignerRepository _designerRepository;
 	private readonly IMapper _mapper;
@@ -32,12 +32,8 @@ public class GetDesignerHandler : IRequestHandler<GetDesignerRequest, ApiRespons
 	{
 		var designer = await _designerRepository
 			.ApplySpecyfication(new ByIdSpecification<Designer>(request.Id))
-			.SingleOrDefaultAsync(cancellationToken);
-		
-		if(designer is null)
-		{
-			throw new NotFoundException("Designer");
-		}
+			.SingleOrDefaultAsync(cancellationToken) 
+			?? throw new NotFoundException("Designer");
 
 		return ApiResponse.Success(_mapper.Map<DesignerDTO>(designer));
 	}

@@ -4,5 +4,5 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Designers;
 
-public record GetDesignerRequest(
+public sealed record GetDesignerRequest(
 	int Id) : IRequest<ApiResponse<DesignerDTO>>;

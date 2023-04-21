@@ -20,7 +20,7 @@
 		<input asp-for="Project.Number" type="hidden" />
 		<input asp-for="Project.Stage.Id" type="hidden" />
 		<input asp-for="Project.Stage.Sign" type="hidden" />
-		<input asp-for="Project.Stage.Name" type="hidden" />
+		<input asp-for="Project.Stage.Title" type="hidden" />
 
 		<div class="col-lg-7 justify-content-end font-weight-bold p-0">
 			<div>
@@ -155,7 +155,7 @@
 											 aria-controls="collapse-@item.Id"
 											 order="@item.Order"
 										>
-											 (@item.Sign) @item.Name
+											 (@item.Sign) @item.Title
 										</div>
 										<div class="colgroup justify-content-end mr-2">
 											@if (User.IsInRole("ProjectManager"))

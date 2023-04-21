@@ -1,9 +1,10 @@
 ﻿using MediatR;
-using SODP.Domain.Entities;
 using SODP.Shared.DTO;
+using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Projects;
 
 public sealed record AddPartRequest(
     int Id,
-    PartDTO part) : IRequest<Part>;
+    string Sign,
+    string Title) : IRequest<ApiResponse<PartDTO>>;

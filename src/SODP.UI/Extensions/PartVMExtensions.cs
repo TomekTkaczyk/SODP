@@ -1,12 +1,12 @@
 ﻿using SODP.Shared.DTO;
-using SODP.UI.Pages.Shared.ViewModels;
+using SODP.UI.Pages.Parts.ViewModels;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 
 namespace SODP.UI.Extensions
 {
-    public static class PartVMExtensions
+	public static class PartVMExtensions
     {
         public static StringContent ToHttpContent(this PartVM part)
         {
@@ -14,9 +14,9 @@ namespace SODP.UI.Extensions
                                   JsonSerializer.Serialize(new PartDTO
                                   {
                                       Id= part.Id,
-                                      Sign = part.Sign,
-                                      Name = part.Name,
-                                  }),
+									  Sign = part.Sign,
+									  Title = part.Name
+								  }),
                                   Encoding.UTF8,
                                   "application/json"
                               );
@@ -28,7 +28,7 @@ namespace SODP.UI.Extensions
             {
                 Id = part.Id,
                 Sign = part.Sign,
-                Name = part.Name,
+                Name = part.Title,
             };
         }
     }

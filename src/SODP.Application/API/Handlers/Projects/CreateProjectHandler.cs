@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Projects;
 using SODP.Application.Specifications.Stages;
@@ -6,28 +7,33 @@ using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Projects;
 
-internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, Project>
+internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiResponse<ProjectDTO>>
 {
     private readonly IProjectRepository _projectRepository;
     private readonly IStageRepository _stageRepository;
     private readonly IUnitOfWork _unitOfWork;
+	private readonly IMapper _mapper;
 
-    public CreateProjectHandler(
+	public CreateProjectHandler(
         IProjectRepository projectRepository,
         IStageRepository stageRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IMapper mapper)
     {
         _projectRepository = projectRepository;
         _stageRepository = stageRepository;
         _unitOfWork = unitOfWork;
-    }
+		_mapper = mapper;
+	}
 
-    public async Task<Project> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<ProjectDTO>> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
     {
         var projectExist = await _projectRepository
             .ApplySpecyfication(new ProjectBySymbolSpecyfication(request.Number, request.StageSign))
@@ -52,6 +58,6 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, Proj
         project = _projectRepository.Add(project);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return project;
+        return ApiResponse.Success(_mapper.Map<ProjectDTO>(project));
     }
 }

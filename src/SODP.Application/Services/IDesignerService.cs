@@ -1,16 +1,16 @@
-﻿using SODP.Shared.DTO;
-using SODP.Shared.Response;
-using System.Threading.Tasks;
+﻿//using SODP.Shared.DTO;
+//using SODP.Shared.Response;
+//using System.Threading.Tasks;
 
-namespace SODP.Application.Services
-{
-    public interface IDesignerService : IEntityService<DesignerDTO>, IActiveStatusService
-    {
-        Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, string searchString, int pageNumber, int pageSize);
+//namespace SODP.Application.Services
+//{
+//    public interface IDesignerService : IEntityService<DesignerDTO>, IActiveStatusService
+//    {
+//        Task<ServicePageResponse<DesignerDTO>> GetPageAsync(bool? active, string searchString, int pageNumber, int pageSize);
 
-        Task<ServicePageResponse<LicenseWithBranchesDTO>> GetLicensesAsync(int id);
+//        Task<ServicePageResponse<LicenseWithBranchesDTO>> GetLicensesAsync(int id);
 
-        Task<ServiceResponse> AddLicenseAsync(int id, LicenseDTO license);
+//        Task<ServiceResponse> AddLicenseAsync(int id, LicenseDTO license);
 
-	}
-}
+//	}
+//}

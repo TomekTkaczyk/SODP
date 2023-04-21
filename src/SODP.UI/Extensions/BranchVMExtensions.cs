@@ -15,7 +15,7 @@ namespace SODP.UI.Extensions
                                   {
                                       Id = branch.Id,
                                       Sign = branch.Sign,
-                                      Name = branch.Name
+                                      Title = branch.Name
                                   }),
                                   Encoding.UTF8,
                                   "application/json"
@@ -28,7 +28,7 @@ namespace SODP.UI.Extensions
             {
                 Id = branch.Id,
                 Sign = branch.Sign,
-                Name = branch.Name
+                Name = branch.Title
             };
         }
     }

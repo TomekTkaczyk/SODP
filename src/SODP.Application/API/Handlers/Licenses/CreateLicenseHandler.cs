@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Licenses;
-using SODP.DataAccess.CQRS.Commands;
-using SODP.DataAccess.CQRS.Commands.Common;
-using SODP.DataAccess.CQRS.Queries;
-using SODP.DataAccess.CQRS.Queries.Designers;
+using SODP.Application.Specifications.Designers;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,40 +15,30 @@ namespace SODP.Application.API.Handlers.Licenses;
 
 public sealed class CreateLicenseHandler : IRequestHandler<CreateLicenseRequest, ApiResponse<LicenseDTO>>
 {
-    private readonly IMapper _mapper;
-    private readonly ICommandExecutor _commandExecutor;
-    private readonly IQueryExecutor _queryExecutor;
+	private readonly IDesignerRepository _designerRepository;
+	private readonly IUnitOfWork _unitOfWork;
+	private readonly IMapper _mapper;
 
     public CreateLicenseHandler(
-        IMapper mapper,
-        ICommandExecutor commandExecutor,
-        IQueryExecutor queryExecutor)
+        IDesignerRepository designerRepository,
+        IUnitOfWork unitOfWork,
+        IMapper mapper)
     {
-        _mapper = mapper;
-        _commandExecutor = commandExecutor;
-        _queryExecutor = queryExecutor;
+		_designerRepository = designerRepository;
+		_unitOfWork = unitOfWork;
+		_mapper = mapper;
     }
 
     public async Task<ApiResponse<LicenseDTO>> Handle(CreateLicenseRequest request, CancellationToken cancellationToken)
     {
-        var query = new GetDesignerQuery(request.DesignerId);
-        var designer = await _queryExecutor.ExecuteAsync(query, cancellationToken);
-
-        if (designer is null)
-        {
-            throw new NotFoundException(nameof(Designer));
-        }
-
-        designer.AddLicense(License.Create(designer, request.Content));
-
-        var command = new UpdateCommand<Designer>(designer);
-        await _commandExecutor.ExecuteAsync(command, cancellationToken);
-
-        var license = designer.Licenses.First(x => x.Content.Equals(request.Content));
-        if (license is null)
-        {
-            throw new Exception(nameof(License));
-        }
+        var designer = await _designerRepository
+            .ApplySpecyfication(new DesignerByIdWithLicensesSpecification(request.DesignerId))
+            .SingleOrDefaultAsync(x => x.Id == request.DesignerId, cancellationToken)
+            ?? throw new NotFoundException(nameof(Designer));
+		
+        var license = designer.AddLicense(License.Create(designer, request.Content));
+        _designerRepository.Update(designer);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ApiResponse.Success(_mapper.Map<LicenseDTO>(license));
     }

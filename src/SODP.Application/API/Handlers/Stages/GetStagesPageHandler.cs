@@ -1,52 +1,35 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Stages;
-using SODP.Application.Extensions;
-using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Stages;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Stages;
 
-public sealed class GetStagesPageHandler : IRequestHandler<GetStagesPageRequest, Page<Stage>>
+public sealed class GetStagesPageHandler : IRequestHandler<GetStagesPageRequest, ApiResponse<Page<StageDTO>>>
 {
     private readonly IStageRepository _stageRepository;
+	private readonly IMapper _mapper;
 
-    public GetStagesPageHandler(
-        IStageRepository stageRepository)
+	public GetStagesPageHandler(
+        IStageRepository stageRepository,
+        IMapper mapper)
     {
         _stageRepository = stageRepository;
-    }
+		_mapper = mapper;
+	}
 
-    public async Task<Page<Stage>> Handle(
+    public async Task<ApiResponse<Page<StageDTO>>> Handle(
         GetStagesPageRequest request,
         CancellationToken cancellationToken)
     {
-        var queryable = _stageRepository
-            .ApplySpecyfication(new StageByNameSpecification(request.ActiveStatus, request.SearchString));
+        var specification = new StageByNameSpecification(request.ActiveStatus, request.SearchString);
+        var page = await _stageRepository.GetPage(specification, request.PageNumber, request.PageSize, cancellationToken);
 
-        var totalCount = await queryable.CountAsync(cancellationToken);
-
-        if (request.PageSize > 0)
-        {
-            queryable = _stageRepository.GetPageQuery(queryable, request.PageNumber, request.PageSize);
-        }
-
-        var collection = new ReadOnlyCollection<Stage>(await queryable.ToListAsync(cancellationToken));
-
-        return Page<Stage>.Create(
-                collection,
-                request.PageNumber,
-                request.PageSize,
-                totalCount);
+        return ApiResponse.Success(_mapper.Map<Page<StageDTO>>(page));
     }
 }

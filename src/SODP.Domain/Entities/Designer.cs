@@ -40,13 +40,15 @@ public class Designer : ActiveStatusEntity
         Normalize();
     }
 
-    public void AddLicense(License license)
+    public License AddLicense(License license)
     {
 		if (Licenses.Where(x => x.Content.ToUpper().Equals(license.Content.ToUpper())).Any())
         {
             throw new DesignerHaveLicenseException();
 		}
         Licenses.Add(license);
+
+        return license;
     }
 
     public void RemoveLicense(License license)

@@ -1,8 +1,9 @@
 ﻿using MediatR;
-using SODP.Domain.Entities;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Stages;
 
 public sealed record CreateStageRequest(
     string Sign,
-    string Name) : IRequest<Stage>;
+    string Title) : IRequest<ApiResponse<StageDTO>>;

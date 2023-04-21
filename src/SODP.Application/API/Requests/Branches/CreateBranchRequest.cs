@@ -1,8 +1,9 @@
 ﻿using MediatR;
-using SODP.Domain.Entities;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Branches;
 
 public sealed record CreateBranchRequest(
     string Sign,
-    string Name) : IRequest<Branch>;
+    string Title) : IRequest<ApiResponse<BranchDTO>>;

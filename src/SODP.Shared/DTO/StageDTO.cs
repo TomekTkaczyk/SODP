@@ -4,17 +4,14 @@ public record StageDTO  // : BaseDTO
 {
 	public int Id { get; set; } 
 
-	//[Required]
-	//[MinLength(2)]
 	public string Sign { get; set; }
 
-	//[Required]
-	public string Name { get; set; }
+	public string Title { get; set; }
 
 	public bool ActiveStatus { get; set; }
 
 	public override string ToString()
 	{
-		return $"({Sign.Trim()}) {Name.Trim()}";
+		return $"({Sign.Trim()}) {Title.Trim()}";
 	}
 }

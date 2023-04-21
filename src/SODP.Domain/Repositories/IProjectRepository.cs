@@ -8,5 +8,5 @@ namespace SODP.Domain.Repositories;
 
 public interface IProjectRepository	: IPageRepository<Project>
 {
-	Task<Project> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken);
+	Task<Project> GetWithDetailsAsync(int id, CancellationToken cancellationToken);
 }

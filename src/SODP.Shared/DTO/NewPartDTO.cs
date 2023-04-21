@@ -1,13 +1,17 @@
-﻿namespace SODP.Shared.DTO;
+﻿using SODP.Shared.ValueObjects;
 
-public class NewPartDTO : BaseDTO
+namespace SODP.Shared.DTO;
+
+public record NewPartDTO // : BaseDTO
 {
+	public int Id { get; set; }
+
 	public string Sign { get; set; }
 
-	public string Name { get; set; }
+	public string Title { get; set; }
 
 	public override string ToString()
 	{
-		return $"{Sign.Trim()} {Name.Trim()}";
+		return $"{Sign} {Title}";
 	}
 }

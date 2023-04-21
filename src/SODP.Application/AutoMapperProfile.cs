@@ -2,6 +2,7 @@
 using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using SODP.Shared.ValueObjects;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,27 +32,28 @@ namespace SODP.Domain
                 .ForMember(dest => dest.Parent, act => act.Ignore())
                 .ReverseMap();
 
-
-            CreateMap<Stage, StageDTO>()
+			CreateMap<Investor, InvestorDTO>()
                 .ReverseMap();
 
+			#region Stage
 
-            CreateMap<Investor, InvestorDTO>()
-                .ReverseMap();
+			CreateMap<Stage, StageDTO>()
+			   .PreserveReferences();
+
+			CreateMap<StageDTO, Stage>()
+				.ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+				.ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
+
+			#endregion
 
 			#region Part
 
 			CreateMap<Part, PartDTO>()
-			   .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
-			   .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
-			   .ForMember(dest => dest.Order, opt => opt.MapFrom(x => x.Order))
 			   .PreserveReferences();
 
 			CreateMap<PartDTO, Part>()
-				.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
-				.ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
-				.ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
-				.ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
+			   .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
+			   .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
 
 			#endregion
 
@@ -80,7 +82,7 @@ namespace SODP.Domain
 
 			CreateMap<ProjectPart, ProjectPartDTO>()
 			    .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
-			    .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
+			    .ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Name.ToUpper()))
 			    .ForMember(dest => dest.Branches, opt => opt.MapFrom(src => src.Branches))
                 .PreserveReferences();
 
@@ -95,23 +97,16 @@ namespace SODP.Domain
 			#region Branch
 
 			CreateMap<Branch, BranchDTO>()
-               .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
-               .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
-               .ForMember(dest => dest.Order, opt => opt.MapFrom(x => x.Order))
 			   .ForMember(dest => dest.Licenses, opt => opt.MapFrom(x => x.Licenses))
                .PreserveReferences();
 
 			CreateMap<BranchDTO, Branch>()
-				.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
-				.ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name.ToUpper()))
 				.ForMember(dest => dest.Licenses, act => act.Ignore())
 				.ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())
 				.ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
 
 			CreateMap<BranchLicense, LicenseDTO>()
-				.ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.License.Id))
-				.ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.License.Designer))
-				.ForMember(dest => dest.Content, opt => opt.MapFrom(x => x.License.Content));
+				.ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.License.Id));
 
 			#endregion
 

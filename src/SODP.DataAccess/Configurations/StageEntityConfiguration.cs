@@ -13,15 +13,17 @@ namespace SODP.DataAccess.Configurations
                .HasDefaultValue(1)
                .IsRequired();
 
-			builder.Property(p => p.Sign)
-                .HasColumnType("nvarchar(10)")
-                .IsRequired();
+			builder.Property(x => x.Sign)
+				.HasColumnType("nvarchar(10)")
+				.HasColumnName("Sign")
+				.IsRequired();
 
-            builder.Property(p => p.Name)
-                .HasColumnType("nvarchar(50)")
-                .IsRequired();
+			builder.Property(x => x.Title)
+				.HasColumnType("nvarchar(50)")
+				.HasColumnName("Name")
+				.IsRequired();
 
-            builder.Property(x => x.ActiveStatus)
+			builder.Property(x => x.ActiveStatus)
                 .HasColumnType("tinyint(1)")
                 .HasDefaultValue(true)
                 .IsRequired();

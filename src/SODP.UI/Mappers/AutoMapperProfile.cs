@@ -13,14 +13,14 @@ namespace SODP.UI.Mappers
 
             CreateMap<ProjectPartDTO, Pages.Shared.ViewModels.PartVM>()
                 .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title));
 
             CreateMap<ProjectDTO, Pages.Shared.ViewModels.ProjectVM>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
                 .ForMember(dest => dest.Stage, act => act.Ignore())
                 .ForMember(dest => dest.StageId, opt => opt.MapFrom(x => x.Stage.Id))
                 .ForMember(dest => dest.StageSign, opt => opt.MapFrom(x => x.Stage.Sign))
-                .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Name))
+                .ForMember(dest => dest.StageName, opt => opt.MapFrom(x => x.Stage.Title))
                 .ForMember(dest => dest.DevelopmentDate, opt => opt.MapFrom(x => x.DevelopmentDate == null ? null : ((DateTime)x.DevelopmentDate).Date.ToShortDateString()))
                 .PreserveReferences();
 
@@ -33,12 +33,12 @@ namespace SODP.UI.Mappers
             CreateMap<PartDTO, Pages.Shared.ViewModels.PartVM>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.Id))
                 .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title));
 
 			CreateMap<PartDTO, Pages.Parts.ViewModels.PartVM>()
 				.ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.Id))
 				.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
-				.ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Name));
+				.ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Title));
 
 			CreateMap<BranchRoleDTO, Pages.Shared.ViewModels.BranchRoleVM>()
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(x => x.Role))

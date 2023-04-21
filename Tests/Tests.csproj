@@ -49,6 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ApplicationTests\ApiHandlers\Designers\" />
     <Folder Include="NewFolder\" />
   </ItemGroup>
 

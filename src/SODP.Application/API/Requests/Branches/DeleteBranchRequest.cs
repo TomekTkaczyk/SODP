@@ -2,4 +2,5 @@
 
 namespace SODP.Application.API.Requests.Branches;
 
-public sealed record DeleteBranchRequest(int Id) : IRequest;
+public sealed record DeleteBranchRequest(
+	int Id) : IRequest;

@@ -2,6 +2,6 @@
 
 namespace SODP.Application.API.Requests.Designers;
 
-public record RemoveBranchFromLicenseRequest(
+public sealed record RemoveBranchFromLicenseRequest(
 	int LicenseId,
 	int BranchId) : IRequest;

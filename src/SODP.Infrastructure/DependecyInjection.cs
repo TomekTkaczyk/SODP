@@ -8,8 +8,6 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.DataAccess.CQRS.Commands;
-using SODP.DataAccess.CQRS.Queries;
 using SODP.Domain.Repositories;
 using SODP.Domain.Services;
 using SODP.Infrastructure.Managers;
@@ -41,9 +39,6 @@ public static class DependecyInjection
 				});
 		});
 
-		services.AddScoped<IQueryExecutor, QueryExecutor>();
-		services.AddScoped<ICommandExecutor, CommandExecutor>();
-		
 		services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 		services.AddScoped<SODPDBContext>();

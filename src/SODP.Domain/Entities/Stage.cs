@@ -1,34 +1,29 @@
-﻿using SODP.Shared.Extensions;
+﻿using SODP.Shared.ValueObjects;
 
 namespace SODP.Domain.Entities;
 
 public class Stage : ActiveStatusEntity, IOrdered
 {
-	private Stage(string sign, string name)
-    {
-        Sign = sign;
-        Name = name;
-    }
+	public string Sign { get; set; }
+	public string Title { get; set; }
+	public int Order { get; private set; }
 
-    public int Order { get; set; }
-    public string Sign { get; set; }
-    public string Name { get; set; }
 
-    public void Normalize()
+	private Stage(string sign, string title)
+	{
+		Sign = sign;
+		Title = title;
+	}
+
+	public static Stage Create(string sign, string title)
     {
-        Sign = Sign.ToUpper();
-        Name = Name.CapitalizeFirstLetter();
+        return new Stage(sign, title);
     }
 
 	public override string ToString()
 	{
-		return $"{Sign.Trim()} {Name.Trim()}";
+		return $"{Sign.Trim()} {Title.Trim()}";
 	}
-
-    public static Stage Create(string sign, string name)
-    {
-        return new Stage(sign, name);
-    }
 
 	public void Up()
 	{

@@ -61,7 +61,7 @@ public class StageController : ActiveStatusController<Stage>
 		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetStageByIdRequest(id);
+		var query = new GetStageRequest(id);
 		try
 		{
 			var stage = await _sender.Send(query, cancellationToken);
@@ -79,16 +79,16 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
-		[FromBody] CreateStageRequest command, 
+		[FromBody] CreateStageRequest request, 
 		CancellationToken cancellationToken = default)
 	{
 		try
 		{
-			var stage = await _sender.Send(command, cancellationToken);
+			var response = await _sender.Send(request, cancellationToken);
 			return CreatedAtAction(
 					nameof(GetAsync),
-					new { stage.Id },
-					_mapper.Map<StageDTO>(stage));
+					new { response.Value.Id },
+					response.Value);
 		}
 		catch (Exception ex)
 		{

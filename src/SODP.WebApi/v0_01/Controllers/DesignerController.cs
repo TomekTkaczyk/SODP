@@ -63,23 +63,7 @@ namespace SODP.WebApi.v0_01.Controllers
             [FromBody] CreateDesignerRequest request, 
             CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var response = await _sender.Send(request, cancellationToken);
-
-				return CreatedAtAction(
-					   nameof(GetAsync),
-					   new { response.Value.Id },
-					   response);
-			}
-			catch (DesignerConflictException ex)
-            {
-                return Conflict(ApiResponse.Failure(ex.Message,HttpStatusCode.Conflict));
-            }
-			catch (Exception ex)
-            {
-                return UnknowServerError(ex.Message);
-            }
+            return await HandleRequestAsync<CreateDesignerRequest,ApiResponse<DesignerDTO>>(request, cancellationToken);
         }
 
 

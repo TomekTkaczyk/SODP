@@ -13,7 +13,7 @@ public abstract class ActiveStatusController<TEntity> : ApiControllerBase where 
 	public ActiveStatusController(
 		ISender sender,
 		IMapper mapper,
-		ILogger<ApiControllerBase> logger)
+		ILogger<ActiveStatusController<TEntity>> logger)
 		: base(sender, mapper, logger)
 	{
 	}

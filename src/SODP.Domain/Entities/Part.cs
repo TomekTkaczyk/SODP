@@ -1,38 +1,34 @@
-﻿using SODP.Shared.Extensions;
+﻿using SODP.Shared.ValueObjects;
 
 namespace SODP.Domain.Entities;
 
 public class Part : ActiveStatusEntity, IOrdered
 {
+	public string Sign { get; set; }
+
+	public string Title { get; set; }
+
+	public int Order { get; private set; }
+	
 	public Part() : this("", "") { }
 
 	public Part(string sign) : this(sign, "") { }
 
-	public Part(string sign = "", string name = "")
+	public Part(string sign = "", string title = "")
     {
-        Sign = sign;
-        Name = name;
-    }
+		Sign = sign;
+		Title = title;
+	}
 
-    public string Sign { get; set; }
-    public string Name { get; set; }
-    public int Order { get; set; }
+	public override string ToString()
+	{
+		return $"{Sign.Trim()} {Title.Trim()}";
+	}
 
 	public void Down()
 	{
 		throw new System.NotImplementedException();
 	}
-
-	public void Normalize()
-    {
-        Sign = Sign.ToUpper();
-        Name = Name.CapitalizeFirstLetter();
-    }
-
-    public override string ToString()
-    {
-        return $"{ Sign.Trim()} {Name.Trim()}";
-    }
 
 	public void Up()
 	{

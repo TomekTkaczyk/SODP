@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Licenses;
-using SODP.DataAccess.CQRS.Queries;
-using SODP.DataAccess.CQRS.Queries.Common;
+using SODP.Application.Specifications.Common;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Threading;
@@ -14,26 +15,25 @@ namespace SODP.Application.API.Handlers.Licenses;
 
 public sealed class GetLicenseHandler : IRequestHandler<GetLicenseRequest, ApiResponse<LicenseDTO>>
 {
-	private readonly IQueryExecutor _queryExecutor;
+	private readonly ILicensesRepository _licenseRepository;
 	private readonly IMapper _mapper;
 
 	public GetLicenseHandler(
-        IQueryExecutor queryExecutor,
+        ILicensesRepository licenseRepository,
         IMapper mapper)
     {
-		_queryExecutor = queryExecutor;
+		_licenseRepository = licenseRepository;
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<LicenseDTO>> Handle(GetLicenseRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<LicenseDTO>> Handle(
+		GetLicenseRequest request, 
+		CancellationToken cancellationToken)
 	{
-		var query = new GetByIdQuery<License>(request.Id);
-
-		var license = await _queryExecutor.ExecuteAsync(query, cancellationToken);
-		if(license is null)
-		{
-			throw new NotFoundException("License");
-		}
+		var license = await _licenseRepository
+			.ApplySpecyfication(new ByIdSpecification<License>(request.Id))
+			.SingleOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("License");
 
 		return ApiResponse.Success(_mapper.Map<LicenseDTO>(license));
 	}

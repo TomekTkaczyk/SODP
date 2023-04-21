@@ -1,52 +1,44 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Branches;
 using SODP.Application.Specifications.Branches;
-using SODP.Application.Specifications.Investors;
-using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Branches;
 
-public sealed class GetBranchesPageHandler : IRequestHandler<GetBranchesPageRequest, Page<Branch>>
+public sealed class GetBranchesPageHandler : IRequestHandler<GetBranchesPageRequest, ApiResponse<Page<BranchDTO>>>
 {
     private readonly IBranchRepository _branchRepository;
+	private readonly IMapper _mapper;
 
-    public GetBranchesPageHandler(
-         IBranchRepository branchRepository)
+	public GetBranchesPageHandler(
+         IBranchRepository branchRepository,
+         IMapper mapper)
     {
         _branchRepository = branchRepository;
-    }
+		_mapper = mapper;
+	}
 
-    public async Task<Page<Branch>> Handle(
+    public async Task<ApiResponse<Page<BranchDTO>>> Handle(
         GetBranchesPageRequest request,
         CancellationToken cancellationToken)
     {
-        var queryable = _branchRepository
-            .ApplySpecyfication(new BranchByNameSpecification(request.ActiveStatus, request.SearchString));
+        var specification = new BranchSearchSpecification(
+                request.ActiveStatus,
+                request.SearchString);
 
-        var totalItems = await queryable.CountAsync(cancellationToken);
+        var page = await _branchRepository.GetPage(
+            specification,
+            request.PageNumber,
+            request.PageSize,
+            cancellationToken);
 
-        if (request.PageSize > 0)
-        {
-            queryable = _branchRepository.GetPageQuery(queryable, request.PageNumber, request.PageSize);
-        }
-
-        var collection = new ReadOnlyCollection<Branch>(await queryable.ToListAsync(cancellationToken));
-
-        return Page<Branch>.Create(
-                collection,
-                request.PageNumber,
-                request.PageSize,
-                totalItems);
+        return ApiResponse.Success(_mapper.Map<Page<BranchDTO>>(page));
     }
 }

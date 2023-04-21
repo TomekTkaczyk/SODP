@@ -40,7 +40,6 @@ public class Project : BaseEntity
         return new Project(number, stageSign, name);
     }
 
-
     public string Number { get; set; }           // Project number
     public int StageId { get; set; }             // Project stage Id
     public Stage Stage { get; set; }             // Stage object

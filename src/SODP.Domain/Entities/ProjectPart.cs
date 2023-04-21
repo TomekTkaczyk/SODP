@@ -10,7 +10,7 @@ public class ProjectPart : BaseEntity
     {                                            
         Project = project;
         Sign = part.Sign;
-        Name = part.Name;
+        Name = part.Title;
     }
     public int ProjectId { get; set; }
     public virtual Project Project { get; set; }

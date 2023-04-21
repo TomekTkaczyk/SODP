@@ -4,5 +4,5 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Licenses;
 
-public record GetLicenseRequest(
+public sealed record GetLicenseRequest(
 	int Id) : IRequest<ApiResponse<LicenseDTO>>;

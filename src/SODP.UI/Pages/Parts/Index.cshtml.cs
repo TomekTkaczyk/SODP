@@ -1,12 +1,10 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.Parts.Extensions;
 using SODP.UI.Pages.Parts.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
@@ -17,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Parts
 {
-    public class IndexModel : ListPageModel<PartDTO>
+	public class IndexModel : ListPageModel<PartDTO>
     {
 		const string _editPartModalViewName = "ModalView/_EditPartModalView";
 
@@ -46,6 +44,7 @@ namespace SODP.UI.Pages.Parts
         public async Task<PartialViewResult> OnGetEditPartAsync(int? id)
         {
             var model = new PartVM();
+			StringContent stringContent = model.ToHttpContent();
             if(id == null)
             {
                 return GetPartialView(model, _editPartModalViewName);

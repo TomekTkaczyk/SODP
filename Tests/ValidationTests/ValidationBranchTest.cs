@@ -21,7 +21,7 @@ public class ValidationBranchTest
 
 		var result = _validator.TestValidate(branch);
 
-		result.ShouldHaveValidationErrorFor(b => b.Sign);
+		result.ShouldHaveValidationErrorFor(b => b.Differentiator.Sign);
 	}
 
 	[Fact]
@@ -31,6 +31,6 @@ public class ValidationBranchTest
 
 		var result = _validator.TestValidate(branch);
 
-		result.ShouldNotHaveValidationErrorFor(b => b.Sign);
+		result.ShouldNotHaveValidationErrorFor(b => b.Differentiator.Sign);
 	}
 }

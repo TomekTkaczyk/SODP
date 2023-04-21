@@ -1,6 +1,6 @@
 ﻿namespace SODP.Shared.DTO;
 
-public class PartDTO : NewPartDTO
+public record PartDTO : NewPartDTO
 {
 	public int Order { get; set; }
 

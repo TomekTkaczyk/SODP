@@ -1,26 +1,28 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
-using SODP.DataAccess.CQRS.Queries;
-using SODP.DataAccess.CQRS.Queries.Designers;
+using SODP.Application.Specifications.Designers;
+using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Designers;
 
-public sealed class GetDesignersPageHandler : IRequestHandler<GetDesignersPageRequest, ApiResponse<Page<DesignerDTO>>>
+public sealed class GetDesignersPageHandler : IRequestHandler<GetDesignersPageRequest
+    , ApiResponse<Page<DesignerDTO>>>
 {
-	private readonly IQueryExecutor _queryExecutor;
+	private readonly IDesignerRepository _designerRepository;
 	private readonly IMapper _mapper;
 
 	public GetDesignersPageHandler(
-		IQueryExecutor queryExecutor,
+		IDesignerRepository designerRepository,
         IMapper mapper)
     {
-		_queryExecutor = queryExecutor;
+		_designerRepository = designerRepository;
 		_mapper = mapper;
 	}
 
@@ -28,14 +30,17 @@ public sealed class GetDesignersPageHandler : IRequestHandler<GetDesignersPageRe
         GetDesignersPageRequest request,
         CancellationToken cancellationToken)
     {
-        var query = new GetDesignersPageQuery(
-            request.ActiveStatus,
-            request.PageNumber,
-            request.PageSize,
-            request.SearchString);
+        var specification = new DesignerSearchSpecification(
+                request.ActiveStatus,
+                request.SearchString);
 
-        var designersPage = await _queryExecutor.ExecuteAsync(query, cancellationToken);
+        var page = await _designerRepository
+            .GetPage(
+                specification,
+                request.PageNumber,
+                request.PageSize,
+                cancellationToken);
 
-        return ApiResponse.Success(_mapper.Map<Page<DesignerDTO>>(designersPage));
+        return ApiResponse.Success(_mapper.Map<Page<DesignerDTO>>(page));
     }
 }

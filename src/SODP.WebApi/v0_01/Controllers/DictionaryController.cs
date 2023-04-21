@@ -18,13 +18,9 @@ namespace SODP.WebApi.v0_01.Controllers
     {
         private readonly IDictionaryService _service;
         public DictionaryController(
-            IDictionaryService service, 
-            ISender sender, 
-            IMapper mapper, 
-            ILogger<DictionaryController> logger) 
-            : base(sender, mapper, logger) 
-        {
-            _service = service ?? throw new ArgumentNullException(nameof(service));
-        }
+            ISender sender,
+            IMapper mapper,
+            ILogger<DictionaryController> logger)
+            : base(sender, mapper, logger) { }
 	}
 }

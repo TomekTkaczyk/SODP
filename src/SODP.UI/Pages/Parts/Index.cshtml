@@ -56,7 +56,7 @@
 						data-toggle='@(User.IsInRole("ProjectManager") ? " tooltip" : "")'
 						title='@(User.IsInRole("ProjectManager") ? "Edycja części" : "")'
 						style="vertical-align:middle">
-						@item.Name
+						@item.Title
 					</td>
 					<td class="cell text-right">
 						@if (User.IsInRole("ProjectManager"))

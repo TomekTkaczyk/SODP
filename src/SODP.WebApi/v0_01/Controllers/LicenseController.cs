@@ -21,13 +21,11 @@ namespace SODP.WebApi.v0_01.Controllers
         private readonly ILicenseService _service;
 
         public LicenseController(
-            ILicenseService service, 
-            ISender sender, 
-            IMapper mapper, 
-            ILogger<LicenseController> logger) : base(sender, mapper, logger)
-        {
-            _service = service ?? throw new ArgumentNullException(nameof(service));
-        }
+            ISender sender,
+            IMapper mapper,
+            ILogger<LicenseController> logger) 
+            : base(sender, mapper, logger) { }
+
 
 
         [HttpGet("{id}")]
@@ -82,7 +80,7 @@ namespace SODP.WebApi.v0_01.Controllers
             int id,
             CancellationToken cancellationToken)
         {
-            var request = new DeleteLicenseRerquest(id);
+            var request = new DeleteLicenseRequest(id);
 
             return await HandleRequestAsync(request, cancellationToken);
         }

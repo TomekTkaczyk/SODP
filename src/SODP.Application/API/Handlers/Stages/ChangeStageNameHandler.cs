@@ -33,7 +33,7 @@ internal sealed class ChangeStageNameHandler : IRequestHandler<ChangeStageNameRe
             throw new NotFoundException("Stage");
         }
 
-        stage.Name = request.Name.ToUpper();
+        stage.Title = request.Name.ToUpper();
         _stageRepository.Update(stage);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
