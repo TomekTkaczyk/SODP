@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Projects;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -13,13 +14,16 @@ public sealed class DeleteProjectHandler : IRequestHandler<DeleteProjectRequest>
 {
     private readonly IProjectRepository _projectRepository;
     private readonly IUnitOfWork _unitOfWork;
+	private readonly IFolderManager _folderManager;
 
-    public DeleteProjectHandler(
+	public DeleteProjectHandler(
         IProjectRepository projectRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IFolderManager folderManager)
     {
         _unitOfWork = unitOfWork;
-        _projectRepository = projectRepository;
+		_folderManager = folderManager;
+		_projectRepository = projectRepository;
     }
 
     public async Task<Unit> Handle(
@@ -28,15 +32,17 @@ public sealed class DeleteProjectHandler : IRequestHandler<DeleteProjectRequest>
     {
         var project = await _projectRepository
             .ApplySpecyfication(new ProjectByIdSpecification(request.Id))
-            .SingleOrDefaultAsync(cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException("Project");
 
-        if (project is null)
+        var (Success, Message) = await _folderManager.DeleteFolderAsync(project, cancellationToken);
+        if(!Success)
         {
-            throw new NotFoundException("Project");
+            throw new ProjectFolderException($"Delete project fail: {Message}");
         }
 
         _projectRepository.Delete(project);
-        var result = await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new Unit();
     }

@@ -5,12 +5,20 @@ using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SODP.Infrastructure.Repositories;
 
 public class ProjectRepository : PagedRepository<Project>, IProjectRepository
 {
 	public ProjectRepository(SODPDBContext dbContext) : base(dbContext) { }
+
+	public async Task<ProjectPart> GetPartAsync(int id, CancellationToken cancellationToken)
+	{
+		return await _dbContext.Set<ProjectPart>()
+			.Include(x => x.Branches)
+			.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+	}
 
 	public async Task<Project> GetWithDetailsAsync(
 		int id, 

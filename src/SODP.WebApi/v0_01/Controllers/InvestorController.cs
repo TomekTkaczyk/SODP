@@ -19,10 +19,9 @@ namespace SODP.WebApi.v0_01.Controllers;
 public class InvestorController : ActiveStatusController<Investor>
 {
 	public InvestorController(
-		ISender sender,
-		IMapper mapper,
-		ILogger<InvestorController> logger)	
-		: base(sender, mapper, logger) { }
+		ISender sender, 
+		ILogger<InvestorController> logger, 
+		IMapper mapper) : base(sender, logger, mapper) { }
 
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]

@@ -10,13 +10,10 @@ namespace SODP.WebApi.v0_01.Controllers;
 
 public abstract class ActiveStatusController<TEntity> : ApiControllerBase where TEntity : IActiveStatus
 {
-	public ActiveStatusController(
-		ISender sender,
-		IMapper mapper,
-		ILogger<ActiveStatusController<TEntity>> logger)
-		: base(sender, mapper, logger)
-	{
-	}
+	public ActiveStatusController( 
+		ISender sender, 
+		ILogger<ActiveStatusController<TEntity>> logger,
+		IMapper mapper)	: base(sender, logger, mapper) { }
 
 
 	[HttpPatch("{id}/status/{status}")]

@@ -19,13 +19,11 @@ namespace SODP.WebApi.v0_01.Controllers;
 [Route("/api/v0_01/branches")]
 public class BranchController : ActiveStatusController<Branch>
 {
-	private readonly IBranchService _service;
-
 	public BranchController(
 		ISender sender,
-		IMapper mapper,
-		ILogger<BranchController> logger)
-		: base(sender, mapper, logger) { }
+		ILogger<BranchController> logger,
+		IMapper mapper)
+		: base(sender, logger, mapper) { }
 
 
 	[HttpGet]

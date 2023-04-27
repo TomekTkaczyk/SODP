@@ -20,8 +20,7 @@ public class StageController : ActiveStatusController<Stage>
 	public StageController(
 		ISender sender,
 		IMapper mapper,
-		ILogger<StageController> logger)
-		: base(sender, mapper, logger) { }
+		ILogger<StageController> logger) : base(sender, logger, mapper) { }
 
 
 	[HttpGet]

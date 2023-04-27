@@ -36,7 +36,9 @@ namespace SODP.Application.Services
             var serviceResponse = new ServiceResponse<ProjectDTO>();
             try
             {
-                var exist = await _context.Projects.Include(x => x.Stage).FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
+                var exist = await _context.Projects
+                    .Include(x => x.Stage)
+                    .FirstOrDefaultAsync(x => x.Number == newProject.Number && x.Stage.Id == newProject.StageId);
                 if (exist != null)
                 {
                     serviceResponse.SetData(_mapper.Map<ProjectDTO>(exist));

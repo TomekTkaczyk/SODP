@@ -2,11 +2,10 @@
 using SODP.Shared.Response;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Services
+namespace SODP.Application.Services;
+
+public interface IUserService : IEntityService<UserDTO>, IActiveStatusService
 {
-    public interface IUserService : IEntityService<UserDTO>, IActiveStatusService
-    {
-        Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int pageNumber, int pageSize, string searchString);
-        Task<ServicePageResponse<RoleDTO>> GetRolesAsync(int id);
-    }
+	Task<ServicePageResponse<UserDTO>> GetPageAsync(bool? active, int pageNumber, int pageSize, string searchString);
+	Task<ServicePageResponse<RoleDTO>> GetRolesAsync(int id);
 }

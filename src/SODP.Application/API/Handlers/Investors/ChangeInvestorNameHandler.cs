@@ -34,7 +34,6 @@ public class ChangeInvestorNameHandler : IRequestHandler<ChangeInvestorNameReque
         }
 
         investor.SetName(request.Name);
-        _investorRepository.Update(investor);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new Unit();

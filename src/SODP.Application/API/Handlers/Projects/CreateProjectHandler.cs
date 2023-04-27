@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Projects;
 using SODP.Application.Specifications.Stages;
 using SODP.Domain.Entities;
@@ -9,6 +10,7 @@ using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,18 +20,21 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
 {
     private readonly IProjectRepository _projectRepository;
     private readonly IStageRepository _stageRepository;
-    private readonly IUnitOfWork _unitOfWork;
+	private readonly IFolderManager _folderManager;
+	private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
 
 	public CreateProjectHandler(
         IProjectRepository projectRepository,
         IStageRepository stageRepository,
+        IFolderManager folderManager,
         IUnitOfWork unitOfWork,
         IMapper mapper)
     {
         _projectRepository = projectRepository;
         _stageRepository = stageRepository;
-        _unitOfWork = unitOfWork;
+		_folderManager = folderManager;
+		_unitOfWork = unitOfWork;
 		_mapper = mapper;
 	}
 
@@ -54,7 +59,15 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
         }
 
         var project = Project.Create(request.Number, request.StageSign, request.Name);
+        
         project.Description = request.Description;
+
+        var (Success,Message) = await _folderManager.CreateFolderAsync(project, cancellationToken);
+        if(!Success)
+        {
+            throw new ProjectFolderException($"Create folder fail: {Message}");
+        }
+
         project = _projectRepository.Add(project);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

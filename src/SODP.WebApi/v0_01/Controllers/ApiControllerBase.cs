@@ -12,18 +12,20 @@ namespace SODP.WebApi.v0_01.Controllers;
 public abstract class ApiControllerBase : ControllerBase
 {
 	protected readonly ISender _sender;
-	protected readonly IMapper _mapper;
 	protected readonly ILogger<ApiControllerBase> _logger;
+	protected readonly IMapper _mapper;
 
-	public ApiControllerBase(ISender sender, IMapper mapper, ILogger<ApiControllerBase> logger)
+	public ApiControllerBase(ISender sender, ILogger<ApiControllerBase> logger, IMapper mapper)
 	{
 		_sender = sender ?? throw new ArgumentNullException(nameof(sender));
-		_mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
+		_mapper = mapper ?? throw new ArgumentNullException(nameof(logger));
 	}
 
 
-	protected async Task<IActionResult> HandleRequestAsync<TRequest>(TRequest request, CancellationToken cancellationToken)
+	protected async Task<IActionResult> HandleRequestAsync<TRequest>(
+		TRequest request, 
+		CancellationToken cancellationToken)
 	where TRequest : IRequest
 	{
 		if (!ModelState.IsValid)
@@ -51,7 +53,9 @@ public abstract class ApiControllerBase : ControllerBase
 		}
 	}
 
-	protected async Task<IActionResult> HandleRequestAsync<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken)
+	protected async Task<IActionResult> HandleRequestAsync<TRequest, TResponse>(
+		TRequest request, 
+		CancellationToken cancellationToken)
 		where TRequest : IRequest<TResponse>
 		where TResponse : ApiResponse
 	{
