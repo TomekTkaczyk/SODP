@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SODP.Application.Abstractions;
 using SODP.Application.Helpers;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
@@ -63,7 +64,7 @@ namespace SODP.Application.Services
                 project.BuildingCategory = "";
                 project.Investor = "";
                 project.Description = "";
-                var (Success, Message) = await _folderManager.CreateFolderAsync(project);
+                var (Success, Message) = await _folderManager.CreateFolderAsync(project, new CancellationToken());
                 if (!Success)
                 {
                     _logger.LogError("[CreateFolder] : Create folder fail.");
@@ -155,7 +156,7 @@ namespace SODP.Application.Services
 
                 project.Normalize();
 
-                var (Success, Message) = await _folderManager.RenameFolderAsync(project, ProjectsFolder.Active);
+                var (Success, Message) = await _folderManager.RenameFolderAsync(project, ProjectsFolder.Active, new CancellationToken());
                 if (!Success)
                 {
                     throw new ApplicationException($"Error: {Message}");
@@ -204,7 +205,7 @@ namespace SODP.Application.Services
 				project.Status = ProjectStatus.DuringArchive;
                 await _context.SaveChangesAsync();
 
-                var (Success, Message) = await _folderManager.ArchiveFolderAsync(project);
+                var (Success, Message) = await _folderManager.ArchiveFolderAsync(project, new CancellationToken());
                 if (!Success)
                 {
                     project.Status = ProjectStatus.Active;
@@ -246,7 +247,7 @@ namespace SODP.Application.Services
 				project.Status = ProjectStatus.DuringRestore;
                 await _context.SaveChangesAsync();
                 
-                var (Success, Message) = await _folderManager.RestoreFolderAsync(project);
+                var (Success, Message) = await _folderManager.RestoreFolderAsync(project, new CancellationToken());
                 if (!Success)
                 {
                     throw new ApplicationException($"Error: {Message}");
@@ -281,7 +282,7 @@ namespace SODP.Application.Services
 					return serviceResponse;
 				}
 
-				var (Success, Message) = await _folderManager.DeleteFolderAsync(project);
+				var (Success, Message) = await _folderManager.DeleteFolderAsync(project, new CancellationToken());
 				if (!Success)
 				{
 					throw new ApplicationException($"Error: {Message}");

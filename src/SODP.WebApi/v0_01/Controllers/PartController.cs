@@ -47,7 +47,7 @@ public class PartController : ActiveStatusController<Part>
 	{
 		var request = new GetPartRequest(id);
 
-		return await HandleRequestAsync<GetPartRequest, ApiResponse<PartDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetPartRequest, ApiResponse<ProjectPartDTO>>(request, cancellationToken);
 	}
 
 

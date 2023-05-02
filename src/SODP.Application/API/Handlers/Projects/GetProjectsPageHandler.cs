@@ -32,7 +32,7 @@ public sealed class GetProjectsPageHandler : IRequestHandler<GetProjectsPageRequ
             request.SearchString);
 
 		var page = await _projectRepository
-            .GetPage(
+            .GetPageAsync(
                 specification,
                 request.PageNumber, 
                 request.PageSize, 

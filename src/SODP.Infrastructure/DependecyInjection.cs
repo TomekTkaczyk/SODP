@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
+using SODP.Application.Abstractions;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Domain.Repositories;
@@ -43,7 +44,7 @@ public static class DependecyInjection
 
 		services.AddScoped<SODPDBContext>();
 		services.AddScoped<UserInitializer>();
-		services.AddScoped<DataInitializer>();
+		//services.AddScoped<DataInitializer>();
 
 
 		return services;

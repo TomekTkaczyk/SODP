@@ -11,7 +11,7 @@ public abstract class PagedRepository<TEntity> : Repository<TEntity>, IPageRepos
 {
 	public PagedRepository(SODPDBContext dbContext) : base(dbContext) { }
 
-	public async Task<Page<TEntity>> GetPage(Specification<TEntity> specification, int pageNumber, int pageSize, CancellationToken cancellationToken)
+	public async Task<Page<TEntity>> GetPageAsync(Specification<TEntity> specification, int pageNumber, int pageSize, CancellationToken cancellationToken)
 	{
 		var queryable = ApplySpecyfication(specification);
 		var totalItems = await queryable.CountAsync(cancellationToken);

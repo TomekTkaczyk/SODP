@@ -35,7 +35,7 @@ public sealed class GetInvestorsPageHandler : IRequestHandler<GetInvestorsPageRe
                 request.ActiveStatus,
                 request.SearchString);
 
-		var page = await _investorRepository.GetPage(
+		var page = await _investorRepository.GetPageAsync(
 			specification,
 			request.PageNumber,
 			request.PageSize,

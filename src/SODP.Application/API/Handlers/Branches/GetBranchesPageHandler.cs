@@ -33,7 +33,7 @@ public sealed class GetBranchesPageHandler : IRequestHandler<GetBranchesPageRequ
                 request.ActiveStatus,
                 request.SearchString);
 
-        var page = await _branchRepository.GetPage(
+        var page = await _branchRepository.GetPageAsync(
             specification,
             request.PageNumber,
             request.PageSize,

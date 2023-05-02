@@ -1,30 +1,37 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.API.Requests.Roles;
 using SODP.Application.Services;
-using System.Threading.Tasks;
+using SODP.Shared.DTO;
+using SODP.Shared.Response;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
 // [Authorize]
 [ApiController]
 [Route("api/v0_01/roles")]
-public class RoleController : ControllerBase
+public class RoleController : ApiControllerBase
 {
-	private readonly IRoleService _service;
-	private readonly ILogger<RoleController> _logger;
+	public RoleController(
+		ISender sender,
+		ILogger<RoleController> logger,
+		IMapper mapper) : base(sender, logger, mapper) { }
 
-	public RoleController(IRoleService service, ILogger<RoleController> logger)
-	{
-		_service = service;
-		_logger = logger;
-	}
 
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetPageAsync(bool? active, int pageNumber = 1, int pageSize = 0)
+	public async Task<IActionResult> GetPageAsync(
+		bool? active,
+		int pageNumber = 1,
+		int pageSize = 0,
+		CancellationToken cancellationToken = default)
 	{
-		return Ok(await _service.GetPageAsync(active, pageNumber, pageSize));
+		var request = new GetRolesPageRequest(active, pageNumber, pageSize);
+
+		return await HandleRequestAsync<GetRolesPageRequest, ApiResponse<Page<RoleDTO>>>(request, cancellationToken);
 	}
 }

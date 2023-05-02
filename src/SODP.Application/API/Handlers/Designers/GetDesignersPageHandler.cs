@@ -35,7 +35,7 @@ public sealed class GetDesignersPageHandler : IRequestHandler<GetDesignersPageRe
                 request.SearchString);
 
         var page = await _designerRepository
-            .GetPage(
+            .GetPageAsync(
                 specification,
                 request.PageNumber,
                 request.PageSize,

@@ -28,7 +28,7 @@ public sealed class GetStagesPageHandler : IRequestHandler<GetStagesPageRequest,
         CancellationToken cancellationToken)
     {
         var specification = new StageByNameSpecification(request.ActiveStatus, request.SearchString);
-        var page = await _stageRepository.GetPage(specification, request.PageNumber, request.PageSize, cancellationToken);
+        var page = await _stageRepository.GetPageAsync(specification, request.PageNumber, request.PageSize, cancellationToken);
 
         return ApiResponse.Success(_mapper.Map<Page<StageDTO>>(page));
     }

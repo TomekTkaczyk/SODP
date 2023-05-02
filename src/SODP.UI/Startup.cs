@@ -43,7 +43,8 @@ namespace SODP.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
-			services.AddMediatR(Application.AssemblyReference.Assembly);
+			
+            services.AddMediatR(Application.AssemblyReference.Assembly);
 
              // Warning: Generic handlers must be manually registered in the MS DI container
 			services.AddActiveStatusCommandHandlers(Domain.AssemblyReference.Assembly);

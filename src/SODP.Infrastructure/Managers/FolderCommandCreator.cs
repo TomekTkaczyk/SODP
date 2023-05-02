@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SODP.Application.Abstractions;
 using SODP.Shared.Enums;
 
 namespace SODP.Infrastructure.Managers
@@ -57,9 +58,9 @@ namespace SODP.Infrastructure.Managers
             return result;
         }
 
-        public async Task<string> RunCommand(string command)
+        public async Task<string> RunCommand(string command, CancellationToken cancellationToken)
         {
-            var result = await Task.Run(() => command.RunShell(_logger));
+            var result = await Task.Run(() => command.RunShell(_logger), cancellationToken);
 
             return result;
         }

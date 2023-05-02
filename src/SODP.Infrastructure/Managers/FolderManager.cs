@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SODP.Application.Abstractions;
 using SODP.Domain.Entities;
 using SODP.Shared.Enums;
 using SODP.Shared.Extensions;
@@ -18,7 +19,7 @@ namespace SODP.Infrastructure.Managers
 			_logger = logger;
         }
 
-        public async Task<(bool Success, string Message)> CreateFolderAsync(Project project)
+        public async Task<(bool Success, string Message)> CreateFolderAsync(Project project, CancellationToken cancellationToken)
         {
             string command;
             string message;
@@ -29,13 +30,13 @@ namespace SODP.Infrastructure.Managers
             {
                 case 0:
                     command = _folderCommandCreator.GetCommandCreateFolder(folder);
-                    message = await _folderCommandCreator.RunCommand(command);
+                    message = await _folderCommandCreator.RunCommand(command, cancellationToken);
                     _logger.LogInformation($"[FolderManager,Create folder] : {message}");
 
                     return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
                 case 1:
                     command = _folderCommandCreator.GetCommandRenameFolder(folder, catalog[0]);
-                    message = await _folderCommandCreator.RunCommand(command);
+                    message = await _folderCommandCreator.RunCommand(command, cancellationToken);
 					_logger.LogInformation($"[FolderManager,Rename folder] : {message}");
 
 					return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
@@ -44,17 +45,17 @@ namespace SODP.Infrastructure.Managers
             }
         }
 
-        public async Task<(bool Success, string Message)> RenameFolderAsync(Project project, ProjectsFolder source)
+        public async Task<(bool Success, string Message)> RenameFolderAsync(Project project, ProjectsFolder source, CancellationToken cancellationToken)
         {
             string folder = project.ToString();
             var catalog = GetMatchingFolders(_folderConfigurator.GetProjectFolder(source), project);
             switch (catalog.Count())
             {
                 case 0:
-                    return await CreateFolderAsync(project);
+                    return await CreateFolderAsync(project, cancellationToken);
                 case 1:
                     var command = _folderCommandCreator.GetCommandRenameFolder(folder, catalog[0], source);
-                    var message = await _folderCommandCreator.RunCommand(command);
+                    var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
 					_logger.LogInformation($"[FolderManager,Rename folder] : {message}");
 
 					return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + folder), $"{command} {message}");
@@ -63,17 +64,17 @@ namespace SODP.Infrastructure.Managers
             }
         }
 
-        public async Task<(bool Success, string Message)> RenameFolderAsync(Project project, string oldName, ProjectsFolder source)
+        public async Task<(bool Success, string Message)> RenameFolderAsync(Project project, string oldName, ProjectsFolder source, CancellationToken cancellationToken)
         {
             string folder = project.ToString();
             var command = _folderCommandCreator.GetCommandRenameFolder(folder, oldName, source);
-            var message = await _folderCommandCreator.RunCommand(command);
+            var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
 			_logger.LogInformation($"[FolderManager,Rename folder] : {message}");
 
 			return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + folder), $"{command} {message}");
         }
 
-        public async Task<(bool Success, string Message)> DeleteFolderAsync(Project project)
+        public async Task<(bool Success, string Message)> DeleteFolderAsync(Project project, CancellationToken cancellationToken)
         {
             
             var folders = GetMatchingFolders(_folderConfigurator.ActiveFolder, project);
@@ -87,7 +88,7 @@ namespace SODP.Infrastructure.Managers
                         return (false,$"Folder {project.Symbol} not empty.");
                     }
                     var command = _folderCommandCreator.GetCommandDeleteFolder(folders[0]);
-                    var message = await _folderCommandCreator.RunCommand(command);
+                    var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
 					_logger.LogInformation($"[FolderManager,Delete folder] : {message}");
 
 					return (!Directory.Exists(_folderConfigurator.ActiveFolder + folders[0]), $"{command} {message}");
@@ -96,7 +97,7 @@ namespace SODP.Infrastructure.Managers
             }
         }
 
-        public async Task<(bool Success, string Message)> ArchiveFolderAsync(Project project)
+        public async Task<(bool Success, string Message)> ArchiveFolderAsync(Project project, CancellationToken cancellationToken)
         {
             string folder = project.ToString();
             (bool Success, string Message) result;
@@ -112,14 +113,14 @@ namespace SODP.Infrastructure.Managers
                     }
                     if(!folders[0].Equals(project.ToString()))
                     {
-                        result = await RenameFolderAsync(project, ProjectsFolder.Active);
+                        result = await RenameFolderAsync(project, ProjectsFolder.Active, cancellationToken);
                         if(!result.Success)
                         {
                             return result;
                         }
                     }
                     var command = _folderCommandCreator.GetCommandArchiveFolder(folder);
-                    var message = await _folderCommandCreator.RunCommand(command);
+                    var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
 					_logger.LogInformation($"[FolderManager,Archive folder] : {message}");
 
 					return (Directory.Exists(_folderConfigurator.ArchiveFolder + folder), $"{command} {message}");
@@ -128,7 +129,7 @@ namespace SODP.Infrastructure.Managers
             }
         }
 
-        public async Task<(bool Success, string Message)> RestoreFolderAsync(Project project)
+        public async Task<(bool Success, string Message)> RestoreFolderAsync(Project project, CancellationToken cancellationToken)
         {
             string folder = project.ToString();
             (bool Success, string Message) result;
@@ -140,14 +141,14 @@ namespace SODP.Infrastructure.Managers
                 case 1:
                     if (!catalog[0].Equals(project.ToString()))
                     {
-                        result = await RenameFolderAsync(project, ProjectsFolder.Archive);
+                        result = await RenameFolderAsync(project, ProjectsFolder.Archive, cancellationToken);
                         if (!result.Success)
                         {
                             return result;
                         }
                     }
                     var command = _folderCommandCreator.GetCommandRestoreFolder(folder);
-                    var message = await _folderCommandCreator.RunCommand(command);
+                    var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
 					_logger.LogInformation($"[FolderManager,Restore folder] : {message}");
 
 					return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");

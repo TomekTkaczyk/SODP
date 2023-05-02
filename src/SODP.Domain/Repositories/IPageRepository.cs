@@ -8,8 +8,7 @@ namespace SODP.Domain.Repositories;
 
 public interface IPageRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
 {
-	//IQueryable<TEntity> GetPageQuery(IQueryable<TEntity> query, int pageNumber, int pageSize);
-	Task<Page<TEntity>> GetPage(
+	Task<Page<TEntity>> GetPageAsync(
 		Specification<TEntity> specification, 
 		int pageNumber, 
 		int pageSize,
