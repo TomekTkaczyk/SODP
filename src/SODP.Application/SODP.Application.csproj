@@ -23,4 +23,8 @@
     <ProjectReference Include="..\SODP.Domain\SODP.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Specifications\Licenses\" />
+  </ItemGroup>
+
 </Project>

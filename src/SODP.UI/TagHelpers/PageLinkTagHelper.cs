@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Services;
 
 namespace SODP.UI.TagHelpers

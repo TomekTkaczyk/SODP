@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using System.Net.Http;
@@ -71,9 +71,7 @@ public abstract class AppPageModel : PageModel
 	{
 		var apiResponse = await _apiProvider.GetAsync(url);
 
-		var content = await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>();
-
-		return content;
+		return await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>();
 	}
 
 	protected async Task<ApiResponse<TValue>> PostApiResponseAsync<TValue>(string url, StringContent content)

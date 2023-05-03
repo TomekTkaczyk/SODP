@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Branches;
 using SODP.Application.Specifications.Branches;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 

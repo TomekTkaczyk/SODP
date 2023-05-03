@@ -36,9 +36,19 @@ public class BranchController : ActiveStatusController<Branch>
 		int pageSize = 0,
 		CancellationToken cancellationToken = default)
 	{
+		if (pageNumber < 1)
+		{
+			return BadRequest(new Error("pageNumber is invalid."));
+		}
+
+		if (pageNumber > 1 && pageSize == 0)
+		{
+			return BadRequest(new Error("pageNumber and/or pageSize is invalid."));
+		}
+
 		var request = new GetBranchesPageRequest(active, searchString, pageNumber, pageSize);
 
-		return await HandleRequestAsync<GetBranchesPageRequest,ApiResponse<Page<BranchDTO>>>(request, cancellationToken);
+		return await HandleRequestAsync<GetBranchesPageRequest, ApiResponse<Page<BranchDTO>>>(request, cancellationToken);
 	}
 
 
@@ -51,7 +61,7 @@ public class BranchController : ActiveStatusController<Branch>
 		CancellationToken cancellationToken)
 	{
 		var request = new GetBranchRequest(id);
-		
+
 		return await HandleRequestAsync<GetBranchRequest, ApiResponse<BranchDTO>>(request, cancellationToken);
 	}
 
@@ -70,15 +80,15 @@ public class BranchController : ActiveStatusController<Branch>
 			return CreatedAtAction(
 				nameof(GetAsync),
 				new { response.Value.Id },
-				response.Value);
+				response);
 		}
-		catch (ConflictException ex) 
+		catch (ConflictException ex)
 		{
-			return Conflict(ex.Message);
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
 		}
 		catch (Exception ex)
 		{
-			return UnknowServerError(ex);
+			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
 		}
 	}
 
@@ -123,20 +133,8 @@ public class BranchController : ActiveStatusController<Branch>
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetBranchWithLicensesRequest(id);
-		try
-		{
-			var branch = await _sender.Send(query, cancellationToken);
+		var request = new GetBranchWithLicensesRequest(id);
 
-			return Ok(ApiResponse.Success(_mapper.Map<BranchDTO>(branch)));
-		}
-		catch (NotFoundException ex)
-		{
-			return NotFound(ApiResponse.Failure(ex.Message, HttpStatusCode.NotFound));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		return await HandleRequestAsync<GetBranchWithLicensesRequest, ApiResponse<BranchDTO>>(request, cancellationToken);
 	}
 }

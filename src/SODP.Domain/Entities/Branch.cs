@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SODP.Shared.ValueObjects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace SODP.Domain.Entities;
@@ -10,7 +8,7 @@ public class Branch : ActiveStatusEntity, IOrdered
     public string Sign{ get; set; }
     public string Title { get; set; }
     public int Order { get; set; } = 0;
-    public virtual ICollection<BranchLicense> Licenses { get; set; }
+    public ICollection<BranchLicense> Licenses { get; set; }
 
 
     private Branch(string sign, string title)

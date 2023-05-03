@@ -32,6 +32,7 @@ public sealed class GetLicenseHandler : IRequestHandler<GetLicenseRequest, ApiRe
 	{
 		var license = await _licenseRepository
 			.ApplySpecyfication(new ByIdSpecification<License>(request.Id))
+			.Include(x => x.Designer)
 			.SingleOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("License");
 

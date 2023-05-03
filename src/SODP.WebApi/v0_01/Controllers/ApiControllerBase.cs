@@ -74,15 +74,15 @@ public abstract class ApiControllerBase : ControllerBase
 		}
 		catch (NotFoundException ex)
 		{
-			return NotFound(ex);
-		}
+			return NotFound(ApiResponse.Failure(ex.Message,HttpStatusCode.NotFound,new List<Error>()));
+		}																				  
 		catch (ConflictException ex)
 		{
-			return Conflict(ex);
+			return Conflict(ApiResponse.Failure(ex.Message,HttpStatusCode.Conflict));
 		}
 		catch (Exception ex)
 		{
-			return UnknowServerError(ex);
+			return UnknowServerError(ApiResponse.Failure(ex.Message,HttpStatusCode.InternalServerError));
 		}
 	}
 

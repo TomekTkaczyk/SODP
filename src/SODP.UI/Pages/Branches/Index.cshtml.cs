@@ -3,22 +3,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
-using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Branches.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Branches
 {
-    [Authorize(Roles = "ProjectManager")]
+	[Authorize(Roles = "ProjectManager")]
     public class IndexModel : ListPageModel<BranchDTO>
 	{
         const string _editBranchPartialViewName = "ModalView/_EditBranchModalView";
@@ -57,7 +54,7 @@ namespace SODP.UI.Pages.Branches
                 var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}");
                 if (apiResponse.IsSuccessStatusCode)
                 {
-                    var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<BranchDTO>>();
+                    var result = await apiResponse.Content.ReadAsAsync<SODP.Shared.Response.ServiceResponse<BranchDTO>>();
                     model = result.Data.ToViewModel();
                 }
             }
@@ -76,7 +73,7 @@ namespace SODP.UI.Pages.Branches
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<ServiceResponse<BranchDTO>>(apiResponse);
+                        var response = await _apiProvider.GetContent<SODP.Shared.Response.ServiceResponse<BranchDTO>>(apiResponse);
                         if (!response.Success)
                         {
                             SetModelErrors(response);
@@ -97,7 +94,7 @@ namespace SODP.UI.Pages.Branches
             switch (apiResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    var response = await _apiProvider.GetContent<ServicePageResponse<LicenseDTO>>(apiResponse);
+                    var response = await _apiProvider.GetContent<SODP.Shared.Response.ServicePageResponse<LicenseDTO>>(apiResponse);
                     if (response.Success)
                     {
                         Designers = new DesignersVM

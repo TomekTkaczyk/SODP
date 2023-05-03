@@ -1,19 +1,15 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Application.API;
 using SODP.Shared.DTO;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Investors.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
-using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Investors;

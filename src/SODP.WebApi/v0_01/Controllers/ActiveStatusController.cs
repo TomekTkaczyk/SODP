@@ -8,7 +8,7 @@ using SODP.Domain.Entities;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
-public abstract class ActiveStatusController<TEntity> : ApiControllerBase where TEntity : IActiveStatus
+public abstract class ActiveStatusController<TEntity> : ApiControllerBase where TEntity : IActiveStatus, IBaseEntity
 {
 	public ActiveStatusController( 
 		ISender sender, 

@@ -5,4 +5,4 @@ namespace SODP.Application.API.Requests.Common;
 
 public sealed record SetActiveStatusRequest<TEntity>(
     int Id,
-    bool ActiveStatus) : IRequest where TEntity : IActiveStatus;
+    bool ActiveStatus) : IRequest where TEntity : IActiveStatus, IBaseEntity;

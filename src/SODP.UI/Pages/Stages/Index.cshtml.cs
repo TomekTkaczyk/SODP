@@ -2,18 +2,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Application.API;
-using SODP.Domain.Entities;
 using SODP.Shared.DTO;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Pages.Stages.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -28,8 +24,7 @@ public sealed class IndexModel : CollectionPageModel
 		IWebAPIProvider apiProvider,
 		ILogger<IndexModel> logger,
 		IMapper mapper,
-		LanguageTranslatorFactory translatorFactory)
-		: base(apiProvider, logger, mapper, translatorFactory)
+		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
 	{
 		ReturnUrl = "/Stages";
 		_endpoint = "stages";

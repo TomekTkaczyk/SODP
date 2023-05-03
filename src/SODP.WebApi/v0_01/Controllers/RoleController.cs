@@ -26,11 +26,12 @@ public class RoleController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetPageAsync(
 		bool? active,
+		string searchString = "",
 		int pageNumber = 1,
 		int pageSize = 0,
 		CancellationToken cancellationToken = default)
 	{
-		var request = new GetRolesPageRequest(active, pageNumber, pageSize);
+		var request = new GetRolesPageRequest(active, searchString, pageNumber, pageSize );
 
 		return await HandleRequestAsync<GetRolesPageRequest, ApiResponse<Page<RoleDTO>>>(request, cancellationToken);
 	}

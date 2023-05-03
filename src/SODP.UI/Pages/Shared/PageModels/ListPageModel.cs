@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using System.Collections.Generic;
@@ -39,15 +39,15 @@ public abstract class ListPageModel<T> : ListPageModel //where T : BaseDTO
 		return url.ToString();
 	}
 
-	protected async Task<ServicePageResponse<T>> GetApiResponseAsync(string url)
+	protected async Task<SODP.Shared.Response.ServicePageResponse<T>> GetApiResponseAsync(string url)
 	{
 		var apiResponse = await _apiProvider.GetAsync(url);
 
-		return await apiResponse.Content.ReadAsAsync<ServicePageResponse<T>>();
+		return await apiResponse.Content.ReadAsAsync<SODP.Shared.Response.ServicePageResponse<T>>();
 	}
 
 
-	protected PageInfo GetPageInfo(ServicePageResponse<T> response, string searchString = "")
+	protected PageInfo GetPageInfo(SODP.Shared.Response.ServicePageResponse<T> response, string searchString = "")
 	{
 		var pageInfo = new PageInfo
 		{
@@ -72,7 +72,7 @@ public abstract class ListPageModel<T> : ListPageModel //where T : BaseDTO
 
 		if (apiResponse.IsSuccessStatusCode)
 		{
-			var response = await apiResponse.Content.ReadAsAsync<ServicePageResponse<T>>();
+			var response = await apiResponse.Content.ReadAsAsync<SODP.Shared.Response.ServicePageResponse<T>>();
 			//PageInfo.TotalItems = response.Data.TotalCount;
 			//PageInfo.CurrentPage = response.Data.PageNumber;
 			//PageInfo.ItemsPerPage = response.Data.PageSize;

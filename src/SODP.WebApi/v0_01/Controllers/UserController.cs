@@ -3,9 +3,12 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Application.Services;
+using SODP.Application.API.Requests.Users;
+using SODP.Domain.Entities;
+using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
-using System.Threading.Tasks;
+using SODP.Shared.Response;
+using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -14,24 +17,36 @@ namespace SODP.WebApi.v0_01.Controllers;
 [Route("api/v0_01/users")]
 public class UserController : ApiControllerBase
 {
-	private readonly IUserService _service;
 
 	public UserController(
-		IUserService service,
 		ISender sender,
-		IMapper mapper,
-		ILogger<UserController> logger)	: base(sender, logger, mapper)
-	{
-		_service = service ?? throw new ArgumentNullException(nameof(service));
-	}
+		ILogger<UserController> logger,
+		IMapper mapper) : base(sender, logger, mapper) { }
 
 
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public virtual async Task<IActionResult> GetPageAsync(bool? active, int pageNumber = 1, int pageSize = 0, string searchString = "")
+	public virtual async Task<IActionResult> GetPageAsync(
+		bool? active,
+		string searchString = "", 
+		int pageNumber = 1, 
+		int pageSize = 0,
+		CancellationToken cancellationToken = default)
 	{
-		return Ok(await _service.GetPageAsync(active, pageNumber, pageSize, searchString));
+		if (pageNumber < 1)
+		{
+			return BadRequest(new Error("pageNumber is invalid."));
+		}
+
+		if (pageNumber > 1 && pageSize == 0)
+		{
+			return BadRequest(new Error("pageNumber and/or pageSize is invalid."));
+		}
+
+		var request = new GetUsersPageRequest(active, searchString, pageNumber, pageSize);
+		
+		return await HandleRequestAsync<GetUsersPageRequest, ApiResponse<Page<UserDTO>>>(request, cancellationToken);
 	}
 
 
@@ -39,34 +54,32 @@ public class UserController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetAsync(int id)
+	public async Task<IActionResult> GetAsync(
+		[FromRoute] int id,
+		CancellationToken cancellationToken)
 	{
-		return Ok(await _service.GetAsync(id));
+		var request = new GetUserRequest(id);
+
+		return await HandleRequestAsync<GetUserRequest, ApiResponse<UserDTO>>(request, cancellationToken);
 	}
 
 
-	[HttpPost]
+	[HttpPatch("{id}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> CreateAsync([FromBody] UserDTO entity)
+	public virtual async Task<IActionResult> UpdateAsync(
+		int id, 
+		[FromBody] UpdateUserRequest request,
+		CancellationToken cancellationToken)
 	{
-		return Ok(await _service.CreateAsync(entity));
-	}
-
-
-	[HttpPut("{id}")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public virtual async Task<IActionResult> UpdateAsync(int id, [FromBody] UserDTO entity)
-	{
-		if (id != entity.Id)
+		if (id != request.Id)
 		{
 			return BadRequest();
 		}
 
-		return Ok(await _service.UpdateAsync(entity));
+		return await HandleRequestAsync(request, cancellationToken);
+
 	}
 
 
@@ -74,23 +87,12 @@ public class UserController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> DeleteAsync(int id)
+	public async Task<IActionResult> DeleteAsync(
+		[FromRoute] int id,
+		CancellationToken cancellationToken)
 	{
-		return Ok(await _service.DeleteAsync(id));
-	}
+		var request = new DeleteUserRequest(id);
 
-
-	[HttpPatch("{id}/status")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> SetActiveStatusAsync(int id, [FromBody] int status)
-	{
-		if (_service is IActiveStatusService)
-		{
-			return Ok(await (_service as IActiveStatusService).SetActiveStatusAsync(id, status == 1));
-		}
-
-		return BadRequest();
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 }

@@ -4,12 +4,13 @@ using SODP.Application.API.Requests.Stages;
 using SODP.Application.Specifications.Stages;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
+using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Stages;
 
-internal sealed class ChangeStageNameHandler : IRequestHandler<ChangeStageNameRequest>
+internal sealed class ChangeStageNameHandler : IRequestHandler<ChangeStageNameRequest, ApiResponse>
 {
     private readonly IStageRepository _stageRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -22,7 +23,7 @@ internal sealed class ChangeStageNameHandler : IRequestHandler<ChangeStageNameRe
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Unit> Handle(ChangeStageNameRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse> Handle(ChangeStageNameRequest request, CancellationToken cancellationToken)
     {
         var stage = await _stageRepository
             .ApplySpecyfication(new StageByIdSpecyfication(request.Id))
@@ -37,6 +38,6 @@ internal sealed class ChangeStageNameHandler : IRequestHandler<ChangeStageNameRe
         _stageRepository.Update(stage);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new Unit();
+        return ApiResponse.Success();
     }
 }

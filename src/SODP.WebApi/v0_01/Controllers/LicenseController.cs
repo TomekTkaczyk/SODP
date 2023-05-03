@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Licenses;
 using SODP.Application.Services;
+using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Net;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
@@ -45,7 +47,26 @@ public class LicenseController : ApiControllerBase
 		[FromBody] CreateLicenseRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		return await HandleRequestAsync<CreateLicenseRequest, ApiResponse<LicenseDTO>>(request, cancellationToken);
+		try
+		{
+			var response = await _sender.Send(request, cancellationToken);
+			return CreatedAtAction(
+				nameof(GetAsync),
+				new { response.Value.Id },
+				response);
+		}
+		catch (NotFoundException ex)
+		{
+			return NotFound(ApiResponse.Failure(ex.Message, HttpStatusCode.NotFound, new List<Error>()));
+		}
+		catch (ConflictException ex)
+		{
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
+		}
+		catch (Exception ex)
+		{
+			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
+		}
 	}
 
 

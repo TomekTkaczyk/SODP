@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -17,13 +16,17 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Users
 {
-    [Authorize(Roles = "Administrator")]
+	[Authorize(Roles = "Administrator")]
     [ValidateAntiForgeryToken()]
     public class EditModel : SODPPageModel
 	{
         private readonly IWebAPIProvider _apiProvider;
 
-        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory)
+        public EditModel(
+            IWebAPIProvider apiProvider, 
+            ILogger<EditModel> logger, 
+            IMapper mapper, 
+            LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory)
         {
             ReturnUrl = "/Users/Edit";
 			_apiProvider = apiProvider;

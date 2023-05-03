@@ -26,6 +26,7 @@ namespace SODP.Application.API.Handlers.Roles
 		{
 			var page = await _roleRepository.GetPageAsync(
 				request.ActiveStatus,
+				request.SearchString,
 				request.PageNumber,
 				request.PageSize,
 				cancellationToken);

@@ -2,6 +2,4 @@
 
 namespace SODP.Domain.Repositories;
 
-public interface IPartRepository : IRepository<Part>
-{
-}
+public interface IPartRepository : IPageRepository<Part> { }

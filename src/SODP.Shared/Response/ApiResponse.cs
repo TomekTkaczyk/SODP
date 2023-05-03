@@ -27,10 +27,10 @@ public record ApiResponse
             throw new InvalidOperationException();
         }
 
-		if (!isSuccess && (errors == null || errors.Count == 0))
-		{
-			throw new InvalidOperationException();
-		}
+		//if (!isSuccess && (errors == null || errors.Count == 0))
+		//{
+		//	throw new InvalidOperationException();
+		//}
 
 		IsSuccess = isSuccess;
         Message = message;
@@ -45,7 +45,7 @@ public record ApiResponse
 	=> new(true, string.Empty, httpCode, new Collection<Error>());
 
 	public static ApiResponse Failure(string message, HttpStatusCode httpCode, ICollection<Error> errors = null)
-        => new(false, message, httpCode, new Collection<Error>(errors.ToList()));
+        => new(false, message, httpCode, errors);
 
     public static ApiResponse<TValue> Success<TValue>(TValue value)
         => new(value, true, "", HttpStatusCode.OK, new Collection<Error>());

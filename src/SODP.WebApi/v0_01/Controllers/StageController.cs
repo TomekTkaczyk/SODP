@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Stages;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
-using SODP.Domain.Shared;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Net;
@@ -33,22 +32,19 @@ public class StageController : ActiveStatusController<Stage>
 		int pageSize = 0,
 		CancellationToken cancellationToken = default)
 	{
-		if (pageSize == 0 && pageNumber != 1)
+		if (pageNumber < 1)
 		{
-			var error = Result.Failure(new Error("pageNumber and/or pageSize is invalid."));
-			return BadRequest(error.Error);
+			return BadRequest(new Error("pageNumber is invalid."));
 		}
 
-		var query = new GetStagesPageRequest(active, searchString, pageNumber, pageSize);
-		try
+		if (pageNumber > 1 && pageSize == 0)
 		{
-			var stages = await _sender.Send(query, cancellationToken);
-			return Ok(ApiResponse.Success(_mapper.Map<Page<StageDTO>>(stages)));
+			return BadRequest(new Error("pageNumber and/or pageSize is invalid."));
 		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+
+		var request = new GetStagesPageRequest(active, searchString, pageNumber, pageSize);
+
+		return await HandleRequestAsync<GetStagesPageRequest,ApiResponse<Page<StageDTO>>>(request, cancellationToken);
 	}
 
 
@@ -60,16 +56,9 @@ public class StageController : ActiveStatusController<Stage>
 		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var query = new GetStageRequest(id);
-		try
-		{
-			var stage = await _sender.Send(query, cancellationToken);
-			return Ok(ApiResponse.Success(_mapper.Map<BranchDTO>(stage)));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new GetStageRequest(id);
+
+		return await HandleRequestAsync<GetStageRequest,ApiResponse<StageDTO>>(request, cancellationToken);
 	}
 
 
@@ -87,37 +76,15 @@ public class StageController : ActiveStatusController<Stage>
 			return CreatedAtAction(
 					nameof(GetAsync),
 					new { response.Value.Id },
-					response.Value);
+					response);
+		}
+		catch (ConflictException ex)
+		{
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
 		}
 		catch (Exception ex)
 		{
-			return UnknowServerError(ex);
-		}
-	}
-
-
-	[HttpPatch("{id}")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public virtual async Task<IActionResult> ChangeNameAsync(
-		[FromRoute] int id,
-		[FromBody] ChangeStageNameRequest command,
-		CancellationToken cancellationToken = default)
-	{
-		if (id != command.Id)
-		{
-			return BadRequest();
-		}
-
-		try
-		{
-			await _sender.Send(command, cancellationToken);
-			return NoContent();
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
+			return UnknowServerError(ApiResponse.Failure(ex.Message,HttpStatusCode.InternalServerError,new List<Error>()));
 		}
 	}
 
@@ -130,19 +97,27 @@ public class StageController : ActiveStatusController<Stage>
 		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var command = new DeleteStageRequest(id);
-		try
-		{
-			await _sender.Send(command, cancellationToken);
-			return NoContent();
-		}
-		catch (ResourceIsInUseException ex)
-		{
-			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ex);
-		}
+		var request = new DeleteStageRequest(id);
+	
+		return await HandleRequestAsync(request, cancellationToken);
 	}
+
+
+	[HttpPatch("{id}")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
+	public virtual async Task<IActionResult> ChangeNameAsync(
+		[FromRoute] int id,
+		[FromBody] ChangeStageNameRequest request,
+		CancellationToken cancellationToken = default)
+	{
+		if (id != request.Id)
+		{
+			return BadRequest();
+		}
+
+		return await HandleRequestAsync<ChangeStageNameRequest, ApiResponse>(request, cancellationToken);
+	}
+
 }

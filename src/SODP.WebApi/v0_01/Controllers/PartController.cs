@@ -8,6 +8,7 @@ using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -31,6 +32,16 @@ public class PartController : ActiveStatusController<Part>
 		int pageSize = 0,
 		CancellationToken cancellationToken = default)
 	{
+		if (pageNumber < 1)
+		{
+			return BadRequest(new Error("pageNumber is invalid."));
+		}
+
+		if (pageNumber > 1 && pageSize == 0)
+		{
+			return BadRequest(new Error("pageNumber and/or pageSize is invalid."));
+		}
+
 		var request = new GetPartsPageRequest(active, searchString, pageNumber, pageSize);
 
 		return await HandleRequestAsync<GetPartsPageRequest, ApiResponse<Page<PartDTO>>>(request, cancellationToken);
@@ -47,7 +58,7 @@ public class PartController : ActiveStatusController<Part>
 	{
 		var request = new GetPartRequest(id);
 
-		return await HandleRequestAsync<GetPartRequest, ApiResponse<ProjectPartDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetPartRequest, ApiResponse<PartDTO>>(request, cancellationToken);
 	}
 
 
@@ -65,15 +76,15 @@ public class PartController : ActiveStatusController<Part>
 			return CreatedAtAction(
 				nameof(GetAsync),
 				new { response.Value.Id },
-				response.Value);
+				response);
 		}
 		catch (ConflictException ex)
 		{
-			return Conflict(ex.Message);
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
 		}
 		catch (Exception ex)
 		{
-			return UnknowServerError(ex);
+			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
 		}
 	}
 

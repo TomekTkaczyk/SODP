@@ -1,142 +1,142 @@
-﻿using AutoMapper;
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
-using SODP.Application.Services;
-using SODP.DataAccess;
-using SODP.Domain.Entities;
-using SODP.Application.Helpers;
-using SODP.Shared.DTO;
-using SODP.Shared.Response;
+﻿//using AutoMapper;
+//using FluentValidation;
+//using Microsoft.EntityFrameworkCore;
+//using SODP.Application.Services;
+//using SODP.DataAccess;
+//using SODP.Domain.Entities;
+//using SODP.Application.Helpers;
+//using SODP.Shared.DTO;
+//using SODP.Shared.Response;
 
-namespace SODP.Infrastructure.Services
-{
-    public class BranchService : FilteredPageService<Branch, BranchDTO>, IBranchService
-    {
+//namespace SODP.Infrastructure.Services
+//{
+//    public class BranchService : FilteredPageService<Branch, BranchDTO>, IBranchService
+//    {
 
-		public BranchService(IMapper mapper, IValidator<Branch> validator, SODPDBContext context, IActiveStatusService<Branch> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
-
-
-        public async Task<ServiceResponse<BranchDTO>> CreateAsync(BranchDTO newBranch)
-        {
-            var serviceResponse = new ServiceResponse<BranchDTO>();
-            try
-            {
-                var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Sign == newBranch.Sign);
-                if (branch != null)
-                {
-                    serviceResponse.SetError($"Błąd: Branża {newBranch.Sign} już istnieje.", 400);
-                    return serviceResponse;
-                }
-
-                branch = _mapper.Map<Branch>(newBranch);
-                var validationResult = await _validator.ValidateAsync(branch);
-                if (!validationResult.IsValid)
-                {
-                    serviceResponse.ValidationErrorProcess(validationResult);
-                    return serviceResponse;
-                }
-
-                branch.SetActiveStatus(true);
-                var entity = await _context.Branches.AddAsync(branch);
-                await _context.SaveChangesAsync();
-                serviceResponse.SetData(_mapper.Map<BranchDTO>(entity.Entity));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
+//		public BranchService(IMapper mapper, IValidator<Branch> validator, SODPDBContext context, IActiveStatusService<Branch> activeStatusService) : base(mapper, validator, context, activeStatusService) { }
 
 
-        public async Task<ServiceResponse> UpdateAsync(BranchDTO updateBranch)
-        {
-            var serviceResponse = new ServiceResponse();
-            try
-            {
-                var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Id != updateBranch.Id && x.Sign.Equals(updateBranch.Sign));
-                if (branch != null)
-                {
-                    serviceResponse.SetError("Branch already exist.", 409);
-                    return serviceResponse;
-                }
+//        public async Task<ServiceResponse<BranchDTO>> CreateAsync(BranchDTO newBranch)
+//        {
+//            var serviceResponse = new ServiceResponse<BranchDTO>();
+//            try
+//            {
+//                var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Sign == newBranch.Sign);
+//                if (branch != null)
+//                {
+//                    serviceResponse.SetError($"Błąd: Branża {newBranch.Sign} już istnieje.", 400);
+//                    return serviceResponse;
+//                }
 
-                branch = await _context.Branches.SingleOrDefaultAsync(x => x.Id == updateBranch.Id);
-                if (branch == null)
-                {
-                    serviceResponse.SetError($"Branch Id:{updateBranch.Id} not found.", 404);
-                    serviceResponse.ValidationErrors.Add("Branch.Sign", "Branch not found.");
-                    return serviceResponse;
-                }
-                //branch.SetName(updateBranch.Name);
-                //branch.Normalize();
-                _context.Branches.Update(branch);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-            return serviceResponse;
-        }
+//                branch = _mapper.Map<Branch>(newBranch);
+//                var validationResult = await _validator.ValidateAsync(branch);
+//                if (!validationResult.IsValid)
+//                {
+//                    serviceResponse.ValidationErrorProcess(validationResult);
+//                    return serviceResponse;
+//                }
 
+//                branch.SetActiveStatus(true);
+//                var entity = await _context.Branches.AddAsync(branch);
+//                await _context.SaveChangesAsync();
+//                serviceResponse.SetData(_mapper.Map<BranchDTO>(entity.Entity));
+//            }
+//            catch (Exception ex)
+//            {
+//                serviceResponse.SetError(ex.Message);
+//            }
 
-        public async Task<ServiceResponse<BranchDTO>> GetAsync(string sign)
-        {
-            var serviceResponse = new ServiceResponse<BranchDTO>();
-            try
-            {
-                var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Sign == sign);
-                if (branch == null)
-                {
-                    serviceResponse.SetError($"Error: Branch {sign} not found.", 404);
-                    return serviceResponse;
-                }
-                serviceResponse.SetData(_mapper.Map<BranchDTO>(branch));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message);
-            }
-
-            return serviceResponse;
-        }
+//            return serviceResponse;
+//        }
 
 
-        public async Task<ServicePageResponse<LicenseDTO>> GetLicensesAsync(int id)
-        {
-            var serviceResponse = new ServicePageResponse<LicenseDTO>();
+//        public async Task<ServiceResponse> UpdateAsync(BranchDTO updateBranch)
+//        {
+//            var serviceResponse = new ServiceResponse();
+//            try
+//            {
+//                var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Id != updateBranch.Id && x.Sign.Equals(updateBranch.Sign));
+//                if (branch != null)
+//                {
+//                    serviceResponse.SetError("Branch already exist.", 409);
+//                    return serviceResponse;
+//                }
 
-            try
-            {
-                var branch = await _context.BranchLicenses
-                    .Include(x => x.License)
-                    .ThenInclude(x => x.Designer)
-                    .Where(k => k.BranchId == id)
-                    .ToListAsync();
-
-                serviceResponse.SetData(_mapper.Map<IReadOnlyCollection<LicenseDTO>>(branch.Select(x => x.License)));
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.SetError(ex.Message, 500);
-            }
-
-            return serviceResponse;
-        }
-
-        public override async Task<ServicePageResponse<BranchDTO>> GetPageAsync(bool? active, string searchString, int pageNumber = 1, int pageSize = 0)
-        {
-            _query = _context.Branches
-                .Where(x => x.ActiveStatus.Equals(active))
-                .Where(x => x.Sign.Contains(searchString) || x.Title.Contains(searchString))
-                .OrderBy(x => x.Order)
-                .ThenBy(x => x.Id);
-
-            return await GetPageAsync(pageNumber, pageSize);
-        }
+//                branch = await _context.Branches.SingleOrDefaultAsync(x => x.Id == updateBranch.Id);
+//                if (branch == null)
+//                {
+//                    serviceResponse.SetError($"Branch Id:{updateBranch.Id} not found.", 404);
+//                    serviceResponse.ValidationErrors.Add("Branch.Sign", "Branch not found.");
+//                    return serviceResponse;
+//                }
+//                //branch.SetName(updateBranch.Name);
+//                //branch.Normalize();
+//                _context.Branches.Update(branch);
+//                await _context.SaveChangesAsync();
+//            }
+//            catch (Exception ex)
+//            {
+//                serviceResponse.SetError(ex.Message);
+//            }
+//            return serviceResponse;
+//        }
 
 
-    }
-}
+//        public async Task<ServiceResponse<BranchDTO>> GetAsync(string sign)
+//        {
+//            var serviceResponse = new ServiceResponse<BranchDTO>();
+//            try
+//            {
+//                var branch = await _context.Branches.SingleOrDefaultAsync(x => x.Sign == sign);
+//                if (branch == null)
+//                {
+//                    serviceResponse.SetError($"Error: Branch {sign} not found.", 404);
+//                    return serviceResponse;
+//                }
+//                serviceResponse.SetData(_mapper.Map<BranchDTO>(branch));
+//            }
+//            catch (Exception ex)
+//            {
+//                serviceResponse.SetError(ex.Message);
+//            }
+
+//            return serviceResponse;
+//        }
+
+
+//        public async Task<ServicePageResponse<LicenseDTO>> GetLicensesAsync(int id)
+//        {
+//            var serviceResponse = new ServicePageResponse<LicenseDTO>();
+
+//            try
+//            {
+//                var branch = await _context.BranchLicenses
+//                    .Include(x => x.License)
+//                    .ThenInclude(x => x.Designer)
+//                    .Where(k => k.BranchId == id)
+//                    .ToListAsync();
+
+//                serviceResponse.SetData(_mapper.Map<IReadOnlyCollection<LicenseDTO>>(branch.Select(x => x.License)));
+//            }
+//            catch (Exception ex)
+//            {
+//                serviceResponse.SetError(ex.Message, 500);
+//            }
+
+//            return serviceResponse;
+//        }
+
+//        public override async Task<ServicePageResponse<BranchDTO>> GetPageAsync(bool? active, string searchString, int pageNumber = 1, int pageSize = 0)
+//        {
+//            _query = _context.Branches
+//                .Where(x => x.ActiveStatus.Equals(active))
+//                .Where(x => x.Sign.Contains(searchString) || x.Title.Contains(searchString))
+//                .OrderBy(x => x.Order)
+//                .ThenBy(x => x.Id);
+
+//            return await GetPageAsync(pageNumber, pageSize);
+//        }
+
+
+//    }
+//}

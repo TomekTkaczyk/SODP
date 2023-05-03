@@ -8,7 +8,8 @@ namespace SODP.Domain.Repositories;
 public interface IRoleRepository
 {
 	Task<Page<Role>> GetPageAsync(
-		bool? ActiveStatus,
+		bool? activeStatus,
+		string searchString,
 		int pageNumber,
 		int pageSize,
 		CancellationToken cancellationToken);

@@ -1,5 +1,5 @@
 ﻿using SODP.Shared.DTO;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using System.Collections.Generic;
 
 namespace SODP.UI.Pages.Stages.ViewModels;

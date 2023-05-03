@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using SODP.Application.API.Requests.Parts;
+using SODP.Application.API.Requests.Projects;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Projects;
 
-public class GetPartHandler : IRequestHandler<GetPartRequest, ApiResponse<ProjectPartDTO>>
+public class GetProjectPartHandler : IRequestHandler<GetProjectPartRequest, ApiResponse<ProjectPartDTO>>
 {
 	private readonly IProjectRepository _projectRepository;
 	private readonly IMapper _mapper;
 
-	public GetPartHandler(
+	public GetProjectPartHandler(
         IProjectRepository projectRepository,
 		IMapper mapper)
     {
@@ -22,9 +22,9 @@ public class GetPartHandler : IRequestHandler<GetPartRequest, ApiResponse<Projec
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<ProjectPartDTO>> Handle(GetPartRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<ProjectPartDTO>> Handle(GetProjectPartRequest request, CancellationToken cancellationToken)
 	{
-		var projectPart = await _projectRepository.GetPartAsync(request.Id, cancellationToken);
+		var projectPart = await _projectRepository.GetPartAsync(request.ProjectPartId, cancellationToken);
 
 
 		return ApiResponse.Success(_mapper.Map<ProjectPartDTO>(projectPart));

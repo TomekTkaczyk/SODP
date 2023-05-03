@@ -63,7 +63,22 @@ public class DesignerController : ActiveStatusController<Designer>
 		[FromBody] CreateDesignerRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		return await HandleRequestAsync<CreateDesignerRequest, ApiResponse<DesignerDTO>>(request, cancellationToken);
+		try
+		{
+			var response = await _sender.Send(request, cancellationToken);
+			return CreatedAtAction(
+				nameof(GetAsync),
+				new { response.Value.Id },
+				response);
+		}
+		catch (ConflictException ex)
+		{
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
+		}
+		catch (Exception ex)
+		{
+			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
+		}
 	}
 
 
@@ -95,7 +110,7 @@ public class DesignerController : ActiveStatusController<Designer>
 	{
 		var request = new DeleteDesignerRequest(id);
 
-		return await HandleRequestAsync<DeleteDesignerRequest>(request, cancellationToken);
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 
 

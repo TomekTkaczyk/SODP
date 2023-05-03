@@ -29,7 +29,7 @@
 	</div>
 </div>
 
-@if(Model.Parts.Parts.Count() > 0)
+@if(Model.Parts.Count() > 0)
 {
 	<table id="StagesTable" class="table table-sm table-hover">
 		<thead class="thead-light">
@@ -40,7 +40,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach (var item in Model.Parts.Parts)
+			@foreach (var item in Model.Parts)
 			{
 				<tr class="m-0 p-0">
 					<td onclick='@(User.IsInRole("ProjectManager") ? "EditPart("+@item.Id+")" : "")'

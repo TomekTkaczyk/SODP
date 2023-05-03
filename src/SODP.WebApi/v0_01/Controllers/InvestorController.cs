@@ -33,9 +33,14 @@ public class InvestorController : ActiveStatusController<Investor>
 		int pageSize = 0,
 		CancellationToken cancellationToken = default)
 	{
-		if (pageSize == 0 && pageNumber != 1)
+		if (pageNumber < 1)
 		{
-			return BadRequest(ApiResponse.Failure("pageNumber and/or pageSize is invalid.",HttpStatusCode.BadRequest));
+			return BadRequest(new Error("pageNumber is invalid."));
+		}
+
+		if (pageNumber > 1 && pageSize == 0)
+		{
+			return BadRequest(new Error("pageNumber and/or pageSize is invalid."));
 		}
 
 		var request = new GetInvestorsPageRequest(active, searchString, pageNumber, pageSize);
@@ -75,13 +80,13 @@ public class InvestorController : ActiveStatusController<Investor>
 				   new { response.Value.Id },
 				   response);
 		}
-		catch (InvestorExistException ex)
+		catch (ConflictException ex)
 		{
-			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict));
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
 		}
 		catch (Exception ex)
 		{
-			return UnknowServerError(ex);
+			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
 		}
 	}
 
@@ -97,7 +102,7 @@ public class InvestorController : ActiveStatusController<Investor>
 	{
 		if (id != request.Id)
 		{
-			return BadRequest(request);
+			return BadRequest();
 		}
 
 		return await HandleRequestAsync(request, cancellationToken);

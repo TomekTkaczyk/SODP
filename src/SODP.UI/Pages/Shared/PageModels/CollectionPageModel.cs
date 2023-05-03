@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using SODP.Application.API;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace SODP.UI.Pages.Shared.PageModels;

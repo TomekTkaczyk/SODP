@@ -6,5 +6,6 @@ namespace SODP.Application.API.Requests.Roles;
 
 public sealed record GetRolesPageRequest(
 	bool? ActiveStatus,
+	string SearchString,
 	int PageNumber,
 	int PageSize) : IRequest<ApiResponse<Page<RoleDTO>>>;

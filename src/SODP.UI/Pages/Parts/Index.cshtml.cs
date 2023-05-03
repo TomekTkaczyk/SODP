@@ -2,21 +2,21 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Parts.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
-using System.Linq;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Parts
 {
-	public class IndexModel : ListPageModel<PartDTO>
-    {
+	public class IndexModel : CollectionPageModel
+	{
 		const string _editPartModalViewName = "ModalView/_EditPartModalView";
 
 		public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
@@ -25,20 +25,17 @@ namespace SODP.UI.Pages.Parts
             _endpoint = "parts";
         }
 
-        public PartsVM Parts { get; set; }
+        public IReadOnlyCollection<PartDTO> Parts { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-            var apiResponse = await GetApiResponseAsync($"{_endpoint}");
-            if (apiResponse != null)
-            {
-                Parts = new PartsVM
-                {
-                    Parts = apiResponse.Data.Collection.ToList(),
-                };
-            }
+			var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
+			var apiResponse = await GetApiResponseAsync<Page<PartDTO>>(endpoint);
 
-            return Page();
+			Parts = GetCollection(apiResponse);
+			PageInfo = GetPageInfo(apiResponse, searchString);
+
+			return Page();
         }
 
         public async Task<PartialViewResult> OnGetEditPartAsync(int? id)
@@ -56,7 +53,7 @@ namespace SODP.UI.Pages.Parts
 				RedirectToPage($"Errors/{(int)apiResponse.StatusCode}");
 			}
 
-			var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<PartDTO>>();
+			var result = await apiResponse.Content.ReadAsAsync<SODP.Shared.Response.ServiceResponse<PartDTO>>();
             model = _mapper.Map<PartVM>(result.Data);
 
             return GetPartialView(model, _editPartModalViewName);
@@ -73,10 +70,10 @@ namespace SODP.UI.Pages.Parts
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<ServiceResponse<PartDTO>>(apiResponse);
+                        var response = await _apiProvider.GetContent<SODP.Shared.Response.ServiceResponse<PartDTO>>(apiResponse);
                         if (!response.Success)
                         {
-                            SetModelErrors(response);
+                            // SetModelErrors(response);
                         }
                         break;
                     default:

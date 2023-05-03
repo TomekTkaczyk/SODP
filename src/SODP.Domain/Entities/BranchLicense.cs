@@ -3,7 +3,7 @@
 public class BranchLicense : BaseEntity
 {
     public int BranchId { get; set; }
-    public virtual Branch Branch { get; set; }
+    public Branch Branch { get; set; }
     public int LicenseId { get; set; }
-    public virtual License License { get; set; }
+    public License License { get; set; }
 }

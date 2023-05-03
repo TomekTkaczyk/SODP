@@ -15,6 +15,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
 	public Repository(SODPDBContext dbContext)
     {
 		_dbContext = dbContext;
+		_entities = _dbContext.Set<TEntity>();
 	}
 
 	public IQueryable<TEntity> GetAll()

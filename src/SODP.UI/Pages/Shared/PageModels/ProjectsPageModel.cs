@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Application.API;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 

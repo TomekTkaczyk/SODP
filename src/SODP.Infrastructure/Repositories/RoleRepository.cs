@@ -18,8 +18,9 @@ public class RoleRepository : IRoleRepository
 
 	public async Task<Page<Role>> GetPageAsync(
 		bool? activeStatus, 
+		string stringSearch,
 		int pageNumber, 
-		int pageSize, 
+		int pageSize,
 		CancellationToken cancellationToken)
 	{
 		var queryable = _roleManager.Roles

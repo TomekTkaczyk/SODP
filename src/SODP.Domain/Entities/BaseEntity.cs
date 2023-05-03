@@ -3,7 +3,7 @@ using System.Runtime.ExceptionServices;
 
 namespace SODP.Domain.Entities;
 
-public abstract class BaseEntity : IEquatable<BaseEntity>
+public abstract class BaseEntity : IEquatable<BaseEntity>, IBaseEntity
 {
     public int Id { get; private set; }
 

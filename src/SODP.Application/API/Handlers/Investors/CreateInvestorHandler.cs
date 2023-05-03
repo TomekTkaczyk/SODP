@@ -37,7 +37,7 @@ public sealed class CreateInvestorHandler : IRequestHandler<CreateInvestorReques
 
         if (investorExist)
         {
-            throw new InvestorExistException();
+            throw new ConflictException("Investor");
         }
 
         var investor = _investorRepository.Add(Investor.Create(request.Name));

@@ -179,9 +179,9 @@ public class ProjectController : ApiControllerBase
 		int projectPartId,
 		CancellationToken cancellationToken)
 	{
-		var request = new GetPartRequest(projectPartId);
+		var request = new GetProjectPartRequest(projectPartId);
 
-		return await HandleRequestAsync<GetPartRequest,ApiResponse<ProjectPartDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetProjectPartRequest,ApiResponse<ProjectPartDTO>>(request, cancellationToken);
 		//return Ok(await _service.GetProjectPartAsync(projectPartId));
 	}
 

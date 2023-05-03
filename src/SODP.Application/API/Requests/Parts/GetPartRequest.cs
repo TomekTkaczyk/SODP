@@ -5,4 +5,4 @@ using SODP.Shared.Response;
 namespace SODP.Application.API.Requests.Parts;
 
 public sealed record GetPartRequest(
-	int Id) : IRequest<ApiResponse<ProjectPartDTO>>;
+	int Id) : IRequest<ApiResponse<PartDTO>>;
