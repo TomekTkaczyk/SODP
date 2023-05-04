@@ -1,6 +1,6 @@
 ﻿namespace SODP.Shared.DTO;
 
-public record NewBranchDTO // : BaseDTO
+public record NewBranchDTO
 {
 	public int Id { get; set; }
 

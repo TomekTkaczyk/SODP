@@ -97,8 +97,7 @@ namespace SODP.Domain
 			#region Branch
 
 			CreateMap<Branch, BranchDTO>()
-			   .ForMember(dest => dest.Licenses, opt => opt.MapFrom(x => x.Licenses))
-               .PreserveReferences();
+			   .ForMember(dest => dest.Licenses, opt => opt.MapFrom(x => x.Licenses));
 
 			CreateMap<BranchDTO, Branch>()
 				.ForMember(dest => dest.Licenses, act => act.Ignore())
@@ -106,7 +105,10 @@ namespace SODP.Domain
 				.ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore());
 
 			CreateMap<BranchLicense, LicenseDTO>()
-				.ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.License.Id));
+				.ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.License.Id))
+				.ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.License.Designer))
+				.ForMember(dest => dest.Content, opt => opt.MapFrom(x => x.License.Content))
+				.ForMember(dest => dest.Branches, act => act.Ignore());
 
 			#endregion
 

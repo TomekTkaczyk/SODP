@@ -1,20 +1,23 @@
 ﻿using SODP.Shared.Response;
 using System.Collections.Generic;
+using System.Net;
 
 namespace SODP.UI.Api
 {
 	public record ApiResponse
 	{
-		public string Message { get; set; }
+		public HttpStatusCode HttpCode { get; init; }
 
-		public bool IsSuccess { get; set; }
+		public string Message { get; init; }
 
-		public ICollection<Error> Errors { get; set; }
+		public bool IsSuccess { get; init; }
+
+		public ICollection<Error> Errors { get; init; }
 
 	}
 
 	public record ApiResponse<TValue> : ApiResponse
 	{
-		public TValue Value { get; set; }
+		public TValue Value { get; init; }
 	}
 }

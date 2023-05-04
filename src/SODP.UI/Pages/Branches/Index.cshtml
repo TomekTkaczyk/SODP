@@ -3,13 +3,13 @@
 @using SODP.Domain.Entities
 @using System.Text.Json;
 @using System.Text.Json.Serialization;
+@using SODP.UI.Pages.Parts;
 
 @model IndexModel
 
 @{
 	ViewData["Title"] = "Branże";
 }
-
 
 @inject SignInManager<User> SignInManager
 
@@ -29,12 +29,12 @@
 	</div>
 </div>
 
-<partial name="_SearchString" />
+<partial name="_CollectionSearchString" />
 
-@if (Model.Branches.Branches.Count() > 0)
+@if (Model.Branches.Count() > 0)
 {
 	<div id="branchesAccordion" class="accordion">
-		@foreach (var item in Model.Branches.Branches.OrderBy(x => x.Order))
+		@foreach (var item in Model.Branches.OrderBy(x => x.Order).ThenBy(x => x.Sign))
 		{
 			<div class="button card p-0 border-light">
 				<div class="card-header p-0 border-light d-flex align-items-center" style="background-color:white" id="card-header-@item.Id">
@@ -89,6 +89,7 @@
 }
 else
 {
+	<br />
 	<p> Lista branż jest pusta</p>
 }
 

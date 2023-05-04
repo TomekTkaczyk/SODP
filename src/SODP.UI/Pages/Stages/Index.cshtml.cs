@@ -52,17 +52,14 @@ public sealed class IndexModel : CollectionPageModel
 			return GetPartialView(new StageVM(), _editStageModalViewName);
 		}
 
-		var endpoint = $"{_endpoint}/{id}";
-		var apiResponse = await _apiProvider.GetAsync(endpoint);
+		var apiResponse = await GetApiResponseAsync<StageDTO>($"{_endpoint}/{id}");
 
-		if (!apiResponse.IsSuccessStatusCode)
+		if (!apiResponse.IsSuccess)
 		{
-			RedirectToPage($"Errors/{(int)apiResponse.StatusCode}");
+			RedirectToPage($"Errors/{apiResponse.HttpCode}");
 		}
 
-		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<StageDTO>>();
-
-		return GetPartialView(_mapper.Map<StageVM>(result.Value), _editStageModalViewName);
+		return GetPartialView(_mapper.Map<StageVM>(apiResponse.Value), _editStageModalViewName);
 	}
 
 	public async Task<PartialViewResult> OnPostEditStageAsync(StageVM stage)

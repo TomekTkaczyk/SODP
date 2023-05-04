@@ -8,7 +8,7 @@ namespace SODP.UI.Pages.Stages.ViewModels
         public string Sign { get; set; }
         
         [Required(ErrorMessage = "Nazwa jest wymagana")]
-        public string Name { get; set; }
+        public string Title { get; set; }
 
 
 

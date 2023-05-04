@@ -14,12 +14,12 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Branches;
 
-public sealed class GetBranchByIdWithLicensesHandler : IRequestHandler<GetBranchWithLicensesRequest, ApiResponse<BranchDTO>>
+public sealed class GetBranchWithLicensesHandler : IRequestHandler<GetBranchWithLicensesRequest, ApiResponse<BranchDTO>>
 {
     private readonly IBranchRepository _branchRepository;
 	private readonly IMapper _mapper;
 
-	public GetBranchByIdWithLicensesHandler(
+	public GetBranchWithLicensesHandler(
             IBranchRepository branchRepository,
             IMapper mapper)
     {
@@ -40,6 +40,8 @@ public sealed class GetBranchByIdWithLicensesHandler : IRequestHandler<GetBranch
 			.SingleOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Branch");
 
-        return ApiResponse.Success(_mapper.Map<BranchDTO>(branch));
+        var dto = _mapper.Map<BranchDTO>(branch);
+
+		return ApiResponse.Success(dto);
     }
 }

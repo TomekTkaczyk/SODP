@@ -10,6 +10,6 @@ namespace SODP.UI.Pages.Branches.ViewModels
         public string Sign { get; set; }
 
         [Required(ErrorMessage = "Nazwa branży jest wymagana")]
-        public string Name { get; set; }
+        public string Title { get; set; }
     }
 }

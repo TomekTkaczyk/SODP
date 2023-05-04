@@ -26,8 +26,7 @@ namespace SODP.UI.Mappers
 
 			CreateMap<BranchDTO, Pages.Shared.ViewModels.BranchVM>();
 
-
-            CreateMap<LicenseDTO, Pages.Shared.ViewModels.LicenseVM>()
+			CreateMap<LicenseDTO, Pages.Shared.ViewModels.LicenseVM>()
                 .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.Designer.ToString()));
 
             CreateMap<PartDTO, Pages.Shared.ViewModels.PartVM>()
@@ -53,6 +52,7 @@ namespace SODP.UI.Mappers
 
             #region DTO to Pages/.../ViewModels
 
+			CreateMap<BranchDTO, Pages.Branches.ViewModels.BranchVM>();
             CreateMap<StageDTO, Pages.Stages.ViewModels.StageVM>();
 			CreateMap<InvestorDTO, Pages.Investors.ViewModels.InvestorVM>();
 

@@ -8,5 +8,5 @@ public record BranchDTO : NewBranchDTO
 
 	public bool ActiveStatus { get; set; }
 
-	public ICollection<LicenseDTO> Licenses { get; set; }
+	public IReadOnlyCollection<LicenseDTO> Licenses { get; set; }
 }
