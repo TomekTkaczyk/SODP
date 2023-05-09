@@ -25,8 +25,7 @@ public abstract class ApiControllerBase : ControllerBase
 
 	protected async Task<IActionResult> HandleRequestAsync<TRequest>(
 		TRequest request, 
-		CancellationToken cancellationToken)
-	where TRequest : IRequest
+		CancellationToken cancellationToken) where TRequest : IRequest
 	{
 		if (!ModelState.IsValid)
 		{
@@ -36,28 +35,26 @@ public abstract class ApiControllerBase : ControllerBase
 		}
 		try
 		{
-			await _sender.Send(request, cancellationToken);
+			var response = await _sender.Send(request, cancellationToken);
 			return NoContent();
 		}
 		catch (NotFoundException ex)
 		{
-			return NotFound(ex);
+			return NotFound(ApiResponse.Failure(ex.Message,HttpStatusCode.NotFound,new List<Error>()));
 		}
 		catch (ConflictException ex)
 		{
-			return Conflict(ex);
+			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
 		}
 		catch (Exception ex)
 		{
-			return UnknowServerError(ex);
+			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
 		}
 	}
 
 	protected async Task<IActionResult> HandleRequestAsync<TRequest, TResponse>(
 		TRequest request, 
-		CancellationToken cancellationToken)
-		where TRequest : IRequest<TResponse>
-		where TResponse : ApiResponse
+		CancellationToken cancellationToken) where TRequest : IRequest<TResponse> where TResponse : ApiResponse
 	{
 		if (!ModelState.IsValid)
 		{
@@ -65,7 +62,6 @@ public abstract class ApiControllerBase : ControllerBase
 				.Where(x => x.Value.Errors.Any())
 				.Select(x => new { property = x.Key, errors = x.Value.Errors}));
 		}
-
 		try
 		{
 			var response = await _sender.Send(request, cancellationToken);
@@ -86,7 +82,7 @@ public abstract class ApiControllerBase : ControllerBase
 		}
 	}
 
-	protected ObjectResult UnknowServerError(object value)
+	protected internal ObjectResult UnknowServerError(object value)
 	{
 		return StatusCode(StatusCodes.Status500InternalServerError, value);
 	}

@@ -2,7 +2,7 @@
 {
     public enum TechnicalRole
     {
-        Checker = 1,
         Designer = 0, 
+        Checker = 1,
     }
 }

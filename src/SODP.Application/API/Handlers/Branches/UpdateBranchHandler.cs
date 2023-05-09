@@ -33,6 +33,9 @@ public class UpdateBranchHandler : IRequestHandler<UpdateBranchRequest>
         {
             throw new NotFoundException("Branch");
         }
+        
+        branch.Sign = request.Sign;
+        branch.Title = request.Title;
 
         _branchRepository.Update(branch);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

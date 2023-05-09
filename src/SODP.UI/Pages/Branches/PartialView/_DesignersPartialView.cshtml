@@ -1,6 +1,6 @@
 ﻿@using SODP.UI.Pages.Branches.ViewModels
 
-@model IReadOnlyCollection<LicenseDTO>
+@model IReadOnlyCollection<LicenseVM>
 
 <div>
     @if (Model.Count > 0)
@@ -9,7 +9,7 @@
         {
             <div class="row">
                 <div class="col col-md-4">
-                    @item.Designer.Title @item.Designer.Firstname @item.Designer.Lastname
+                    @item.Designer
                 </div>
                 <div class="col col-md-1">
                     @item.Content

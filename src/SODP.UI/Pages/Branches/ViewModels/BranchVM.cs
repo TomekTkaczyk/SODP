@@ -1,7 +1,9 @@
 ﻿namespace SODP.UI.Pages.Branches.ViewModels
 {
-    public class BranchVM : NewBranchVM
+    public record BranchVM : NewBranchVM
     {
         public int Id { get; set; }
+        public int Order { get; set; }
+        public bool ActiveStatus { get; set; }
     }
 }

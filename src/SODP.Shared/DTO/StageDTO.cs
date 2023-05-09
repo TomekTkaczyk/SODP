@@ -1,6 +1,6 @@
 ﻿namespace SODP.Shared.DTO;
 
-public record StageDTO  // : BaseDTO
+public record StageDTO
 {
 	public int Id { get; set; } 
 

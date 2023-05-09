@@ -31,7 +31,7 @@ public sealed class IndexModel : CollectionPageModel
 	}
 
 
-	public IReadOnlyCollection<StageDTO> Stages { get; set; }
+	public IReadOnlyCollection<StageVM> Stages { get; set; }
 
 
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
@@ -39,7 +39,7 @@ public sealed class IndexModel : CollectionPageModel
 		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
 		var apiResponse = await GetApiResponseAsync<Page<StageDTO>>(endpoint);
 
-		Stages = GetCollection(apiResponse);
+		Stages = _mapper.Map<IReadOnlyCollection<StageVM>>(apiResponse.Value.Collection);
 		PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();

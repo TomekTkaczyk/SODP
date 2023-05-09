@@ -116,7 +116,6 @@ public class ProjectController : ApiControllerBase
 		var request = new ArchiveProjectRequest(id);
 
 		return await HandleRequestAsync(request, cancellationToken);
-		// return Ok(await ((IProjectService)_service).ArchiveAsync(id));
 	}
 
 
@@ -131,7 +130,6 @@ public class ProjectController : ApiControllerBase
 		var request = new RestoreProjectRequest(id);
 
 		return await HandleRequestAsync(request, cancellationToken);
-		//return Ok(await ((IProjectService)_service).RestoreAsync(id));
 	}
 
 
@@ -150,7 +148,6 @@ public class ProjectController : ApiControllerBase
 		}
 
 		return await HandleRequestAsync(request, cancellationToken);
-		//return Ok(await ((IProjectService)_service).SetInvestorAsync(id, investor));
 	}
 
 	#endregion

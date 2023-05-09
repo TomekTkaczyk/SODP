@@ -2,7 +2,7 @@
 
 namespace SODP.UI.Pages.Branches.ViewModels
 {
-    public class NewBranchVM
+    public record NewBranchVM
     {
 
         [Required(ErrorMessage = "Znak branży jest wymagany")]
