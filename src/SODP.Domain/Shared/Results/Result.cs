@@ -1,18 +1,18 @@
 ﻿using SODP.Shared.Response;
 using System;
 
-namespace SODP.Domain.Shared
+namespace SODP.Domain.Shared.Results
 {
 	public class Result
 	{
 		public bool IsSuccess { get; }
-		
+
 		public bool IsFailure => !IsSuccess;
 
 		public Error Error { get; }
 
-        public Result(bool isSuccess, Error error)
-        {
+		public Result(bool isSuccess, Error error)
+		{
 			if (isSuccess && error != Error.None)
 			{
 				throw new InvalidOperationException();
@@ -35,7 +35,7 @@ namespace SODP.Domain.Shared
 
 		public static Result<TValue> Failure<TValue>(Error error) => new(default!, false, error);
 
-		public static Result<TValue> Create<TValue>(TValue value, Error error)	where TValue : class
+		public static Result<TValue> Create<TValue>(TValue value, Error error) where TValue : class
 			=> value is null ? Failure<TValue>(error) : Success(value);
 
 		public static Result FirstFailureOrSuccess(params Result[] results)

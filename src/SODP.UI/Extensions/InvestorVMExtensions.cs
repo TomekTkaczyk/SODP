@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using SODP.Shared.DTO;
+﻿using SODP.Shared.DTO;
 using SODP.UI.Pages.Investors.ViewModels;
 using System.Net.Http;
 using System.Text;

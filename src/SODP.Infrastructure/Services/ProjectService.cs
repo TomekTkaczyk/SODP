@@ -431,7 +431,7 @@ namespace SODP.Application.Services
 				if (project.Parts.SingleOrDefault(x => x.Sign == part.Sign) == null)
 				{
                     _context.ProjectParts.Add(
-                        new ProjectPart(project, new Part(part.Sign, part.Title)));
+                        new ProjectPart(project, Part.Create(part.Sign, part.Title)));
 				}
                 else
                 {

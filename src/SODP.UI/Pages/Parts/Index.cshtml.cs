@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
@@ -15,11 +16,16 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Parts
 {
+	[Authorize(Roles = "ProjectManager")]
 	public class IndexModel : CollectionPageModel
 	{
 		const string _editPartModalViewName = "ModalView/_EditPartModalView";
 
-		public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
+		public IndexModel(
+            IWebAPIProvider apiProvider, 
+            ILogger<IndexModel> logger, 
+            IMapper mapper, 
+            LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
             ReturnUrl = "/Parts";
             _endpoint = "parts";
@@ -38,48 +44,37 @@ namespace SODP.UI.Pages.Parts
 			return Page();
         }
 
-        public async Task<PartialViewResult> OnGetEditPartAsync(int? id)
+        public async Task<IActionResult> OnGetEditPartAsync(int? id)
         {
             var model = new PartVM();
-			StringContent stringContent = model.ToHttpContent();
-            if(id == null)
+            if (!id.HasValue)
             {
-                return GetPartialView(model, _editPartModalViewName);
+                return GetPartialView(new PartVM(), _editPartModalViewName);
             }
 
-            var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}");
-            if (apiResponse.IsSuccessStatusCode)
+            var apiResponse = await GetApiResponseAsync<PartDTO>($"{_endpoint}/{id}");
+
+            if (!apiResponse.IsSuccess)
             {
-				RedirectToPage($"Errors/{(int)apiResponse.StatusCode}");
+				RedirectToPage($"Errors/{apiResponse.HttpCode}");
 			}
 
-			var result = await apiResponse.Content.ReadAsAsync<SODP.Shared.Response.ServiceResponse<PartDTO>>();
-            model = _mapper.Map<PartVM>(result.Data);
-
-            return GetPartialView(model, _editPartModalViewName);
+			return GetPartialView(_mapper.Map<PartVM>(apiResponse.Value), _editPartModalViewName);
 		}
 
-		public async Task<PartialViewResult> OnPostEditPartAsync(PartVM model)
+		public async Task<IActionResult> OnPostEditPartAsync(PartVM model)
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = model.Id == 0
+                var responseMessage = model.Id == 0
                     ? await _apiProvider.PostAsync($"{_endpoint}", model.ToHttpContent())
                     : await _apiProvider.PutAsync($"{_endpoint}/{model.Id}", model.ToHttpContent());
-
-                switch (apiResponse.StatusCode)
+ 
+                if (!responseMessage.IsSuccessStatusCode)
                 {
-                    case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<SODP.Shared.Response.ServiceResponse<PartDTO>>(apiResponse);
-                        if (!response.Success)
-                        {
-                            // SetModelErrors(response);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
+					// SetError
+				}
+			}
 
             return GetPartialView(model, _editPartModalViewName);
         }

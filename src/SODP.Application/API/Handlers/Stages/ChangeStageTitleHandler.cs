@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Stages;
 
-internal sealed class ChangeStageNameHandler : IRequestHandler<ChangeStageNameRequest, ApiResponse>
+internal sealed class ChangeStageTitleHandler : IRequestHandler<ChangeStageTitleRequest, ApiResponse>
 {
     private readonly IStageRepository _stageRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ChangeStageNameHandler(
+    public ChangeStageTitleHandler(
         IStageRepository stageRepository,
         IUnitOfWork unitOfWork)
     {
@@ -23,7 +23,7 @@ internal sealed class ChangeStageNameHandler : IRequestHandler<ChangeStageNameRe
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ApiResponse> Handle(ChangeStageNameRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse> Handle(ChangeStageTitleRequest request, CancellationToken cancellationToken)
     {
         var stage = await _stageRepository
             .ApplySpecyfication(new StageByIdSpecyfication(request.Id))
@@ -34,7 +34,8 @@ internal sealed class ChangeStageNameHandler : IRequestHandler<ChangeStageNameRe
             throw new NotFoundException("Stage");
         }
 
-        stage.Title = request.Name.ToUpper();
+        stage.SetTitle(request.Title);
+
         _stageRepository.Update(stage);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

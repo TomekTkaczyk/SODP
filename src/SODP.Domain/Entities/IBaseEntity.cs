@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SODP.Domain.Entities;
+﻿namespace SODP.Domain.Entities;
 
 public interface IBaseEntity
 {

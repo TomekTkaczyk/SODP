@@ -10,7 +10,6 @@ using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Pages.Stages.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Stages;
@@ -62,27 +61,21 @@ public sealed class IndexModel : CollectionPageModel
 		return GetPartialView(_mapper.Map<StageVM>(apiResponse.Value), _editStageModalViewName);
 	}
 
-	public async Task<PartialViewResult> OnPostEditStageAsync(StageVM stage)
+	public async Task<PartialViewResult> OnPostEditStageAsync(StageVM model)
 	{
 		if (ModelState.IsValid)
 		{
-			return GetPartialView(stage, _editStageModalViewName);
+			var responseMessage = model.Id == 0
+				? await _apiProvider.PostAsync($"{_endpoint}", model.ToHttpContent())
+				: await _apiProvider.PatchAsync($"{_endpoint}/{model.Id}", model.ToHttpContent());
+
+			if (!responseMessage.IsSuccessStatusCode)
+			{
+				// SetError
+			}
 		}
 
-		HttpResponseMessage apiResponse;
-
-		var content = stage.ToHttpContent();
-		apiResponse = stage.Id == 0
-			? await _apiProvider.PostAsync($"{_endpoint}", content)
-			: await _apiProvider.PatchAsync($"{_endpoint}/{stage.Id}", content);
-
-		if (!apiResponse.IsSuccessStatusCode)
-		{
-			var response = apiResponse.Content.ReadAsAsync<ApiResponse>();
-			// SetModelErrors(response);
-		}
-
-		return GetPartialView(stage, _editStageModalViewName);
+		return GetPartialView(model, _editStageModalViewName);
 
 	}
 }

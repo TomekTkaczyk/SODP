@@ -1,11 +1,10 @@
-﻿using SODP.Shared.ValueObjects;
-
+﻿
 namespace SODP.Domain.Entities;
 
-public class Stage : ActiveStatusEntity, IOrdered
+public sealed class Stage : ActiveStatusEntity, IOrdered
 {
-	public string Sign { get; set; }
-	public string Title { get; set; }
+	public string Sign { get; private set; }
+	public string Title { get; private set; }
 	public int Order { get; private set; }
 
 
@@ -13,12 +12,23 @@ public class Stage : ActiveStatusEntity, IOrdered
 	{
 		Sign = sign;
 		Title = title;
+		Order = 0;
 	}
 
 	public static Stage Create(string sign, string title)
     {
         return new Stage(sign, title);
     }
+
+	public void SetSign(string sign)
+	{
+		Sign = sign;
+	}
+
+	public void SetTitle(string title) 
+	{ 
+		Title = title; 
+	}
 
 	public override string ToString()
 	{

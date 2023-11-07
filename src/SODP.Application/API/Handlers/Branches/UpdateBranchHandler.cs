@@ -29,13 +29,13 @@ public class UpdateBranchHandler : IRequestHandler<UpdateBranchRequest>
             .ApplySpecyfication(new ByIdSpecification<Branch>(request.Id))
             .SingleOrDefaultAsync(cancellationToken);
 
-        if (branch is null)
+		if (branch is null)
         {
             throw new NotFoundException("Branch");
         }
         
-        branch.Sign = request.Sign;
-        branch.Title = request.Title;
+        branch.SetSign(request.Sign);
+        branch.SetTitle(request.Title);
 
         _branchRepository.Update(branch);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

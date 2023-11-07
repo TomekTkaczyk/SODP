@@ -36,6 +36,9 @@ public sealed class UpdatePartHandler : IRequestHandler<UpdatePartRequest>
 			throw new NotFoundException("Part");
 		}
 
+		part.SetSign(request.Sign);
+		part.SetTitle(request.Title);
+
 		_partRepository.Update(part);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 

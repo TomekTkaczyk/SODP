@@ -2,21 +2,33 @@
 
 namespace SODP.Domain.Entities;
 
-public class Part : ActiveStatusEntity, IOrdered
+public sealed class Part : ActiveStatusEntity, IOrdered
 {
-	public string Sign { get; set; }
+	public string Sign { get; private set; }
 
-	public string Title { get; set; }
+	public string Title { get; private set; }
 
 	public int Order { get; private set; }
 	
-	public Part() : this("", "") { }
-
-	public Part(string sign) : this(sign, "") { }
-
-	public Part(string sign = "", string title = "")
+	private Part(string sign, string title)
     {
 		Sign = sign;
+		Title = title;
+		Order = 0;
+	}
+
+	public static Part Create(string sign, string title)
+	{
+		return new Part(sign,title);
+	}
+
+	public void SetSign(string sign)
+	{
+		Sign = sign;
+	}
+
+	public void SetTitle(string title)
+	{
 		Title = title;
 	}
 

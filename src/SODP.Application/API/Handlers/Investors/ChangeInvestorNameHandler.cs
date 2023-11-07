@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Investors;
 using SODP.Application.Specifications.Investors;
+using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using System.Threading;
@@ -33,7 +34,17 @@ public class ChangeInvestorNameHandler : IRequestHandler<ChangeInvestorNameReque
             throw new InvestorExistException();
         }
 
-        investor.SetName(request.Name);
+		investor = await _investorRepository
+			.ApplySpecyfication(new InvestorByIdSpecification(request.Id))
+			.SingleOrDefaultAsync(cancellationToken);
+
+		if (investor is null)
+		{
+			throw new NotFoundException("Investor");
+		}
+
+		investor.SetName(request.Name);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new Unit();

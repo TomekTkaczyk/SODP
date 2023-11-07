@@ -66,26 +66,19 @@ public sealed class IndexModel : CollectionPageModel
 	}
 
 
-	public async Task<PartialViewResult> OnPostEditInvestorAsync(InvestorVM investor)
+	public async Task<PartialViewResult> OnPostEditInvestorAsync(InvestorVM model)
 	{
-		if (!ModelState.IsValid)
+		if (ModelState.IsValid)
 		{
-			return GetPartialView(investor, _editInvestorModalViewName);
-		}
-
-		var content = investor.ToHttpContent();
-		var apiResponse = investor.Id == 0
-			? await _apiProvider.PostAsync($"{_endpoint}", content)
-			: await _apiProvider.PatchAsync($"{_endpoint}/{investor.Id}", content);
-
-		var response = await apiResponse.Content.ReadAsAsync<ApiResponse>();
-		if (!response.IsSuccess)
-		{
-			foreach(var message in response.Errors)
+			var responseMessage = model.Id == 0
+				? await _apiProvider.PostAsync($"{_endpoint}", model.ToHttpContent())
+				: await _apiProvider.PatchAsync($"{_endpoint}/{model.Id}", model.ToHttpContent());
+			if (!responseMessage.IsSuccessStatusCode)
 			{
+				// SetError
 			}
 		}
 		
-		return GetPartialView(investor, _editInvestorModalViewName);
+		return GetPartialView(model, _editInvestorModalViewName);
 	}
 }

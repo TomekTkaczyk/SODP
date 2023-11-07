@@ -8,10 +8,19 @@ public abstract class BaseEntity : IEquatable<BaseEntity>, IBaseEntity
     public int Id { get; private set; }
 
     public DateTime CreateTimeStamp { get; private set; }
+
+	public int CreatedById { get; private set; }
+	
+	public User CreatedBy { get; private set; }	
     
     public DateTime ModifyTimeStamp { get; private set; }
 
-    protected BaseEntity()										 
+	public int ModifiedById { get; private set; }
+
+	public User ModifiedBy { get; private set; }
+
+
+	protected BaseEntity()										 
     {
         CreateTimeStamp = DateTime.UtcNow;
         ModifyTimeStamp = CreateTimeStamp;

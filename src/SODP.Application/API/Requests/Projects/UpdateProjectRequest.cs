@@ -5,4 +5,4 @@ namespace SODP.Application.API.Requests.Projects;
 
 public sealed record UpdateProjectRequest(
     int Id,
-    ProjectDTO project) : IRequest;
+    ProjectDTO Project) : IRequest;

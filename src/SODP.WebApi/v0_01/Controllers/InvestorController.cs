@@ -1,4 +1,4 @@
-﻿	using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Investors;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
-using SODP.Domain.Shared;
+using SODP.Domain.Shared.Results;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Net;

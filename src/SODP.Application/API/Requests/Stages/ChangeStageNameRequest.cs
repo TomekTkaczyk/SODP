@@ -3,6 +3,6 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Stages;
 
-public sealed record ChangeStageNameRequest(
+public sealed record ChangeStageTitleRequest(
     int Id,
-    string Name) : IRequest<ApiResponse>;
+    string Title) : IRequest<ApiResponse>;

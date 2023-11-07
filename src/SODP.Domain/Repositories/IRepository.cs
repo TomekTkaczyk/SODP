@@ -1,7 +1,6 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Specifications;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SODP.Domain.Repositories;
 

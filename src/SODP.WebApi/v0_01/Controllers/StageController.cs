@@ -109,7 +109,7 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public virtual async Task<IActionResult> ChangeNameAsync(
 		[FromRoute] int id,
-		[FromBody] ChangeStageNameRequest request,
+		[FromBody] ChangeStageTitleRequest request,
 		CancellationToken cancellationToken = default)
 	{
 		if (id != request.Id)
@@ -117,7 +117,7 @@ public class StageController : ActiveStatusController<Stage>
 			return BadRequest();
 		}
 
-		return await HandleRequestAsync<ChangeStageNameRequest, ApiResponse>(request, cancellationToken);
+		return await HandleRequestAsync<ChangeStageTitleRequest, ApiResponse>(request, cancellationToken);
 	}
 
 }

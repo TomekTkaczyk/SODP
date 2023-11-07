@@ -10,11 +10,8 @@ using SODP.UI.Pages.Branches.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
-using System.Security.Policy;
 using System.Threading.Tasks;
-using TemplateEngine.Docx;
 
 namespace SODP.UI.Pages.Branches;
 
