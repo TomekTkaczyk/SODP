@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SODP.Domain.Entities;
 using SODP.Domain.Services;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SODP.DataAccess;
@@ -10,7 +12,9 @@ public class SODPDBContext : IdentityDbContext<User, Role, int>
 {
 	private readonly IDateTime _dateTime;
 
-	public SODPDBContext(DbContextOptions<SODPDBContext> options, IDateTime dateTime) : base(options)
+	public SODPDBContext(DbContextOptions<SODPDBContext> options) : base(options) { }
+
+    public SODPDBContext(DbContextOptions<SODPDBContext> options, IDateTime dateTime) : base(options)
 	{
 		_dateTime = dateTime;
 	}
@@ -60,5 +64,16 @@ public class SODPDBContext : IdentityDbContext<User, Role, int>
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
 		//optionsBuilder.EnableSensitiveDataLogging(true);
+		//if (!optionsBuilder.IsConfigured)
+		//{
+		//	// Tutaj dodaj konfigurację połączenia do bazy danych, na przykład z pliku appsettings.json
+		//	IConfigurationRoot configuration = new ConfigurationBuilder()
+		//		.SetBasePath(Directory.GetCurrentDirectory())
+		//		.AddJsonFile("appsettings.json")
+		//		.Build();
+
+		//	optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+		//}
+
 	}
 }
