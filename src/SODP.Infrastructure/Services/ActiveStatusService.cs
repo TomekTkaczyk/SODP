@@ -1,53 +1,52 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SODP.Application.Services;
-using SODP.DataAccess;
-using SODP.Domain.Entities;
-using SODP.Shared.Response;
+﻿//using Microsoft.EntityFrameworkCore;
+//using SODP.Application.Services;
+//using SODP.DataAccess;
+//using SODP.Domain.Entities;
+//using SODP.Shared.Response;
 
-namespace SODP.Infrastructure.Services
-{
-	public class ActiveStatusService<TEntity> : IActiveStatusService<TEntity> where TEntity : BaseEntity
-	{
-		private readonly SODPDBContext _context;
+//namespace SODP.Infrastructure.Services;
 
-		public ActiveStatusService(SODPDBContext context)
-		{
-			_context = context;
-		}
+//public class ActiveStatusService<TEntity> : IActiveStatusService<TEntity> where TEntity : BaseEntity
+//{
+//	private readonly SODPDBContext _context;
+
+//	public ActiveStatusService(SODPDBContext context)
+//	{
+//		_context = context;
+//	}
 
 
-		public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
-		{
-			var serviceResponse = new ServiceResponse();
-			try
-			{
-				var dbset = _context.Set<TEntity>();
-				var entity = await dbset.SingleOrDefaultAsync(x => x.Id == id);
+//	public async Task<ServiceResponse> SetActiveStatusAsync(int id, bool status)
+//	{
+//		var serviceResponse = new ServiceResponse();
+//		try
+//		{
+//			var dbset = _context.Set<TEntity>();
+//			var entity = await dbset.SingleOrDefaultAsync(x => x.Id == id);
 
-				if (entity == null)
-				{
-					serviceResponse.SetError($"Entity Id:{id} not exist.", 404);
+//			if (entity == null)
+//			{
+//				serviceResponse.SetError($"Entity Id:{id} not exist.", 404);
 
-					return serviceResponse;
-				}
+//				return serviceResponse;
+//			}
 
-				if(entity is not IActiveStatus)
-				{
-					serviceResponse.SetError($"Entity Id:{id} property ActiveStatus not exist.", 404);
+//			if(entity is not IActiveStatus)
+//			{
+//				serviceResponse.SetError($"Entity Id:{id} property ActiveStatus not exist.", 404);
 
-					return serviceResponse;
-				}
+//				return serviceResponse;
+//			}
 
-				((IActiveStatus)entity).SetActiveStatus(status);
-				dbset.Update(entity);
-				await _context.SaveChangesAsync();
-			}
-			catch (Exception ex)
-			{
-				serviceResponse.SetError(ex.Message);
-			}
+//			((IActiveStatus)entity).SetActiveStatus(status);
+//			dbset.Update(entity);
+//			await _context.SaveChangesAsync();
+//		}
+//		catch (Exception ex)
+//		{
+//			serviceResponse.SetError(ex.Message);
+//		}
 
-			return serviceResponse;
-		}
-	}
-}
+//		return serviceResponse;
+//	}
+//}

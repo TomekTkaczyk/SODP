@@ -48,7 +48,7 @@ public class PartController : ActiveStatusController<Part>
 	}
 
 
-	[HttpGet("{id}")]
+	[HttpGet("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -89,7 +89,7 @@ public class PartController : ActiveStatusController<Part>
 	}
 
 
-	[HttpPut("{id}")]
+	[HttpPut("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -107,7 +107,7 @@ public class PartController : ActiveStatusController<Part>
 	}
 
 
-	[HttpDelete("{id}")]
+	[HttpDelete("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

@@ -21,7 +21,7 @@ public static class DependecyInjection
 {
 	public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
 	{
-		services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
+		// services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
 
 		services.AddDbContext<SODPDBContext>(options =>
 		{
@@ -53,7 +53,7 @@ public static class DependecyInjection
 	public static void UseSwagger(this IApplicationBuilder app)
 	{
 		SwaggerBuilderExtensions.UseSwagger(app);
-		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SODP.WEBAPI"));
+		app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v0_01/swagger.json", "SODP.WEBAPI"));
 	}
 
 	public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration configuration)

@@ -31,11 +31,16 @@ public sealed class UnitOfWork : IUnitOfWork
 		{
 			if (entityEntry.State == EntityState.Added)
 			{
-				entityEntry.Property(a => a.CreateTimeStamp).CurrentValue = DateTime.UtcNow;
+				var utcNow = DateTime.UtcNow;
+				entityEntry.Property(a => a.CreateTimeStamp).CurrentValue = utcNow;
+				entityEntry.Property(a => a.ModifyTimeStamp).CurrentValue = utcNow;
+				entityEntry.Property(a => a.CreatedById).CurrentValue = 1;
+				entityEntry.Property(a => a.ModifiedById).CurrentValue = 1;
 			}
 			if (entityEntry.State == EntityState.Modified)
 			{
 				entityEntry.Property(a => a.ModifyTimeStamp).CurrentValue = DateTime.UtcNow;
+				entityEntry.Property(a => a.ModifiedById).CurrentValue = 1;
 			}
 		}
 	}

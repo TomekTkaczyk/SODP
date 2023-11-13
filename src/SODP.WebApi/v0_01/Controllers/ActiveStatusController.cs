@@ -16,7 +16,7 @@ public abstract class ActiveStatusController<TEntity> : ApiControllerBase where 
 		IMapper mapper)	: base(sender, logger, mapper) { }
 
 
-	[HttpPatch("{id}/status/{status}")]
+	[HttpPatch("{id:int}/status/{status}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

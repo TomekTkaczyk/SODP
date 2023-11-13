@@ -40,7 +40,7 @@ public class DesignerController : ActiveStatusController<Designer>
 	}
 
 
-	[HttpGet("{id}")]
+	[HttpGet("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -82,7 +82,7 @@ public class DesignerController : ActiveStatusController<Designer>
 	}
 
 
-	[HttpPatch("{id}")]
+	[HttpPatch("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -100,7 +100,7 @@ public class DesignerController : ActiveStatusController<Designer>
 	}
 
 
-	[HttpDelete("{id}")]
+	[HttpDelete("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -114,7 +114,7 @@ public class DesignerController : ActiveStatusController<Designer>
 	}
 
 
-	[HttpGet("{id}/licenses")]
+	[HttpGet("{id:int}/licenses")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

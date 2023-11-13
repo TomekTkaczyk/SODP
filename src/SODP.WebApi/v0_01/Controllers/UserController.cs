@@ -50,7 +50,7 @@ public class UserController : ApiControllerBase
 	}
 
 
-	[HttpGet("{id}")]
+	[HttpGet("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -64,7 +64,7 @@ public class UserController : ApiControllerBase
 	}
 
 
-	[HttpPatch("{id}")]
+	[HttpPatch("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -83,7 +83,7 @@ public class UserController : ApiControllerBase
 	}
 
 
-	[HttpDelete("{id}")]
+	[HttpDelete("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

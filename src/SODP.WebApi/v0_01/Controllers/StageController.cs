@@ -48,7 +48,7 @@ public class StageController : ActiveStatusController<Stage>
 	}
 
 
-	[HttpGet("{id}")]
+	[HttpGet("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -89,7 +89,7 @@ public class StageController : ActiveStatusController<Stage>
 	}
 
 
-	[HttpDelete("{id}")]
+	[HttpDelete("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -103,7 +103,7 @@ public class StageController : ActiveStatusController<Stage>
 	}
 
 
-	[HttpPatch("{id}")]
+	[HttpPatch("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

@@ -20,20 +20,18 @@ public abstract class BaseEntity : IEquatable<BaseEntity>, IBaseEntity
 	public User ModifiedBy { get; private set; }
 
 
-	protected BaseEntity()										 
-    {
-        CreateTimeStamp = DateTime.UtcNow;
-        ModifyTimeStamp = CreateTimeStamp;
-    }
-
-    public void SetCreateTimeStamp(DateTime timeStamp)
+    public void SetCreateOwner(DateTime timeStamp)
     {
         CreateTimeStamp = timeStamp;
-    }
+		CreatedById	= 1;
 
-	public void SetModifyTimeStamp(DateTime timeStamp)
+		SetModifyOwner(timeStamp);
+	}
+
+	public void SetModifyOwner(DateTime timeStamp)
 	{
 		ModifyTimeStamp = timeStamp;
+		ModifiedById = 1;
 	}
 
 	public override int GetHashCode()

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using SODP.Domain.Entities;
 using SODP.Domain.Services;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.DataAccess;
@@ -32,26 +33,6 @@ public class SODPDBContext : IdentityDbContext<User, Role, int>
 	public virtual DbSet<BranchLicense> BranchLicenses { get; set; }
 	public virtual DbSet<Certificate> Certificates { get; set; }
 	public virtual DbSet<Investor> Investors { get; set; }
-
-	public async Task<int> SaveChangesAsync()
-	{
-		foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<BaseEntity> entry in ChangeTracker.Entries<BaseEntity>())
-		{
-			switch (entry.State)
-			{
-				case EntityState.Added:
-					entry.Entity.SetCreateTimeStamp(_dateTime.Now);
-					break;
-
-				case EntityState.Modified:
-					entry.Entity.SetModifyTimeStamp(_dateTime.Now);
-					break;
-			}
-		}
-		var result = await base.SaveChangesAsync();
-
-		return result;
-	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

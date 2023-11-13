@@ -58,7 +58,7 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
             throw new NotFoundException("Project:Stage");
         }
 
-        var project = Project.Create(request.Number, request.StageSign, request.Name);
+        var project = Project.Create(request.Number, stage, request.Name);
         
         project.Description = request.Description;
 

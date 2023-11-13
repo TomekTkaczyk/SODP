@@ -25,7 +25,7 @@ public class LicenseController : ApiControllerBase
 		IMapper mapper) : base(sender, logger, mapper) { }
 
 
-	[HttpGet("{id}")]
+	[HttpGet("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -70,7 +70,7 @@ public class LicenseController : ApiControllerBase
 	}
 
 
-	[HttpPatch("{id}")]
+	[HttpPatch("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -88,7 +88,7 @@ public class LicenseController : ApiControllerBase
 	}
 
 
-	[HttpDelete("{id}")]
+	[HttpDelete("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -101,7 +101,7 @@ public class LicenseController : ApiControllerBase
 		return await HandleRequestAsync(request, cancellationToken);
 	}
 
-	[HttpGet("{id}/branches")]
+	[HttpGet("{id:int}/branches")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -115,7 +115,7 @@ public class LicenseController : ApiControllerBase
 	}
 
 
-	[HttpPut("{id}/branches/{branchId}")]
+	[HttpPut("{id:int}/branches/{branchId}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -130,7 +130,7 @@ public class LicenseController : ApiControllerBase
 	}
 
 
-	[HttpDelete("{id}/branches/{branchId}")]
+	[HttpDelete("{id:int}/branches/{branchId}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

@@ -52,7 +52,7 @@ public class BranchController : ActiveStatusController<Branch>
 	}
 
 
-	[HttpGet("{id}")]
+	[HttpGet("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -84,16 +84,24 @@ public class BranchController : ActiveStatusController<Branch>
 		}
 		catch (ConflictException ex)
 		{
-			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
+			return Conflict(
+				ApiResponse.Failure(
+					ex.Message, 
+					HttpStatusCode.Conflict, 
+					new List<Error>()));
 		}
 		catch (Exception ex)
 		{
-			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
+			return UnknowServerError(
+				ApiResponse.Failure(
+					ex.Message, 
+					HttpStatusCode.InternalServerError, 
+					new List<Error>()));
 		}
 	}
 
 
-	[HttpPut("{id}")]
+	[HttpPut("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -111,7 +119,7 @@ public class BranchController : ActiveStatusController<Branch>
 	}
 
 
-	[HttpDelete("{id}")]
+	[HttpDelete("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -125,7 +133,7 @@ public class BranchController : ActiveStatusController<Branch>
 	}
 
 
-	[HttpGet("{id}/licenses")]
+	[HttpGet("{id:int}/licenses")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

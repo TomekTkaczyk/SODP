@@ -11,33 +11,33 @@ public class Project : BaseEntity
 {
     private Project() { }
 
-    private Project(string number, string stageSign, string name)
+    private Project(string number, Stage stage, string name)
     {
-        RequiredPropertiesInit(number, stageSign, name);
+        RequiredPropertiesInit(number, stage, name);
         EmptyPropertiesInit();
     }
 
-    public Project(string foldername)
-    {
-        var sign = foldername.GetUntilOrEmpty("_");
-        RequiredPropertiesInit(
-            sign[..4],
-            sign[4..],
-            foldername[(sign.Length + 1)..]);
-        EmptyPropertiesInit();
+    //public Project(string foldername)
+    //{
+    //    var sign = foldername.GetUntilOrEmpty("_");
+    //    RequiredPropertiesInit(
+    //        sign[..4],
+    //        sign[4..],
+    //        foldername[(sign.Length + 1)..]);
+    //    EmptyPropertiesInit();
 
-        if (string.IsNullOrEmpty(Stage.Sign))
-        {
-            sign = foldername.GetLastUntilOrEmpty("_");
-            Stage = Stage.Create(sign, "");
-            var nameLength = Name.Length - Stage.Sign.Length - 1;
-            Name = Name[0..nameLength];
-        }
-    }
+    //    if (string.IsNullOrEmpty(Stage.Sign))
+    //    {
+    //        sign = foldername.GetLastUntilOrEmpty("_");
+    //        Stage = Stage.Create(sign, "");
+    //        var nameLength = Name.Length - Stage.Sign.Length - 1;
+    //        Name = Name[0..nameLength];
+    //    }
+    //}
 
-    public static Project Create(string number, string stageSign, string name)
+    public static Project Create(string number, Stage stage, string name)
     {
-        return new Project(number, stageSign, name);
+        return new Project(number, stage, name);
     }
 
     public string Number { get; set; }           // Project number
@@ -85,10 +85,10 @@ public class Project : BaseEntity
         Investor = "";
     }
 
-    private void RequiredPropertiesInit(string number, string stageSign, string name)
+    private void RequiredPropertiesInit(string number, Stage stage, string name)
     {
         Number = number;
-        Stage = Stage.Create(stageSign, "");
+        Stage = stage;
         Name = name;
     }
 
