@@ -135,16 +135,27 @@ else
 				var form = $(this).parents('.modal').find('form');
 				var actionUrl = form.attr('action');
 				var dataToSend = form.serialize();
-
-				$.post(actionUrl, dataToSend).done(function (data) {
-					var newBody = $('.modal-body', data);
-					placeholderElement.find('.modal-body').replaceWith(newBody);
-					var isValid = newBody.find('[name="IsValidate"]').val() == 'True';
-					var id = newBody.find('[id="id"]').val();
-					if(id != 0){
-						location = `/ActiveProjects/Edit?Id=${id}#details`;
-					}
-				});
+				$.post(actionUrl, dataToSend)
+					.done(function (data, textStatus, xhr) {
+						if (xhr.status === 200) {
+							var newBody = $('.modal-body', data);
+							placeholderElement.find('.modal-body').replaceWith(newBody);
+						} else 	if (xhr.status === 201) {
+							var location = xhr.getResponseHeader("Location");
+							if (location) {
+								window.location.href = location;
+							} else {
+								console.error("Header Location nor exist.");
+							}
+						} else {
+							console.error("Bad response status:", xhr.status);
+						}
+					})
+					.fail(function (xhr, status, error) {
+						console.error(xhr);
+						console.error(status);
+						console.error(error);
+					});
 			});
 		}
 

@@ -114,7 +114,7 @@ public class AutoMapperProfile : Profile
         #region Project
 
 		CreateMap<Project, NewProjectDTO>()
-                .ForMember(dest => dest.StageId, opt => opt.MapFrom(src => src.StageId));
+                .ForMember(dest => dest.StageSign, opt => opt.MapFrom(src => src.Stage.Sign));
 
             CreateMap<NewProjectDTO, Project>()
                 .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
@@ -136,7 +136,7 @@ public class AutoMapperProfile : Profile
 
 		CreateMap<Project, ProjectDTO>()
 			.AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-			.ForMember(dest => dest.Number, act => act.MapFrom(x => x.Number));
+			.ForMember(dest => dest.Number, act => act.MapFrom(x => x.Number.Value));
 
 		CreateMap<ProjectDTO, Project>()
 			.AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)

@@ -18,13 +18,13 @@ public class Project : BaseEntity
 {
     private Project() { }
 
-    private Project(string number, Stage stage, string name)
+    private Project(ProjectNumber number, Stage stage, string name)
     {
         RequiredPropertiesInit(number, stage, name);
         EmptyPropertiesInit();
     }
 
-    public string Number { get; private set; }			// Project number
+    public ProjectNumber Number { get; private set; }			// Project number
     public int StageId { get; private set; }            // Project stage Id
     public Stage Stage { get; private set; }            // Stage object
     public string Name { get; private set; }			// Project name (file system - directory name)
@@ -39,7 +39,7 @@ public class Project : BaseEntity
     public ProjectStatus Status { get; private set; }
     public IReadOnlyCollection<ProjectPart> Parts { get; private set; } = new List<ProjectPart>();
     
-	public virtual string Symbol => Number.Trim() + Stage.Sign.Trim();
+	public virtual string Symbol => Number.Value.Trim() + Stage.Sign.Trim();
 
 	public static Project Create(string number, Stage stage, string name)
 	{
@@ -65,6 +65,7 @@ public class Project : BaseEntity
 	{
 		Address = "";
 		Investor = "";
+		Description = "";
 	}
 
 	private void RequiredPropertiesInit(ProjectNumber number, Stage stage, ProjectName name)

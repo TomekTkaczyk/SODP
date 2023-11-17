@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
+using SODP.Domain.ValueObjects;
 
 namespace SODP.DataAccess.Configurations;
 
@@ -11,6 +12,7 @@ public class ProjectEntityConfiguration : IEntityTypeConfiguration<Project>
         builder.Ignore(p => p.Symbol);
 
         builder.Property(p => p.Number)
+			.HasConversion(v => v.Value,v => new ProjectNumber(v))
             .HasColumnType("varchar(4)")
             .IsRequired();
 

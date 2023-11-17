@@ -1,5 +1,4 @@
-﻿using SODP.Domain.Exceptions.ProjectExceptions;
-using SODP.Domain.Exceptions.ValueObjectExceptions;
+﻿using SODP.Domain.Exceptions.ValueObjectExceptions;
 using System.Text.RegularExpressions;
 
 namespace SODP.Domain.ValueObjects;

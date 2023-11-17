@@ -11,7 +11,8 @@ public static class SpecificationEvaluator
 		Specification<TEntity> specification)
 		where TEntity : BaseEntity
 	{
-		IQueryable<TEntity> queryable = inputQueryable;
+		// IQueryable<TEntity>
+		var queryable = inputQueryable;
 
 		if (specification.Criteria is not null)
 		{

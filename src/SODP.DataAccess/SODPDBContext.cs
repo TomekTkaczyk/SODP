@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using SODP.Domain.Entities;
 using SODP.Domain.Services;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SODP.DataAccess;
 
@@ -44,7 +41,10 @@ public class SODPDBContext : IdentityDbContext<User, Role, int>
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		//optionsBuilder.EnableSensitiveDataLogging(true);
+		optionsBuilder.EnableSensitiveDataLogging(true);
+		var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+		optionsBuilder.UseLoggerFactory(loggerFactory);
+
 		//if (!optionsBuilder.IsConfigured)
 		//{
 		//	// Tutaj dodaj konfigurację połączenia do bazy danych, na przykład z pliku appsettings.json

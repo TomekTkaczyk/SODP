@@ -62,8 +62,6 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
             throw new ProjectFolderException($"Create folder fail: {Message}");
         }
 
-		project.Description = request.Description;
-		
         project = _projectRepository.Add(project);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

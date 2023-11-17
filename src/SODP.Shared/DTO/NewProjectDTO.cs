@@ -9,7 +9,7 @@ public class NewProjectDTO : BaseDTO
 	public string Number { get; set; }
 
 	//[Required(ErrorMessage = "Stadium jest wymagane.")]
-	public int StageId { get; set; }
+	public string StageSign { get; set; }
 
 	//[Required(ErrorMessage = "Nazwa projektu jest wymagana")]
 	//[RegularExpression(@"^([a-zA-Z]{1,1})([1-9a-zA-Z_ ]{0,})$", ErrorMessage = "Tytuł musi zaczynać się literą, może zawierać podkreślenie, spacje, cyfry oraz litery bez polskich znaków diakrytycznych")]

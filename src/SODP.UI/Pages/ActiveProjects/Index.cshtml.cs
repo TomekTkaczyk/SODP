@@ -2,19 +2,22 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects;
@@ -60,23 +63,30 @@ public sealed class IndexModel : ProjectsPageModel
 			var apiResponse = await _apiProvider.PostAsync(_endpoint, project.ToHttpContent());
 			switch (apiResponse.StatusCode)
 			{
-				case System.Net.HttpStatusCode.OK:
-					var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
-					project.Id = response.Data.Id;
-					if (!response.Success)
+				case System.Net.HttpStatusCode.Created:
+					if (apiResponse.Headers.TryGetValues("Location", out var locationValues))
 					{
-						project.Stages = await GetStagesItems();
-						//SetModelErrors(response);
+						var id = locationValues
+							.First()
+							.Split("/")
+							.Last();
+						var url = $"/ActiveProjects/Edit?Id={id}#details";
+						return new CreatedResult(url, null);
+					}
+					break;
+				case System.Net.HttpStatusCode.Conflict:
+					var response = await _apiProvider.GetContent<ApiResponse<ProjectDTO>>(apiResponse);
+					if (!response.IsSuccess)
+					{
+						SetModelErrors(response);
 					}
 					break;
 				default:
 					break;
 			}
 		}
-		else
-		{
-			project.Stages = await GetStagesItems();
-		}
+
+		project.Stages = await GetStagesItems();
 
 		return GetPartialView(project, _newProjectModalViewName);
 	}
@@ -96,7 +106,7 @@ public sealed class IndexModel : ProjectsPageModel
 			.Where(x => x.ActiveStatus)
 			.Select(x => new SelectListItem
 			{
-				Value = x.Id.ToString(),
+				Value = x.Sign,
 				Text = x.ToString()
 			}); ;
 	}
