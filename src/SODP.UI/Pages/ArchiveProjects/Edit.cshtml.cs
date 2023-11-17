@@ -20,16 +20,20 @@ public class EditModel : ProjectEditPageModel
 		ILogger<EditModel> logger, 
 		IMapper mapper, 
 		LanguageTranslatorFactory translatorFactory) 
-		: base(apiProvider, logger, mapper, translatorFactory) { }
+		: base(apiProvider, logger, mapper, translatorFactory) 
+	{
+		_endpoint = "projects";
+	}
 
 	public ProjectDTO Project { get; set; }
 
 	public async Task<IActionResult> OnGetAsync(int id)
 	{
-		var apiResponse = await _apiProvider.GetAsync($"projects/{id}");
-		var response = await _apiProvider.GetContent<ApiResponse<ProjectDTO>>(apiResponse);
+		var apiResponse = await GetApiResponseAsync<ProjectDTO>($"{_endpoint}/{id}");
+//		var apiResponse = await _apiProvider.GetAsync($"projects/{id}");
+//		var response = await _apiProvider.GetContent<ApiResponse<ProjectDTO>>(apiResponse);
 
-		Project = response.Value;
+		Project = apiResponse.Value;
 
 		//if (apiResponse.IsSuccessStatusCode && response.IsSuccess)
 		//{

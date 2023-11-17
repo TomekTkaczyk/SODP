@@ -5,6 +5,7 @@ using SODP.Application.API.Requests.Projects;
 using SODP.Application.Specifications.Common;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Exceptions.ProjectExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.Enums;
 using System;
@@ -34,23 +35,26 @@ internal class ArchiveProjectHandler : IRequestHandler<ArchiveProjectRequest>
 		var project = await _projectRepository
 			.ApplySpecyfication(new ByIdSpecification<Project>(request.Id))
 			.FirstOrDefaultAsync(cancellationToken)
-			?? throw new NotFoundException("Project not found.");
+			?? throw new ProjectNotFoundException();
 
 		if(project.Status is not ProjectStatus.Active)
 		{
-			throw new BadRequestException("Project is not active.");
+			throw new BadProjectStatusException();
 		}
 
-		project.Status = ProjectStatus.DuringArchive;
+		project.ChangeStatus(ProjectStatus.DuringArchive);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 		var (Success, Message) = await _folderManager.ArchiveFolderAsync(project, cancellationToken);
 		if (!Success)
 		{
-            throw new ProjectFolderException($"Archive folder fail: {Message}");
+			project.ChangeStatus(ProjectStatus.Active);
+			await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+			throw new FailProjectFolderException(Message);
 		}
 
-		project.Status = ProjectStatus.Archival;
+		project.ChangeStatus(ProjectStatus.Archival);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 		return new Unit();

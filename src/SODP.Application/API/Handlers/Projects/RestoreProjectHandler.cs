@@ -5,6 +5,7 @@ using SODP.Application.API.Requests.Projects;
 using SODP.Application.Specifications.Common;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Exceptions.ProjectExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.Enums;
 using System;
@@ -34,23 +35,24 @@ internal class RestoreProjectHandler : IRequestHandler<RestoreProjectRequest>
 		var project = await _projectRepository
 			.ApplySpecyfication(new ByIdSpecification<Project>(request.Id))
 			.FirstOrDefaultAsync(cancellationToken)
-			?? throw new NotFoundException("Project not found.");
+			?? throw new ProjectNotFoundException();
 
 		if(project.Status is not ProjectStatus.Archival)
 		{
-			throw new BadRequestException("Project is not archival.");
+			throw new BadProjectStatusException();
 		}
 
-		project.Status = ProjectStatus.DuringRestore;
+		project.ChangeStatus(ProjectStatus.DuringRestore);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 		var (Success, Message) = await _folderManager.RestoreFolderAsync(project, cancellationToken);
 		if (!Success)
 		{
-            throw new ProjectFolderException($"Restore folder fail: {Message}");
+			project.ChangeStatus(ProjectStatus.Archival);
+			throw new FailProjectFolderException(Message);
 		}
 
-		project.Status = ProjectStatus.Active;
+		project.ChangeStatus(ProjectStatus.Active);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 		return new Unit();

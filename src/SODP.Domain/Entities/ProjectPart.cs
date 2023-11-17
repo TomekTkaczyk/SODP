@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SODP.Domain.Exceptions.PartExceptions;
+using System.Collections.Generic;
 
 namespace SODP.Domain.Entities;
 
@@ -6,12 +7,23 @@ public class ProjectPart : BaseEntity
 {
     private ProjectPart() { }
     
-    public ProjectPart(Project project, Part part)
+    private ProjectPart(Project project, Part part)
     {                                            
         Project = project;
         Sign = part.Sign;
         Name = part.Title;
     }
+
+    public static ProjectPart Create(Project project, Part part)
+    {
+        if(part is null)
+        {
+            throw new PartIsNullException();
+        }
+
+        return new ProjectPart(project, part);
+    }
+
     public int ProjectId { get; set; }
     public virtual Project Project { get; set; }
 	public string Sign { get; set; }

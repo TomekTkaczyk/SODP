@@ -14,6 +14,7 @@ using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects;
@@ -31,12 +32,15 @@ public sealed class IndexModel : ProjectsPageModel
 		: base(apiProvider, logger, mapper, translatorFactory)
 	{
 		ReturnUrl = "/ActiveProjects";
+		// _endpoint = "stages";
 	}
 
 
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
 	{
-		return await OnGetAsync(ProjectStatus.Active, pageNumber, pageSize, searchString);
+		var a = await OnGetAsync(ProjectStatus.Active, pageNumber, pageSize, searchString);
+
+		return a;
 	}
 
 	public async Task<IActionResult> OnGetProjectPartialAsync(int id)
@@ -48,7 +52,6 @@ public sealed class IndexModel : ProjectsPageModel
 	{
 		return await GetNewProjectPartialViewAsync(new NewProjectVM());
 	}
-
 
 	public async Task<IActionResult> OnPostNewProjectAsync(NewProjectVM project)
 	{
@@ -78,8 +81,6 @@ public sealed class IndexModel : ProjectsPageModel
 		return GetPartialView(project, _newProjectModalViewName);
 	}
 
-
-
 	private async Task<IActionResult> GetNewProjectPartialViewAsync(NewProjectVM project)
 	{
 		project.Stages = await GetStagesItems();
@@ -89,9 +90,10 @@ public sealed class IndexModel : ProjectsPageModel
 
 	private async Task<IEnumerable<SelectListItem>> GetStagesItems()
 	{
-		var apiResponse = await _apiProvider.GetAsync("stages");
-		var stages = await _apiProvider.GetContent<Page<StageDTO>>(apiResponse);
-		return stages.Collection.Where(x => x.ActiveStatus)
+		var _apiResponse = await GetApiResponseAsync<Page<StageDTO>>("stages");
+
+		return _apiResponse.Value.Collection
+			.Where(x => x.ActiveStatus)
 			.Select(x => new SelectListItem
 			{
 				Value = x.Id.ToString(),

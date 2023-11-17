@@ -38,7 +38,10 @@ public class EditModel : ProjectEditPageModel
 		ILogger<EditModel> logger,
 		IMapper mapper,
 		LanguageTranslatorFactory translatorFactory)
-		: base(apiProvider, logger, mapper, translatorFactory) { }
+		: base(apiProvider, logger, mapper, translatorFactory) 
+	{
+		_endpoint = "projects";
+	}
 
 	[BindProperty]
 	public ProjectDTO Project { get; set; }

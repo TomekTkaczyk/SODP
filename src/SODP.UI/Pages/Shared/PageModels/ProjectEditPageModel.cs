@@ -22,11 +22,11 @@ public abstract class ProjectEditPageModel : AppPageModel
 	protected async Task<ProjectDTO> GetProjectAsync(int id)
 	{
 
-		var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
+		// var apiResponse = await _apiProvider.GetAsync($"projects/{id}/details");
+		var apiResponse = await GetApiResponseAsync<ProjectDTO>($"{_endpoint}/{id}/details");
+		// var response = await _apiProvider.GetContent<ApiResponse<ProjectDTO>>(apiResponse);
 
-		var response = await _apiProvider.GetContent<ApiResponse<ProjectDTO>>(apiResponse);
-
-		return response.Value;
+		return apiResponse.Value;
 
 		//if (response.Success)
 		//{

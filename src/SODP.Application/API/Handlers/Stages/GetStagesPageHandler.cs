@@ -31,5 +31,5 @@ public sealed class GetStagesPageHandler : IRequestHandler<GetStagesPageRequest,
         var page = await _stageRepository.GetPageAsync(specification, request.PageNumber, request.PageSize, cancellationToken);
 
         return ApiResponse.Success(_mapper.Map<Page<StageDTO>>(page));
-    }
+	}
 }

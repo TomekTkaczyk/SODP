@@ -2,63 +2,62 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
 
-namespace SODP.DataAccess.Configurations
+namespace SODP.DataAccess.Configurations;
+
+public class ProjectEntityConfiguration : IEntityTypeConfiguration<Project>
 {
-    public class ProjectEntityConfiguration : IEntityTypeConfiguration<Project>
+    public void Configure(EntityTypeBuilder<Project> builder)
     {
-        public void Configure(EntityTypeBuilder<Project> builder)
-        {
-            builder.Ignore(p => p.Symbol);
+        builder.Ignore(p => p.Symbol);
 
-            builder.Property(p => p.Number)
-                .HasColumnType("varchar(4)")
-                .IsRequired();
+        builder.Property(p => p.Number)
+            .HasColumnType("varchar(4)")
+            .IsRequired();
 
-            builder.Property(p => p.Name)
-                .HasColumnType("nvarchar(256)")
-                .IsRequired();
+        builder.Property(p => p.Name)
+            .HasColumnType("nvarchar(256)")
+            .IsRequired();
 
-            builder.Property(p => p.Title)
-                .HasColumnType("nvarchar(256)")
-                .HasDefaultValue("");
+        builder.Property(p => p.Title)
+            .HasColumnType("nvarchar(256)")
+            .HasDefaultValue("");
 
-            builder.Property(p => p.Address)
-                .HasColumnType("nvarchar(256)")
-                .HasDefaultValue("");
+        builder.Property(p => p.Address)
+            .HasColumnType("nvarchar(256)")
+            .HasDefaultValue("");
 
-            builder.Property(p => p.LocationUnit)
-                .HasColumnType("nvarchar(256)")
-                .HasDefaultValue("");
+        builder.Property(p => p.LocationUnit)
+            .HasColumnType("nvarchar(256)")
+            .HasDefaultValue("");
 
-            builder.Property(p => p.BuildingCategory)
-                .HasColumnType("nvarchar(256)")
-                .HasDefaultValue("");
+        builder.Property(p => p.BuildingCategory)
+            .HasColumnType("nvarchar(256)")
+            .HasDefaultValue("");
 
-            builder.Property(p => p.Investor)
-                .HasColumnType("nvarchar(256)")
-                .HasDefaultValue("");
+        builder.Property(p => p.Investor)
+            .HasColumnType("nvarchar(256)")
+            .HasDefaultValue("");
 
-            builder.Property(p => p.BuildingPermit)
-                .HasColumnType("nvarchar(256)")
-                .HasDefaultValue("");
+        builder.Property(p => p.BuildingPermit)
+            .HasColumnType("nvarchar(256)")
+            .HasDefaultValue("");
 
-            builder.Property(p => p.Description)
-                .HasDefaultValue("")
-                .HasColumnType("longtext");
+        builder.Property(p => p.Description)
+            .HasDefaultValue("")
+            .HasColumnType("longtext");
 
 			builder.HasIndex(p => new { p.Number, p.StageId })
-                .IsUnique()
-                .HasName("ProjectsIX_NumberStage");
+            .IsUnique()
+            .HasName("ProjectsIX_NumberStage");
 
-            builder.HasIndex(p => p.StageId)
-                .HasName("ProjectsIX_Stage");
+        builder.HasIndex(p => p.StageId)
+            .HasName("ProjectsIX_Stage");
 
-            builder.ToTable("Projects");
+        builder.ToTable("Projects");
 
-            builder.HasMany(x => x.Parts)
-                .WithOne(y => y.Project)
-                .HasForeignKey(z => z.ProjectId);
-                // .HasConstraintName("FK_Project");
-        }
+        builder.HasMany(x => x.Parts)
+            .WithOne(y => y.Project)
+            .HasForeignKey(z => z.ProjectId);
+            // .HasConstraintName("FK_Project");
     }
 }

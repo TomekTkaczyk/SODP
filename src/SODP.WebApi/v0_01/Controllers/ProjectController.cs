@@ -19,8 +19,8 @@ namespace SODP.WebApi.v0_01.Controllers;
 public class ProjectController : ApiControllerBase
 {
 	public ProjectController(
-		ISender sender, 
-		ILogger<ProjectController> logger, 
+		ISender sender,
+		ILogger<ProjectController> logger,
 		IMapper mapper) : base(sender, logger, mapper) { }
 
 
@@ -42,7 +42,9 @@ public class ProjectController : ApiControllerBase
 
 		var request = new GetProjectsPageRequest(status, searchString, pageNumber, pageSize);
 
-		return await HandleRequestAsync<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>(request, cancellationToken);
+		var a = await HandleRequestAsync<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>(request, cancellationToken);
+
+		return a;
 	}
 
 	#region Project
@@ -73,18 +75,26 @@ public class ProjectController : ApiControllerBase
 	{
 		try
 		{
-			var response = await _sender.Send(request,cancellationToken);
+			var response = await _sender.Send(request, cancellationToken);
 			return CreatedAtAction(
 				nameof(GetAsync),
-				new {id = response.Value.Id},
+				new { id = response.Value.Id },
 				null);
 		}
 		catch (ConflictException ex)
 		{
 			return Conflict(
 				ApiResponse.Failure(
-					ex.Message, 
-					HttpStatusCode.Conflict, 
+					ex.Message,
+					HttpStatusCode.Conflict,
+					new List<Error>()));
+		}
+		catch (DomainException ex)
+		{
+			return BadRequest(
+				ApiResponse.Failure(
+					ex.Message,
+					HttpStatusCode.BadRequest,
 					new List<Error>()));
 		}
 		catch (Exception ex)
@@ -163,11 +173,11 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> SetInvestorAsync(
-		int id, 
+		int id,
 		[FromBody] SetInvestorRequest request,
 		CancellationToken cancellationToken)
 	{
-		if(id != request.Id)
+		if (id != request.Id)
 		{
 			return BadRequest();
 		}
@@ -203,7 +213,7 @@ public class ProjectController : ApiControllerBase
 	{
 		var request = new GetProjectPartRequest(id);
 
-		return await HandleRequestAsync<GetProjectPartRequest,ApiResponse<ProjectPartDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetProjectPartRequest, ApiResponse<ProjectPartDTO>>(request, cancellationToken);
 		//return Ok(await _service.GetProjectPartAsync(projectPartId));
 	}
 
@@ -222,7 +232,7 @@ public class ProjectController : ApiControllerBase
 			return BadRequest();
 		}
 
-		return await HandleRequestAsync<AddPartRequest,ApiResponse<PartDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<AddPartRequest, ApiResponse<PartDTO>>(request, cancellationToken);
 	}
 
 
@@ -231,7 +241,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> UpdatePartAsync(
-		int id, 
+		int id,
 		[FromBody] UpdatePartRequest request,
 		CancellationToken cancellationToken)
 	{
@@ -293,7 +303,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> AddBranchToPartAsync(
-		int id, 
+		int id,
 		int branchId,
 		CancellationToken cancellationToken)
 	{

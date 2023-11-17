@@ -13,14 +13,23 @@ public abstract class PagedRepository<TEntity> : Repository<TEntity>, IPageRepos
 
 	public async Task<Page<TEntity>> GetPageAsync(Specification<TEntity> specification, int pageNumber, int pageSize, CancellationToken cancellationToken)
 	{
-		var queryable = ApplySpecyfication(specification);
-		var totalItems = await queryable.CountAsync(cancellationToken);
-		var collection = await GetPageQuery(
-			queryable,
-			pageNumber,
-			pageSize).ToListAsync(cancellationToken);
+		try
+		{
+			var queryable = ApplySpecyfication(specification);
+			var totalItems = await queryable.CountAsync(cancellationToken);
+			var collection = await GetPageQuery(
+				queryable,
+				pageNumber,
+				pageSize).ToListAsync(cancellationToken);
+	
+			return Page<TEntity>.Create(collection, pageNumber, pageSize, totalItems);
+		}
+		catch (Exception ex)
+		{
 
-		return Page<TEntity>.Create(collection, pageNumber, pageSize, totalItems);
+			throw;
+		}
+
 	}
 
 	private static IQueryable<TEntity> GetPageQuery(IQueryable<TEntity> query, int pageNumber, int pageSize)

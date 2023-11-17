@@ -29,14 +29,17 @@ public sealed class IndexModel : CollectionPageModel
 		_endpoint = "stages";
 	}
 
-
 	public IReadOnlyCollection<StageVM> Stages { get; set; }
-
 
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
 	{
 		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
 		var apiResponse = await GetApiResponseAsync<Page<StageDTO>>(endpoint);
+		
+		if (!apiResponse.IsSuccess)
+		{
+			RedirectToPage($"Errors/{apiResponse.HttpCode}");
+		}
 
 		Stages = _mapper.Map<IReadOnlyCollection<StageVM>>(apiResponse.Value.Collection);
 		PageInfo = GetPageInfo(apiResponse, searchString);

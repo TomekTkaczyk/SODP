@@ -6,6 +6,7 @@ using SODP.Application.API.Requests.Projects;
 using SODP.Application.Specifications.Stages;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
 using SODP.Shared.DTO;
@@ -40,6 +41,12 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
 
     public async Task<ApiResponse<ProjectDTO>> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
     {
+		var stage = await _stageRepository
+			.ApplySpecyfication(new StageBySignSpecyfication(request.StageSign))
+			.SingleOrDefaultAsync(cancellationToken) ?? throw new StageNotFoundException();
+
+		var project = Project.Create(request.Number, stage, request.Name);
+
         var projectExist = await _projectRepository
             .ApplySpecyfication(new ProjectBySymbolSpecyfication(request.Number, request.StageSign))
             .AnyAsync(cancellationToken);
@@ -49,25 +56,14 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
             throw new ConflictException("Project");
         }
 
-        var stage = await _stageRepository
-            .ApplySpecyfication(new StageBySignSpecyfication(request.StageSign))
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if (stage is null)
-        {
-            throw new NotFoundException("Project:Stage");
-        }
-
-        var project = Project.Create(request.Number, stage, request.Name);
-        
-        project.Description = request.Description;
-
         var (Success,Message) = await _folderManager.CreateFolderAsync(project, cancellationToken);
         if(!Success)
         {
             throw new ProjectFolderException($"Create folder fail: {Message}");
         }
 
+		project.Description = request.Description;
+		
         project = _projectRepository.Add(project);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
