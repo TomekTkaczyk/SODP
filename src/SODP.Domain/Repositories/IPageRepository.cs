@@ -9,7 +9,7 @@ namespace SODP.Domain.Repositories;
 public interface IPageRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
 {
 	Task<Page<TEntity>> GetPageAsync(
-		Specification<TEntity> specification, 
+		ISpecification<TEntity> specification, 
 		int pageNumber, 
 		int pageSize,
 		CancellationToken cancellationToken);

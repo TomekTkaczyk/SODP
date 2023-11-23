@@ -1,19 +1,18 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Specifications;
 
-namespace SODP.Infrastructure.Specifications.Stages
+namespace SODP.Application.Specifications.Stages;
+
+public class StageByNameSpecification : Specification<Stage>
 {
-	public class StageByNameSpecification : Specification<Stage>
+	public StageByNameSpecification(bool? active = null, string searchString = null)
+		: base(stage => (
+			(!active.HasValue || stage.ActiveStatus.Equals(active)) && (string.IsNullOrEmpty(searchString)
+			|| ((string)stage.Sign).Contains(searchString)
+			|| stage.Title.Contains(searchString)
+			)))
 	{
-		public StageByNameSpecification(bool? active, string searchString)
-			: base(stage =>
-			(!active.HasValue || stage.ActiveStatus.Equals(active)) &&
-			(string.IsNullOrWhiteSpace(searchString) 
-			|| stage.Title.Contains(searchString) 
-			|| stage.Sign.Contains(searchString)))
-		{
-			AddOrderBy(x => x.Order);
-			AddOrderBy(x => x.Sign);
-		}
+		AddOrderByExpression(x => x.Order);
+		AddOrderByExpression(x => x.Sign);
 	}
 }

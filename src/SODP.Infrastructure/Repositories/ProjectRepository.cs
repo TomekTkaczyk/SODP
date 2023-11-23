@@ -1,17 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
-using SODP.Infrastructure.Specifications.Projects;
-using SODP.Shared.Enums;
-using SODP.Shared.Response;
-using System.Security.Cryptography.X509Certificates;
 
 namespace SODP.Infrastructure.Repositories;
 
 public class ProjectRepository : PagedRepository<Project>, IProjectRepository
 {
-	public ProjectRepository(SODPDBContext dbContext) : base(dbContext) { }
+	public ProjectRepository(SODPDBContext dbContext, ILogger<Project> logger) : base(dbContext, logger) { }
 
 	public async Task<ProjectPart> GetPartAsync(int id, CancellationToken cancellationToken)
 	{

@@ -1,44 +1,42 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SODP.Domain.Entities;
 using System.Linq;
 
 namespace SODP.Domain.Specifications;
 
-public static class SpecificationEvaluator
+public static class SpecificationEvaluator<T> where T : class
 {
-	public static IQueryable<TEntity> GetQuery<TEntity>(
-		IQueryable<TEntity> inputQueryable,
-		Specification<TEntity> specification)
-		where TEntity : BaseEntity
+	public static IQueryable<T> GetQuery(IQueryable<T> sourceQuery, ISpecification<T> specification)
 	{
-		// IQueryable<TEntity>
-		var queryable = inputQueryable;
+		var query = sourceQuery;
 
-		if (specification.Criteria is not null)
+		if(specification is null)
 		{
-			queryable = queryable.Where(specification.Criteria);
+			return query;
 		}
 
-		queryable = specification.IncludeExpressions.Aggregate(
-			queryable,
-			(current, includeExpression) => current.Include(includeExpression));
-
-		if(specification.OrdersByExpressions.Count > 0)
+		if (specification.Criteria is not null) 
 		{
-			var orderQueryable = specification.OrdersByExpressions.First().Item2
-				? queryable.OrderByDescending(specification.OrdersByExpressions.First().Item1)
-				: queryable.OrderBy(specification.OrdersByExpressions.First().Item1);
+			query = query.Where(specification.Criteria);
+		}
 
-			foreach(var expression in specification.OrdersByExpressions.Skip(1))
+		query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
+
+		if (specification.OrderByExpressions.Count > 0)
+		{
+			var orderQueryable = specification.OrderByExpressions.First().Item2
+				? query.OrderByDescending(specification.OrderByExpressions.First().Item1)
+				: query.OrderBy(specification.OrderByExpressions.First().Item1);
+
+			foreach (var expression in specification.OrderByExpressions.Skip(1))
 			{
-				orderQueryable = specification.OrdersByExpressions.First().Item2
-					? orderQueryable.ThenByDescending(specification.OrdersByExpressions.First().Item1)
-					: orderQueryable.ThenBy(specification.OrdersByExpressions.First().Item1);
+				orderQueryable = expression.Item2
+					? orderQueryable.ThenByDescending(expression.Item1)
+					: orderQueryable.ThenBy(expression.Item1);
 			}
 
-			return orderQueryable;
+			query = orderQueryable;
 		}
 
-		return queryable;
+		return query;
 	}
 }

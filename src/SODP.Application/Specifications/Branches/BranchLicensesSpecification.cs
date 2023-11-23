@@ -1,5 +1,7 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Specifications;
+using System;
+using System.Linq.Expressions;
 
 namespace SODP.Application.Specifications.Branches;
 
@@ -10,5 +12,10 @@ public class BranchLicensesSpecification : Specification<Branch>
 		branch.Id == id)
 	{
 		AddInclude(x => x.Licenses);
-	}																			   
+	}
+
+	public override Expression<Func<Branch, bool>> AsPredicateExpression()
+	{
+		throw new NotImplementedException();
+	}
 }

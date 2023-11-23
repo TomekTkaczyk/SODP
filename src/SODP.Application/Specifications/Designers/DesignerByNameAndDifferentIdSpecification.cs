@@ -1,5 +1,7 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Specifications;
+using System;
+using System.Linq.Expressions;
 
 namespace SODP.Application.Specifications.Designers;
 
@@ -11,5 +13,10 @@ public class DesignerByNameAndDifferentIdSpecification : Specification<Designer>
 	designer.Firstname.ToUpper().Equals(firstName.ToUpper()) && 
 	designer.Lastname.ToUpper().Equals(lastName.ToUpper()))
 	{
+	}
+
+	public override Expression<Func<Designer, bool>> AsPredicateExpression()
+	{
+		throw new NotImplementedException();
 	}
 }

@@ -6,10 +6,10 @@ namespace SODP.Domain.Repositories;
 
 public interface IRepository<TEntity> where TEntity : BaseEntity
 {
-	IQueryable<TEntity> GetAll();
+	IQueryable<TEntity> GetAll(ISpecification<TEntity> specyfication = null);
 	TEntity Add(TEntity entity);
 	void Delete(TEntity entity);
 	void Update(TEntity entity);
 
-	IQueryable<TEntity> ApplySpecyfication(Specification<TEntity> specification);
+	IQueryable<TEntity> ApplySpecyfication(ISpecification<TEntity> specification);
 }

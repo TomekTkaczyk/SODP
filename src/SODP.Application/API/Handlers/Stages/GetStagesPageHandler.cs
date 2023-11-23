@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
 using SODP.Application.API.Requests.Stages;
+using SODP.Application.Specifications.Stages;
 using SODP.Domain.Repositories;
-using SODP.Infrastructure.Specifications.Stages;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Threading;

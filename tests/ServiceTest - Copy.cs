@@ -49,35 +49,35 @@
 //        {
 //            _context.Database.EnsureDeleted();
 //            _context.Database.EnsureCreated();
-//    //        _context.AppDictionary.AddRange(
-//    //            AppDictionary.Create(sign:"EXIST",name:"EXISTING MASTER ITEM",activeStatus:true),
-//				//AppDictionary.Create(sign: "EXIST1",name:"ANOTHER MASTER ITEM",activeStatus:true),
-//    //            AppDictionary.Create(sign: "EXIST2", name: "ANOTHER MASTER ITEM", activeStatus: false),
-//    //            AppDictionary.Create(sign: "EXIST3", name: "EMPTY MASTER ITEM", activeStatus: true),
-//    //            AppDictionary.Create(sign: "EXIST4", name: "EMPTY ANOTHER MASTER ITEM", activeStatus: true),
-//    //            AppDictionary.Create(sign: "EXIST5", name: "EMPTY ANOTHER MASTER ITEM", activeStatus: false),
+//            //        _context.AppDictionary.AddRange(
+//            //            AppDictionary.Create(sign:"EXIST",name:"EXISTING MASTER ITEM",activeStatus:true),
+//            //AppDictionary.Create(sign: "EXIST1",name:"ANOTHER MASTER ITEM",activeStatus:true),
+//            //            AppDictionary.Create(sign: "EXIST2", name: "ANOTHER MASTER ITEM", activeStatus: false),
+//            //            AppDictionary.Create(sign: "EXIST3", name: "EMPTY MASTER ITEM", activeStatus: true),
+//            //            AppDictionary.Create(sign: "EXIST4", name: "EMPTY ANOTHER MASTER ITEM", activeStatus: true),
+//            //            AppDictionary.Create(sign: "EXIST5", name: "EMPTY ANOTHER MASTER ITEM", activeStatus: false),
 
-//    //            new AppDictionary { Id = 7, ParentId = 1, Sign = "EXIST1", Name = "EXIST SLAVE ITEM", ActiveStatus = true },
-//    //            new AppDictionary { Id = 8, ParentId = 1, Sign = "EXIST2", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = false },
-//    //            new AppDictionary { Id = 9, ParentId = 1, Sign = "EXIST3", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
-//    //            new AppDictionary { Id = 10, ParentId = 1, Sign = "EXIST4", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 7, ParentId = 1, Sign = "EXIST1", Name = "EXIST SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 8, ParentId = 1, Sign = "EXIST2", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = false },
+//            //            new AppDictionary { Id = 9, ParentId = 1, Sign = "EXIST3", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 10, ParentId = 1, Sign = "EXIST4", Name = "ANOTHER EXIST SLAVE ITEM", ActiveStatus = true },
 
-//    //            new AppDictionary { Id = 11, ParentId = 2, Sign = "EXIST1", Name = "EXIST1 SLAVE ITEM", ActiveStatus = true },
-//    //            new AppDictionary { Id = 12, ParentId = 2, Sign = "EXIST2", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
-//    //            new AppDictionary { Id = 13, ParentId = 2, Sign = "EXIST3", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = true },
-//    //            new AppDictionary { Id = 14, ParentId = 2, Sign = "EXIST4", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
+//            //            new AppDictionary { Id = 11, ParentId = 2, Sign = "EXIST1", Name = "EXIST1 SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 12, ParentId = 2, Sign = "EXIST2", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
+//            //            new AppDictionary { Id = 13, ParentId = 2, Sign = "EXIST3", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 14, ParentId = 2, Sign = "EXIST4", Name = "ANOTHER EXIST1 SLAVE ITEM", ActiveStatus = false },
 
-//    //            new AppDictionary { Id = 15, ParentId = 3, Sign = "EXIST1", Name = "EXIST2 SLAVE ITEM", ActiveStatus = true },
-//    //            new AppDictionary { Id = 16, ParentId = 3, Sign = "EXIST2", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = false },
-//    //            new AppDictionary { Id = 17, ParentId = 3, Sign = "EXIST3", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
-//    //            new AppDictionary { Id = 18, ParentId = 3, Sign = "EXIST4", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 15, ParentId = 3, Sign = "EXIST1", Name = "EXIST2 SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 16, ParentId = 3, Sign = "EXIST2", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = false },
+//            //            new AppDictionary { Id = 17, ParentId = 3, Sign = "EXIST3", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 18, ParentId = 3, Sign = "EXIST4", Name = "ANOTHER EXIST2 SLAVE ITEM", ActiveStatus = true },
 
-//    //            new AppDictionary { Id = 19, ParentId = 100, Sign = "EXIST1", Name = "ORPHANED SLAVE ITEM", ActiveStatus = true },
-//    //            new AppDictionary { Id = 20, ParentId = 100, Sign = "EXIST2", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = true },
-//    //            new AppDictionary { Id = 21, ParentId = 100, Sign = "EXIST3", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = false }
-//    //            );
+//            //            new AppDictionary { Id = 19, ParentId = 100, Sign = "EXIST1", Name = "ORPHANED SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 20, ParentId = 100, Sign = "EXIST2", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = true },
+//            //            new AppDictionary { Id = 21, ParentId = 100, Sign = "EXIST3", Name = "ORPHANED ANOTHER SLAVE ITEM", ActiveStatus = false }
+//            //            );
 
-//    //        _context.SaveChanges();
+//            //        _context.SaveChanges();
 
 //            //_context.AppDictionary.First(x => x.Id == 3).ActiveStatus = false;
 //            //_context.AppDictionary.First(x => x.Id == 6).ActiveStatus = false;

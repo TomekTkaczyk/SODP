@@ -1,5 +1,7 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Specifications;
+using System;
+using System.Linq.Expressions;
 
 namespace SODP.Application.Specifications.Projects
 {
@@ -7,5 +9,10 @@ namespace SODP.Application.Specifications.Projects
 	{
 		public ProjectWithStageSpecification(int stageId)
 			: base(project => project.StageId == stageId) { }
+
+		public override Expression<Func<Project, bool>> AsPredicateExpression()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

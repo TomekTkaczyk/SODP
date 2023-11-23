@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
@@ -9,27 +10,20 @@ namespace SODP.Infrastructure.Repositories;
 
 public abstract class PagedRepository<TEntity> : Repository<TEntity>, IPageRepository<TEntity> where TEntity : BaseEntity
 {
-	public PagedRepository(SODPDBContext dbContext) : base(dbContext) { }
+	public PagedRepository(SODPDBContext dbContext, ILogger<TEntity> logger) : base(dbContext, logger) { }
 
-	public async Task<Page<TEntity>> GetPageAsync(Specification<TEntity> specification, int pageNumber, int pageSize, CancellationToken cancellationToken)
+	public async Task<Page<TEntity>> GetPageAsync(ISpecification<TEntity> specification, int pageNumber, int pageSize, CancellationToken cancellationToken)
 	{
-		try
-		{
-			var queryable = ApplySpecyfication(specification);
-			var totalItems = await queryable.CountAsync(cancellationToken);
-			var collection = await GetPageQuery(
-				queryable,
-				pageNumber,
-				pageSize).ToListAsync(cancellationToken);
-	
-			return Page<TEntity>.Create(collection, pageNumber, pageSize, totalItems);
-		}
-		catch (Exception ex)
-		{
 
-			throw;
-		}
+		var queryable = SpecificationEvaluator<TEntity>.GetQuery(_entities, specification);
 
+		var totalItems = await queryable.CountAsync(cancellationToken);
+		var collection = await GetPageQuery(
+			queryable,
+			pageNumber,
+			pageSize).ToListAsync(cancellationToken);
+
+		return Page<TEntity>.Create(collection, pageNumber, pageSize, totalItems);
 	}
 
 	private static IQueryable<TEntity> GetPageQuery(IQueryable<TEntity> query, int pageNumber, int pageSize)

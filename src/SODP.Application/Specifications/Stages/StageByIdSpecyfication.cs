@@ -5,9 +5,6 @@ namespace SODP.Application.Specifications.Stages;
 
 public class StageByIdSpecyfication : Specification<Stage>
 {
-	public StageByIdSpecyfication(int id) 
-		: base(stage =>
-		stage.Id == id)
-	{
-	}
+	public StageByIdSpecyfication(int id)
+		: base(stage => stage.Id == id) { }
 }

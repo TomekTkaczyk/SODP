@@ -1,5 +1,7 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Specifications;
+using System;
+using System.Linq.Expressions;
 
 namespace SODP.Application.Specifications.Branches;
 
@@ -12,6 +14,11 @@ public class BranchByNameSpecification : Specification<Branch>
 		|| branch.Sign.ToUpper().Contains(searchString.ToUpper()) 
 		|| branch.Title.ToUpper().Contains(searchString.ToUpper())))
 	{
-		AddOrderBy(x => x.Title.ToUpper());
+		AddOrderByExpression(x => x.Title.ToUpper());
+	}
+
+	public override Expression<Func<Branch, bool>> AsPredicateExpression()
+	{
+		throw new NotImplementedException();
 	}
 }

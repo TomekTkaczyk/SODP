@@ -1,28 +1,59 @@
-﻿using SODP.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace SODP.Domain.Specifications;
 
-public abstract class Specification<TEntity> where TEntity : BaseEntity
+public abstract class Specification<T> : ISpecification<T>
 {
-	protected Specification(Expression<Func<TEntity, bool>> criteria)
+
+	private readonly List<Expression<Func<T, object>>> _includeCollection = new();
+	private readonly List<Tuple<Expression<Func<T, object>>, bool>> _ordersByExpressionCollection = new();
+
+	public Expression<Func<T, bool>> Criteria { get; }
+	public List<Tuple<Expression<Func<T, object>>,bool>> OrderByExpressions 
+	{ get 
+		{
+			return _ordersByExpressionCollection;
+		} 
+	}
+	public List<Expression<Func<T, object>>> Includes
+	{
+		get
+		{
+			return _includeCollection;
+		}
+	}
+
+	protected Specification() { }
+
+	protected Specification(Expression<Func<T, bool>> criteria)
 	{
 		Criteria = criteria;
 	}
 
-	public bool IsSplitQuery { get; private set; }
+	protected void AddInclude(Expression<Func<T, object>> includeExpression) 
+		=> Includes.Add(includeExpression);
+	
+	protected void AddOrderByExpression(Expression<Func<T, object>> orderExpression, bool descending = false) 
+		=> OrderByExpressions.Add(new Tuple<Expression<Func<T, object>>, bool>(orderExpression,descending));
 
-	public Expression<Func<TEntity, bool>> Criteria { get; }
+	public virtual Expression<Func<T, bool>> AsPredicateExpression()
+		=> Criteria;
 
-	public List<Expression<Func<TEntity, object>>> IncludeExpressions { get; } = new();
+	public static implicit operator Expression<Func<T, bool>>(Specification<T> specification)
+	{
+		return specification.Criteria;
+	}
 
-	public List<Tuple<Expression<Func<TEntity, object>>,bool>> OrdersByExpressions { get; } = new();
+	public static OrSpecification<T> operator |(Specification<T> left, Specification<T> right)
+	{
+		return left.Or(right);
+	}
 
-	protected void AddInclude(Expression<Func<TEntity, object>> includeExpression) => IncludeExpressions.Add(includeExpression);
-
-	protected void AddOrderBy(Expression<Func<TEntity, object>> orderByExpression, bool descending = false) 
-		=> OrdersByExpressions.Add( new Tuple<Expression<Func<TEntity, object>>, bool>(orderByExpression, descending));
+	public static AndSpecification<T> operator &(Specification<T> left, Specification<T> right)
+	{
+		return left.And(right);
+	}
 
 }

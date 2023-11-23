@@ -27,17 +27,18 @@ public class AutoMapperProfile : Profile
 		CreateMap<AppDictionary, DictionaryDTO>()
                 .ReverseMap();
 
-            CreateMap<DictionaryDTO, AppDictionary>()
-                .ForMember(dest => dest.Parent, act => act.Ignore())
-                .ReverseMap();
+        CreateMap<DictionaryDTO, AppDictionary>()
+            .ForMember(dest => dest.Parent, act => act.Ignore())
+            .ReverseMap();
 
 		CreateMap<Investor, InvestorDTO>()
-                .ReverseMap();
+            .ReverseMap();
 
 		#region Stage
 
 		CreateMap<Stage, StageDTO>()
-		   .PreserveReferences();
+			.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.Value))
+		    .PreserveReferences();
 
 		CreateMap<StageDTO, Stage>()
 			.ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())

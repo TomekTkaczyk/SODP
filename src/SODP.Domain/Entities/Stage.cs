@@ -1,18 +1,23 @@
 ﻿
+using SODP.Domain.ValueObjects;
+
 namespace SODP.Domain.Entities;
 
 public sealed class Stage : ActiveStatusEntity, IOrdered
 {
-	public string Sign { get; private set; }
+	public Sign Sign { get; private set; }
 	public string Title { get; private set; }
 	public int Order { get; private set; }
 
+    public Stage()
+    {
+        Order = 0;
+    }
 
-	private Stage(string sign, string title)
+    public Stage(string sign, string title) : this()
 	{
 		Sign = sign;
 		Title = title;
-		Order = 0;
 	}
 
 	public static Stage Create(string sign, string title)
@@ -32,7 +37,7 @@ public sealed class Stage : ActiveStatusEntity, IOrdered
 
 	public override string ToString()
 	{
-		return $"{Sign.Trim()} {Title.Trim()}";
+		return $"{Sign.Value.Trim()} {Title.Trim()}";
 	}
 
 	public void Up()

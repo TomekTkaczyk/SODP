@@ -16,6 +16,7 @@ public abstract class Specification<T>
 	{
 		return left.Or(right);
 	}
+	
 	public static AndSpecification<T> operator &(Specification<T> left, Specification<T> right)
 	{
 		return left.And(right);

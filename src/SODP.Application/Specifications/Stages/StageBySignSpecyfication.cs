@@ -6,8 +6,5 @@ namespace SODP.Application.Specifications.Stages;
 public class StageBySignSpecyfication : Specification<Stage>
 {
 	public StageBySignSpecyfication(string sign)
-		: base(stage =>
-		stage.Sign.Equals(sign))
-	{
-	}
+		: base(stage =>	stage.Sign.Equals(sign)) { }
 }

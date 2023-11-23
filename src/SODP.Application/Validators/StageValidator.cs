@@ -7,7 +7,7 @@ namespace SODP.Application.Validators
     {
         public StageValidator()
         {
-            RuleFor(x => x.Sign)
+            RuleFor(x => x.Sign.Value)
                 .NotNull()
                 .NotEmpty()
                 .WithMessage("Oznaczenie stadium jest wymagane.")

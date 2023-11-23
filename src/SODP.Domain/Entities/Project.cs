@@ -39,7 +39,7 @@ public class Project : BaseEntity
     public ProjectStatus Status { get; private set; }
     public IReadOnlyCollection<ProjectPart> Parts { get; private set; } = new List<ProjectPart>();
     
-	public virtual string Symbol => Number.Value.Trim() + Stage.Sign.Trim();
+	public virtual string Symbol => Number.Value.Trim() + Stage.Sign.Value.Trim();
 
 	public static Project Create(string number, Stage stage, string name)
 	{

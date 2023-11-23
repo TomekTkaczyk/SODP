@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
@@ -8,20 +9,20 @@ namespace SODP.Infrastructure.Repositories;
 
 public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
 {
+	private readonly ILogger<TEntity> _logger;
 	protected readonly SODPDBContext _dbContext;
 	protected readonly DbSet<TEntity> _entities;
 
 
-	public Repository(SODPDBContext dbContext)
+	public Repository(SODPDBContext dbContext, ILogger<TEntity> logger)
     {
-		_dbContext = dbContext;
+		_dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+		_logger = logger;
 		_entities = _dbContext.Set<TEntity>();
 	}
 
-	public IQueryable<TEntity> GetAll()
-	{
-		return _entities;
-	}
+	public IQueryable<TEntity> GetAll(ISpecification<TEntity> specification = null) =>
+		SpecificationEvaluator<TEntity>.GetQuery(_entities, specification);
 
 	public TEntity Add(TEntity entity)
 	{
@@ -40,9 +41,9 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
 		_dbContext.Entry(entity).State = EntityState.Deleted;
 	}
 
-	public IQueryable<TEntity> ApplySpecyfication(Specification<TEntity> specification)
+	public IQueryable<TEntity> ApplySpecyfication(ISpecification<TEntity> specification)
 	{
-		return SpecificationEvaluator.GetQuery(_entities, specification);
+		return SpecificationEvaluator<TEntity>.GetQuery(_entities, specification);
 	}
 
 }

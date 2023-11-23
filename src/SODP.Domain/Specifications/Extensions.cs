@@ -1,7 +1,6 @@
-﻿using SODP.Domain.Entities;
-using System.Linq;
+﻿using System.Linq;
 
-namespace SODP.Domain.Shared.Specifications;
+namespace SODP.Domain.Specifications;
 
 public static class Extensions
 {
