@@ -33,7 +33,7 @@ internal class ArchiveProjectHandler : IRequestHandler<ArchiveProjectRequest>
 	public async Task<Unit> Handle(ArchiveProjectRequest request, CancellationToken cancellationToken)
 	{
 		var project = await _projectRepository
-			.ApplySpecyfication(new ByIdSpecification<Project>(request.Id))
+			.Get(new ByIdSpecification<Project>(request.Id))
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new ProjectNotFoundException();
 

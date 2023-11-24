@@ -26,7 +26,7 @@ public class StageRepositoryTests
 		var mock = new Mock<ILogger<Stage>>();
 		var repository = new StageRepository(_context, mock.Object);
 
-		var stages = repository.GetAll();
+		var stages = repository.Get();
 
 		Assert.NotNull(stages);
 		Assert.True(stages.Any());
@@ -38,7 +38,7 @@ public class StageRepositoryTests
 		var mock = new Mock<ILogger<Stage>>();
 		var repository = new StageRepository(_context, mock.Object);
 
-		var stage = repository.GetAll().Where(x => x.Sign == "PB").FirstOrDefault();
+		var stage = repository.Get().Where(x => x.Sign == "PB").FirstOrDefault();
 
 		Assert.NotNull(stage);
 	}

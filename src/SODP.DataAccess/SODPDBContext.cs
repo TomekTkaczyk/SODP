@@ -6,7 +6,7 @@ using SODP.Domain.Services;
 
 namespace SODP.DataAccess;
 
-public class SODPDBContext : IdentityDbContext<User, Role, int>
+public class SODPDBContext : IdentityDbContext<User, Role, int>, IDbContext
 {
 	private readonly IDateTime _dateTime;
 
@@ -30,6 +30,7 @@ public class SODPDBContext : IdentityDbContext<User, Role, int>
 	public virtual DbSet<BranchLicense> BranchLicenses { get; set; }
 	public virtual DbSet<Certificate> Certificates { get; set; }
 	public virtual DbSet<Investor> Investors { get; set; }
+
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{

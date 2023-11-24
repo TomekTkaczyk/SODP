@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
-using SODP.Domain.Specifications;
+using SODP.Domain.Shared.Specifications;
 
 namespace SODP.Infrastructure.Repositories;
 
@@ -21,7 +21,7 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
 		_entities = _dbContext.Set<TEntity>();
 	}
 
-	public IQueryable<TEntity> GetAll(ISpecification<TEntity> specification = null) =>
+	public IQueryable<TEntity> Get(ISpecification<TEntity> specification = null) =>
 		SpecificationEvaluator<TEntity>.GetQuery(_entities, specification);
 
 	public TEntity Add(TEntity entity)
@@ -40,10 +40,4 @@ public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity :
 	{
 		_dbContext.Entry(entity).State = EntityState.Deleted;
 	}
-
-	public IQueryable<TEntity> ApplySpecyfication(ISpecification<TEntity> specification)
-	{
-		return SpecificationEvaluator<TEntity>.GetQuery(_entities, specification);
-	}
-
 }

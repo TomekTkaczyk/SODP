@@ -26,13 +26,9 @@ public sealed class SetActiveStatusHandler<TEntity>
     public async Task<Unit> Handle(SetActiveStatusRequest<TEntity> request, CancellationToken cancellationToken)
     {
         var entity = await _repository
-            .ApplySpecyfication(new ByIdSpecification<TEntity>(request.Id))
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if (entity is null)
-        {
-            throw new NotFoundException(typeof(TEntity).Name);
-        }
+            .Get(new ByIdSpecification<TEntity>(request.Id))
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException(typeof(TEntity).Name);
 
         entity.SetActiveStatus(request.ActiveStatus);
         _repository.Update(entity);

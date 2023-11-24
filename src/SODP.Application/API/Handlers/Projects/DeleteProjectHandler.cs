@@ -31,7 +31,7 @@ public sealed class DeleteProjectHandler : IRequestHandler<DeleteProjectRequest>
         CancellationToken cancellationToken)
     {
         var project = await _projectRepository
-            .ApplySpecyfication(new ProjectByIdSpecification(request.Id))
+            .Get(new ProjectByIdSpecification(request.Id))
             .SingleOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException("Project");
 

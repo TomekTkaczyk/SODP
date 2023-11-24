@@ -1,5 +1,5 @@
 ﻿using SODP.Domain.Entities;
-using SODP.Domain.Specifications;
+using SODP.Domain.Shared.Specifications;
 
 namespace SODP.Application.Specifications.Stages;
 

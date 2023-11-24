@@ -25,13 +25,9 @@ public sealed class DeleteBranchHandler : IRequestHandler<DeleteBranchRequest>
     public async Task<Unit> Handle(DeleteBranchRequest request, CancellationToken cancellationToken)
     {
         var branch = await _branchRepository
-            .ApplySpecyfication(new BranchByIdSpecification(request.Id))
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if (branch is null)
-        {
-            throw new NotFoundException("Branch");
-        }
+            .Get(new BranchByIdSpecification(request.Id))
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException("Branch");
 
         _branchRepository.Delete(branch);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -31,7 +31,7 @@ public class GetLicenseWithBranchesHandler : IRequestHandler<GetLicenseWithBranc
 		CancellationToken cancellationToken)
 	{
 		var license = await _licensesRepository
-			.ApplySpecyfication(new ByIdSpecification<License>(request.Id))
+			.Get(new ByIdSpecification<License>(request.Id))
 			.Include(x => x.Designer)
 			.Include(x => x.Branches)
 			.ThenInclude(x => x.Branch)

@@ -31,7 +31,7 @@ public sealed class GetDesignerHandler : IRequestHandler<GetDesignerRequest, Api
 		CancellationToken cancellationToken)
 	{
 		var designer = await _designerRepository
-			.ApplySpecyfication(new ByIdSpecification<Designer>(request.Id))
+			.Get(new ByIdSpecification<Designer>(request.Id))
 			.SingleOrDefaultAsync(cancellationToken) 
 			?? throw new NotFoundException("Designer");
 

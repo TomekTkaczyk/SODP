@@ -33,7 +33,7 @@ internal class RestoreProjectHandler : IRequestHandler<RestoreProjectRequest>
 	public async Task<Unit> Handle(RestoreProjectRequest request, CancellationToken cancellationToken)
 	{
 		var project = await _projectRepository
-			.ApplySpecyfication(new ByIdSpecification<Project>(request.Id))
+			.Get(new ByIdSpecification<Project>(request.Id))
 			.FirstOrDefaultAsync(cancellationToken)
 			?? throw new ProjectNotFoundException();
 

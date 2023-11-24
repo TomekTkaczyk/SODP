@@ -1,5 +1,5 @@
 ﻿using SODP.Domain.Entities;
-using SODP.Domain.Specifications;
+using SODP.Domain.Shared.Specifications;
 using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;

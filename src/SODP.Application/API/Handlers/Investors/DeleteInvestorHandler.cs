@@ -25,15 +25,12 @@ public sealed class DeleteInvestorHandler : IRequestHandler<DeleteInvestorReques
     public async Task<Unit> Handle(DeleteInvestorRequest request, CancellationToken cancellationToken)
     {
         var investor = await _investorRepository
-            .ApplySpecyfication(new InvestorByIdSpecification(request.Id))
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if (investor is null)
-        {
-            throw new InvestorNotFoundException();
-        }
+            .Get(new InvestorByIdSpecification(request.Id))
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new InvestorNotFoundException();
 
         _investorRepository.Delete(investor);
+
         var result = await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         if (result == 0)

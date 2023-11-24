@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
-using SODP.Application.Specifications.Projects;
 using SODP.Application.Specifications.Stages;
-using SODP.Domain.Exceptions;
+using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
+using SODP.Infrastructure.Specifications.Projects;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,22 +28,18 @@ public class DeleteStageHandler : IRequestHandler<DeleteStageRequest>
 
     public async Task<Unit> Handle(DeleteStageRequest request, CancellationToken cancellationToken)
     {
-        var stage = await _stageRepository
-            .ApplySpecyfication(new StageByIdSpecyfication(request.Id))
-            .SingleOrDefaultAsync(cancellationToken);
+		var stage = await _stageRepository
+			.Get(new StageByIdSpecyfication(request.Id))
+			.SingleOrDefaultAsync(cancellationToken) 
+            ?? throw new StageNotFoundException();
 
-        if (stage is null)
+		var projectUseSign = await _projectRepository
+            .Get(new ProjectBySymbolSpecyfication(null, stage.Sign))
+            .AnyAsync(cancellationToken);
+		
+        if (projectUseSign)
         {
-            throw new NotFoundException("Stage");
-        }
-
-        var useProject = await _projectRepository
-            .ApplySpecyfication(new ProjectWithStageSpecification(request.Id))
-            .AnyAsync();
-
-        if (useProject)
-        {
-            throw new ResourceIsInUseException("Stage");
+            throw new StageIsInUseException();
 		}
 
         _stageRepository.Delete(stage);

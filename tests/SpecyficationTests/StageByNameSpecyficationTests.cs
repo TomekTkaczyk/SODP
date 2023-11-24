@@ -27,7 +27,7 @@ public class StageByNameSpecyficationTests
 	public void repository_GetAll_shuld_return_one_stage_PWKS()
 	{
 		var specification = new StageByNameSpecification(null, "PWKS");
-		var stage = _stageRepository.GetAll(specification).FirstOrDefault();
+		var stage = _stageRepository.Get(specification).FirstOrDefault();
 
 		Assert.NotNull(stage);
 		Assert.True(stage.Sign == "PWKS");
@@ -38,7 +38,7 @@ public class StageByNameSpecyficationTests
 	{
 		var specification = new StageByNameSpecification();
 
-		var stage = _stageRepository.GetAll(specification).FirstOrDefault();
+		var stage = _stageRepository.Get(specification).FirstOrDefault();
 
 		Assert.NotNull(stage);
 		Assert.True(stage.Sign == "IB");
@@ -49,7 +49,7 @@ public class StageByNameSpecyficationTests
 	{
 		var specification = new StageByNameSpecification(null,"opinia");
 
-		var stage = _stageRepository.GetAll(specification).FirstOrDefault();
+		var stage = _stageRepository.Get(specification).FirstOrDefault();
 
 		Assert.NotNull(stage);
 		Assert.True(stage.Sign == "OT");

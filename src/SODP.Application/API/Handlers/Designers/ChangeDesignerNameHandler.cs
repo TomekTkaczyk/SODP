@@ -25,18 +25,17 @@ public class ChangeDesignerNameHandler : IRequestHandler<ChangeDesignerNameReque
 
 	public async Task<Unit> Handle(ChangeDesignerNameRequest request, CancellationToken cancellationToken)
 	{
-		var existDesigner = await _designerRepository
-			.ApplySpecyfication(new DesignerByNameAndDifferentIdSpecification(request.Id,request.Firstname,request.Lastname))
+		var designerExist = await _designerRepository
+			.Get(new DesignerByNameAndDifferentIdSpecification(request.Id,request.Firstname,request.Lastname))
 			.AnyAsync(cancellationToken);
 
-
-		if(existDesigner) 
+		if(designerExist) 
 		{
 			throw new ConflictException(nameof(Designer));
 		}
 
 		var designer = await _designerRepository
-			.GetAll()
+			.Get()
 			.SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
 		designer.Title = request.Title;

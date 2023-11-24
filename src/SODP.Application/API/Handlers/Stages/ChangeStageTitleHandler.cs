@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
 using SODP.Application.Specifications.Stages;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.Response;
 using System.Threading;
@@ -26,17 +27,13 @@ internal sealed class ChangeStageTitleHandler : IRequestHandler<ChangeStageTitle
     public async Task<ApiResponse> Handle(ChangeStageTitleRequest request, CancellationToken cancellationToken)
     {
         var stage = await _stageRepository
-            .ApplySpecyfication(new StageByIdSpecyfication(request.Id))
-            .SingleOrDefaultAsync(cancellationToken);
+            .Get(new StageByIdSpecyfication(request.Id))
+            .SingleOrDefaultAsync(cancellationToken) ?? throw new StageNotFoundException();
 
-        if (stage is null)
-        {
-            throw new NotFoundException("Stage");
-        }
-
-        stage.SetTitle(request.Title);
+		stage.SetTitle(request.Title);
 
         _stageRepository.Update(stage);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ApiResponse.Success();

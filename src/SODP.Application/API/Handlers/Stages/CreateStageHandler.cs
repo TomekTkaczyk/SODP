@@ -5,6 +5,7 @@ using SODP.Application.API.Requests.Stages;
 using SODP.Application.Specifications.Stages;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -31,16 +32,16 @@ public sealed class CreateStageHandler : IRequestHandler<CreateStageRequest, Api
 
     public async Task<ApiResponse<StageDTO>> Handle(CreateStageRequest request, CancellationToken cancellationToken)
     {
-        var stage = await _stageRepository
-            .ApplySpecyfication(new StageBySignSpecyfication(request.Sign.ToUpper()))
-            .SingleOrDefaultAsync(cancellationToken);
+        var stageExist = await _stageRepository
+            .Get(new StageBySignSpecyfication(request.Sign.ToUpper()))
+            .AnyAsync(cancellationToken);
 
-        if (stage is not null)
+        if (stageExist)
         {
-            throw new ConflictException("Stage");
+            throw new StageConflictException();
         }
 
-        stage = _stageRepository.Add(Stage.Create(request.Sign.ToUpper(), request.Title.ToUpper()));
+        var stage = _stageRepository.Add(Stage.Create(request.Sign.ToUpper(), request.Title.ToUpper()));
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ApiResponse.Success(_mapper.Map<StageDTO>(stage));

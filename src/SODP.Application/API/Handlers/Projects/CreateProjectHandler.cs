@@ -42,13 +42,14 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
     public async Task<ApiResponse<ProjectDTO>> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
     {
 		var stage = await _stageRepository
-			.ApplySpecyfication(new StageBySignSpecyfication(request.StageSign))
-			.SingleOrDefaultAsync(cancellationToken) ?? throw new StageNotFoundException();
+			.Get(new StageBySignSpecyfication(request.StageSign))
+			.SingleOrDefaultAsync(cancellationToken) 
+            ?? throw new StageNotFoundException();
 
 		var project = Project.Create(request.Number, stage, request.Name);
 
         var projectExist = await _projectRepository
-            .ApplySpecyfication(new ProjectBySymbolSpecyfication(request.Number, request.StageSign))
+            .Get(new ProjectBySymbolSpecyfication(request.Number, request.StageSign))
             .AnyAsync(cancellationToken);
 
         if (projectExist)

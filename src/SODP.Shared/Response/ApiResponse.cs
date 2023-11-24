@@ -27,11 +27,6 @@ public record ApiResponse
             throw new InvalidOperationException();
         }
 
-		//if (!isSuccess && (errors == null || errors.Count == 0))
-		//{
-		//	throw new InvalidOperationException();
-		//}
-
 		IsSuccess = isSuccess;
         Message = message;
         HttpCode = httpCode;

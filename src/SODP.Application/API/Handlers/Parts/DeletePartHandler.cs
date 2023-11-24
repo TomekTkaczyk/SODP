@@ -26,13 +26,9 @@ public sealed class DeletePartHandler : IRequestHandler<DeletePartRequest>
 	public async Task<Unit> Handle(DeletePartRequest request, CancellationToken cancellationToken)
 	{
 		var part = await _partRepository
-			.ApplySpecyfication(new ByIdSpecification<Part>(request.Id))
-			.SingleOrDefaultAsync(cancellationToken);
-
-		if (part is null)
-		{
-			throw new NotFoundException("Part");
-		}
+			.Get(new ByIdSpecification<Part>(request.Id))
+			.SingleOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Part");
 
 		_partRepository.Delete(part);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);

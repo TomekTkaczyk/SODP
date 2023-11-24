@@ -28,13 +28,9 @@ public sealed class UpdatePartHandler : IRequestHandler<UpdatePartRequest>
 	public async Task<Unit> Handle(UpdatePartRequest request, CancellationToken cancellationToken)
 	{
 		var part = await _partRepository
-			.ApplySpecyfication(new ByIdSpecification<Part>(request.Id))
-			.SingleOrDefaultAsync(cancellationToken);
-
-		if (part is null)
-		{
-			throw new NotFoundException("Part");
-		}
+			.Get(new ByIdSpecification<Part>(request.Id))
+			.SingleOrDefaultAsync(cancellationToken)
+			?? throw new NotFoundException("Part");
 
 		part.SetSign(request.Sign);
 		part.SetTitle(request.Title);

@@ -26,7 +26,7 @@ public class ChangeInvestorNameHandler : IRequestHandler<ChangeInvestorNameReque
     public async Task<Unit> Handle(ChangeInvestorNameRequest request, CancellationToken cancellationToken)
     {
 		var investor = await _investorRepository
-            .ApplySpecyfication(new InvestorByNameAndDifferentIdSpecification(request.Id, request.Name))
+            .Get(new InvestorByNameAndDifferentIdSpecification(request.Id, request.Name))
             .SingleOrDefaultAsync(cancellationToken);
 
         if (investor is not null)
@@ -35,13 +35,9 @@ public class ChangeInvestorNameHandler : IRequestHandler<ChangeInvestorNameReque
         }
 
 		investor = await _investorRepository
-			.ApplySpecyfication(new InvestorByIdSpecification(request.Id))
-			.SingleOrDefaultAsync(cancellationToken);
-
-		if (investor is null)
-		{
-			throw new NotFoundException("Investor");
-		}
+			.Get(new InvestorByIdSpecification(request.Id))
+			.SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException("Investor");
 
 		investor.SetName(request.Name);
 

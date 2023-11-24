@@ -26,14 +26,10 @@ public class UpdateBranchHandler : IRequestHandler<UpdateBranchRequest>
     public async Task<Unit> Handle(UpdateBranchRequest request, CancellationToken cancellationToken)
     {
         var branch = await _branchRepository
-            .ApplySpecyfication(new ByIdSpecification<Branch>(request.Id))
-            .SingleOrDefaultAsync(cancellationToken);
-
-		if (branch is null)
-        {
-            throw new NotFoundException("Branch");
-        }
-        
+            .Get(new ByIdSpecification<Branch>(request.Id))
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException("Branch");
+       
         branch.SetSign(request.Sign);
         branch.SetTitle(request.Title);
 

@@ -29,13 +29,9 @@ public class GetDesignerWithDetailsHandler : IRequestHandler<GetDesignerWithDeta
     public async Task<ApiResponse<DesignerLicensesDTO>> Handle(GetDesignerWithDetailsRequest request, CancellationToken cancellationToken)
     {
         var designer = await _designerRepository
-            .ApplySpecyfication(new DesignerLicensesSpecification(request.DesignerId))
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if (designer is null)
-        {
-            throw new NotFoundException(nameof(Designer));
-        }
+            .Get(new DesignerLicensesSpecification(request.DesignerId))
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException(nameof(Designer));
 
 		var designerLicenses = new DesignerLicensesDTO(
 	        _mapper.Map<DesignerDTO>(designer),

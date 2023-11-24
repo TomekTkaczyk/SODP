@@ -29,7 +29,7 @@ public class GetPartHandler : IRequestHandler<GetPartRequest, ApiResponse<PartDT
 	public async Task<ApiResponse<PartDTO>> Handle(GetPartRequest request, CancellationToken cancellationToken)
 	{
 		var part = await _partRepository
-			.ApplySpecyfication(new ByIdSpecification<Part>(request.Id))
+			.Get(new ByIdSpecification<Part>(request.Id))
 			.SingleOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("Part");
 

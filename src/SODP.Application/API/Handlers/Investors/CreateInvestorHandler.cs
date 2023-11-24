@@ -32,7 +32,7 @@ public sealed class CreateInvestorHandler : IRequestHandler<CreateInvestorReques
     public async Task<ApiResponse<InvestorDTO>> Handle(CreateInvestorRequest request, CancellationToken cancellationToken)
     {
         var investorExist = await _investorRepository
-			.ApplySpecyfication(new InvestorSearchSpecification(null, request.Name))
+			.Get(new InvestorSearchSpecification(null, request.Name))
             .AnyAsync(cancellationToken);
 
         if (investorExist)

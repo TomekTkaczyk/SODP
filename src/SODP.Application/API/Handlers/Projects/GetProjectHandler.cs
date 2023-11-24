@@ -31,7 +31,7 @@ public class GetProjectHandler : IRequestHandler<GetProjectRequest, ApiResponse<
         CancellationToken cancellationToken)
     {
         var project = await _projectRepository
-            .ApplySpecyfication(new ByIdSpecification<Project>(request.Id))
+            .Get(new ByIdSpecification<Project>(request.Id))
             .SingleOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException("Project");
 

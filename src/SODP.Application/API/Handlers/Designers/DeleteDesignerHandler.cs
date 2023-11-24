@@ -28,13 +28,9 @@ public sealed class DeleteDesignerHandler : IRequestHandler<DeleteDesignerReques
         CancellationToken cancellationToken)
     {
         var designer = await _designerRepository
-            .ApplySpecyfication(new ByIdSpecification<Designer>(request.Id))
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if (designer is null)
-        {
-            throw new NotFoundException(nameof(Designer));
-        }
+            .Get(new ByIdSpecification<Designer>(request.Id))
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new NotFoundException(nameof(Designer));
 
         _designerRepository.Delete(designer);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

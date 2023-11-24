@@ -32,11 +32,12 @@ public sealed class CreateLicenseHandler : IRequestHandler<CreateLicenseRequest,
     public async Task<ApiResponse<LicenseDTO>> Handle(CreateLicenseRequest request, CancellationToken cancellationToken)
     {
         var designer = await _designerRepository
-            .ApplySpecyfication(new DesignerByIdWithLicensesSpecification(request.DesignerId))
+            .Get(new DesignerByIdWithLicensesSpecification(request.DesignerId))
             .SingleOrDefaultAsync(x => x.Id == request.DesignerId, cancellationToken)
             ?? throw new NotFoundException(nameof(Designer));
 		
         var license = designer.AddLicense(License.Create(designer, request.Content));
+
         _designerRepository.Update(designer);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

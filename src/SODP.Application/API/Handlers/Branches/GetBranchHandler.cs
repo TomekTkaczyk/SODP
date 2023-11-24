@@ -28,7 +28,7 @@ public sealed class GetBranchHandler : IRequestHandler<GetBranchRequest, ApiResp
     public async Task<ApiResponse<BranchDTO>> Handle(GetBranchRequest request, CancellationToken cancellationToken)
     {
         var branch = await _branchRepository
-            .ApplySpecyfication(new ByIdSpecification<Branch>(request.Id))
+            .Get(new ByIdSpecification<Branch>(request.Id))
             .SingleOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException("Branch");
 

@@ -32,7 +32,7 @@ public sealed class GetBranchWithLicensesHandler : IRequestHandler<GetBranchWith
 	{
 		var specification = new ByIdSpecification<Branch>(request.Id);
 		var branch = await _branchRepository
-			.ApplySpecyfication(specification)
+			.Get(specification)
 			.Include(x => x.Licenses)  
 			.ThenInclude(s => s.License)
 			.ThenInclude(s => s.Designer)

@@ -1,9 +1,8 @@
 ﻿using SODP.Domain.Services;
 
-namespace SODP.Infrastructure.Services
+namespace SODP.Infrastructure.Services;
+
+public sealed class DateTimeService : IDateTime
 {
-	public class DateTimeService : IDateTime
-    {
-        public DateTime Now => DateTime.Now;
-    }
+    public DateTime UtcNow => DateTime.UtcNow;
 }

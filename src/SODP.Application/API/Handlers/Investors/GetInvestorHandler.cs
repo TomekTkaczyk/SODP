@@ -31,7 +31,7 @@ public sealed class GetInvestorHandler : IRequestHandler<GetInvestorRequest, Api
         CancellationToken cancellationToken)
     {
         var investor = await _investorRepository
-            .ApplySpecyfication(new ByIdSpecification<Investor>(request.Id))
+            .Get(new ByIdSpecification<Investor>(request.Id))
             .SingleOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException("Investor");
 

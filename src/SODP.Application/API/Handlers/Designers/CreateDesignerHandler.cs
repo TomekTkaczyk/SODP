@@ -32,7 +32,7 @@ public class CreateDesignerHandler : IRequestHandler<CreateDesignerRequest, ApiR
     public async Task<ApiResponse<DesignerDTO>> Handle(CreateDesignerRequest request, CancellationToken cancellationToken)
     {
         var designerExist = await _designerRepository
-            .ApplySpecyfication(new DesignerByNameSpecification(null, request.Firstname, request.Lastname))
+            .Get(new DesignerByNameSpecification(null, request.Firstname, request.Lastname))
             .AnyAsync(cancellationToken);
 
         if(designerExist)
