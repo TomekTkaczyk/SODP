@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
@@ -11,13 +10,9 @@ using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
-using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects;
@@ -35,15 +30,12 @@ public sealed class IndexModel : ProjectsPageModel
 		: base(apiProvider, logger, mapper, translatorFactory)
 	{
 		ReturnUrl = "/ActiveProjects";
-		// _endpoint = "stages";
 	}
 
 
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
 	{
-		var a = await OnGetAsync(ProjectStatus.Active, pageNumber, pageSize, searchString);
-
-		return a;
+		return await OnGetAsync(ProjectStatus.Active, pageNumber, pageSize, searchString);
 	}
 
 	public async Task<IActionResult> OnGetProjectPartialAsync(int id)
@@ -108,6 +100,6 @@ public sealed class IndexModel : ProjectsPageModel
 			{
 				Value = x.Sign,
 				Text = x.ToString()
-			}); ;
+			});
 	}
 }

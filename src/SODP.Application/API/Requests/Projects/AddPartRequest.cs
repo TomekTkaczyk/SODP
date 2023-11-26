@@ -5,6 +5,6 @@ using SODP.Shared.Response;
 namespace SODP.Application.API.Requests.Projects;
 
 public sealed record AddPartRequest(
-    int Id,
-    string Sign,
-    string Title) : IRequest<ApiResponse<PartDTO>>;
+	int Id, 
+	string Sign, 
+	string Title) : IRequest<ApiResponse<PartDTO>>;

@@ -32,7 +32,7 @@ public sealed class CreateBranchHandler : IRequestHandler<CreateBranchRequest, A
     public async Task<ApiResponse<BranchDTO>> Handle(CreateBranchRequest request, CancellationToken cancellationToken)
     {
         var branchExist = await _branchRepository
-            .Get(new BranchByNameSpecification(null, request.Title))
+            .Get(new BranchesCollectionSpecification(null, request.Title))
             .AnyAsync(cancellationToken);
 
         if (branchExist)

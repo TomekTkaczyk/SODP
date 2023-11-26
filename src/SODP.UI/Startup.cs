@@ -47,9 +47,9 @@ public class Startup
         services.AddMediatR(Application.AssemblyReference.Assembly);
 
          // Warning: Generic handlers must be manually registered in the MS DI container
-			services.AddActiveStatusCommandHandlers(Domain.AssemblyReference.Assembly);
+		services.AddActiveStatusCommandHandlers(Domain.AssemblyReference.Assembly);
 
-			services.AddSwagger(Configuration);
+		services.AddSwagger(Configuration);
 
         services.AddCors(options => options.AddPolicy(name: "SODPOriginsSpecification", builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
 

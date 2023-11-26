@@ -2,6 +2,5 @@
 
 namespace SODP.Application.API.Requests.Stages;
 
-public record DeleteStageRequest(
-	int Id) : IRequest;
+public sealed record DeleteStageRequest(int Id) : IRequest;
 

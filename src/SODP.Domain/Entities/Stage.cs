@@ -1,5 +1,4 @@
-﻿
-using SODP.Domain.ValueObjects;
+﻿using SODP.Domain.ValueObjects;
 
 namespace SODP.Domain.Entities;
 
@@ -9,15 +8,13 @@ public sealed class Stage : ActiveStatusEntity, IOrdered
 	public string Title { get; private set; }
 	public int Order { get; private set; }
 
-    public Stage()
-    {
-        Order = 0;
-    }
+	private Stage() { }
 
-    public Stage(string sign, string title) : this()
+    private Stage(string sign, string title)
 	{
-		Sign = sign;
-		Title = title;
+		Sign = sign.ToUpper();
+		Title = title.ToUpper();
+		Order = 1;
 	}
 
 	public static Stage Create(string sign, string title)
@@ -27,12 +24,12 @@ public sealed class Stage : ActiveStatusEntity, IOrdered
 
 	public void SetSign(string sign)
 	{
-		Sign = sign;
+		Sign = sign.ToUpper();
 	}
 
 	public void SetTitle(string title) 
 	{ 
-		Title = title; 
+		Title = title.ToUpper(); 
 	}
 
 	public override string ToString()

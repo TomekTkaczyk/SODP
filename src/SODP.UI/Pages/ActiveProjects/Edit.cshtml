@@ -252,6 +252,11 @@
 	</script>
 
 	<script>
+		function SaveAndCloseModal() {
+			document.getElementById('Project_Investor').value = document.getElementById('InvestorId').selectedOptions[0].text;
+			$('#investorsList').modal('hide');
+		}
+
 		function EditPart(project, part) {
 			$.ajax({
 				type: "Get",

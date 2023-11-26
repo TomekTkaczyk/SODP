@@ -11,7 +11,6 @@ using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

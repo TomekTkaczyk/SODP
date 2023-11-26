@@ -8,5 +8,4 @@ public sealed record GetDesignersPageRequest(
     bool? ActiveStatus,
     string SearchString,
     int PageNumber,
-    int PageSize) : IRequest<ApiResponse<Page<DesignerDTO>>>
-{ }
+    int PageSize) : IRequest<ApiResponse<Page<DesignerDTO>>>;

@@ -148,9 +148,7 @@ public class ProjectController : ApiControllerBase
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new ArchiveProjectRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(new ArchiveProjectRequest(id), cancellationToken);
 	}
 
 

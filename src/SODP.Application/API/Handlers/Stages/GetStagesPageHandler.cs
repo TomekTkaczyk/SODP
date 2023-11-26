@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
+using SODP.Application.Extensions;
 using SODP.Application.Specifications.Stages;
+using SODP.Domain.Entities;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,9 +31,14 @@ public sealed class GetStagesPageHandler : IRequestHandler<GetStagesPageRequest,
         GetStagesPageRequest request,
         CancellationToken cancellationToken)
     {
-        var specification = new StageByNameSpecification(request.ActiveStatus, request.SearchString);
-        var page = await _stageRepository.GetPageAsync(specification, request.PageNumber, request.PageSize, cancellationToken);
+        var specification = new StagesCollectionSpecification(
+            request.ActiveStatus, 
+            request.SearchString);
 
+        var page = await _stageRepository
+            .Get(specification)
+            .AsPageAsync(request.PageNumber, request.PageSize, cancellationToken);
+        
         return ApiResponse.Success(_mapper.Map<Page<StageDTO>>(page));
 	}
 }

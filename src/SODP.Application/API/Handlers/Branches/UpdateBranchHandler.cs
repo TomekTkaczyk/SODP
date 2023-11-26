@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Branches;
 
-public class UpdateBranchHandler : IRequestHandler<UpdateBranchRequest>
+public sealed class UpdateBranchHandler : IRequestHandler<UpdateBranchRequest>
 {
     private readonly IBranchRepository _branchRepository;
     private readonly IUnitOfWork _unitOfWork;

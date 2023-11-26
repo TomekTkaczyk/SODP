@@ -27,7 +27,7 @@ public sealed class GetProjectsPageHandler : IRequestHandler<GetProjectsPageRequ
         GetProjectsPageRequest request,
         CancellationToken cancellationToken)
     {
-        var specification = new ProjectByNameSpecyfication(
+        var specification = new ProjectsCollectionSpecyfication(
             request.Status, 
             request.SearchString);
 

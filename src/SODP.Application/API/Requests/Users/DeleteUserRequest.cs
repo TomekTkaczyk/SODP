@@ -2,6 +2,5 @@
 
 namespace SODP.Application.API.Requests.Users
 {
-	public sealed record DeleteUserRequest(
-		int Id) : IRequest;
+	public sealed record DeleteUserRequest(int Id) : IRequest;
 }

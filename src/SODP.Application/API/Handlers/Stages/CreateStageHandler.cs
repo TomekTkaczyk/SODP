@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
 using SODP.Application.Specifications.Stages;
 using SODP.Domain.Entities;
-using SODP.Domain.Exceptions;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
@@ -32,8 +31,10 @@ public sealed class CreateStageHandler : IRequestHandler<CreateStageRequest, Api
 
     public async Task<ApiResponse<StageDTO>> Handle(CreateStageRequest request, CancellationToken cancellationToken)
     {
-        var stageExist = await _stageRepository
-            .Get(new StageBySignSpecyfication(request.Sign.ToUpper()))
+        var specyfication = new StageBySignSpecyfication(request.Sign.ToUpper());
+
+		var stageExist = await _stageRepository
+            .Get(specyfication)
             .AnyAsync(cancellationToken);
 
         if (stageExist)
@@ -42,6 +43,7 @@ public sealed class CreateStageHandler : IRequestHandler<CreateStageRequest, Api
         }
 
         var stage = _stageRepository.Add(Stage.Create(request.Sign.ToUpper(), request.Title.ToUpper()));
+        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return ApiResponse.Success(_mapper.Map<StageDTO>(stage));

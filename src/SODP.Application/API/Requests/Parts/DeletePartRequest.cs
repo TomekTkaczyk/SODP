@@ -2,5 +2,4 @@
 
 namespace SODP.Application.API.Requests.Parts;
 
-public sealed record DeletePartRequest(
-	int Id) : IRequest;
+public sealed record DeletePartRequest(int Id) : IRequest;

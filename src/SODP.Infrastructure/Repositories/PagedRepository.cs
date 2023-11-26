@@ -14,10 +14,7 @@ public abstract class PagedRepository<TEntity> : Repository<TEntity>, IPageRepos
 
 	public async Task<Page<TEntity>> GetPageAsync(ISpecification<TEntity> specification, int pageNumber, int pageSize, CancellationToken cancellationToken)
 	{
-
-		// var queryable = SpecificationEvaluator<TEntity>.GetQuery(_entities, specification);
 		var queryable = Get(specification);
-
 		var totalItems = await queryable.CountAsync(cancellationToken);
 		var collection = await GetPageQuery(
 			queryable,

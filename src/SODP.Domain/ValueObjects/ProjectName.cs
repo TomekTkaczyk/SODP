@@ -14,11 +14,11 @@ public record ProjectName
 			throw new InvalidProjectNameException(name);
 		}
 
-		Value = name;
+		Value = name.ToUpper();
     }
 
 	public static implicit operator string(ProjectName name) => name?.Value;
 
-	public static implicit operator ProjectName(string name) => new(name);
+	public static implicit operator ProjectName(string name) => new(name.ToUpper());
 
 }

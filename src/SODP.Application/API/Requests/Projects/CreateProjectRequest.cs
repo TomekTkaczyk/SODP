@@ -5,6 +5,6 @@ using SODP.Shared.Response;
 namespace SODP.Application.API.Requests.Projects;
 
 public sealed record CreateProjectRequest(
-    string Number,
-    string StageSign,
-    string Name) : IRequest<ApiResponse<ProjectDTO>>;
+	string Number, 
+	string StageSign, 
+	string Name) : IRequest<ApiResponse<ProjectDTO>>;

@@ -2,10 +2,7 @@
 
 public abstract class ActiveStatusEntity : BaseEntity, IActiveStatus
 {
-	public bool ActiveStatus { get; set; }
+	public bool ActiveStatus { get; private set; }
 
-	public void SetActiveStatus(bool activeStatus)
-	{
-		ActiveStatus = activeStatus;
-	}
+	public void SetActiveStatus(bool activeStatus) => ActiveStatus = activeStatus;
 }

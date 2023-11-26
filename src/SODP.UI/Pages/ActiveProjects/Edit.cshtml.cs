@@ -1,4 +1,5 @@
 using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -62,13 +63,13 @@ public class EditModel : ProjectEditPageModel
 		return Page();
 	}
 
-	public async Task<IActionResult> OnPostAsync()
+	public async Task<IActionResult> OnPostAsync(ProjectDTO Project)
 	{
 		if (ModelState.IsValid)
 		{
 			var apiResponse = await _apiProvider.PutAsync(
 				$"projects/{Project.Id}",
-				GetRequestContent(Project));
+				GetRequestContent(new { Project.Id, Project }));
 
 			if (apiResponse.IsSuccessStatusCode)
 			{
@@ -91,49 +92,41 @@ public class EditModel : ProjectEditPageModel
 
 	public async Task<PartialViewResult> OnGetInvestorsListAsync(int projectId)
 	{
-		var apiResponse = await _apiProvider.GetAsync($"investors");
-		if (apiResponse.IsSuccessStatusCode)
+		var investors = await GetInvestorsItems();
+
+		var model = new InvestorsVM()
 		{
-			var response = await _apiProvider.GetContent<ServicePageResponse<InvestorDTO>>(apiResponse);
-			var model = new InvestorsVM()
-			{
-				ProjectId = projectId,
-				Investors = response.Data.Collection
-					.Where(x => x.ActiveStatus)
-					.Select(x => new SelectListItem
-					{
-						Value = x.Id.ToString(),
-						Text = x.Name.ToString()
-					})
-					.ToList()
-			};
+			ProjectId = projectId,
+			Investors = investors
+		};
 
-			return GetPartialView(model, _getInvestorViewName);
-		}
-
-		// for example show error message
-		return GetPartialView(new InvestorsVM(), _getInvestorViewName);
+		return GetPartialView(model, _getInvestorViewName);
 	}
 
 	public async Task<PartialViewResult> OnPostInvestorsListAsync(InvestorsVM investors)
 	{
+
 		investors.Investors = new List<SelectListItem>();
-		var apiResponse = await _apiProvider.GetAsync($"investors/{investors.InvestorId}");
-		var response = await _apiProvider.GetContent<ServiceResponse<InvestorDTO>>(apiResponse);
-		if (apiResponse.IsSuccessStatusCode)
+		var endpoint = $"investors/{investors.InvestorId}";
+		var apiResponse = await GetApiResponseAsync<InvestorDTO>(endpoint);
+//		var apiResponse1 = await _apiProvider.GetAsync(endpoint);
+//		var response = await _apiProvider.GetContent<ServiceResponse<InvestorDTO>>(apiResponse);
+		if (apiResponse.IsSuccess)
 		{
-			if (response.Success)
-			{
-				apiResponse = await _apiProvider.PatchAsync($"projects/{investors.ProjectId}/investor", new StringContent(
-							  JsonSerializer.Serialize(response.Data.Name),
-							  Encoding.UTF8,
-							  "application/json"
-				));
-				if (!apiResponse.IsSuccessStatusCode)
-				{
-					// SetModelErrors(response);
-				}
-			}
+			Project.Investor = apiResponse.Value.Name;
+			//if (response.Success)
+			//{
+				//Project.Investor = response.Data.Name;
+				//apiResponse = await _apiProvider.PatchAsync($"projects/{investors.ProjectId}/investor", new StringContent(
+				//			  JsonSerializer.Serialize(response.Data.Name),
+				//			  Encoding.UTF8,
+				//			  "application/json"
+				//));
+				//if (!apiResponse.IsSuccessStatusCode)
+				//{
+				//	// SetModelErrors(response);
+				//}
+			//}
 		}
 
 		return GetPartialView(investors, _getInvestorViewName);
@@ -383,5 +376,19 @@ public class EditModel : ProjectEditPageModel
 
 		return response;
 	}
+
+	private async Task<List<SelectListItem>> GetInvestorsItems()
+	{
+		var _apiResponse = await GetApiResponseAsync<Page<InvestorDTO>>("investors");
+
+		return _apiResponse.Value.Collection
+			.Where(x => x.ActiveStatus)
+			.Select(x => new SelectListItem
+			{
+				Value = x.Id.ToString(),
+				Text = x.Name
+			}).ToList();
+	}
+
 }
 

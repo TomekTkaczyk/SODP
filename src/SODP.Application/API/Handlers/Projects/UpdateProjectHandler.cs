@@ -1,15 +1,40 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Projects;
-using System;
+using SODP.Domain.Exceptions.ProjectExceptions;
+using SODP.Domain.Repositories;
+using SODP.Infrastructure.Specifications.Projects;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Projects;
 
-public sealed class UpdateProjectHandler : IRequestHandler<UpdateProjectRequest>
+internal sealed class UpdateProjectHandler : IRequestHandler<UpdateProjectRequest>
 {
-    public Task<Unit> Handle(UpdateProjectRequest request, CancellationToken cancellationToken)
+	private readonly IProjectRepository _projectRepository;
+	private readonly IUnitOfWork _unitOfWork;
+
+	public UpdateProjectHandler(
+        IProjectRepository projectRepository,
+		IUnitOfWork unitOfWork)
     {
-        throw new NotImplementedException();
-    }
+		_projectRepository = projectRepository;
+		_unitOfWork = unitOfWork;
+	}
+
+    public async Task<Unit> Handle(UpdateProjectRequest request, CancellationToken cancellationToken)
+    {
+        var specyfication = new ProjectByIdSpecification(request.Id);
+
+        var project = await _projectRepository.Get(specyfication)
+            .FirstOrDefaultAsync(cancellationToken)
+            ?? throw new ProjectNotFoundException();
+
+        project.Update(request.Project);
+
+        _projectRepository.Update(project);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+		return new Unit();
+	}
 }
