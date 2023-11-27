@@ -1,43 +1,41 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Parts;
-using SODP.Application.Specifications.Branches;
 using SODP.Application.Specifications.Common;
 using SODP.Domain.Entities;
-using SODP.Domain.Exceptions;
+using SODP.Domain.Exceptions.PartExceptions;
 using SODP.Domain.Repositories;
-using System;
+using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Parts;
 
-public sealed class UpdatePartHandler : IRequestHandler<UpdatePartRequest>
+public sealed class UpdatePartByIdHandler : IRequestHandler<UpdatePartByIdRequest, ApiResponse>
 {
-	private readonly IPartRepository _partRepository;
+	private readonly IPartRepository _repository;
 	private readonly IUnitOfWork _unitOfWork;
 
-	public UpdatePartHandler(
-		IPartRepository partRepository,
+	public UpdatePartByIdHandler(
+		IPartRepository repository,
 		IUnitOfWork unitOfWork)
 	{
-		_partRepository = partRepository;
+		_repository = repository;
 		_unitOfWork = unitOfWork;
 	}
 
-	public async Task<Unit> Handle(UpdatePartRequest request, CancellationToken cancellationToken)
+	public async Task<ApiResponse> Handle(UpdatePartByIdRequest request, CancellationToken cancellationToken)
 	{
-		var part = await _partRepository
+		var part = await _repository
 			.Get(new ByIdSpecification<Part>(request.Id))
 			.SingleOrDefaultAsync(cancellationToken)
-			?? throw new NotFoundException("Part");
+			?? throw new PartNotFoundException();
 
-		part.SetSign(request.Sign);
 		part.SetTitle(request.Title);
 
-		_partRepository.Update(part);
+		_repository.Update(part);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		return new Unit();
+		return ApiResponse.Success();
 	}
 }

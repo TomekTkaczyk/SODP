@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using SODP.Domain.Shared.Results;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
@@ -26,7 +27,7 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.ActiveProjects;
 
 [Authorize(Roles = "Administrator,ProjectManager")]
-public class EditModel : ProjectEditPageModel
+public class EditModel : AppPageModel
 {
 	const string _editProjectPartViewName = "ModalView/_EditProjectPartModalView";
 	const string _addTechnicalRoleViewName = "ModalView/_AddTechnicalRoleModalView";
@@ -53,14 +54,13 @@ public class EditModel : ProjectEditPageModel
 
 	public async Task<IActionResult> OnGetAsync(int id)
 	{
-		Project = await GetProjectAsync(id);
+		var apiResponse = await GetApiResponseAsync<ProjectDTO>($"{_endpoint}/{id}/details");
 
-		if (Project == null)
-		{
-			return Redirect("/Errors/404");
-		}
+		Project = apiResponse.Value;
 
-		return Page();
+		return Project is null 
+			? Redirect("/Errors/404") 
+			: Page();
 	}
 
 	public async Task<IActionResult> OnPostAsync(ProjectDTO Project)
@@ -92,7 +92,15 @@ public class EditModel : ProjectEditPageModel
 
 	public async Task<PartialViewResult> OnGetInvestorsListAsync(int projectId)
 	{
-		var investors = await GetInvestorsItems();
+		var _apiResponse = await GetApiResponseAsync<Page<InvestorDTO>>("investors");
+
+		var investors = _apiResponse.Value.Collection
+			.Where(x => x.ActiveStatus)
+			.Select(x => new SelectListItem
+			{
+				Value = x.Id.ToString(),
+				Text = x.Name
+			}).ToList();
 
 		var model = new InvestorsVM()
 		{
@@ -103,35 +111,6 @@ public class EditModel : ProjectEditPageModel
 		return GetPartialView(model, _getInvestorViewName);
 	}
 
-	public async Task<PartialViewResult> OnPostInvestorsListAsync(InvestorsVM investors)
-	{
-
-		investors.Investors = new List<SelectListItem>();
-		var endpoint = $"investors/{investors.InvestorId}";
-		var apiResponse = await GetApiResponseAsync<InvestorDTO>(endpoint);
-//		var apiResponse1 = await _apiProvider.GetAsync(endpoint);
-//		var response = await _apiProvider.GetContent<ServiceResponse<InvestorDTO>>(apiResponse);
-		if (apiResponse.IsSuccess)
-		{
-			Project.Investor = apiResponse.Value.Name;
-			//if (response.Success)
-			//{
-				//Project.Investor = response.Data.Name;
-				//apiResponse = await _apiProvider.PatchAsync($"projects/{investors.ProjectId}/investor", new StringContent(
-				//			  JsonSerializer.Serialize(response.Data.Name),
-				//			  Encoding.UTF8,
-				//			  "application/json"
-				//));
-				//if (!apiResponse.IsSuccessStatusCode)
-				//{
-				//	// SetModelErrors(response);
-				//}
-			//}
-		}
-
-		return GetPartialView(investors, _getInvestorViewName);
-	}
-
 	public async Task<IActionResult> OnGetEditProjectPartAsync(int projectId, int projectPartId)
 	{
 		var model = new PartVM()
@@ -140,8 +119,9 @@ public class EditModel : ProjectEditPageModel
 			ProjectId = projectId,
 			Items = await GetAvailablePartsAsync(),
 		};
+
 		var part = await GetProjectPartAsync(projectPartId);
-		if (part != null)
+		if (part is not null)
 		{
 			model.Sign = part.Sign;
 			model.Title = part.Title;
@@ -152,26 +132,20 @@ public class EditModel : ProjectEditPageModel
 
 	public async Task<IActionResult> OnPostEditProjectPartAsync(PartVM part)
 	{
-		part.Items = await GetAvailablePartsAsync();
 		if (ModelState.IsValid)
 		{
-			HttpResponseMessage apiResponse;
-			if (part.Id == 0)
+			// HttpResponseMessage apiResponse;
+			// var aaa = await PostApiResponseAsync<PartDTO>($"projects/{part.ProjectId}/parts", part.ToHttpContent());
+			var apiResponse = part.Id == 0
+				? await PostApiResponseAsync<PartDTO>($"projects/{part.ProjectId}/parts", part.ToHttpContent())
+				: await PutApiResponseAsync($"projects/parts/{part.Id}", part.ToHttpContent());
+			
+			if (!apiResponse.IsSuccess)
 			{
-				apiResponse = await _apiProvider.PostAsync($"projects/{part.ProjectId}/parts", part.ToHttpContent());
+				// SetModelErrors(response);
 			}
-			else
-			{
-				apiResponse = await _apiProvider.PutAsync($"projects/parts/{part.Id}", part.ToHttpContent());
-			}
-			if (apiResponse.StatusCode == HttpStatusCode.OK)
-			{
-				var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
-				if (!response.Success)
-				{
-					// SetModelErrors(response);
-				}
-			}
+		} else { 
+			part.Items = await GetAvailablePartsAsync();
 		}
 
 		return GetPartialView(part, _editProjectPartViewName);
@@ -181,11 +155,14 @@ public class EditModel : ProjectEditPageModel
 	{
 		var model = new ProjectPartVM();
 
-		var apiResponse = await _apiProvider.GetAsync($"projects/parts/{projectPartId}/branches");
-		if (apiResponse.IsSuccessStatusCode)
+		var apiResponse = await GetApiResponseAsync<ProjectPartDTO>($"projects/parts/{projectPartId}/branches");
+
+		// var apiResponse = await _apiProvider.GetAsync($"projects/parts/{projectPartId}/branches");
+		if (apiResponse.IsSuccess)
 		{
-			var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectPartDTO>>();
-			model = _mapper.Map<ProjectPartVM>(result.Data);
+			//var aaa = apiResponse.Value;
+			//var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectPartDTO>>();
+			model = _mapper.Map<ProjectPartVM>(apiResponse.Value);
 		}
 
 		return GetPartialView(model, _partBranchesViewName);
@@ -331,23 +308,19 @@ public class EditModel : ProjectEditPageModel
 
 	private async Task<ProjectPartDTO> GetProjectPartAsync(int projectPartId)
 	{
-		var apiResponse = await _apiProvider.GetAsync($"projects/parts/{projectPartId}");
-		if (apiResponse.IsSuccessStatusCode)
-		{
-			var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectPartDTO>>();
-			return result.Data;
-		}
+		var apiResponse = await GetApiResponseAsync<ProjectPartDTO>($"projects/parts/{projectPartId}");
 
-		return null;
+		return apiResponse.IsSuccess 
+			? apiResponse.Value 
+			: null;
 	}
 
 	private async Task<IList<SelectListItem>> GetAvailablePartsAsync()
 	{
-		var apiResponse = await _apiProvider.GetAsync($"parts?active=true");
-		if (apiResponse.IsSuccessStatusCode)
+		var apiResponse = await GetApiResponseAsync<Page<PartDTO>>($"parts?active=true");
+		if (apiResponse.IsSuccess)
 		{
-			var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<PartDTO>>();
-			return result.Data.Collection.Select(x => new SelectListItem
+			return apiResponse.Value.Collection.Select(x => new SelectListItem
 			{
 				Value = x.Sign,
 				Text = x.Title,
@@ -376,19 +349,5 @@ public class EditModel : ProjectEditPageModel
 
 		return response;
 	}
-
-	private async Task<List<SelectListItem>> GetInvestorsItems()
-	{
-		var _apiResponse = await GetApiResponseAsync<Page<InvestorDTO>>("investors");
-
-		return _apiResponse.Value.Collection
-			.Where(x => x.ActiveStatus)
-			.Select(x => new SelectListItem
-			{
-				Value = x.Id.ToString(),
-				Text = x.Name
-			}).ToList();
-	}
-
 }
 

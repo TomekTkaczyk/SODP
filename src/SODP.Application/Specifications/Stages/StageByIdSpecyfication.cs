@@ -3,8 +3,8 @@ using SODP.Domain.Shared.Specifications;
 
 namespace SODP.Application.Specifications.Stages;
 
-public class StageByIdSpecyfication : Specification<Stage>
+public class StageByIdSpecification : Specification<Stage>
 {
-	public StageByIdSpecyfication(int id)
+	public StageByIdSpecification(int id)
 		: base(stage => stage.Id == id) { }
 }

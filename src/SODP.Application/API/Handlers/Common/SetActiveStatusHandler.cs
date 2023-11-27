@@ -57,7 +57,7 @@ public sealed class SetActiveStatusHandler<TEntity>
 //public async Task<ApiResponse> Handle(SetActiveStatusCommand<TEntity> request, CancellationToken cancellationToken)
 //{
 //	var entity = await _repository
-//		.ApplySpecyfication(new ByIdSpecification<TEntity>(request.Id))
+//		.ApplySpecification(new ByIdSpecification<TEntity>(request.Id))
 //		.SingleOrDefaultAsync(cancellationToken);
 //	if (entity is null)
 //	{

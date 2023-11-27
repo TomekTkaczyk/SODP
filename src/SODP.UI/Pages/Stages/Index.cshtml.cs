@@ -47,7 +47,7 @@ public sealed class IndexModel : CollectionPageModel
 		return Page();
 	}
 
-	public async Task<PartialViewResult> OnGetEditStageAsync(int? id)
+	public async Task<IActionResult> OnGetEditStageAsync(int? id)
 	{
 		if (!id.HasValue)
 		{
@@ -64,13 +64,13 @@ public sealed class IndexModel : CollectionPageModel
 		return GetPartialView(_mapper.Map<StageVM>(apiResponse.Value), _editStageModalViewName);
 	}
 
-	public async Task<PartialViewResult> OnPostEditStageAsync(StageVM model)
+	public async Task<IActionResult> OnPostEditStageAsync(StageVM model)
 	{
 		if (ModelState.IsValid)
 		{
 			var responseMessage = model.Id == 0
 				? await _apiProvider.PostAsync($"{_endpoint}", model.ToHttpContent())
-				: await _apiProvider.PatchAsync($"{_endpoint}/{model.Id}", model.ToHttpContent());
+				: await _apiProvider.PutAsync($"{_endpoint}/{model.Id}", model.ToHttpContent());
 
 			if (!responseMessage.IsSuccessStatusCode)
 			{

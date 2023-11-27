@@ -49,7 +49,8 @@ public class AutoMapperProfile : Profile
 		#region Part
 
 		CreateMap<Part, PartDTO>()
-		   .PreserveReferences();
+			.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.Value))
+			.PreserveReferences();
 
 		CreateMap<PartDTO, Part>()
 		   .ForMember(dest => dest.CreateTimeStamp, act => act.Ignore())

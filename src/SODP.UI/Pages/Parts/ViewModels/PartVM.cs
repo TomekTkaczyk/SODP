@@ -6,11 +6,11 @@ namespace SODP.UI.Pages.Parts.ViewModels
 	{
 		public int Id { get; set; }
 
-        [Required(ErrorMessage = "Znak części jest wymagany")]
-        [MinLength(1)]
+        [Required(ErrorMessage = "Symbol jest wymagany")]
         public string Sign { get; set; }
 
-        [Required(ErrorMessage = "Nazwa części jest wymagana")]
-        public string Name { get; set; }
-    }
+        public string Title { get; set; }
+
+		public bool ActiveStatus { get; set; }
+	}
 }

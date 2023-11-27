@@ -89,6 +89,18 @@
 			</tr>
 		</tfoot>
 	</table>
+	@if (Model.PageInfo.TotalPages > 1)
+	{
+		<div class="text-center pb-2">
+			<div page-model="@Model.PageInfo"
+				 page-class="btn border"
+				 page-class-normal="btn btn-light"
+				 page-class-selected="btn btn-info"
+				 page-class-prev-next="btn"
+				 class="btn-group">
+			</div>
+		</div>
+	}
 }
 else 
 {
@@ -103,7 +115,7 @@ else
 		function EditPart(id) {
 			$.ajax({
 				type: "Get",
-				url: `@Url.Page("Index","EditPart")&Id=` + id,
+				url: `@Url.Page("Index","EditPart")&Id=${id}`,
 				success: function (data) {
 					$('#modal-placeholder').html(data);
 					$('#editPart').modal('show');
@@ -121,6 +133,7 @@ else
 				data: JSON.stringify(c),
 				success: function (response) { },
 				error: function (jqXHR, exception) {
+					console.log(jqXHR);
 					console.log(exception);
 				}
 			});

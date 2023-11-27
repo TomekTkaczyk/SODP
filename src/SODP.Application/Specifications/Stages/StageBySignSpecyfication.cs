@@ -3,8 +3,7 @@ using SODP.Domain.Shared.Specifications;
 
 namespace SODP.Application.Specifications.Stages;
 
-public class StageBySignSpecyfication : Specification<Stage>
+public class StageBySignSpecification : Specification<Stage>
 {
-	public StageBySignSpecyfication(string sign)
-		: base(stage =>	stage.Sign.Equals(sign)) { }
+	public StageBySignSpecification(string sign) : base(stage => stage.Sign.Equals(sign)) { }
 }

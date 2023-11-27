@@ -24,9 +24,9 @@ internal sealed class UpdateProjectHandler : IRequestHandler<UpdateProjectReques
 
     public async Task<Unit> Handle(UpdateProjectRequest request, CancellationToken cancellationToken)
     {
-        var specyfication = new ProjectByIdSpecification(request.Id);
+        var specification = new ProjectByIdSpecification(request.Id);
 
-        var project = await _projectRepository.Get(specyfication)
+        var project = await _projectRepository.Get(specification)
             .FirstOrDefaultAsync(cancellationToken)
             ?? throw new ProjectNotFoundException();
 

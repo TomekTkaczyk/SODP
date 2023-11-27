@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using SODP.Shared.DTO;
 using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Parts;
 
-public sealed record CreatePartRequest(
+public sealed record UpdatePartBySignRequest(
 	string Sign,
-	string Title) : IRequest<ApiResponse<int>>;
+	string Title) : IRequest<ApiResponse>;

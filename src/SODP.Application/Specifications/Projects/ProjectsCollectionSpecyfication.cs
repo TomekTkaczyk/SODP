@@ -6,9 +6,9 @@ using System.Linq.Expressions;
 
 namespace SODP.Infrastructure.Specifications.Projects;
 
-public class ProjectsCollectionSpecyfication : Specification<Project>
+public class ProjectsCollectionSpecification : Specification<Project>
 {
-	public ProjectsCollectionSpecyfication(ProjectStatus status, string searchString)
+	public ProjectsCollectionSpecification(ProjectStatus status, string searchString)
 		: base(project =>
 		   (project.Status == status)
 		   &&

@@ -13,28 +13,28 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Stages;
 
-public sealed class CreateStageHandler : IRequestHandler<CreateStageRequest, ApiResponse<StageDTO>>
+public sealed class CreateStageHandler : IRequestHandler<CreateStageRequest, ApiResponse<int>>
 {
-    private readonly IStageRepository _stageRepository;
+    private readonly IStageRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
 	private readonly IMapper _mapper;
 
 	public CreateStageHandler(
-        IStageRepository stageRepository,
+        IStageRepository repository,
         IUnitOfWork unitOfWork,
         IMapper mapper)
     {
-        _stageRepository = stageRepository;
+        _repository = repository;
         _unitOfWork = unitOfWork;
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<StageDTO>> Handle(CreateStageRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> Handle(CreateStageRequest request, CancellationToken cancellationToken)
     {
-        var specyfication = new StageBySignSpecyfication(request.Sign.ToUpper());
+        var specification = new StageBySignSpecification(request.Sign.ToUpper());
 
-		var stageExist = await _stageRepository
-            .Get(specyfication)
+		var stageExist = await _repository
+            .Get(specification)
             .AnyAsync(cancellationToken);
 
         if (stageExist)
@@ -42,10 +42,10 @@ public sealed class CreateStageHandler : IRequestHandler<CreateStageRequest, Api
             throw new StageConflictException();
         }
 
-        var stage = _stageRepository.Add(Stage.Create(request.Sign.ToUpper(), request.Title.ToUpper()));
+        var stage = _repository.Add(Stage.Create(request.Sign, request.Title));
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return ApiResponse.Success(_mapper.Map<StageDTO>(stage));
+        return ApiResponse.Success(stage.Id);
     }
 }

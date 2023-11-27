@@ -23,6 +23,7 @@ namespace SODP.DataAccess.Configurations
 			builder.Property(x => x.Title)
 				.HasColumnType("nvarchar(50)")
 				.HasColumnName("Name")
+				//.HasColumnName("Title")
 				.IsRequired();
 
 			builder.Property(x => x.ActiveStatus)
@@ -31,6 +32,9 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
 			builder.HasKey(u => u.Id);
+
+			//builder.HasIndex(x => new { x.Order })
+			//	 .HasName("PartIX_Order");
 
 			builder.ToTable("Stages");
         }

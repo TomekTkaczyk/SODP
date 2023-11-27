@@ -14,8 +14,8 @@ public static class Extensions
         return new AndSpecification<T>(left, right);
     }
 
-    public static IQueryable<T> GetQuery<T>(IQueryable<T> inputQueryable, Specification<T> specyfication)
+    public static IQueryable<T> GetQuery<T>(IQueryable<T> inputQueryable, Specification<T> specification)
     {
-        return inputQueryable.AsQueryable().Where(specyfication);
+        return inputQueryable.AsQueryable().Where(specification);
     }
 }

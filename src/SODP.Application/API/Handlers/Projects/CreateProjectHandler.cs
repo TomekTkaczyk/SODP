@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Projects;
@@ -9,46 +8,42 @@ using SODP.Domain.Exceptions;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
-using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Projects;
 
-internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiResponse<ProjectDTO>>
+internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiResponse<int>>
 {
     private readonly IProjectRepository _projectRepository;
     private readonly IStageRepository _stageRepository;
 	private readonly IFolderManager _folderManager;
 	private readonly IUnitOfWork _unitOfWork;
-	private readonly IMapper _mapper;
 
 	public CreateProjectHandler(
         IProjectRepository projectRepository,
         IStageRepository stageRepository,
         IFolderManager folderManager,
-        IUnitOfWork unitOfWork,
-        IMapper mapper)
+        IUnitOfWork unitOfWork)
     {
         _projectRepository = projectRepository;
         _stageRepository = stageRepository;
 		_folderManager = folderManager;
 		_unitOfWork = unitOfWork;
-		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<ProjectDTO>> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
     {
 		var stage = await _stageRepository
-			.Get(new StageBySignSpecyfication(request.StageSign))
+			.Get(new StageBySignSpecification(request.StageSign))
 			.SingleOrDefaultAsync(cancellationToken) 
             ?? throw new StageNotFoundException();
 
 		var project = Project.Create(request.Number, stage, request.Name);
 
         var projectExist = await _projectRepository
-            .Get(new ProjectBySymbolSpecyfication(request.Number, request.StageSign))
+            .Get(new ProjectBySymbolSpecification(request.Number, request.StageSign))
             .AnyAsync(cancellationToken);
 
         if (projectExist)
@@ -65,6 +60,6 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
         project = _projectRepository.Add(project);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return ApiResponse.Success(_mapper.Map<ProjectDTO>(project));
+        return ApiResponse.Success(project.Id);
     }
 }

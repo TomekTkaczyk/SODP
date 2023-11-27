@@ -37,7 +37,7 @@ namespace SODP.UI.Mappers
 			CreateMap<PartDTO, Pages.Parts.ViewModels.PartVM>()
 				.ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.Id))
 				.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign))
-				.ForMember(dest => dest.Name, opt => opt.MapFrom(x => x.Title));
+				.ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title));
 
 			CreateMap<BranchRoleDTO, Pages.Shared.ViewModels.BranchRoleVM>()
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(x => x.Role))

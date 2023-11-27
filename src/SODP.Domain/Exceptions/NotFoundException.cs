@@ -2,5 +2,5 @@
 
 public class NotFoundException : DomainException
     {
-	public NotFoundException(string entityName) : base($"{entityName} not found.") { }
+	public NotFoundException(string message) : base(message) { }
 }

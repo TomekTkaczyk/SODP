@@ -78,7 +78,7 @@ public class ProjectController : ApiControllerBase
 			var response = await _sender.Send(request, cancellationToken);
 			return CreatedAtAction(
 				nameof(GetAsync),
-				new { id = response.Value.Id },
+				new { response.Value },
 				null);
 		}
 		catch (ConflictException ex)

@@ -51,22 +51,20 @@
 			</div>
 		</div>
 	}
-	@if (Model.DevelopmentDate is not null)
-	{
-		<div>
-			<label class="text-secondary">Data opracowania:</label>
-			<div class="row font-weight-bold ml-2 text-primary">
-				@if (Model.DevelopmentDate.HasValue)
-				{
-					<span style="white-space: pre-line">@Model.DevelopmentDate</span>
-				}
-				else
-				{
-					<span style="white-space: pre-line">Do ustalenia</span>
-				}
-			</div>
+
+	<div>
+		<label class="text-secondary">Data opracowania:</label>
+		<div class="row font-weight-bold ml-2">
+			@if (Model.DevelopmentDate.HasValue)
+			{
+				<span class="text-primary" style="white-space: pre-line">@Html.DisplayFor(x => x.DevelopmentDate)</span>
+			}
+			else
+			{
+				<span class="text-danger" style="white-space: pre-line">Do ustalenia</span>
+			}
 		</div>
-	}
+	</div>
 
 	@if (!string.IsNullOrWhiteSpace(Model.Description))
 	{

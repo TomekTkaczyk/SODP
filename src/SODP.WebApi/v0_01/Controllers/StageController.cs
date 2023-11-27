@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Application.API.Requests.Parts;
 using SODP.Application.API.Requests.Stages;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
@@ -18,8 +19,8 @@ public class StageController : ActiveStatusController<Stage>
 {
 	public StageController(
 		ISender sender,
-		IMapper mapper,
-		ILogger<StageController> logger) : base(sender, logger, mapper) { }
+		ILogger<StageController> logger,
+		IMapper mapper) : base(sender, logger, mapper) { }
 
 
 	[HttpGet]
@@ -54,7 +55,7 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetAsync(
 		[FromRoute] int id,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken = default)
 	{
 		var request = new GetStageRequest(id);
 
@@ -75,17 +76,80 @@ public class StageController : ActiveStatusController<Stage>
 			var response = await _sender.Send(request, cancellationToken);
 			return CreatedAtAction(
 					nameof(GetAsync),
-					new { response.Value.Id },
+					new { response.Value },
 					response);
 		}
 		catch (ConflictException ex)
 		{
-			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
+			return Conflict(
+				ApiResponse.Failure(
+					ex.Message, 
+					HttpStatusCode.Conflict, 
+					new List<Error>()));
 		}
 		catch (Exception ex)
 		{
-			return UnknowServerError(ApiResponse.Failure(ex.Message,HttpStatusCode.InternalServerError,new List<Error>()));
+			return UnknowServerError(
+				ApiResponse.Failure(
+					ex.Message,
+					HttpStatusCode.InternalServerError,
+					new List<Error>()));
 		}
+	}
+
+
+	[HttpPut("{id:int}")]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
+	public virtual async Task<IActionResult> UpdateByIdAsync(
+		[FromRoute] int id,
+		[FromBody] UpdateStageByIdRequest request,
+		CancellationToken cancellationToken = default)
+	{
+		if (id != request.Id)
+		{
+			return BadRequest();
+		}
+
+		return await HandleRequestAsync<UpdateStageByIdRequest, ApiResponse>(request, cancellationToken);
+	}
+
+
+	[HttpPut()]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
+	public virtual async Task<IActionResult> UpdateBySignAsync(
+		[FromBody] UpdateStageBySignRequest request,
+		CancellationToken cancellationToken = default)
+	{
+		if (string.IsNullOrWhiteSpace(request.Sign))
+		{
+			return BadRequest();
+		}
+
+		try
+		{
+			return await HandleRequestAsync<UpdateStageBySignRequest, ApiResponse>(request, cancellationToken);
+		}
+		catch (DomainException ex)
+		{
+			return NotFound(
+				ApiResponse.Failure(
+					ex.Message,
+					HttpStatusCode.NotFound,
+					new List<Error>()));
+		}
+		catch (Exception ex)
+		{
+			return UnknowServerError(
+				ApiResponse.Failure(
+					ex.Message,
+					HttpStatusCode.InternalServerError,
+					new List<Error>()));
+		}
+
 	}
 
 
@@ -94,30 +158,11 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> DeleteAsync(
-		[FromRoute] int id,
-		CancellationToken cancellationToken)
+	[FromRoute] int id,
+	CancellationToken cancellationToken = default)
 	{
 		var request = new DeleteStageRequest(id);
-	
+
 		return await HandleRequestAsync(request, cancellationToken);
 	}
-
-
-	[HttpPatch("{id:int}")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public virtual async Task<IActionResult> ChangeNameAsync(
-		[FromRoute] int id,
-		[FromBody] ChangeStageTitleRequest request,
-		CancellationToken cancellationToken = default)
-	{
-		if (id != request.Id)
-		{
-			return BadRequest();
-		}
-
-		return await HandleRequestAsync<ChangeStageTitleRequest, ApiResponse>(request, cancellationToken);
-	}
-
 }

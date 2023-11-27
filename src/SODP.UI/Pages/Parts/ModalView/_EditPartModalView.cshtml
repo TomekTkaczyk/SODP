@@ -1,9 +1,6 @@
 ﻿@using SODP.UI.Pages.Parts.ViewModels
-
 @model PartVM
-
 <!-- Modal -->
-
 <div class="modal fade" id="editPart" tabindex="-1" role="dialog" aria-labelledby="editPartLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -24,8 +21,8 @@
                         <span asp-validation-for="Sign" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input asp-for="Name" onkeyup="this.value = this.value.toUpperCase();" id="title" class="form-control" value="@Model.Name" placeholder="Opis opis" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <input asp-for="Title" onkeyup="this.value = this.value.toUpperCase();" id="title" class="form-control" value="@Model.Title" placeholder="Opis opis" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                 </form>
             </div>

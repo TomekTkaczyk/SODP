@@ -3,9 +3,9 @@ using SODP.Domain.Shared.Specifications;
 
 namespace SODP.Application.Specifications.Stages;
 
-public class StagesCollectionSpecification : Specification<Stage>
+public class StagesSearchSpecification : Specification<Stage>
 {
-	public StagesCollectionSpecification(bool? active = null, string searchString = null)
+	public StagesSearchSpecification(bool? active = null, string searchString = null)
 		: base(stage =>
 		(!active.HasValue || stage.ActiveStatus.Equals(active)) && 
 		(string.IsNullOrWhiteSpace(searchString)

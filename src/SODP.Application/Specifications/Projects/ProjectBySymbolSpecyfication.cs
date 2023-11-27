@@ -3,9 +3,9 @@ using SODP.Domain.Shared.Specifications;
 
 namespace SODP.Infrastructure.Specifications.Projects;
 
-public class ProjectBySymbolSpecyfication : Specification<Project>
+public class ProjectBySymbolSpecification : Specification<Project>
 {
-	public ProjectBySymbolSpecyfication(string number, string stageSign)
+	public ProjectBySymbolSpecification(string number, string stageSign)
 		: base(project =>
 		(string.IsNullOrEmpty(number) || project.Number.Equals(number))
 		&&

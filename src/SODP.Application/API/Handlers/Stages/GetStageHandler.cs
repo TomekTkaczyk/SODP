@@ -30,7 +30,7 @@ public class GetStageHandler : IRequestHandler<GetStageRequest, ApiResponse<Stag
         CancellationToken cancellationToken)
     {
         var stage = await _stageRepository
-            .Get(new StageByIdSpecyfication(request.Id))
+            .Get(new StageByIdSpecification(request.Id))
             .SingleOrDefaultAsync(cancellationToken)
 			?? throw new StageNotFoundException();
 

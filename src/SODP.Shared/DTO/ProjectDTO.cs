@@ -31,6 +31,7 @@ public class ProjectDTO : BaseDTO
 
 	public string Description { get; set; }
 
+	[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
 	public DateTime? DevelopmentDate { get; set; }
 
 	public ProjectStatus Status { get; set; }

@@ -6,7 +6,7 @@ namespace SODP.Domain.Repositories;
 
 public interface IRepository<TEntity> where TEntity : BaseEntity
 {
-	IQueryable<TEntity> Get(ISpecification<TEntity> specyfication = null);
+	IQueryable<TEntity> Get(ISpecification<TEntity> specification = null);
 
 	TEntity Add(TEntity entity);
 

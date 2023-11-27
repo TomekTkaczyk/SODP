@@ -2,5 +2,5 @@
 
 public class ConflictException : DomainException
 {
-	public ConflictException(string entityName) : base($"{entityName} already exist.") { }
+	public ConflictException(string message) : base(message) { }
 }

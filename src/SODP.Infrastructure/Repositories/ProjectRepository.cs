@@ -46,7 +46,7 @@ public class ProjectRepository : PagedRepository<Project>, IProjectRepository
 	//	int pageSize,
 	//	CancellationToken cancellationToken)
 	//{
-	//	var queryable = ApplySpecyfication(new ProjectByNameSpecyfication(status, searchString));
+	//	var queryable = ApplySpecification(new ProjectByNameSpecification(status, searchString));
 		
 	//	var totalItems = await queryable.CountAsync(cancellationToken);
 

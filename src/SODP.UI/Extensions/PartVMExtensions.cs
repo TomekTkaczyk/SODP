@@ -15,7 +15,7 @@ namespace SODP.UI.Extensions
                                   {
                                       Id= part.Id,
 									  Sign = part.Sign,
-									  Title = part.Name
+									  Title = part.Title
 								  }),
                                   Encoding.UTF8,
                                   "application/json"
@@ -28,7 +28,7 @@ namespace SODP.UI.Extensions
             {
                 Id = part.Id,
                 Sign = part.Sign,
-                Name = part.Title,
+                Title = part.Title,
             };
         }
     }

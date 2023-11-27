@@ -8,14 +8,14 @@ using System.Linq;
 using Tests;
 using Xunit;
 
-namespace tests.SpecyficationTests;
+namespace tests.SpecificationTests;
 
-public class StageByNameSpecyficationTests
+public class StageByNameSpecificationTests
 {
 	private readonly SODPDBContext _context;
 	private readonly StageRepository _stageRepository;
 
-    public StageByNameSpecyficationTests()
+    public StageByNameSpecificationTests()
     {
 		var mock = new Mock<ILogger<Stage>>();
 
@@ -26,7 +26,7 @@ public class StageByNameSpecyficationTests
 	[Fact]
 	public void repository_GetAll_shuld_return_one_stage_PWKS()
 	{
-		var specification = new StagesCollectionSpecification(null, "PWKS");
+		var specification = new StagesSearchSpecification(null, "PWKS");
 		var stage = _stageRepository.Get(specification).FirstOrDefault();
 
 		Assert.NotNull(stage);
@@ -36,7 +36,7 @@ public class StageByNameSpecyficationTests
 	[Fact]
 	public void repository_GetAll_should_return_the_full_sorted_list()
 	{
-		var specification = new StagesCollectionSpecification();
+		var specification = new StagesSearchSpecification();
 
 		var stage = _stageRepository.Get(specification).FirstOrDefault();
 
@@ -47,7 +47,7 @@ public class StageByNameSpecyficationTests
 	[Fact]
 	public void repository_GetAll_should_return_the_sorted_list_content_OPINIA()
 	{
-		var specification = new StagesCollectionSpecification(null,"opinia");
+		var specification = new StagesSearchSpecification(null,"opinia");
 
 		var stage = _stageRepository.Get(specification).FirstOrDefault();
 

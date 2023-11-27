@@ -1,6 +1,6 @@
 ﻿namespace SODP.Domain.Exceptions.StageExceptions;
 
-public class StageConflictException	: DomainException
+public class StageConflictException	: ConflictException
 {
-    public StageConflictException() : base("Stage sign exist.") { }
+    public StageConflictException() : base("Stage sign already exists.") { }
 }

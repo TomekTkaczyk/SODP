@@ -29,12 +29,12 @@ public class DeleteStageHandler : IRequestHandler<DeleteStageRequest>
     public async Task<Unit> Handle(DeleteStageRequest request, CancellationToken cancellationToken)
     {
 		var stage = await _stageRepository
-			.Get(new StageByIdSpecyfication(request.Id))
+			.Get(new StageByIdSpecification(request.Id))
 			.SingleOrDefaultAsync(cancellationToken) 
             ?? throw new StageNotFoundException();
 
 		var projectUseSign = await _projectRepository
-            .Get(new ProjectBySymbolSpecyfication(null, stage.Sign))
+            .Get(new ProjectBySymbolSpecification(null, stage.Sign))
             .AnyAsync(cancellationToken);
 		
         if (projectUseSign)

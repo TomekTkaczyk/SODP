@@ -5,7 +5,9 @@ namespace SODP.Domain.Entities;
 public sealed class Stage : ActiveStatusEntity, IOrdered
 {
 	public Sign Sign { get; private set; }
+	
 	public string Title { get; private set; }
+
 	public int Order { get; private set; }
 
 	private Stage() { }
@@ -21,11 +23,6 @@ public sealed class Stage : ActiveStatusEntity, IOrdered
     {
         return new Stage(sign, title);
     }
-
-	public void SetSign(string sign)
-	{
-		Sign = sign.ToUpper();
-	}
 
 	public void SetTitle(string title) 
 	{ 
