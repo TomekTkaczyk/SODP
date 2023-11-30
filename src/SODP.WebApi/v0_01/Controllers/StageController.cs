@@ -64,9 +64,10 @@ public class StageController : ActiveStatusController<Stage>
 
 
 	[HttpPost]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
+	[ProducesResponseType(StatusCodes.Status409Conflict)]
 	public async Task<IActionResult> CreateAsync(
 		[FromBody] CreateStageRequest request, 
 		CancellationToken cancellationToken = default)
@@ -76,8 +77,8 @@ public class StageController : ActiveStatusController<Stage>
 			var response = await _sender.Send(request, cancellationToken);
 			return CreatedAtAction(
 					nameof(GetAsync),
-					new { response.Value },
-					response);
+					new { id = response.Value },
+					null);
 		}
 		catch (ConflictException ex)
 		{
@@ -100,6 +101,7 @@ public class StageController : ActiveStatusController<Stage>
 
 	[HttpPut("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public virtual async Task<IActionResult> UpdateByIdAsync(
@@ -118,6 +120,7 @@ public class StageController : ActiveStatusController<Stage>
 
 	[HttpPut()]
 	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public virtual async Task<IActionResult> UpdateBySignAsync(

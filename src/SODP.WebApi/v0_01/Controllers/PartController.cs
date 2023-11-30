@@ -65,7 +65,8 @@ public class PartController : ActiveStatusController<Part>
 
 
 	[HttpPost]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
@@ -77,7 +78,7 @@ public class PartController : ActiveStatusController<Part>
 			var response = await _sender.Send(request, cancellationToken);
 			return CreatedAtAction(
 				nameof(GetAsync),
-				new { response.Value },
+				new { id = response.Value },
 				response);
 		}
 		catch (ConflictException ex)
@@ -119,6 +120,7 @@ public class PartController : ActiveStatusController<Part>
 
 	[HttpPut()]
 	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public virtual async Task<IActionResult> UpdateBySignAsync(

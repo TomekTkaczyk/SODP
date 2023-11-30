@@ -24,6 +24,8 @@ public class ProjectController : ApiControllerBase
 		IMapper mapper) : base(sender, logger, mapper) { }
 
 
+	#region Project
+
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -40,26 +42,23 @@ public class ProjectController : ApiControllerBase
 			return BadRequest($"pageNumber and/or pageSize is invalid.");
 		}
 
-		var request = new GetProjectsPageRequest(status, searchString, pageNumber, pageSize);
-
-		var a = await HandleRequestAsync<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>(request, cancellationToken);
-
-		return a;
+		return await HandleRequestAsync<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>(
+			new GetProjectsPageRequest(status, searchString, pageNumber, pageSize), 
+			cancellationToken);
 	}
 
-	#region Project
 
 	[HttpGet("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken = default)
 	{
-		var request = new GetProjectRequest(id);
-
-		return await HandleRequestAsync<GetProjectRequest, ApiResponse<ProjectDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetProjectRequest, ApiResponse<ProjectDTO>>(
+			new GetProjectRequest(id), 
+			cancellationToken);
 	}
 
 
@@ -76,9 +75,10 @@ public class ProjectController : ApiControllerBase
 		try
 		{
 			var response = await _sender.Send(request, cancellationToken);
+
 			return CreatedAtAction(
 				nameof(GetAsync),
-				new { response.Value },
+				new { id = response.Value },
 				null);
 		}
 		catch (ConflictException ex)
@@ -113,12 +113,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> DeleteAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken = default)
 	{
-		var request = new DeleteProjectRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(
+			new DeleteProjectRequest(id), 
+			cancellationToken);
 	}
 
 
@@ -127,7 +127,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Update(
-		int id,
+		[FromRoute] int id,
 		[FromBody] UpdateProjectRequest request,
 		CancellationToken cancellationToken)
 	{
@@ -145,10 +145,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Archive(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		return await HandleRequestAsync(new ArchiveProjectRequest(id), cancellationToken);
+		return await HandleRequestAsync(
+			new ArchiveProjectRequest(id), 
+			cancellationToken);
 	}
 
 
@@ -157,12 +159,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> Restore(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new RestoreProjectRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(
+			new RestoreProjectRequest(id), 
+			cancellationToken);
 	}
 
 
@@ -171,7 +173,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> SetInvestorAsync(
-		int id,
+		[FromRoute] int id,
 		[FromBody] SetInvestorRequest request,
 		CancellationToken cancellationToken)
 	{
@@ -192,12 +194,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetWithDetailsAsync(
-	int id,
+	[FromRoute] int id,
 	CancellationToken cancellationToken)
 	{
-		var request = new GetProjectWithDetailsRequest(id);
-
-		return await HandleRequestAsync<GetProjectWithDetailsRequest, ApiResponse<ProjectDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetProjectWithDetailsRequest, ApiResponse<ProjectDTO>>(
+			new GetProjectWithDetailsRequest(id), 
+			cancellationToken);
 	}
 
 
@@ -206,22 +208,22 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetPartAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new GetProjectPartRequest(id);
-
-		return await HandleRequestAsync<GetProjectPartRequest, ApiResponse<ProjectPartDTO>>(request, cancellationToken);
-		//return Ok(await _service.GetProjectPartAsync(projectPartId));
+		return await HandleRequestAsync<GetProjectPartRequest, ApiResponse<ProjectPartDTO>>(
+			new GetProjectPartRequest(id), 
+			cancellationToken);
 	}
 
 
 	[HttpPost("{id:int}/parts")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> AddPartAsync(
-		int id,
+		[FromRoute] int id,
 		[FromBody] AddPartRequest request,
 		CancellationToken cancellationToken)
 	{
@@ -239,7 +241,7 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> UpdatePartAsync(
-		int id,
+		[FromRoute] int id,
 		[FromBody] UpdatePartRequest request,
 		CancellationToken cancellationToken)
 	{
@@ -252,13 +254,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> DeletePartAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new DeletePartRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
-		//return Ok(await _service.DeleteProjectPartAsync(projectPartId));
+		return await HandleRequestAsync(
+			new DeletePartRequest(id), 
+			cancellationToken);
 	}
 
 
@@ -271,13 +272,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetPartWithBranchesAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new GetPartWithBranchesRequest(id);
-
-		return await HandleRequestAsync<GetPartWithBranchesRequest, ApiResponse<ProjectPartDTO>>(request, cancellationToken);
-		//return Ok(await _service.GetProjectPartWithBranchesAsync(projectPartId));
+		return await HandleRequestAsync<GetPartWithBranchesRequest, ApiResponse<ProjectPartDTO>>(
+			new GetPartWithBranchesRequest(id), 
+			cancellationToken);
 	}
 
 
@@ -286,13 +286,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetPartBranchAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new GetPartBranchRequest(id);
-
-		return await HandleRequestAsync<GetPartBranchRequest, ApiResponse<PartBranchDTO>>(request, cancellationToken);
-		//return Ok(await _service.GetPartBranchAsync(partBranchId));
+		return await HandleRequestAsync<GetPartBranchRequest, ApiResponse<PartBranchDTO>>(
+			new GetPartBranchRequest(id), 
+			cancellationToken);
 	}
 
 
@@ -301,13 +300,13 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> AddBranchToPartAsync(
-		int id,
-		int branchId,
+		[FromRoute] int id,
+		[FromRoute] int branchId,
 		CancellationToken cancellationToken)
 	{
-		var request = new AddBranchToPartRequest(id, branchId);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(
+			new AddBranchToPartRequest(id, branchId), 
+			cancellationToken);
 	}
 
 
@@ -316,12 +315,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> RemoveBranchFromPartAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new RemoveBranchFromPartRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(
+			new RemoveBranchFromPartRequest(id), 
+			cancellationToken);
 	}
 
 	#endregion
@@ -345,12 +344,12 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> DeleteRoleFromPartBranchAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new DeleteRoleFromPartBranchRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(
+			new DeleteRoleFromPartBranchRequest(id), 
+			cancellationToken);
 	}
 
 	#endregion

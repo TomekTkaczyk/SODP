@@ -52,7 +52,7 @@ public class LicenseController : ApiControllerBase
 			var response = await _sender.Send(request, cancellationToken);
 			return CreatedAtAction(
 				nameof(GetAsync),
-				new { response.Value.Id },
+				new { id = response.Value.Id },
 				response);
 		}
 		catch (NotFoundException ex)
