@@ -1,17 +1,9 @@
-﻿using SODP.Domain.Exceptions;
-using SODP.Domain.Exceptions.PartExceptions;
-using SODP.Domain.Exceptions.ProjectExceptions;
-using SODP.Domain.Exceptions.StageExceptions;
-using SODP.Domain.Exceptions.ValueObjectExceptions;
-using SODP.Domain.ValueObjects;
+﻿using SODP.Domain.ValueObjects;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
-using SODP.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 
 namespace SODP.Domain.Entities;
 
@@ -45,7 +37,7 @@ public class Project : BaseEntity
 	public static Project Create(string number, Stage stage, string name)
 	{															    
 
-		return new Project(number, stage, name.ToUpper());
+		return new Project(number, stage, name);
 	}
 
 	public void ChangeStatus(ProjectStatus status)

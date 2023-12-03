@@ -45,7 +45,7 @@ internal class RestoreProjectHandler : IRequestHandler<RestoreProjectRequest>
 		project.ChangeStatus(ProjectStatus.DuringRestore);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		var (Success, Message) = await _folderManager.RestoreFolderAsync(project, cancellationToken);
+		var (Success, Message) = await _folderManager.RestoreProjectFolderAsync(project, cancellationToken);
 		if (!Success)
 		{
 			project.ChangeStatus(ProjectStatus.Archival);

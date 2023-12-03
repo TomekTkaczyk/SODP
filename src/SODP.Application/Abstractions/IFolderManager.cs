@@ -7,11 +7,10 @@ namespace SODP.Application.Abstractions;
 
 public interface IFolderManager
 {
-	Task<(bool Success, string Message)> RenameFolderAsync(Project project, ProjectsFolder source, CancellationToken cancellationToken);
-	Task<(bool Success, string Message)> RenameFolderAsync(Project project, string oldName, ProjectsFolder source, CancellationToken cancellationToken);
-	Task<(bool Success, string Message)> CreateFolderAsync(Project project, CancellationToken cancellationToken);
-	Task<(bool Success, string Message)> DeleteFolderAsync(Project project, CancellationToken cancellationToken);
-	Task<(bool Success, string Message)> ArchiveFolderAsync(Project project, CancellationToken cancellationToken);
-	Task<(bool Success, string Message)> RestoreFolderAsync(Project project, CancellationToken cancellationToken);
+	Task<(bool Success, string Message)> CreateProjectFolderAsync(Project project, CancellationToken cancellationToken);
+	Task<(bool Success, string Message)> MatchProjectFolderAsync(Project project, CancellationToken cancellationToken);
+	Task<(bool Success, string Message)> DeleteProjectFolderAsync(Project project, CancellationToken cancellationToken);
+	Task<(bool Success, string Message)> ArchiveProjectFolderAsync(Project project, CancellationToken cancellationToken);
+	Task<(bool Success, string Message)> RestoreProjectFolderAsync(Project project, CancellationToken cancellationToken);
 
 }

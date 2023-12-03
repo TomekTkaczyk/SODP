@@ -1,19 +1,26 @@
 ﻿using Newtonsoft.Json;
-using SODP.Application.API.Requests.Stages;
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace SODP.Application.Utils;
 
 public class UpperCasePropertyConverter : JsonConverter
 {
-	public override bool CanConvert(Type objectType)
-	{
-		throw new NotImplementedException();
-	}
+	public override bool CanConvert(Type objectType) => objectType == typeof(string);	
 
 	public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 	{
-		throw new NotImplementedException();
+		var jObject = JObject.Load(reader);
+
+		foreach (var property in jObject.Properties())
+		{
+			if (property.Value.Type == JTokenType.String)
+			{
+				property.Value = new JValue(((string)property.Value).ToUpper());
+			}
+		}
+
+		return jObject.ToObject(objectType);
 	}
 
 	public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

@@ -6,13 +6,12 @@ namespace SODP.Application.Abstractions;
 
 public interface IFolderCommandCreator
 {
-	string GetCommandRenameFolder(string folder, string oldName);
-	string GetCommandRenameFolder(string folder, string oldName, ProjectsFolder source);
+	string GetCommandCreateFolder(ProjectsFolder folder, string name);
+	string GetCommandRenameFolder(ProjectsFolder folder, string oldName, string newName);
+	string GetCommandDeleteFolder(ProjectsFolder folder, string name);
 
-	string GetCommandCreateFolder(string folder);
-	string GetCommandRestoreFolder(string folder);
-	string GetCommandDeleteFolder(string folder);
-	string GetCommandArchiveFolder(string folder);
+	string GetCommandArchiveFolder(string name);
+	string GetCommandRestoreFolder(string name);
 
 	Task<string> RunCommand(string command, CancellationToken cancellationToken);
 }

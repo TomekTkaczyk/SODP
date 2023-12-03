@@ -45,7 +45,7 @@ internal class ArchiveProjectHandler : IRequestHandler<ArchiveProjectRequest>
 		project.ChangeStatus(ProjectStatus.DuringArchive);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-		var (Success, Message) = await _folderManager.ArchiveFolderAsync(project, cancellationToken);
+		var (Success, Message) = await _folderManager.ArchiveProjectFolderAsync(project, cancellationToken);
 		if (!Success)
 		{
 			project.ChangeStatus(ProjectStatus.Active);

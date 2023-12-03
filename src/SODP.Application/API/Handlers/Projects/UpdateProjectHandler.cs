@@ -1,9 +1,13 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Projects;
+using SODP.Application.Extensions;
+using SODP.Domain.Exceptions;
 using SODP.Domain.Exceptions.ProjectExceptions;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
+using SODP.Shared.Enums;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,28 +16,45 @@ namespace SODP.Application.API.Handlers.Projects;
 internal sealed class UpdateProjectHandler : IRequestHandler<UpdateProjectRequest>
 {
 	private readonly IProjectRepository _projectRepository;
+	private readonly IFolderManager _folderManager;
 	private readonly IUnitOfWork _unitOfWork;
 
 	public UpdateProjectHandler(
         IProjectRepository projectRepository,
+        IFolderManager folderManager,
 		IUnitOfWork unitOfWork)
     {
 		_projectRepository = projectRepository;
+		_folderManager = folderManager;
 		_unitOfWork = unitOfWork;
 	}
 
     public async Task<Unit> Handle(UpdateProjectRequest request, CancellationToken cancellationToken)
     {
-        var specification = new ProjectByIdSpecification(request.Id);
+        var specification = new ProjectByIdSpecification(request.Project.Id);
 
         var project = await _projectRepository.Get(specification)
             .FirstOrDefaultAsync(cancellationToken)
             ?? throw new ProjectNotFoundException();
 
-        project.Update(request.Project);
+		if(!project.Status.Equals(ProjectStatus.Active))
+		{
+			throw new BadProjectStatusException();
+		}
 
-        _projectRepository.Update(project);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+		if(!project.Name.Equals(request.Project.Name))
+		{
+			var (Success, Message) = await _folderManager.MatchProjectFolderAsync(project, cancellationToken);
+			if (!Success)
+			{
+				throw new ProjectFolderException($"Rename folder fail: {Message}");
+			}
+		}
+
+		project.Update(request.Project);
+
+		_projectRepository.Update(project);
+		await _unitOfWork.SaveChangesAsync(cancellationToken);
 
 		return new Unit();
 	}

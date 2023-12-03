@@ -2,5 +2,5 @@
 
 public class StageConflictException	: ConflictException
 {
-    public StageConflictException() : base("Stage sign already exists.") { }
+    public StageConflictException() : base("Stage already exists.") { }
 }

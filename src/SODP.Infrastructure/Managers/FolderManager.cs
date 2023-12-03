@@ -12,163 +12,158 @@ namespace SODP.Infrastructure.Managers
 		private readonly ILogger<IFolderManager> _logger;
 		private readonly IFolderConfigurator _folderConfigurator;
 
-        public FolderManager(IFolderConfigurator folderConfigurator, IFolderCommandCreator folderCommandCreator, ILogger<IFolderManager> logger)
+        private string _command;
+        private string _message;
+
+        public FolderManager(
+            IFolderConfigurator folderConfigurator, 
+            IFolderCommandCreator folderCommandCreator, 
+            ILogger<IFolderManager> logger)
         {
             _folderCommandCreator = folderCommandCreator;
 			_folderConfigurator = folderConfigurator;
 			_logger = logger;
         }
 
-        public async Task<(bool Success, string Message)> CreateFolderAsync(Project project, CancellationToken cancellationToken)
+        public async Task<(bool Success, string Message)> CreateProjectFolderAsync(Project project, CancellationToken cancellationToken)
         {
-            string command;
-            string message;
-            string folder = project.ToString();
-            var catalog = GetMatchingFolders(_folderConfigurator.ActiveFolder, project);
+            string projectFolder = project.ToString();
+            var matchFolders = GetMatchingFolders(ProjectsFolder.Active, project);
 
-            switch (catalog.Count)
+            switch (matchFolders.Count)
             {
                 case 0:
-                    command = _folderCommandCreator.GetCommandCreateFolder(folder);
-                    message = await _folderCommandCreator.RunCommand(command, cancellationToken);
-                    _logger.LogInformation($"[FolderManager,Create folder] : {message}");
+                    _command = _folderCommandCreator.GetCommandCreateFolder(ProjectsFolder.Active, projectFolder);
+                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+                    _logger.LogInformation("[FolderManager,Create folder] : {message}", _message);
 
-                    return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
+                    return (Directory.Exists(_folderConfigurator.ActiveFolder + projectFolder), $"{_command} {_message}");
                 case 1:
-                    command = _folderCommandCreator.GetCommandRenameFolder(folder, catalog[0]);
-                    message = await _folderCommandCreator.RunCommand(command, cancellationToken);
-					_logger.LogInformation($"[FolderManager,Rename folder] : {message}");
+                    _command = _folderCommandCreator.GetCommandRenameFolder(ProjectsFolder.Active, matchFolders[0], projectFolder);
+                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+					_logger.LogInformation("[FolderManager,Rename folder] : {message}", _message);
 
-					return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
+					return (Directory.Exists(_folderConfigurator.ActiveFolder + projectFolder), $"{_command} {_message}");
                 default:
                     return (false, $"More than one folder with symbol {project.Symbol}");
             }
         }
 
-        public async Task<(bool Success, string Message)> RenameFolderAsync(Project project, ProjectsFolder source, CancellationToken cancellationToken)
+        public async Task<(bool Success, string Message)> MatchProjectFolderAsync(Project project, CancellationToken cancellationToken)
         {
-            string folder = project.ToString();
-            var catalog = GetMatchingFolders(_folderConfigurator.GetProjectFolder(source), project);
-            switch (catalog.Count())
+            string projectFolder = project.ToString();
+            var matchFolders = GetMatchingFolders(ProjectsFolder.Active, project);
+            switch (matchFolders.Count)
             {
                 case 0:
-                    return await CreateFolderAsync(project, cancellationToken);
+                    return await CreateProjectFolderAsync(project, cancellationToken);
                 case 1:
-                    var command = _folderCommandCreator.GetCommandRenameFolder(folder, catalog[0], source);
-                    var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
-					_logger.LogInformation($"[FolderManager,Rename folder] : {message}");
+                    _command = _folderCommandCreator.GetCommandRenameFolder(ProjectsFolder.Active, matchFolders[0], projectFolder);
+                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+					_logger.LogInformation("[FolderManager,Rename folder] : {message}", _message);
 
-					return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + folder), $"{command} {message}");
+					return (Directory.Exists(_folderConfigurator.ActiveFolder + projectFolder), $"{_command} {_message}");
                 default:
                     return (false, $"More than one folder with symbol {project.Symbol}");
             }
         }
 
-        public async Task<(bool Success, string Message)> RenameFolderAsync(Project project, string oldName, ProjectsFolder source, CancellationToken cancellationToken)
-        {
-            string folder = project.ToString();
-            var command = _folderCommandCreator.GetCommandRenameFolder(folder, oldName, source);
-            var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
-			_logger.LogInformation($"[FolderManager,Rename folder] : {message}");
-
-			return (Directory.Exists(_folderConfigurator.GetProjectFolder(source) + folder), $"{command} {message}");
-        }
-
-        public async Task<(bool Success, string Message)> DeleteFolderAsync(Project project, CancellationToken cancellationToken)
+        public async Task<(bool Success, string Message)> DeleteProjectFolderAsync(Project project, CancellationToken cancellationToken)
         {
             
-            var folders = GetMatchingFolders(_folderConfigurator.ActiveFolder, project);
-            switch(folders.Count())
+            var matchFolders = GetMatchingFolders(ProjectsFolder.Active, project);
+            switch(matchFolders.Count)
             {
                 case 0:
                     return(true, $"Folder {project.Symbol} not exist.");
                 case 1:
-                    if (!FolderIsEmpty($"{_folderConfigurator.ActiveFolder}{folders[0]}"))
+                    if (!FolderIsEmpty($"{_folderConfigurator.ActiveFolder}{matchFolders[0]}"))
                     {
                         return (false,$"Folder {project.Symbol} not empty.");
                     }
-                    var command = _folderCommandCreator.GetCommandDeleteFolder(folders[0]);
-                    var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
-					_logger.LogInformation($"[FolderManager,Delete folder] : {message}");
+                    _command = _folderCommandCreator.GetCommandDeleteFolder(ProjectsFolder.Active, matchFolders[0]);
+                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+					_logger.LogInformation("[FolderManager,Delete folder] : {message}", _message);
 
-					return (!Directory.Exists(_folderConfigurator.ActiveFolder + folders[0]), $"{command} {message}");
+					return (!Directory.Exists(_folderConfigurator.ActiveFolder + matchFolders[0]), $"{_command} {_message}");
                 default:
                     return (false, $"More than one folder with symbol {project.Symbol}.");
             }
         }
 
-        public async Task<(bool Success, string Message)> ArchiveFolderAsync(Project project, CancellationToken cancellationToken)
+        public async Task<(bool Success, string Message)> ArchiveProjectFolderAsync(Project project, CancellationToken cancellationToken)
         {
-            string folder = project.ToString();
-            (bool Success, string Message) result;
-            var folders = GetMatchingFolders(_folderConfigurator.ActiveFolder, project);
-            switch(folders.Count())
+            string projectFolder = project.ToString();
+            var matchFolders = GetMatchingFolders(ProjectsFolder.Active, project);
+            switch(matchFolders.Count)
             {
                 case 0:
                     return(false, $"Folder {project.Symbol} not exist.");
                 case 1:
-                    if(FolderIsEmpty(_folderConfigurator.ActiveFolder + folders[0]))
+                    if(FolderIsEmpty(_folderConfigurator.ActiveFolder + matchFolders[0]))
                     {
                         return (false, $"Folder {project.Symbol} is empty.");
                     }
-                    if(!folders[0].Equals(project.ToString()))
+                    if(!matchFolders[0].Equals(projectFolder))
                     {
-                        result = await RenameFolderAsync(project, ProjectsFolder.Active, cancellationToken);
+                        var result = await MatchProjectFolderAsync(project, cancellationToken);
                         if(!result.Success)
                         {
                             return result;
                         }
                     }
-                    var command = _folderCommandCreator.GetCommandArchiveFolder(folder);
-                    var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
-					_logger.LogInformation($"[FolderManager,Archive folder] : {message}");
+                    _command = _folderCommandCreator.GetCommandArchiveFolder(projectFolder);
+                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+					_logger.LogInformation("[FolderManager,Archive folder] : {message}", _message);
 
-					return (Directory.Exists(_folderConfigurator.ArchiveFolder + folder), $"{command} {message}");
+					return (Directory.Exists(_folderConfigurator.ArchiveFolder + projectFolder), $"{_command} {_message}");
                 default:
                     return (false, $"More than one folder with symbol {project.Symbol}.");
             }
         }
 
-        public async Task<(bool Success, string Message)> RestoreFolderAsync(Project project, CancellationToken cancellationToken)
+        public async Task<(bool Success, string Message)> RestoreProjectFolderAsync(Project project, CancellationToken cancellationToken)
         {
-            string folder = project.ToString();
-            (bool Success, string Message) result;
-            var catalog = GetMatchingFolders(_folderConfigurator.ArchiveFolder, project);
-            switch(catalog.Count())
+            string projectFolder = project.ToString();
+            var matchFolders = GetMatchingFolders(ProjectsFolder.Archive, project);
+            switch(matchFolders.Count)
             {
                 case 0:
                     return(false, $"Folder {project.Symbol} not exist.");
                 case 1:
-                    if (!catalog[0].Equals(project.ToString()))
-                    {
-                        result = await RenameFolderAsync(project, ProjectsFolder.Archive, cancellationToken);
-                        if (!result.Success)
-                        {
-                            return result;
-                        }
-                    }
-                    var command = _folderCommandCreator.GetCommandRestoreFolder(folder);
-                    var message = await _folderCommandCreator.RunCommand(command, cancellationToken);
-					_logger.LogInformation($"[FolderManager,Restore folder] : {message}");
+                    _command = _folderCommandCreator.GetCommandRestoreFolder(matchFolders[0]);
+                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
 
-					return (Directory.Exists(_folderConfigurator.ActiveFolder + folder), $"{command} {message}");
+					if (!matchFolders[0].Equals(projectFolder))
+					{
+						var result = await MatchProjectFolderAsync(project, cancellationToken);
+						if (!result.Success)
+						{
+							return result;
+						}
+					}
+					_logger.LogInformation("[FolderManager,Restore folder] : {message}", _message);
+
+					return (Directory.Exists(_folderConfigurator.ActiveFolder + projectFolder), $"{_command} {_message}");
                 default:
                     return (false, $"More than one folder with symbol {project.Symbol}.");
             }
         }
 
-        private bool FolderIsEmpty(string folder)
+        private static bool FolderIsEmpty(string folder)
         {
             return Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories).Length == 0;
         }
 
-        private IList<string> GetMatchingFolders(string projectFolder, Project project)
+        private IList<string> GetMatchingFolders(ProjectsFolder folder, Project project)
         {
+            var projectFolder = _folderConfigurator.GetProjectFolder(folder);
+
             return Directory.EnumerateDirectories(projectFolder)
                 .Select(x => Path.GetFileName(x))
                 .Where(n => {
                     var symbol = n.GetUntilOrEmpty("_");
-                    return (!String.IsNullOrEmpty(symbol) && symbol.Equals(project.Symbol));
+                    return (!string.IsNullOrEmpty(symbol) && symbol.Equals(project.Symbol));
                 })
                 .ToList();
         }

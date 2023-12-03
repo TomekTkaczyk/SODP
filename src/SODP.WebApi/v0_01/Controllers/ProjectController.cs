@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Projects;
 using SODP.Application.Services;
@@ -31,20 +32,15 @@ public class ProjectController : ApiControllerBase
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 	public async Task<IActionResult> GetPageAsync(
-		ProjectStatus status,
-		string searchString = "",
-		int pageNumber = 1,
-		int pageSize = 0,
+		[FromQuery] GetProjectsPageRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		if (pageSize == 0 && pageNumber != 1)
+		if (request.PageSize == 0 && request.PageNumber != 1)
 		{
 			return BadRequest($"pageNumber and/or pageSize is invalid.");
 		}
 
-		return await HandleRequestAsync<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>(
-			new GetProjectsPageRequest(status, searchString, pageNumber, pageSize), 
-			cancellationToken);
+		return await HandleRequestAsync<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>(request, cancellationToken);
 	}
 
 
@@ -131,7 +127,7 @@ public class ProjectController : ApiControllerBase
 		[FromBody] UpdateProjectRequest request,
 		CancellationToken cancellationToken)
 	{
-		if (id != request.Id)
+		if ((id < 1) || (request.Project is null) || (id != request.Project.Id))
 		{
 			return BadRequest();
 		}

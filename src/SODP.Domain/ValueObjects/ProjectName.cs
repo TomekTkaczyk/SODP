@@ -1,4 +1,5 @@
 ﻿using SODP.Domain.Exceptions.ValueObjectExceptions;
+using System;
 using System.Text.RegularExpressions;
 
 namespace SODP.Domain.ValueObjects;
@@ -9,16 +10,19 @@ public record ProjectName
 
     public ProjectName(string name)
     {
-		if (!Regex.Match(name, @"^[^\d\s_][\w\s_]*$").Success)
+
+		Value = Regex.Replace(
+			string.Join("_", name.Split((char[])null, StringSplitOptions.RemoveEmptyEntries)), 
+			@"_+", @"_");
+
+		if (!Regex.Match(Value, @"^[a-zA-Z][\w\s_]*[a-zA-Z\d]$").Success)
 		{
 			throw new InvalidProjectNameException(name);
 		}
-
-		Value = name.ToUpper();
-    }
+	}
 
 	public static implicit operator string(ProjectName name) => name?.Value;
 
-	public static implicit operator ProjectName(string name) => new(name.ToUpper());
+	public static implicit operator ProjectName(string name) => new(name);
 
 }

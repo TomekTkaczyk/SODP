@@ -14,18 +14,14 @@
                 type: "DELETE",
                 url: url,
                 success: function () {
-                    window.location.reload();
-                },
-                done: function (data, textStatus, jqXHR) {
-                    console.log(data);
-                    console.log(textStatus);
-                    console.log(jqXHR);
-                    toastr.error(data.message);
+                    toastr.options.onHidden = function () {
+                        window.location.reload();
+                    };
+                    toastr.success("Operacja usuniecia powiodła się.");
                 },
                 error: function (jqXHR, exception) {
                     console.log(jqXHR);
-                    console.log(exception);
-                    toastr.error(exception);
+                    toastr.error(jqXHR.responseJSON.message);
                 }
             })
         }

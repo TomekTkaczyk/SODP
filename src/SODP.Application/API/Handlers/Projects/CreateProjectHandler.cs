@@ -9,6 +9,7 @@ using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
 using SODP.Shared.Response;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,15 +52,15 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
             throw new ConflictException("Project");
         }
 
-        var (Success,Message) = await _folderManager.CreateFolderAsync(project, cancellationToken);
-        if(!Success)
-        {
-            throw new ProjectFolderException($"Create folder fail: {Message}");
-        }
+		var (Success, Message) = await _folderManager.CreateProjectFolderAsync(project, cancellationToken);
+		if (!Success)
+		{
+			throw new ProjectFolderException($"Create folder fail: {Message}");
+		}
 
-        project = _projectRepository.Add(project);
+		project = _projectRepository.Add(project);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return ApiResponse.Success(project.Id);
+		return ApiResponse.Success(project.Id);
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace SODP.Shared.DTO
+﻿namespace SODP.Shared.DTO;
+
+public abstract class BaseDTO
 {
-	public abstract class BaseDTO
-    {
-        public int Id { get; set; }
-    }
+    public int Id { get; set; }
 }

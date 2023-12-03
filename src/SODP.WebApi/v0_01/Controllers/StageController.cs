@@ -27,23 +27,18 @@ public class StageController : ActiveStatusController<Stage>
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetPageAsync(
-		bool? active,
-		string searchString = "",
-		int pageNumber = 1,
-		int pageSize = 0,
+		[FromQuery] GetStagesPageRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		if (pageNumber < 1)
+		if (request.PageNumber < 1)
 		{
 			return BadRequest(new Error("pageNumber is invalid."));
 		}
 
-		if (pageNumber > 1 && pageSize == 0)
+		if (request.PageNumber > 1 && request.PageSize == 0)
 		{
 			return BadRequest(new Error("pageNumber and/or pageSize is invalid."));
 		}
-
-		var request = new GetStagesPageRequest(active, searchString, pageNumber, pageSize);
 
 		return await HandleRequestAsync<GetStagesPageRequest,ApiResponse<Page<StageDTO>>>(request, cancellationToken);
 	}

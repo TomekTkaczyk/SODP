@@ -35,7 +35,7 @@ public sealed class DeleteProjectHandler : IRequestHandler<DeleteProjectRequest>
             .SingleOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException("Project");
 
-        var (Success, Message) = await _folderManager.DeleteFolderAsync(project, cancellationToken);
+        var (Success, Message) = await _folderManager.DeleteProjectFolderAsync(project, cancellationToken);
         if(!Success)
         {
             throw new ProjectFolderException($"Delete project fail: {Message}");

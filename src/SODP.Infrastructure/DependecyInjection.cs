@@ -7,7 +7,6 @@ using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SODP.Application.Abstractions;
-using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Domain.Repositories;
 using SODP.Domain.Services;
@@ -21,7 +20,6 @@ public static class DependecyInjection
 {
 	public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
 	{
-		// services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
 
 		services.AddDbContext<SODPDBContext>(options =>
 		{
@@ -40,12 +38,12 @@ public static class DependecyInjection
 				});
 		});
 
+		services.AddScoped<SODPDBContext>();
 		services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-		services.AddScoped<SODPDBContext>();
-		services.AddScoped<UserInitializer>();
-		//services.AddScoped<DataInitializer>();
-
+		// services.AddScoped<UserInitializer>();
+		// services.AddScoped<DataInitializer>();
+		// services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
 
 		return services;
 	}

@@ -3,6 +3,12 @@ using SODP.Shared.DTO;
 
 namespace SODP.Application.API.Requests.Projects;
 
-public sealed record UpdateProjectRequest(
-	int Id, 
-	ProjectDTO Project) : IRequest;
+public sealed record UpdateProjectRequest() : IRequest
+{
+	public ProjectDTO Project { get; }
+    
+	public UpdateProjectRequest(ProjectDTO project) : this()
+    {
+		Project = project;
+	}
+}

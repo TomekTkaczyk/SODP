@@ -1,78 +1,77 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SODP.Domain.Entities;
 
-namespace SODP.Infrastructure
+namespace SODP.Infrastructure;
+
+public class UserInitializer : IDisposable
 {
-    public class UserInitializer : IDisposable
+    private readonly RoleManager<Role> _roleManager;
+    private readonly UserManager<User> _userManager;
+
+    public UserInitializer(RoleManager<Role> roleManager, UserManager<User> userManager)
     {
-        private readonly RoleManager<Role> _roleManager;
-        private readonly UserManager<User> _userManager;
+        _roleManager = roleManager;
+        _userManager = userManager;
+    }
 
-        public UserInitializer(RoleManager<Role> roleManager, UserManager<User> userManager)
+    public void UserInit()
+    {
+        CreateRoleIfNotExist( "Administrator").Wait();
+        CreateRoleIfNotExist("User").Wait();
+        CreateRoleIfNotExist("ProjectManager").Wait();
+
+        CreateUserIfNotExist("Administrator", "Administrator").Wait();
+        AddToRoleIfNotExist("Administrator", "Administrator").Wait();
+
+        CreateUserIfNotExist("PManager", "PManager").Wait();
+        AddToRoleIfNotExist("PManager", "ProjectManager").Wait();
+    }
+
+    private async Task<bool> CreateRoleIfNotExist(string role)
+    {
+        var result = await _roleManager.RoleExistsAsync(role);
+
+        if (!result)
         {
-            _roleManager = roleManager;
-            _userManager = userManager;
+            var roleResult = await _roleManager.CreateAsync(new Role(role));
+            result = roleResult.Succeeded;
         }
 
-        public void UserInit()
+        return result;
+    }
+
+    private async Task<bool> CreateUserIfNotExist(string userName, string password)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+
+        if (user == null)
         {
-            CreateRoleIfNotExist( "Administrator").Wait();
-            CreateRoleIfNotExist("User").Wait();
-            CreateRoleIfNotExist("ProjectManager").Wait();
-
-            CreateUserIfNotExist("Administrator", "Administrator").Wait();
-            AddToRoleIfNotExist("Administrator", "Administrator").Wait();
-
-            CreateUserIfNotExist("PManager", "PManager").Wait();
-            AddToRoleIfNotExist("PManager", "ProjectManager").Wait();
-        }
-
-        private async Task<bool> CreateRoleIfNotExist(string role)
-        {
-            var result = await _roleManager.RoleExistsAsync(role);
-
-            if (!result)
+            user = new User(userName) 
             {
-                var roleResult = await _roleManager.CreateAsync(new Role(role));
-                result = roleResult.Succeeded;
-            }
+                Firstname = "",
+                Lastname = ""
+            };
+            var result = await _userManager.CreateAsync(user, password);
 
-            return result;
+            return result.Succeeded;
         }
 
-        private async Task<bool> CreateUserIfNotExist(string userName, string password)
+        return true;
+    }
+
+    private async Task<bool> AddToRoleIfNotExist(string userName, string role)
+    {
+        var user = await _userManager.FindByNameAsync(userName);
+        if (!await _userManager.IsInRoleAsync(user, role))
         {
-            var user = await _userManager.FindByNameAsync(userName);
-
-            if (user == null)
-            {
-                user = new User(userName) 
-                {
-                    Firstname = "",
-                    Lastname = ""
-                };
-                var result = await _userManager.CreateAsync(user, password);
-
-                return result.Succeeded;
-            }
-
-            return true;
+            var result = await _userManager.AddToRoleAsync(user, role);
+            return result.Succeeded;
         }
 
-        private async Task<bool> AddToRoleIfNotExist(string userName, string role)
-        {
-            var user = await _userManager.FindByNameAsync(userName);
-            if (!await _userManager.IsInRoleAsync(user, role))
-            {
-                var result = await _userManager.AddToRoleAsync(user, role);
-                return result.Succeeded;
-            }
+        return true;
+    }
 
-            return true;
-        }
-
-        public void Dispose()
-        {
-        }
+    public void Dispose()
+    {
     }
 }
