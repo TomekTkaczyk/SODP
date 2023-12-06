@@ -40,7 +40,9 @@ public class ProjectController : ApiControllerBase
 			return BadRequest($"pageNumber and/or pageSize is invalid.");
 		}
 
-		return await HandleRequestAsync<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>(request, cancellationToken);
+		var result =  await HandleRequestAsync<GetProjectsPageRequest, ApiResponse<Page<ProjectDTO>>>(request, cancellationToken);
+
+		return result;
 	}
 
 

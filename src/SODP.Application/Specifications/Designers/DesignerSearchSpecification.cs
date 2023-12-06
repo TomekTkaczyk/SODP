@@ -1,5 +1,6 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Shared.Specifications;
+using System;
 
 namespace SODP.Application.Specifications.Designers;
 
@@ -14,7 +15,7 @@ internal class DesignerSearchSpecification : Specification<Designer>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			designer.Title.Value.Contains(searchString)
+			((string)designer.Title).Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
 		))
 	{
 		AddOrderByExpression(x => x.Title);

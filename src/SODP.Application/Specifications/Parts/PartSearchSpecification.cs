@@ -1,5 +1,6 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Shared.Specifications;
+using System;
 
 namespace SODP.Application.Specifications.Parts;
 
@@ -14,8 +15,8 @@ internal class PartSearchSpecification : Specification<Part>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			part.Sign.Value.Contains(searchString) ||
-			part.Title.Value.Contains(searchString)
+			((string)part.Sign).Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
+			((string)part.Title).Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
 		))
 	{
 		AddOrderByExpression(x => x.Order);

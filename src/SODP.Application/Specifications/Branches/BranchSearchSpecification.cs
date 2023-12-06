@@ -1,5 +1,6 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Shared.Specifications;
+using System;
 
 namespace SODP.Application.Specifications.Branches;
 
@@ -14,8 +15,8 @@ internal class BranchSearchSpecification : Specification<Branch>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			stage.Sign.Value.Contains(searchString) ||
-			stage.Title.Value.Contains(searchString)
+			((string)stage.Sign).Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
+			((string)stage.Title).Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
 		))
 	{
 		AddOrderByExpression(x => x.Order);

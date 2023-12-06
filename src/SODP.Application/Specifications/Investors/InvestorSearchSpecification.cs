@@ -1,5 +1,6 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Shared.Specifications;
+using System;
 
 namespace SODP.Application.Specifications.Investors;
 
@@ -14,7 +15,7 @@ internal class InvestorSearchSpecification : Specification<Investor>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			investor.Name.Contains(searchString)
+			((string)investor.Name).Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
 		))
 	{
 		AddOrderByExpression(x => x.Name);
