@@ -5,13 +5,15 @@
 @inject LanguageTranslatorFactory _translatorFactory;
 
 <div>
-	<div>
-		<label class="text-secondary">Nazwa zamierzenia budowlanego:</label>
-		<div class="row font-weight-bold ml-2 text-primary">
-			<span style="white-space: pre-line">@Model.Title</span>
+	@if (!string.IsNullOrWhiteSpace(Model.Title))
+	{
+		<div>
+			<label class="text-secondary">Nazwa zamierzenia budowlanego:</label>
+			<div class="row font-weight-bold ml-2 text-primary">
+				<span style="white-space: pre-line">@Model.Title</span>
+			</div>
 		</div>
-	</div>
-	
+	}	
 	@if (!string.IsNullOrWhiteSpace(Model.Address))
 	{
 		<div>
@@ -52,6 +54,26 @@
 		</div>
 	}
 
+	@if (!string.IsNullOrWhiteSpace(Model.BuildingPermit))
+	{
+		<div>
+			<label class="text-secondary">Pozwolenie na budowę:</label>
+			<div class="row font-weight-bold ml-2 text-primary">
+				<span style="white-space: pre-line">@Model.BuildingPermit</span>
+			</div>
+		</div>
+	}
+
+	@if (!string.IsNullOrWhiteSpace(Model.Description))
+	{
+		<div>
+			<label class="text-secondary">Opis:</label>
+			<div class="row font-weight-bold ml-2 text-primary">
+				<span style="white-space: pre-line">@Model.Description</span>
+			</div>
+		</div>
+	}
+
 	<div>
 		<label class="text-secondary">Data opracowania:</label>
 		<div class="row font-weight-bold ml-2">
@@ -65,16 +87,6 @@
 			}
 		</div>
 	</div>
-
-	@if (!string.IsNullOrWhiteSpace(Model.Description))
-	{
-		<div>
-			<label class="text-secondary">Opis:</label>
-			<div class="row font-weight-bold ml-2 text-primary">
-				<span style="white-space: pre-line">@Model.Description</span>
-			</div>
-		</div>
-	}
 
 	@if (Model.Parts.Count > 0)
 	{
@@ -98,17 +110,6 @@
 						}
 					}
 				}
-		</div>
-
-	}
-
-	@if (!string.IsNullOrWhiteSpace(Model.BuildingPermit))
-	{
-		<div visible="">
-			<label class="text-secondary">Nr pozwolenia na budowę:</label>
-			<div class ="row font-weight-bold ml-2 text-primary">
-				<span style="white-space: pre-line">@Model.BuildingPermit</span>
-			</div>
 		</div>
 	}
 </div>

@@ -92,10 +92,9 @@ public sealed class IndexModel : ProjectsPageModel
 
 	private async Task<IEnumerable<SelectListItem>> GetStagesItems()
 	{
-		var _apiResponse = await GetApiResponseAsync<Page<StageDTO>>("stages");
+		var _apiResponse = await GetApiResponseAsync<Page<StageDTO>>("stages?ActiveStatus=true");
 
 		return _apiResponse.Value.Collection
-			.Where(x => x.ActiveStatus)
 			.Select(x => new SelectListItem
 			{
 				Value = x.Sign,

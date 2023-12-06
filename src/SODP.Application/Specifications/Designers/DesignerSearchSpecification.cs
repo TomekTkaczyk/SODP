@@ -14,7 +14,7 @@ internal class DesignerSearchSpecification : Specification<Designer>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			designer.Title.Contains(searchString)
+			designer.Title.Value.Contains(searchString)
 		))
 	{
 		AddOrderByExpression(x => x.Title);

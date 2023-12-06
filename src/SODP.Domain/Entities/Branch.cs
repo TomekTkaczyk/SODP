@@ -1,15 +1,17 @@
-﻿using System;
+﻿using SODP.Domain.ValueObjects;
+using System;
 using System.Collections.Generic;
 
 namespace SODP.Domain.Entities;
 
 public sealed class Branch : ActiveStatusEntity, IOrdered
 {
-    public string Sign{ get; private set; }
-    public string Title { get; private set; }
+    public Sign Sign{ get; private set; }
+    public Title Title { get; private set; }
     public int Order { get; private set; }
     public ICollection<BranchLicense> Licenses { get; set; }
 
+	private Branch() { }
 
     private Branch(string sign, string title)
     {
@@ -20,7 +22,7 @@ public sealed class Branch : ActiveStatusEntity, IOrdered
 
 	public override string ToString()
     {
-        return $"{Sign.Trim()} {Title.Trim()}";
+        return $"{Sign.Value.Trim()} {Title.Value.Trim()}";
     }
 
 	public static Branch Create(string sign, string title)

@@ -6,7 +6,7 @@ public sealed class Stage : ActiveStatusEntity, IOrdered
 {
 	public Sign Sign { get; private set; }
 	
-	public string Title { get; private set; }
+	public Title Title { get; private set; }
 
 	public int Order { get; private set; }
 
@@ -14,8 +14,8 @@ public sealed class Stage : ActiveStatusEntity, IOrdered
 
     private Stage(string sign, string title)
 	{
-		Sign = sign.ToUpper();
-		Title = title.ToUpper();
+		Sign = sign;
+		Title = title;
 		Order = 1;
 	}
 
@@ -26,12 +26,12 @@ public sealed class Stage : ActiveStatusEntity, IOrdered
 
 	public void SetTitle(string title) 
 	{ 
-		Title = title.ToUpper(); 
+		Title = title; 
 	}
 
 	public override string ToString()
 	{
-		return $"{Sign.Value.Trim()} {Title.Trim()}";
+		return $"{Sign.Value.Trim()} {Title.Value.Trim()}";
 	}
 
 	public void Up()

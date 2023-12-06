@@ -46,11 +46,7 @@ public class UserInitializer : IDisposable
 
         if (user == null)
         {
-            user = new User(userName) 
-            {
-                Firstname = "",
-                Lastname = ""
-            };
+            user = new User(userName); 
             var result = await _userManager.CreateAsync(user, password);
 
             return result.Succeeded;

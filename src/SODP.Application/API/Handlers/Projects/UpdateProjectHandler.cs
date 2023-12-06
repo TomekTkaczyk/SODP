@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Projects;
-using SODP.Application.Extensions;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Exceptions.ProjectExceptions;
 using SODP.Domain.Repositories;
@@ -31,7 +30,7 @@ internal sealed class UpdateProjectHandler : IRequestHandler<UpdateProjectReques
 
     public async Task<Unit> Handle(UpdateProjectRequest request, CancellationToken cancellationToken)
     {
-        var specification = new ProjectByIdSpecification(request.Project.Id);
+        var specification = new ProjectByIdSpecification(request.Id);
 
         var project = await _projectRepository.Get(specification)
             .FirstOrDefaultAsync(cancellationToken)
@@ -42,16 +41,23 @@ internal sealed class UpdateProjectHandler : IRequestHandler<UpdateProjectReques
 			throw new BadProjectStatusException();
 		}
 
-		if(!project.Name.Equals(request.Project.Name))
-		{
-			var (Success, Message) = await _folderManager.MatchProjectFolderAsync(project, cancellationToken);
-			if (!Success)
-			{
-				throw new ProjectFolderException($"Rename folder fail: {Message}");
-			}
-		}
+		project.Update(
+			request.Name,
+			request.Title,
+			request.Address,
+			request.LocationUnit,
+			request.BuildingCategory,
+			request.Investor,
+			request.BuildingPermit,
+			request.Description,
+			request.DevelopmentDate
+		);
 
-		project.Update(request.Project);
+		var (Success, Message) = await _folderManager.MatchProjectFolderAsync(project, cancellationToken);
+		if (!Success)
+		{
+			throw new ProjectFolderException($"Rename folder fail: {Message}");
+		}
 
 		_projectRepository.Update(project);
 		await _unitOfWork.SaveChangesAsync(cancellationToken);

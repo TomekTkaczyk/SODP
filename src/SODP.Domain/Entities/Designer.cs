@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Internal;
 using SODP.Domain.Exceptions;
+using SODP.Domain.ValueObjects;
 using SODP.Shared.Extensions;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,22 +9,23 @@ namespace SODP.Domain.Entities;
 
 public class Designer : ActiveStatusEntity
 {
-    public string Title { get;  set; }
-    public string Firstname { get;  set; }
-    public string Lastname { get;  set; }
+    public DesignerTitle Title { get;  set; }
+    public FirstName Firstname { get;  set; }
+    public LastName Lastname { get;  set; }
     public virtual ICollection<License> Licenses { get;  set; } = new List<License>();
 
- //   public Designer(string title, string firstName, string lastName)
- //   {
-	//	Title = title;
-	//	Firstname = firstName;
-	//	Lastname = lastName;
- //       //Licenses = new List<License>();
-	//}
+    private Designer() { }
+
+    private Designer(string title, string firstName, string lastName)
+    {
+        Title = title;
+        Firstname = firstName;
+        Lastname = lastName;
+    }
 
     public static Designer Create(string title, string firstName, string lastName)
     {
-        return new Designer()
+        return new Designer(title, firstName, lastName)
         {
             Title = title,
             Firstname = firstName,
@@ -58,12 +60,12 @@ public class Designer : ActiveStatusEntity
 
     public override string ToString()
     {
-        return Firstname.Trim() + " " + Lastname.Trim();
+        return Firstname.Value.Trim() + " " + Lastname.Value.Trim();
     }
 
     public void Normalize()
     {
-        Firstname = Firstname.CapitalizeFirstLetter();
-        Lastname = Lastname.CapitalizeFirstLetter();
+        Firstname = Firstname.Value.CapitalizeFirstLetter();
+        Lastname = Lastname.Value.CapitalizeFirstLetter();
     }
 }

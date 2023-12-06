@@ -10,7 +10,7 @@ public class BranchesCollectionSpecification : Specification<Branch>
 		(!active.HasValue || branch.ActiveStatus.Equals(active)) &&
 		(string.IsNullOrWhiteSpace(searchString) 
 		|| ((string)branch.Sign).Contains(searchString) 
-		|| branch.Title.Contains(searchString)))
+		|| branch.Title.Value.Contains(searchString)))
 	{
 		AddOrderByExpression(x => x.Order);
 		AddOrderByExpression(x => x.Title);

@@ -17,16 +17,17 @@ public class ProjectEntityConfiguration : IEntityTypeConfiguration<Project>
             .IsRequired();
 
         builder.Property(p => p.Name)
-            .HasColumnType("nvarchar(256)")
+			.HasConversion(v => v.Value, v => new ProjectName(v))
+			.HasColumnType("nvarchar(256)")
             .IsRequired();
 
         builder.Property(p => p.Title)
-            .HasColumnType("nvarchar(256)")
-            .HasDefaultValue("");
+            .HasConversion(v => v.Value, v => new Title(v))
+            .HasColumnType("nvarchar(256)");
 
         builder.Property(p => p.Address)
-            .HasColumnType("nvarchar(256)")
-            .HasDefaultValue("");
+            .HasConversion(v => v.Value, v => new Address(v))
+            .HasColumnType("nvarchar(256)");
 
         builder.Property(p => p.LocationUnit)
             .HasColumnType("nvarchar(256)")

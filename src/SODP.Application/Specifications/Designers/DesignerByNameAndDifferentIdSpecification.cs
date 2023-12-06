@@ -10,8 +10,8 @@ public class DesignerByNameAndDifferentIdSpecification : Specification<Designer>
 	public DesignerByNameAndDifferentIdSpecification(int id, string firstName, string lastName)
 	: base(designer =>
 	(designer.Id != id) &&
-	designer.Firstname.ToUpper().Equals(firstName.ToUpper()) && 
-	designer.Lastname.ToUpper().Equals(lastName.ToUpper()))
+	designer.Firstname.Value.ToUpper().Equals(firstName.ToUpper()) && 
+	designer.Lastname.Value.ToUpper().Equals(lastName.ToUpper()))
 	{
 	}
 

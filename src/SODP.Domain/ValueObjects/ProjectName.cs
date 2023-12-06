@@ -24,5 +24,4 @@ public record ProjectName
 	public static implicit operator string(ProjectName name) => name?.Value;
 
 	public static implicit operator ProjectName(string name) => new(name);
-
 }

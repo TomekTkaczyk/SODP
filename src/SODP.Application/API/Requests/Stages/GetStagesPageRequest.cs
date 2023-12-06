@@ -6,6 +6,6 @@ namespace SODP.Application.API.Requests.Stages;
 
 public sealed record GetStagesPageRequest(
 	bool? ActiveStatus,
-	string SearchString,
-	int PageNumber,
-	int PageSize) : IRequest<ApiResponse<Page<StageDTO>>>;
+	string SearchString = "",
+	int PageNumber = 1,
+	int PageSize = 0) : IRequest<ApiResponse<Page<StageDTO>>>;

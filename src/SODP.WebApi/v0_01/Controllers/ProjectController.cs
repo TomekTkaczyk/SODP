@@ -127,7 +127,7 @@ public class ProjectController : ApiControllerBase
 		[FromBody] UpdateProjectRequest request,
 		CancellationToken cancellationToken)
 	{
-		if ((id < 1) || (request.Project is null) || (id != request.Project.Id))
+		if ((id < 1) || (id != request.Id))
 		{
 			return BadRequest();
 		}

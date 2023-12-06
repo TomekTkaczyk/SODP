@@ -1,11 +1,9 @@
 using AutoMapper;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using SODP.Domain.Shared.Results;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
@@ -69,7 +67,18 @@ public class EditModel : AppPageModel
 		{
 			var apiResponse = await _apiProvider.PutAsync(
 				$"projects/{Project.Id}",
-				GetRequestContent(new { Project.Id, Project }));
+				GetRequestContent(new {
+					Project.Id,
+					Project.Name,
+					Project.Title,
+					Project.Address,
+					Project.LocationUnit,
+					Project.BuildingCategory,
+					Project.Investor,
+					Project.BuildingPermit,
+					Project.Description,
+					Project.DevelopmentDate
+				}));
 
 			if (apiResponse.IsSuccessStatusCode)
 			{

@@ -38,6 +38,7 @@ public class AutoMapperProfile : Profile
 
 		CreateMap<Stage, StageDTO>()
 			.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.Value))
+			.ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title.Value))
 		    .PreserveReferences();
 
 		CreateMap<StageDTO, Stage>()
@@ -82,8 +83,8 @@ public class AutoMapperProfile : Profile
 		#region ProjectPart
 
 		CreateMap<ProjectPart, ProjectPartDTO>()
-		    .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.ToUpper()))
-		    .ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Name.ToUpper()))
+		    .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.Value))
+		    .ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title.Value))
 		    .ForMember(dest => dest.Branches, opt => opt.MapFrom(src => src.Branches))
                 .PreserveReferences();
 
@@ -138,7 +139,10 @@ public class AutoMapperProfile : Profile
 
 		CreateMap<Project, ProjectDTO>()
 			.AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-			.ForMember(dest => dest.Number, act => act.MapFrom(x => x.Number.Value));
+			.ForMember(dest => dest.Number, act => act.MapFrom(x => x.Number.Value))
+			.ForMember(dest => dest.Name, act => act.MapFrom(x => x.Name.Value))
+			.ForMember(dest => dest.Title, act => act.MapFrom(x => x.Title.Value))
+			.ForMember(dest => dest.Address, act => act.MapFrom(x => x.Address.Value));
 
 		CreateMap<ProjectDTO, Project>()
 			.AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)

@@ -9,21 +9,13 @@ namespace SODP.Domain.Entities;
 
 public class Project : BaseEntity
 {
-    private Project() { }
-
-    private Project(ProjectNumber number, Stage stage, ProjectName name)
-    {
-        RequiredPropertiesInit(number, stage, name);
-        EmptyPropertiesInit();
-    }
-
     public ProjectNumber Number { get; private set; }	// Project number
     public int StageId { get; private set; }            // Project stage Id
     public Stage Stage { get; private set; }            // Stage object
-    public string Name { get; private set; }			// Project name (file system - directory name)
-    public string Title { get; private set; }                   // The name of the construction project 
-    public string Address { get; private set; }                 // Address
-    public string LocationUnit { get; private set; }            // Location class unit
+    public ProjectName Name { get; private set; }		// Project name (file system - directory name)
+    public Title Title { get; private set; }            // Short description 
+    public Address Address { get; private set; }        // Address
+    public string LocationUnit { get; private set; }    // Location class unit
     public string BuildingCategory { get; private set; }
     public string Investor { get; private set; }
     public string BuildingPermit { get; private set; }
@@ -31,6 +23,15 @@ public class Project : BaseEntity
     public DateTime? DevelopmentDate { get; private set; }
     public ProjectStatus Status { get; private set; }
     public IReadOnlyCollection<ProjectPart> Parts { get; private set; } = new List<ProjectPart>();
+
+	private Project() { }
+
+	private Project(ProjectNumber number, Stage stage, ProjectName name)
+    {
+        RequiredPropertiesInit(number, stage, name);
+        EmptyPropertiesInit();
+    }
+
     
 	public virtual string Symbol => Number.Value.Trim() + Stage.Sign.Value.Trim();
 
@@ -52,20 +53,7 @@ public class Project : BaseEntity
 
 	public override string ToString()
 	{
-		return Symbol + "_" + Name.Trim();
-	}
-
-	public void Update(ProjectDTO project)
-	{
-		this.Name = string.IsNullOrEmpty(project.Name) ? "" : project.Name.ToUpper();
-		this.Title = string.IsNullOrEmpty(project.Title) ? "" :	project.Title.ToUpper();
-		this.Description = string.IsNullOrEmpty(project.Description) ? "" : project.Description.ToUpper();
-		this.Address = string.IsNullOrEmpty(project.Address) ? "" : project.Address.ToUpper();
-		this.BuildingCategory = string.IsNullOrEmpty(project.BuildingCategory) ? "" : project.BuildingCategory.ToUpper();
-		this.BuildingPermit = string.IsNullOrEmpty(project.BuildingPermit) ? "" : project.BuildingPermit.ToUpper();
-		this.LocationUnit = string.IsNullOrEmpty(project.LocationUnit) ? "" : project.LocationUnit.ToUpper();
-		this.Investor = string.IsNullOrEmpty(project.Investor) ? "" : project.Investor.ToUpper();
-		this.DevelopmentDate = project.DevelopmentDate;
+		return Symbol + "_" + Name.Value.Trim();
 	}
 
 	private void EmptyPropertiesInit()
@@ -82,6 +70,28 @@ public class Project : BaseEntity
 		Name = name;
 	}
 
+	public void Update(
+		ProjectName Name,
+		Title Title,
+		Address Address,
+		string LocationUnit,
+		string BuildingCategory,
+		string Investor,
+		string BuildingPermit,
+		string Description,
+		DateTime DevelopmentDate
+	)
+	{
+		this.Name = string.IsNullOrEmpty(Name) ? "" : Name;
+		this.Title = string.IsNullOrEmpty(Title) ? "" : Title;
+		this.Address = string.IsNullOrEmpty(Address) ? "" : Address;
+		this.LocationUnit = string.IsNullOrEmpty(LocationUnit) ? "" : LocationUnit;
+		this.BuildingCategory = string.IsNullOrEmpty(BuildingCategory) ? "" : BuildingCategory;
+		this.Investor = string.IsNullOrEmpty(Investor) ? "" : Investor;
+		this.BuildingPermit = string.IsNullOrEmpty(BuildingPermit) ? "" : BuildingPermit;
+		this.Description = string.IsNullOrEmpty(Description) ? "" : Description;
+		this.DevelopmentDate = DevelopmentDate;
+	}
 
 	//private void Normalize()
 	//{

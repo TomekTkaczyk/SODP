@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
+using SODP.Domain.ValueObjects;
 
 namespace SODP.DataAccess.Configurations
 {
@@ -9,15 +10,17 @@ namespace SODP.DataAccess.Configurations
         public void Configure(EntityTypeBuilder<Designer> builder)
         {
             builder.Property(x => x.Title)
-                .HasColumnType("nvarchar(20)")
-                .HasDefaultValue("");
+				.HasConversion(x => x.Value, x => new DesignerTitle(x))
+				.HasColumnType("nvarchar(20)");
 
             builder.Property(x => x.Firstname)
-                .HasColumnType("nvarchar(50)")
+				.HasConversion(x => x.Value, x => new FirstName(x))
+				.HasColumnType("nvarchar(50)")
                 .IsRequired();
 
             builder.Property(x => x.Lastname)
-                .HasColumnType("nvarchar(50)")
+				.HasConversion(x => x.Value, x => new LastName(x))
+				.HasColumnType("nvarchar(50)")
                 .IsRequired();
 
 			builder.Property(x => x.ActiveStatus)

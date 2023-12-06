@@ -14,8 +14,8 @@ internal class PartSearchSpecification : Specification<Part>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			((string)part.Sign).Contains(searchString) ||
-			part.Title.Contains(searchString)
+			part.Sign.Value.Contains(searchString) ||
+			part.Title.Value.Contains(searchString)
 		))
 	{
 		AddOrderByExpression(x => x.Order);

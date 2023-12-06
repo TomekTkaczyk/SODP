@@ -14,8 +14,8 @@ public class StagesSearchSpecification : Specification<Stage>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			((string)stage.Sign).Contains(searchString) ||
-			stage.Title.Contains(searchString)
+			stage.Sign.Value.Contains(searchString) ||
+			stage.Title.Value.Contains(searchString)
 		))
 	{
 		AddOrderByExpression(x => x.Order);

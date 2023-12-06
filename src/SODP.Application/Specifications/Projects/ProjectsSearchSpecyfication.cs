@@ -16,9 +16,9 @@ public class ProjectsSearchSpecyfication : Specification<Project>
 		(
 			string.IsNullOrWhiteSpace(searchString) || 
 			((string)project.Number).Contains(searchString) || 
-			project.Name.Contains(searchString) || 
+			project.Name.Value.Contains(searchString) || 
 			project.Description.Contains(searchString) || 
-			project.Title.Contains(searchString)
+			project.Title.Value.Contains(searchString)
 		))
     {
 		AddInclude(x => x.Stage);

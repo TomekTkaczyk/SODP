@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
+using SODP.Domain.ValueObjects;
 
 namespace SODP.DataAccess.Configurations
 {
@@ -12,11 +13,15 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
 			builder.Property(x => x.Sign)
+				.HasConversion(x => x.Value, x => new Sign(x))
 				.HasColumnType("nvarchar(10)")
 				.IsRequired();
 
-			builder.Property(x => x.Name)
+			builder.Property(x => x.Title)
+				.HasConversion(x => x.Value, x => new Title(x))
 				.HasColumnType("nvarchar(50)")
+				.HasColumnName("Name")
+				//.HasColumnName("Title")
 				.IsRequired();
 
 			builder.Property(x => x.Order)

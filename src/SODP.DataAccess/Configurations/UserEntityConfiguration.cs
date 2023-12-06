@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
+using SODP.Domain.ValueObjects;
 
 namespace SODP.DataAccess.Configurations
 {
@@ -27,11 +28,11 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("nvarchar(256)");
 
             builder.Property(u => u.Firstname)
-                .HasDefaultValue("")
+				.HasConversion(x => x.Value, x => new FirstName(x))
                 .HasColumnType("nvarchar(256)");
 
             builder.Property(u => u.Lastname)
-               .HasDefaultValue("")
+				.HasConversion(x => x.Value, x => new LastName(x))
                .HasColumnType("nvarchar(256)");
 
             builder.Property(u => u.PhoneNumber)

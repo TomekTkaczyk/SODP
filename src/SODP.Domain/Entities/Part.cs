@@ -6,7 +6,7 @@ public sealed class Part : ActiveStatusEntity, IOrdered
 {
 	public Sign Sign { get; private set; }
 
-	public string Title { get; private set; }
+	public Title Title { get; private set; }
 
 	public int Order { get; private set; }
 	
@@ -14,8 +14,8 @@ public sealed class Part : ActiveStatusEntity, IOrdered
 
 	private Part(string sign, string title)
     {
-		Sign = sign.ToUpper();
-		Title = title.ToUpper();
+		Sign = sign;
+		Title = title;
 		Order = 1;
 	}
 
@@ -31,7 +31,7 @@ public sealed class Part : ActiveStatusEntity, IOrdered
 
 	public override string ToString()
 	{
-		return $"{Sign.Value.Trim()} {Title.Trim()}";
+		return $"{Sign.Value.Trim()} {Title.Value.Trim()}";
 	}
 
 	public void Down()

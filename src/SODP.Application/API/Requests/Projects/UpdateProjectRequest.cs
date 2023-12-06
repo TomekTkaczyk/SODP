@@ -1,14 +1,17 @@
 ﻿using MediatR;
-using SODP.Shared.DTO;
+using System;
 
 namespace SODP.Application.API.Requests.Projects;
 
-public sealed record UpdateProjectRequest() : IRequest
-{
-	public ProjectDTO Project { get; }
-    
-	public UpdateProjectRequest(ProjectDTO project) : this()
-    {
-		Project = project;
-	}
-}
+public sealed record UpdateProjectRequest(
+	int Id,
+	string Name,
+	string Title,
+	string Address,
+	string LocationUnit,
+	string BuildingCategory,
+	string Investor,
+	string BuildingPermit,
+	string Description,
+	DateTime DevelopmentDate
+	) : IRequest;

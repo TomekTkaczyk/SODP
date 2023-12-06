@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
+using SODP.Domain.ValueObjects;
 
 namespace SODP.DataAccess.Configurations
 {
@@ -13,27 +14,17 @@ namespace SODP.DataAccess.Configurations
                .HasDefaultValue(1)
                .IsRequired();
 
-            //         builder.OwnsOne(x => x.Differentiator, d =>
-            //{                 
-            //             d.Property(x => x.Sign)
-            //	 .HasColumnType("nvarchar(10)")
-            //	 .HasColumnName("Sign")
-            //	 .IsRequired();
-            //             d.Property(x => x.Title)
-            //	 .HasColumnType("nvarchar(50)")
-            //	 .HasColumnName("Name")
-            //	 .IsRequired();
-            //});
-
             builder.Property(x => x.Sign)
-                .HasColumnType("nvarchar(10)")
-                .HasColumnName("Sign")
+				.HasConversion(x => x.Value, x => new Sign(x))
+				.HasColumnType("nvarchar(10)")
                 .IsRequired();
 
             builder.Property(x => x.Title)
-                .HasColumnType("nvarchar(50)")
+				.HasConversion(x => x.Value, x => new Title(x))
+				.HasColumnType("nvarchar(50)")
                 .HasColumnName("Name")
-                .IsRequired();
+				//.HasColumnName("Title")
+				.IsRequired();
 
             builder.Property(x => x.ActiveStatus)
                 .HasColumnType("tinyint(1)")
