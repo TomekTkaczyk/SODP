@@ -36,7 +36,8 @@ public record ApiResponse
 
 	public static ApiResponse Success()
 	=> new(true, string.Empty, HttpStatusCode.NoContent, new Collection<Error>());
-	public static ApiResponse Success(HttpStatusCode httpCode)
+	
+    public static ApiResponse Success(HttpStatusCode httpCode)
 	=> new(true, string.Empty, httpCode, new Collection<Error>());
 
 	public static ApiResponse Failure(string message, HttpStatusCode httpCode, ICollection<Error> errors = null)

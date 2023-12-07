@@ -10,6 +10,7 @@ public record ProjectName
 
     public ProjectName(string name)
     {
+		if (name == null) throw new ArgumentNullException("name");
 
 		Value = Regex.Replace(
 			string.Join("_", name.Split((char[])null, StringSplitOptions.RemoveEmptyEntries)), 

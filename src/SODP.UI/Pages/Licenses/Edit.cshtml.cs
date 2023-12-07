@@ -49,11 +49,11 @@ namespace SODP.UI.Pages.Licenses
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
-                        if (!response.Success)
-                        {
-                            SetModelErrors(response);
-                        }
+                        //var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
+                        //if (!response.Success)
+                        //{
+                        //    SetModelErrors(response);
+                        //}
                         break;
                     default:
                         return Redirect($"/Errors/{apiResponse.StatusCode}");
@@ -98,16 +98,16 @@ namespace SODP.UI.Pages.Licenses
         private async Task GetLicenseAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"licenses/{id}/branches");
-            var response = await _apiProvider.GetContent<ServiceResponse<LicenseWithBranchesDTO>>(apiResponse);
+            var response = await _apiProvider.GetContent<ApiResponse<LicenseWithBranchesDTO>>(apiResponse);
             if (apiResponse.IsSuccessStatusCode)
             {
                 License = new LicenseVM
                 {
-                    Id = response.Data.Id,
-                    DesignerId = response.Data.Designer.Id,
-                    Designer = response.Data.Designer.ToString(),
-                    Content = response.Data.Content,
-                    ApplyBranches = response.Data.Branches
+                    Id = response.Value.Id,
+                    DesignerId = response.Value.Designer.Id,
+                    Designer = response.Value.Designer.ToString(),
+                    Content = response.Value.Content,
+                    ApplyBranches = response.Value.Branches
                     .OrderBy(x => x.Order)
                     .Select(x => new SelectListItem {
                         Value = x.Id.ToString(),
@@ -122,8 +122,8 @@ namespace SODP.UI.Pages.Licenses
         private async Task<List<SelectListItem>> GetBranchesAsync(List<SelectListItem> exclusionList)
         {
             var apiResponse = await _apiProvider.GetAsync($"branches");
-            var responseBranch = await _apiProvider.GetContent<ServicePageResponse<BranchDTO>>(apiResponse);
-            var result = responseBranch.Data.Collection
+            var responseBranch = await _apiProvider.GetContent<ApiResponse<Page<BranchDTO>>>(apiResponse);
+            var result = responseBranch.Value.Collection
                 .OrderBy(x => x.Order)
                 .Select(x => new SelectListItem
                 {

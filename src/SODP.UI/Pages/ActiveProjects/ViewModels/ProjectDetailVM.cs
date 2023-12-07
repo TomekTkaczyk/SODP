@@ -1,12 +1,11 @@
 ﻿using SODP.Shared.DTO;
-using SODP.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System;
 
 namespace SODP.UI.Pages.ActiveProjects.ViewModels
 {
-	public class ProjectDetailVM
+    public class ProjectDetailVM
 	{
 		public int Id { get; set; }
 

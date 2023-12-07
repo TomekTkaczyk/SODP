@@ -41,7 +41,7 @@ namespace SODP.UI.Pages.Users
         public async Task<IActionResult> OnGet(int id)
         {
             var roles = await GetRoles();
-            AllRoles = roles.Data.Collection.ToDictionary(x => x.Role, x => false);
+            AllRoles = roles.Value.Collection.ToDictionary(x => x.Role, x => false);
             CurrentUser = await GetUser(id);
             if(CurrentUser == null)
             {
@@ -76,22 +76,22 @@ namespace SODP.UI.Pages.Users
             var apiResponse = await _apiProvider.GetAsync($"users/{id}");
             if (apiResponse.IsSuccessStatusCode) 
             { 
-                var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<UserDTO>>();
-                if (response.Success)
+                var response = await apiResponse.Content.ReadAsAsync<ApiResponse<UserDTO>>();
+                if (response.IsSuccess)
                 {
-                    return response.Data;
+                    return response.Value;
                 }
             }
 
             return null;
         }
 
-        private async Task<ServicePageResponse<RoleDTO>> GetRoles()
+        private async Task<ApiResponse<Page<RoleDTO>>> GetRoles()
         {
             var apiResponse = await _apiProvider.GetAsync($"roles");
             if (apiResponse.IsSuccessStatusCode)
             {
-                var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<RoleDTO>>();
+                var result = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<RoleDTO>>>();
                 return result;
             }
 

@@ -39,22 +39,22 @@ public abstract class ListPageModel<T> : ListPageModel //where T : BaseDTO
 		return url.ToString();
 	}
 
-	protected async Task<SODP.Shared.Response.ServicePageResponse<T>> GetApiResponseAsync(string url)
+	protected async Task<ApiResponse<Page<T>>> GetApiResponseAsync(string url)
 	{
 		var apiResponse = await _apiProvider.GetAsync(url);
 
-		return await apiResponse.Content.ReadAsAsync<SODP.Shared.Response.ServicePageResponse<T>>();
+		return await apiResponse.Content.ReadAsAsync<ApiResponse<Page<T>>>();
 	}
 
 
-	protected PageInfo GetPageInfo(SODP.Shared.Response.ServicePageResponse<T> response, string searchString = "")
+	protected PageInfo GetPageInfo(ApiResponse<Page<T>> response, string searchString = "")
 	{
 		var pageInfo = new PageInfo
 		{
-			TotalItems = response.Data.TotalCount,
-			CurrentPage = response.Data.PageNumber,
-			ItemsPerPage = response.Data.PageSize,
-			Url = $"{ReturnUrl}?pageNumber=:&pageSize={response.Data.PageSize}"
+			TotalItems = response.Value.TotalCount,
+			CurrentPage = response.Value.PageNumber,
+			ItemsPerPage = response.Value.PageSize,
+			Url = $"{ReturnUrl}?pageNumber=:&pageSize={response.Value.PageSize}"
 		};
 		if (!string.IsNullOrEmpty(searchString))
 		{
@@ -72,13 +72,13 @@ public abstract class ListPageModel<T> : ListPageModel //where T : BaseDTO
 
 		if (apiResponse.IsSuccessStatusCode)
 		{
-			var response = await apiResponse.Content.ReadAsAsync<SODP.Shared.Response.ServicePageResponse<T>>();
+			var response = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<T>>>();
 			//PageInfo.TotalItems = response.Data.TotalCount;
 			//PageInfo.CurrentPage = response.Data.PageNumber;
 			//PageInfo.ItemsPerPage = response.Data.PageSize;
 			//PageInfo.Url = GetUrl(ReturnUrl,response.Data.PageSize,response.Data.;
 
-			return response.Data.Collection.ToList();
+			return response.Value.Collection.ToList();
 		}
 
 		return new List<T>();

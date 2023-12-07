@@ -51,6 +51,7 @@ public class AutoMapperProfile : Profile
 
 		CreateMap<Part, PartDTO>()
 			.ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.Value))
+			.ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title.Value))
 			.PreserveReferences();
 
 		CreateMap<PartDTO, Part>()
@@ -99,7 +100,9 @@ public class AutoMapperProfile : Profile
 		#region Branch
 
 		CreateMap<Branch, BranchDTO>()
-		   .ForMember(dest => dest.Licenses, opt => opt.MapFrom(x => x.Licenses));
+            .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.Value))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title.Value))
+            .ForMember(dest => dest.Licenses, opt => opt.MapFrom(x => x.Licenses));
 
 		CreateMap<BranchDTO, Branch>()
 			.ForMember(dest => dest.Licenses, act => act.Ignore())

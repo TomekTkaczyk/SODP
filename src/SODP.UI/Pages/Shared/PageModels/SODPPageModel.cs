@@ -23,17 +23,17 @@ namespace SODP.UI.Pages.Shared.PageModels
             _translator = translatorFactory.GetTranslator();
         }
 
-        protected virtual void SetModelErrors(ServiceResponse response)
-        {
-            if (!string.IsNullOrEmpty(response.Message))
-            {
-                ModelState.AddModelError("", response.Message);
-            }
-            foreach (var error in response.ValidationErrors)
-            {
-                ModelState.AddModelError(error.Key, error.Value);
-            }
-        }
+        //protected virtual void SetModelErrors(ServiceResponse response)
+        //{
+        //    if (!string.IsNullOrEmpty(response.Message))
+        //    {
+        //        ModelState.AddModelError("", response.Message);
+        //    }
+        //    foreach (var error in response.ValidationErrors)
+        //    {
+        //        ModelState.AddModelError(error.Key, error.Value);
+        //    }
+        //}
 
         protected virtual PartialViewResult GetPartialView<T>(T model, string partialViewName)
         {

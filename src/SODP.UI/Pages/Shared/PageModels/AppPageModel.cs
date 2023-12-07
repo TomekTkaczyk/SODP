@@ -60,8 +60,8 @@ public abstract class AppPageModel : PageModel
 
 	protected StringContent GetRequestContent<T>(T obj)
 	{
-		return new StringContent(
-				  JsonSerializer.Serialize(obj),
+        return new StringContent(
+                  JsonSerializer.Serialize(obj),
 				  Encoding.UTF8,
 				  "application/json"
 			  );

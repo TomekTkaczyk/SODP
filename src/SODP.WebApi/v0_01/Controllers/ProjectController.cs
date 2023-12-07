@@ -129,12 +129,14 @@ public class ProjectController : ApiControllerBase
 		[FromBody] UpdateProjectRequest request,
 		CancellationToken cancellationToken)
 	{
-		if ((id < 1) || (id != request.Id))
+		if ((id < 1) || (id != request.Id) || string.IsNullOrWhiteSpace(request.Name))
 		{
-			return BadRequest();
+			return BadRequest(ApiResponse.Failure("asasas",HttpStatusCode.BadRequest));
 		}
 
-		return await HandleRequestAsync(request, cancellationToken);
+		var result = await HandleRequestAsync(request, cancellationToken);
+
+		return result;
 	}
 
 

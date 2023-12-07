@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
-using SODP.Shared.Response;
+using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.Extensions;
@@ -43,8 +43,7 @@ public class EditModel : AppPageModel
 		_endpoint = "projects";
 	}
 
-	[BindProperty]
-	public ProjectDTO Project { get; set; }
+	public ProjectDetailVM Project { get; set; }
 
 	public InvestorsVM Investors { get; set; }
 
@@ -52,7 +51,7 @@ public class EditModel : AppPageModel
 
 	public async Task<IActionResult> OnGetAsync(int id)
 	{
-		var apiResponse = await GetApiResponseAsync<ProjectDTO>($"{_endpoint}/{id}/details");
+		var apiResponse = await GetApiResponseAsync<ProjectDetailVM>($"{_endpoint}/{id}/details");
 
 		Project = apiResponse.Value;
 
@@ -61,13 +60,14 @@ public class EditModel : AppPageModel
 			: Page();
 	}
 
-	public async Task<IActionResult> OnPostAsync(ProjectDTO Project)
+	public async Task<IActionResult> OnPostAsync(ProjectDetailVM Project)
 	{
 		if (ModelState.IsValid)
 		{
 			var apiResponse = await _apiProvider.PutAsync(
 				$"projects/{Project.Id}",
-				GetRequestContent(new {
+				GetRequestContent(new
+				{
 					Project.Id,
 					Project.Name,
 					Project.Title,
@@ -85,15 +85,16 @@ public class EditModel : AppPageModel
 				return RedirectToPage("Index");
 			}
 
-			var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
+			var response = await _apiProvider.GetContent<ApiResponse>(apiResponse);
 			if (!string.IsNullOrEmpty(response.Message))
 			{
 				ModelState.AddModelError("", response.Message);
 			}
-			foreach (var error in response.ValidationErrors)
-			{
-				ModelState.AddModelError(error.Key, error.Value);
-			}
+
+			//foreach (var error in response.ValidationErrors)
+			//{
+			//	ModelState.AddModelError(error.Key, error.Value);
+			//}
 		}
 
 		return Page();
@@ -187,8 +188,8 @@ public class EditModel : AppPageModel
 		var apiResponse = await _apiProvider.GetAsync($"branches?active=true");
 		if (apiResponse.IsSuccessStatusCode)
 		{
-			var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<BranchDTO>>();
-			model.Items = result.Data.Collection.Select(x => new SelectListItem
+			var result = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<BranchDTO>>>();
+			model.Items = result.Value.Collection.Select(x => new SelectListItem
 			{
 				Value = x.Id.ToString(),
 				Text = x.ToString()
@@ -197,8 +198,8 @@ public class EditModel : AppPageModel
 			apiResponse = await _apiProvider.GetAsync($"projects/parts/{projectPartId}");
 			if (apiResponse.IsSuccessStatusCode)
 			{
-				var part = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectPartDTO>>();
-				foreach (var item in part.Data.Branches)
+				var part = await apiResponse.Content.ReadAsAsync<ApiResponse<ProjectPartDTO>>();
+				foreach (var item in part.Value.Branches)
 				{
 					var selected = model.Items.SingleOrDefault(x => x.Value == item.Branch.Id.ToString());
 					model.Items.Remove(selected);
@@ -219,8 +220,8 @@ public class EditModel : AppPageModel
 				var apiResponse = await _apiProvider.PostAsync($"projects/parts/{model.ProjectPartId}/branches/{model.SelectedId}", new StringContent(""));
 				if (apiResponse.StatusCode == HttpStatusCode.OK)
 				{
-					var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
-					if (!response.Success)
+					var response = await _apiProvider.GetContent<ApiResponse>(apiResponse);
+					if (!response.IsSuccess)
 					{
 						// SetModelErrors(response);
 					}
@@ -234,8 +235,8 @@ public class EditModel : AppPageModel
 	public async Task<PartialViewResult> OnGetAddTechnicalRoleAsync(int partBranchId)
 	{
 		var response = await PartBranchServiceResponseAsync(partBranchId);
-		var roles = GetAvailableRoles(response.Data);
-		var designers = await GetAvailableDesignersAsync(response.Data);
+		var roles = GetAvailableRoles(response.Value);
+		var designers = await GetAvailableDesignersAsync(response.Value);
 
 		var model = new AvailableRolesVM
 		{
@@ -250,8 +251,8 @@ public class EditModel : AppPageModel
 	public async Task<PartialViewResult> OnPostAddTechnicalRole(AvailableRolesVM model)
 	{
 		var partBranchResponse = await PartBranchServiceResponseAsync(model.PartBranchId);
-		model.ItemsRole = GetAvailableRoles(partBranchResponse.Data);
-		model.ItemsLicense = await GetAvailableDesignersAsync(partBranchResponse.Data);
+		model.ItemsRole = GetAvailableRoles(partBranchResponse.Value);
+		model.ItemsLicense = await GetAvailableDesignersAsync(partBranchResponse.Value);
 		if (ModelState.IsValid)
 		{
 			var role = new NewPartBranchRoleDTO
@@ -263,8 +264,8 @@ public class EditModel : AppPageModel
 			var apiResponse = await _apiProvider.PostAsync($"projects/parts/branches/roles", new StringContent(JsonSerializer.Serialize(role), Encoding.UTF8, "application/json"));
 			if (apiResponse.StatusCode == HttpStatusCode.OK)
 			{
-				var response = await _apiProvider.GetContent<ServiceResponse>(apiResponse);
-				if (!response.Success)
+				var response = await _apiProvider.GetContent<ApiResponse>(apiResponse);
+				if (!response.IsSuccess)
 				{
 					// SetModelErrors(response);
 				}
@@ -303,8 +304,8 @@ public class EditModel : AppPageModel
 	private async Task<SelectList> GetAvailableDesignersAsync(PartBranchDTO partBranch)
 	{
 		var apiResponse = await _apiProvider.GetAsync($"licenses/branches/{partBranch.Branch.Id}");
-		var result = await apiResponse.Content.ReadAsAsync<ServicePageResponse<LicenseDTO>>();
-		var licenses = result.Data.Collection.ToList();
+		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<LicenseDTO>>>();
+		var licenses = result.Value.Collection.ToList();
 		licenses.RemoveAll(x => partBranch.Roles.Select(x => x.License.Designer).Any(y => y.Id == x.Designer.Id));
 		var designers = licenses.Select(x => new SelectListItem
 		{
@@ -339,21 +340,21 @@ public class EditModel : AppPageModel
 		return new List<SelectListItem>();
 	}
 
-	private async Task<ServiceResponse<PartBranchDTO>> PartBranchServiceResponseAsync(int partBranchId)
+	private async Task<ApiResponse<PartBranchDTO>> PartBranchServiceResponseAsync(int partBranchId)
 	{
-		ServiceResponse<PartBranchDTO> response = new();
+		ApiResponse<PartBranchDTO> response = new();
 		var apiResponse = await _apiProvider.GetAsync($"projects/parts/branches/{partBranchId}");
 		if (apiResponse.IsSuccessStatusCode)
 		{
-			response = await apiResponse.Content.ReadAsAsync<ServiceResponse<PartBranchDTO>>();
-			if (!response.Success)
+			response = await apiResponse.Content.ReadAsAsync<ApiResponse<PartBranchDTO>>();
+			if (!response.IsSuccess)
 			{
-				response.SetError(response.Message, 500);
+				// response..SetError(response.Message, 500);
 			}
 		}
 		else
 		{
-			response.SetError("REST API error", 500);
+			// response.SetError("REST API error", response.HttpCode);
 		}
 
 		return response;

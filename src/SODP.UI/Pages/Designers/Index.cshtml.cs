@@ -48,7 +48,7 @@ namespace SODP.UI.Pages.Designers
             PageInfo = GetPageInfo(apiResponse, searchString);
             Designers = new DesignersVM
             {
-                Designers = apiResponse.Data.Collection.ToList(),
+                Designers = apiResponse.Value.Collection.ToList(),
                 PageInfo = PageInfo
 			};
 
@@ -65,8 +65,8 @@ namespace SODP.UI.Pages.Designers
 				{
 					RedirectToPage("Errors/404");
 				}
-				var response = await apiResponse.Content.ReadAsAsync<ServiceResponse<DesignerDTO>>();
-				model = response.Data.ToViewModel();
+				var response = await apiResponse.Content.ReadAsAsync<ApiResponse<DesignerDTO>>();
+				model = response.Value.ToViewModel();
 			}
 
 			return GetPartialView(model, _editDesignerModalViewName);
@@ -82,11 +82,11 @@ namespace SODP.UI.Pages.Designers
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<ServiceResponse<DesignerDTO>>(apiResponse);
-                        if (!response.Success)
-                        {
-                            SetModelErrors(response);
-                        }
+                        //var response = await _apiProvider.GetContent<ServiceResponse<DesignerDTO>>(apiResponse);
+                        //if (!response.Success)
+                        //{
+                        //    SetModelErrors(response);
+                        //}
                         break;
                     default:
                         // redirect to ErrorPage
@@ -102,11 +102,11 @@ namespace SODP.UI.Pages.Designers
             var apiResponse = await _apiProvider.GetAsync($"designers/{id}/licenses");
             if (apiResponse.IsSuccessStatusCode)
             {
-                var response = await _apiProvider.GetContent<ServicePageResponse<LicenseWithBranchesDTO>>(apiResponse);
+                var response = await _apiProvider.GetContent<ApiResponse<Page<LicenseWithBranchesDTO>>>(apiResponse);
                 Licenses = new LicensesVM
                 {
                     DesignerId = id,
-                    Licenses = response.Data.Collection.Select(x => x.ToViewModel()).ToList(),
+                    Licenses = response.Value.Collection.Select(x => x.ToViewModel()).ToList(),
                 };
             }
 
@@ -132,11 +132,11 @@ namespace SODP.UI.Pages.Designers
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<ServiceResponse<LicenseDTO>>(apiResponse);
-                        if (!response.Success)
-                        {
-                            SetModelErrors(response);
-                        }
+                        var response = await _apiProvider.GetContent<ApiResponse<LicenseDTO>>(apiResponse);
+                        //if (!response.Success)
+                        //{
+                        //    SetModelErrors(response);
+                        //}
                         break;
                     default:
                         // redirect to ErrorPage
