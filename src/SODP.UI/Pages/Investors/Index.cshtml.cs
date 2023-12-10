@@ -1,7 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Shared.DTO;
 using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
@@ -21,22 +20,22 @@ public sealed class IndexModel : CollectionPageModel
 	public IndexModel(
 		IWebAPIProvider apiProvider, 
 		ILogger<IndexModel> logger, 
-		IMapper mapper, 
-		LanguageTranslatorFactory translatorFactory) 
-		: base(apiProvider, logger, mapper, translatorFactory)
+		LanguageTranslatorFactory translatorFactory,
+		IMapper mapper) 
+		: base(apiProvider, logger, translatorFactory, mapper)
 	{
 		ReturnUrl = "/Investors";
 		_endpoint = "investors";
 	}
 
 
-	public IReadOnlyCollection<InvestorDTO> Investors { get; private set; }
+	public IReadOnlyCollection<InvestorVM> Investors { get; private set; }
 
 
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
 	{
 		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
-		var apiResponse = await GetApiResponseAsync<Page<InvestorDTO>>(endpoint);
+		var apiResponse = await GetApiResponseAsync<Page<InvestorVM>>(endpoint);
 
 		Investors = GetCollection(apiResponse);
 		PageInfo = GetPageInfo(apiResponse, searchString);
@@ -60,7 +59,7 @@ public sealed class IndexModel : CollectionPageModel
 			RedirectToPage($"Errors/{apiResponse.StatusCode}");
 		}
 
-		var response = await apiResponse.Content.ReadAsAsync<ApiResponse<InvestorDTO>>();
+		var response = await apiResponse.Content.ReadAsAsync<ApiResponse<InvestorVM>>();
 
 		return GetPartialView(_mapper.Map<InvestorVM>(response.Value), _editInvestorModalViewName);
 	}

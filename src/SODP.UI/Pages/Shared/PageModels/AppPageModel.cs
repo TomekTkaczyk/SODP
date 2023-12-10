@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SODP.UI.Api;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -19,16 +20,16 @@ public abstract class AppPageModel : PageModel
 
 	protected readonly IWebAPIProvider _apiProvider;
 	protected readonly ILogger<AppPageModel> _logger;
-	protected readonly IMapper _mapper;
 	protected readonly ITranslator _translator;
+	protected readonly IMapper _mapper;
 
 	protected string ReturnUrl { get; set; }
 
 	protected AppPageModel(
 		IWebAPIProvider apiProvider,
 		ILogger<AppPageModel> logger,
-		IMapper mapper,
-		LanguageTranslatorFactory translatorFactory)
+		LanguageTranslatorFactory translatorFactory,
+		IMapper mapper)
 	{
 		_apiProvider = apiProvider;
 		_logger = logger;
@@ -36,16 +37,22 @@ public abstract class AppPageModel : PageModel
 		_translator = translatorFactory.GetTranslator();
 	}
 
-	protected virtual void SetModelErrors(ApiResponse response)
+
+    protected virtual void SetModelErrors(HttpResponseMessage message) 
+	{
+        ModelState.AddModelError("",_translator.Translate(message.StatusCode.ToString()));
+    }
+
+    protected virtual void SetModelErrors(ApiResponse response)
 	{
 		if (!string.IsNullOrEmpty(response.Message))
 		{
-			ModelState.AddModelError("", response.Message);
+			ModelState.AddModelError("", _translator.Translate(response.Message));
 		}
 
 		foreach (var error in response.Errors)
 		{
-			ModelState.AddModelError("", error.Message);
+			ModelState.AddModelError("", _translator.Translate(error.Message));
 		}
 	}
 
@@ -56,15 +63,6 @@ public abstract class AppPageModel : PageModel
 			ViewName = partialViewName,
 			ViewData = new ViewDataDictionary<T>(ViewData, model)
 		};
-	}
-
-	protected StringContent GetRequestContent<T>(T obj)
-	{
-        return new StringContent(
-                  JsonSerializer.Serialize(obj),
-				  Encoding.UTF8,
-				  "application/json"
-			  );
 	}
 
 	protected async Task<ApiResponse<TValue>> GetApiResponseAsync<TValue>(string url)
@@ -80,7 +78,7 @@ public abstract class AppPageModel : PageModel
 
 		return await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>();
 	}
-								
+
 	protected async Task<ApiResponse> PatchApiResponseAsync(string url, StringContent content)
 	{
 		var apiResponse = await _apiProvider.PatchAsync(url, content);

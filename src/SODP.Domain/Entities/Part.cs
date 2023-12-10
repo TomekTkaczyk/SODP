@@ -17,6 +17,7 @@ public sealed class Part : ActiveStatusEntity, IOrdered
 		Sign = sign;
 		Title = title;
 		Order = 1;
+		SetActiveStatus(true);
 	}
 
 	public static Part Create(string sign, string title)

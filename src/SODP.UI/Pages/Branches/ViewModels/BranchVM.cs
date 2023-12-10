@@ -1,9 +1,14 @@
-﻿namespace SODP.UI.Pages.Branches.ViewModels
+﻿namespace SODP.UI.Pages.Branches.ViewModels;
+
+public record BranchVM 
 {
-    public record BranchVM : NewBranchVM
-    {
-        public int Id { get; set; }
-        public int Order { get; set; }
-        public bool ActiveStatus { get; set; }
-    }
+    public int Id { get; set; }
+
+    public string Sign { get; set; }
+
+    public string Title { get; set; }
+
+    public int Order { get; set; }
+
+    public bool ActiveStatus { get; set; }
 }

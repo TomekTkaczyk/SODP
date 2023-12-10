@@ -2,35 +2,34 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
 
-namespace SODP.DataAccess.Configurations
+namespace SODP.DataAccess.Configurations;
+
+public class RoleEntityConfiguration : IEntityTypeConfiguration<Role>
 {
-    public class RoleEntityConfiguration : IEntityTypeConfiguration<Role>
+    public void Configure(EntityTypeBuilder<Role> builder)
     {
-        public void Configure(EntityTypeBuilder<Role> builder)
-        {
-            // A concurrency token for use with the optimistic concurrency checking
-            builder.Property(r => r.ConcurrencyStamp)
-                .IsConcurrencyToken();
+        // A concurrency token for use with the optimistic concurrency checking
+        builder.Property(r => r.ConcurrencyStamp)
+            .IsConcurrencyToken();
 
-            // Limit the size of columns to use efficient database types
-            builder.Property(u => u.Name)
-                .HasColumnType("nvarchar(256)")
-                .IsRequired();
+        // Limit the size of columns to use efficient database types
+        builder.Property(u => u.Name)
+            .HasColumnType("nvarchar(256)")
+            .IsRequired();
 
-            builder.Property(u => u.NormalizedName)
-                .HasColumnType("nvarchar(256)")
-                .IsRequired();
+        builder.Property(u => u.NormalizedName)
+            .HasColumnType("nvarchar(256)")
+            .IsRequired();
 
-            // Index for "normalized" role name to allow efficient lookups
-            builder.HasIndex(r => r.Name)
-                .HasName("RolesIX_Name")
-                .IsUnique();
+        // Index for "normalized" role name to allow efficient lookups
+        builder.HasIndex(r => r.Name)
+            .HasName("RolesIX_Name")
+            .IsUnique();
 
-            builder.HasIndex(r => r.NormalizedName)
-                .HasName("RolesIX_NormalizedName")
-                .IsUnique();
+        builder.HasIndex(r => r.NormalizedName)
+            .HasName("RolesIX_NormalizedName")
+            .IsUnique();
 
-            builder.ToTable("Roles");
-        }
+        builder.ToTable("Roles");
     }
 }

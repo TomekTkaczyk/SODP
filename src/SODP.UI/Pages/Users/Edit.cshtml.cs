@@ -2,10 +2,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared.PageModels;
+using SODP.UI.Pages.Users.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace SODP.UI.Pages.Users
         }
 
         [BindProperty]
-        public UserDTO CurrentUser { get; set; }
+        public UserVM CurrentUser { get; set; }
 
         [BindProperty]
         public IDictionary<string,bool> AllRoles { get; set; }
@@ -56,12 +57,7 @@ namespace SODP.UI.Pages.Users
 			if (ModelState.IsValid)
 			{
 				CurrentUser.Roles = AllRoles.Where(x => x.Value).Select(x => x.Key).ToList();
-				var apiResponse = await _apiProvider.PutAsync($"users/{CurrentUser.Id}",
-					new StringContent(
-						JsonSerializer.Serialize(CurrentUser),
-						Encoding.UTF8,
-						"application/json"
-						));
+                var apiResponse = await _apiProvider.PutAsync($"users/{CurrentUser.Id}", CurrentUser.ToHttpContent());
 				if (apiResponse.IsSuccessStatusCode)
 				{
 					return RedirectToPage("Index");
@@ -71,12 +67,12 @@ namespace SODP.UI.Pages.Users
 			return Page();
 		}
 
-		private async Task<UserDTO> GetUser(int id)
+		private async Task<UserVM> GetUser(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"users/{id}");
             if (apiResponse.IsSuccessStatusCode) 
             { 
-                var response = await apiResponse.Content.ReadAsAsync<ApiResponse<UserDTO>>();
+                var response = await apiResponse.Content.ReadAsAsync<ApiResponse<UserVM>>();
                 if (response.IsSuccess)
                 {
                     return response.Value;
@@ -86,12 +82,12 @@ namespace SODP.UI.Pages.Users
             return null;
         }
 
-        private async Task<ApiResponse<Page<RoleDTO>>> GetRoles()
+        private async Task<ApiResponse<Page<RoleVM>>> GetRoles()
         {
             var apiResponse = await _apiProvider.GetAsync($"roles");
             if (apiResponse.IsSuccessStatusCode)
             {
-                var result = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<RoleDTO>>>();
+                var result = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<RoleVM>>>();
                 return result;
             }
 

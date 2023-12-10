@@ -13,5 +13,5 @@ public sealed record UpdateProjectRequest(
 	string Investor,
 	string BuildingPermit,
 	string Description,
-	DateTime DevelopmentDate
+	DateTime? DevelopmentDate
 	) : IRequest;

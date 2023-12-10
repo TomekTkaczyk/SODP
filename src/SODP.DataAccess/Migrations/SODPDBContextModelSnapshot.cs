@@ -137,16 +137,16 @@ namespace SODP.DataAccess.Migrations
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Sign")
                         .IsRequired()
                         .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -190,12 +190,11 @@ namespace SODP.DataAccess.Migrations
 
                     b.Property<string>("Sign")
                         .IsRequired()
-                        .HasColumnName("Sign")
                         .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnName("Name")
+                        .HasColumnName("Title")
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
@@ -365,9 +364,7 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Title")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("");
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
@@ -489,7 +486,7 @@ namespace SODP.DataAccess.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnName("Name")
+                        .HasColumnName("Title")
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
@@ -549,9 +546,7 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(256)")
-                        .HasDefaultValue("");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("BuildingCategory")
                         .ValueGeneratedOnAdd()
@@ -608,9 +603,7 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(256)")
-                        .HasDefaultValue("");
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -646,10 +639,6 @@ namespace SODP.DataAccess.Migrations
                     b.Property<DateTime>("ModifyTimeStamp")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int>("Order")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -661,6 +650,11 @@ namespace SODP.DataAccess.Migrations
                     b.Property<string>("Sign")
                         .IsRequired()
                         .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnName("Title")
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -742,7 +736,7 @@ namespace SODP.DataAccess.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnName("Name")
+                        .HasColumnName("Title")
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
@@ -815,14 +809,10 @@ namespace SODP.DataAccess.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Firstname")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(256)")
-                        .HasDefaultValue("");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Lastname")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(256)")
-                        .HasDefaultValue("");
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");

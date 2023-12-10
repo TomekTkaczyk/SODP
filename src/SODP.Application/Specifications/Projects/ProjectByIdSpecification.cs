@@ -1,7 +1,5 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Shared.Specifications;
-using System;
-using System.Linq.Expressions;
 
 namespace SODP.Infrastructure.Specifications.Projects;
 

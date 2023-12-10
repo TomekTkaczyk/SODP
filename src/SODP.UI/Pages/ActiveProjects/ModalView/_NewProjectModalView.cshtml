@@ -16,10 +16,9 @@
                 <div id="error-placeholder"></div>
                 <form asp-page-handler="newProject">
                     <input name="IsValidate" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
-                    <input asp-for="Id" id="id" type="hidden" value="@Model.Id" />
 
                     <div class="form-group">
-                        <input asp-for="Number" id="number" class="form-control" value="@Model.Number" placeholder="Numer projektu" readonly="@(Model.Id.Equals(0) ? false : true)" />
+                        <input asp-for="Number" id="number" class="form-control" value="@Model.Number" placeholder="Numer projektu" />
                         <span asp-validation-for="Number" class="text-danger"></span>
                     </div>
 

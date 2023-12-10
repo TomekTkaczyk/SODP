@@ -10,7 +10,7 @@ namespace SODP.Application.Validators
             RuleFor(c => c.Sign)
                 .NotEmpty().WithMessage("Sign cannot be null or empty")
                 .Length(1, 10).WithMessage("The maximum length is 10 characters");
-            RuleFor(c => c.Name)
+            RuleFor(c => c.Title)
                 .NotEmpty().WithMessage("Sign cannot be null or empty")
                 .Length(1, 50).WithMessage("The maximum length is 50 characters");
         }

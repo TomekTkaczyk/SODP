@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
+using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Stages;
+using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
@@ -29,7 +31,7 @@ public class DeleteStageHandler : IRequestHandler<DeleteStageRequest>
     public async Task<Unit> Handle(DeleteStageRequest request, CancellationToken cancellationToken)
     {
 		var stage = await _stageRepository
-			.Get(new StageByIdSpecification(request.Id))
+			.Get(new ByIdSpecification<Stage>(request.Id))
 			.SingleOrDefaultAsync(cancellationToken) 
             ?? throw new StageNotFoundException();
 

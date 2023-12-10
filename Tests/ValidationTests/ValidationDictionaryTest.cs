@@ -21,7 +21,7 @@ namespace Tests.ValidationTests
         {
             var dictionary = new AppDictionary()
             {
-                Name = "SPECIFIED"
+                Title = "SPECIFIED"
             };
 
             var result = _validator.TestValidate(dictionary);
@@ -35,7 +35,7 @@ namespace Tests.ValidationTests
             var dictionary = new AppDictionary()
             {
                 Sign = "",
-                Name = "SPECIFIED"
+                Title = "SPECIFIED"
             };
 
             var result = _validator.TestValidate(dictionary);
@@ -53,7 +53,7 @@ namespace Tests.ValidationTests
 
             var result = _validator.TestValidate(dictionary);
 
-            result.ShouldHaveValidationErrorFor(b => b.Name);
+            result.ShouldHaveValidationErrorFor(b => b.Title);
         }
 
         [Fact]
@@ -62,12 +62,12 @@ namespace Tests.ValidationTests
             var dictionary = new AppDictionary()
             {
                 Sign = "SPECIFIED",
-                Name = "",
+                Title = "",
             };
 
             var result = _validator.TestValidate(dictionary);
 
-            result.ShouldHaveValidationErrorFor(b => b.Name);
+            result.ShouldHaveValidationErrorFor(b => b.Title);
         }
 
         [Fact]
@@ -76,13 +76,13 @@ namespace Tests.ValidationTests
             var dictionary = new AppDictionary()
             {
                 Sign = "PARTS",
-                Name = "CZĘŚCI PROJEKTU"
+                Title = "CZĘŚCI PROJEKTU"
             };
 
             var result = _validator.TestValidate(dictionary);
 
             result.ShouldNotHaveValidationErrorFor(b => b.Sign);
-            result.ShouldNotHaveValidationErrorFor(b => b.Name);
+            result.ShouldNotHaveValidationErrorFor(b => b.Title);
         }
 
         [Fact]
@@ -91,13 +91,13 @@ namespace Tests.ValidationTests
             var dictionary = new AppDictionary()
             {
                 Sign = new String('a', 11),
-                Name = new String('a',51)
+                Title = new String('a',51)
             };
 
             var result = _validator.TestValidate(dictionary);
 
             result.ShouldHaveValidationErrorFor(b => b.Sign);
-            result.ShouldHaveValidationErrorFor(b => b.Name);
+            result.ShouldHaveValidationErrorFor(b => b.Title);
         }
 
     }

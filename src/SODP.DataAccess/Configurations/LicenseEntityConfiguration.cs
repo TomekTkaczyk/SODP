@@ -2,20 +2,19 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
 
-namespace SODP.DataAccess.Configurations
+namespace SODP.DataAccess.Configurations;
+
+public class LicenseEntityConfiguration : IEntityTypeConfiguration<License>
 {
-    public class LicenseEntityConfiguration : IEntityTypeConfiguration<License>
+    public void Configure(EntityTypeBuilder<License> builder)
     {
-        public void Configure(EntityTypeBuilder<License> builder)
-        {
-            builder.Property(x => x.Content)
-                .HasColumnType("nvarchar(256)")
-                .IsRequired();
+        builder.Property(x => x.Content)
+            .HasColumnType("nvarchar(256)")
+            .IsRequired();
 
-            builder.HasIndex(x => x.DesignerId)
-                .HasName("LicensesIX_Designer");
+        builder.HasIndex(x => x.DesignerId)
+            .HasName("LicensesIX_Designer");
 
-            builder.ToTable("Licenses");
-        }
+        builder.ToTable("Licenses");
     }
 }

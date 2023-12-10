@@ -31,7 +31,7 @@ public sealed class DeleteLicenseHandler : IRequestHandler<DeleteLicenseRequest>
 		CancellationToken cancellationToken)
 	{
 		var license = await _licensesRepository
-			.Get()
+			.Get(new ByIdSpecification<License>(request.Id))
 			.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken)
 			?? throw new NotFoundException(nameof(License));
 

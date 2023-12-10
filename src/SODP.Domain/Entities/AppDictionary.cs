@@ -10,7 +10,7 @@ public class AppDictionary : ActiveStatusEntity, IActiveStatus, IEquatable<AppDi
 
 
 	public string Sign { get; set; }
-	public string Name { get; set; }
+	public string Title { get; set; }
 
 	public virtual ICollection<AppDictionary> Children { get; set; }
 

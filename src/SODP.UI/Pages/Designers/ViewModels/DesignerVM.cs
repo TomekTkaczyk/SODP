@@ -1,8 +1,14 @@
-﻿namespace SODP.UI.Pages.Designers.ViewModels
+﻿namespace SODP.UI.Pages.Designers.ViewModels;
+
+public class DesignerVM
 {
-    public class DesignerVM : NewDesignerVM
-    {
-        public int Id { get; set; }
-		public bool ActiveStatus { get; set; }
+    public int Id { get; set; }
+
+    public string Title { get; set; }
+
+    public string Firstname { get; set; }
+
+    public string Lastname { get; set; }
+
+    public bool ActiveStatus { get; set; }
 	}
-}

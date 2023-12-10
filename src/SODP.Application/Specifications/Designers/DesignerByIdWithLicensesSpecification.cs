@@ -12,9 +12,4 @@ internal class DesignerByIdWithLicensesSpecification : Specification<Designer>
 	{
 		AddInclude(x => x.Licenses);
 	}
-
-	public override Expression<Func<Designer, bool>> AsPredicateExpression()
-	{
-		throw new NotImplementedException();
-	}
 }

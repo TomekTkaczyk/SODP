@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Investors;
+using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Investors;
+using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using System.Threading;
@@ -25,7 +27,7 @@ public sealed class DeleteInvestorHandler : IRequestHandler<DeleteInvestorReques
     public async Task<Unit> Handle(DeleteInvestorRequest request, CancellationToken cancellationToken)
     {
         var investor = await _investorRepository
-            .Get(new InvestorByIdSpecification(request.Id))
+            .Get(new ByIdSpecification<Investor>(request.Id))
             .SingleOrDefaultAsync(cancellationToken)
             ?? throw new InvestorNotFoundException();
 

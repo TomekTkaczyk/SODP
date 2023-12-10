@@ -2,20 +2,19 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
 
-namespace SODP.DataAccess.Configurations
+namespace SODP.DataAccess.Configurations;
+
+public class PartBranchEntityConfiguration : IEntityTypeConfiguration<PartBranch>
 {
-    public class PartBranchEntityConfiguration : IEntityTypeConfiguration<PartBranch>
+    public void Configure(EntityTypeBuilder<PartBranch> builder)
     {
-        public void Configure(EntityTypeBuilder<PartBranch> builder)
-        {
-            builder.Property(x => x.ProjectPartId)
-                .IsRequired();
+        builder.Property(x => x.ProjectPartId)
+            .IsRequired();
 
 			builder.HasIndex(x => new { x.ProjectPartId })
-            	.HasName("PartBranchesIX_ProjectPartId");
+        	.HasName("PartBranchesIX_ProjectPartId");
 
 
 			builder.ToTable("PartBranches");
-        }
     }
 }

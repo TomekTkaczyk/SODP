@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SODP.UI.Pages.ActiveProjects.ViewModels
 {
-    public class TechnicalRoleVM
+	public class TechnicalRoleVM
     {
         public int ProjectId { get; set; }
 

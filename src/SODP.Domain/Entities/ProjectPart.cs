@@ -1,36 +1,37 @@
-﻿using SODP.Domain.Exceptions.PartExceptions;
-using SODP.Domain.ValueObjects;
+﻿using SODP.Domain.ValueObjects;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SODP.Domain.Entities;
 
 public class ProjectPart : BaseEntity
 {
+    private IList<PartBranch> _partBranches  = new List<PartBranch>();
+
     public int ProjectId { get; set; }
-    public virtual Project Project { get; set; }
-	public Sign Sign { get; set; }
-	public Title Title { get; set; }
+    public virtual Project Project { get; private set; }
+	public Sign Sign { get; private set; }
+	public Title Title { get; private set; }
     public int Order { get; private set; } = 1;
-	public ICollection<PartBranch> Branches { get; set; }
+	public IReadOnlyCollection<PartBranch> Branches => new ReadOnlyCollection<PartBranch>(_partBranches);
 
 	private ProjectPart() { }
 
-	private ProjectPart(Project project, Part part)
+    private ProjectPart(Project project, Sign sign, Title title)
+    {
+        Project = project;
+        Sign = sign;
+        Title = title;
+    }
+
+	public static ProjectPart Create(Project project, Sign sign, Title title)
 	{
-		Project = project;
-		Sign = part.Sign;
-		Title = part.Title;
+		return new ProjectPart(project, sign, title);
 	}
 
-	public static ProjectPart Create(Project project, Part part)
-	{
-		if (part is null)
-		{
-			throw new PartIsNullException();
-		}
-
-		return new ProjectPart(project, part);
-	}
-
-
+    public void Update(Sign sign, Title title)
+    {
+        this.Sign = sign;
+        this.Title = title;
+    }
 }

@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Licenses.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -98,21 +99,21 @@ namespace SODP.UI.Pages.Licenses
         private async Task GetLicenseAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"licenses/{id}/branches");
-            var response = await _apiProvider.GetContent<ApiResponse<LicenseWithBranchesDTO>>(apiResponse);
+            var response = await _apiProvider.GetContent<ApiResponse<LicenseWithBranchesVM>>(apiResponse);
             if (apiResponse.IsSuccessStatusCode)
             {
                 License = new LicenseVM
                 {
                     Id = response.Value.Id,
-                    DesignerId = response.Value.Designer.Id,
+                    //DesignerId = response.Value.Designer.Id,
                     Designer = response.Value.Designer.ToString(),
                     Content = response.Value.Content,
-                    ApplyBranches = response.Value.Branches
-                    .OrderBy(x => x.Order)
-                    .Select(x => new SelectListItem {
-                        Value = x.Id.ToString(),
-                        Text = x.ToString()
-                    }).ToList()
+                    //ApplyBranches = response.Value.Branches
+                    //.OrderBy(x => x.Order)
+                    //.Select(x => new SelectListItem {
+                    //    Value = x.Id.ToString(),
+                    //    Text = x.ToString()
+                    //}).ToList()
                 };
 
                 License.Branches = await GetBranchesAsync(License.ApplyBranches);
@@ -122,7 +123,7 @@ namespace SODP.UI.Pages.Licenses
         private async Task<List<SelectListItem>> GetBranchesAsync(List<SelectListItem> exclusionList)
         {
             var apiResponse = await _apiProvider.GetAsync($"branches");
-            var responseBranch = await _apiProvider.GetContent<ApiResponse<Page<BranchDTO>>>(apiResponse);
+            var responseBranch = await _apiProvider.GetContent<ApiResponse<Page<BranchVM>>>(apiResponse);
             var result = responseBranch.Value.Collection
                 .OrderBy(x => x.Order)
                 .Select(x => new SelectListItem
@@ -142,21 +143,19 @@ namespace SODP.UI.Pages.Licenses
 
         private StringContent ToHttpContent()
         {
-            var licenseDTO = new LicenseDTO
+            var license = new LicenseVM
             {
                 Id = License.Id,
                 Content = License.Content
             };
-            licenseDTO.Designer = new DesignerDTO
+            var designer = new DesignerVM
             {
                 Id = License.DesignerId
             };
 
-            return new StringContent(
-                                  JsonSerializer.Serialize(licenseDTO),
-                                  Encoding.UTF8,
-                                  "application/json"
-                              );
+            license.Designer = designer.ToString();
+
+            return license.ToHttpContent();
         }
     }
 }

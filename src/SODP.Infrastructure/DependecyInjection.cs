@@ -58,10 +58,10 @@ public static class DependecyInjection
 	{
 		services.AddSwaggerGen(c =>
 		{
-			c.SwaggerDoc("v1", new OpenApiInfo
+			c.SwaggerDoc("v0_01", new OpenApiInfo
 			{
 				Title = "SODP.WEBAPI",
-				Version = "v1",
+				Version = "v0_01",
 				Description = "Aplikacja do zarządzania projektami SODP",
 				TermsOfService = new Uri(configuration.GetSection($"AppSettings:termsOfService").Value),
 				Contact = new OpenApiContact

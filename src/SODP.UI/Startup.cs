@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -42,16 +43,16 @@ public class Startup
     }
 
     public void ConfigureServices(IServiceCollection services)
-    {
-			
+    {	
+
         services.AddMediatR(Application.AssemblyReference.Assembly);
 
-         // Warning: Generic handlers must be manually registered in the MS DI container
 		services.AddActiveStatusCommandHandlers(Domain.AssemblyReference.Assembly);
 
-		services.AddSwagger(Configuration);
+        services.AddSwagger(Configuration);
 
-        services.AddCors(options => options.AddPolicy(name: "SODPOriginsSpecification", builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
+        services.AddCors(options => 
+            options.AddPolicy(name: "SODPOriginsSpecification", builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
 
         services.AddDataAccess(Configuration);
 
@@ -138,8 +139,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-
-			app.UseSwagger();
+        app.UseHttpLogging();
         
         if (env.IsDevelopment())
         {
@@ -147,13 +147,12 @@ public class Startup
         }
         else
         {
+            app.UseStatusCodePagesWithRedirects("/Errors/{0}");
             app.UseExceptionHandler("/Errors");
             app.UseHsts();
         }
 
-        app.UseHttpLogging();
-
-        app.UseStatusCodePagesWithRedirects("/Errors/{0}");
+        app.UseSwagger();
 
         app.UseHttpsRedirection();
 

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
+using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Designers;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
@@ -35,7 +36,7 @@ public class ChangeDesignerNameHandler : IRequestHandler<ChangeDesignerNameReque
 		}
 
 		var designer = await _designerRepository
-			.Get()
+			.Get(new ByIdSpecification<Designer>(request.Id))
 			.SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
 		designer.Title = request.Title;

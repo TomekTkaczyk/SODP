@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Shared.DTO;
 using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
@@ -22,8 +21,8 @@ public sealed class IndexModel : CollectionPageModel
 	public IndexModel(
 		IWebAPIProvider apiProvider,
 		ILogger<IndexModel> logger,
-		IMapper mapper,
-		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
+		LanguageTranslatorFactory translatorFactory,
+		IMapper mapper) : base(apiProvider, logger, translatorFactory, mapper)
 	{
 		ReturnUrl = "/Stages";
 		_endpoint = "stages";
@@ -34,7 +33,7 @@ public sealed class IndexModel : CollectionPageModel
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
 	{
 		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
-		var apiResponse = await GetApiResponseAsync<Page<StageDTO>>(endpoint);
+		var apiResponse = await GetApiResponseAsync<Page<StageVM>>(endpoint);
 		
 		if (!apiResponse.IsSuccess)
 		{
@@ -54,7 +53,7 @@ public sealed class IndexModel : CollectionPageModel
 			return GetPartialView(new StageVM(), _editStageModalViewName);
 		}
 
-		var apiResponse = await GetApiResponseAsync<StageDTO>($"{_endpoint}/{id}");
+		var apiResponse = await GetApiResponseAsync<StageVM>($"{_endpoint}/{id}");
 
 		if (!apiResponse.IsSuccess)
 		{

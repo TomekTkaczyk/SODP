@@ -25,7 +25,7 @@
 		<div class="col-lg-7 justify-content-end font-weight-bold p-0">
 			<div>
 				@Model.Project.Number
-				@Model.Project.Stage
+				@Model.Project.Stage.Title
 			</div>
 			<div>
 				@Model.Project.Name
@@ -141,7 +141,7 @@
 				<div class="col-lg-7" style="padding:30px">
 					@if (Model.Project.Parts.Count > 0)
 					{
-						<div id="projectsAccordion" class="accordion">
+						<div id="projectPartAccordion" class="accordion">
 							@foreach (var item in Model.Project.Parts)
 							{
 								<div class="button card border-light">
@@ -195,7 +195,7 @@
 								<div id="collapse-@item.Id"
 									 class="collapse hide"
 									 aria-labelledby="heading-@item.Id"
-									 data-parent="#projectsAccordion">
+									 data-parent="#projectPartAccordion">
 									<div class="card-body" id="project-@item.Id">
 										Coś poszło nie tak z ładowaniem szczegółów części
 									</div>

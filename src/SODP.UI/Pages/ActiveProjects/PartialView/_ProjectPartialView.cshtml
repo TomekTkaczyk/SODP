@@ -1,7 +1,8 @@
 ﻿@using SODP.UI.Services;
-@using SODP.UI.Pages.Shared.ViewModels;
+@using SODP.UI.Pages.ActiveProjects.ViewModels;
 
-@model ProjectDTO
+@model ProjectDetailsVM
+
 @inject LanguageTranslatorFactory _translatorFactory;
 
 <div>
@@ -88,7 +89,7 @@
 		</div>
 	</div>
 
-	@if (Model.Parts.Count > 0)
+	@if (!(Model.Parts == null) && Model.Parts.Count > 0)
 	{
 		<div>
 			<label class="text-secondary">Części:</label>

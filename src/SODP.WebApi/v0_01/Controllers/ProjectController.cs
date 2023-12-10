@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Projects;
 using SODP.Application.Services;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Shared.Results;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
@@ -134,9 +135,7 @@ public class ProjectController : ApiControllerBase
 			return BadRequest(ApiResponse.Failure("asasas",HttpStatusCode.BadRequest));
 		}
 
-		var result = await HandleRequestAsync(request, cancellationToken);
-
-		return result;
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 
 
@@ -227,12 +226,12 @@ public class ProjectController : ApiControllerBase
 		[FromBody] AddPartRequest request,
 		CancellationToken cancellationToken)
 	{
-		if (id != request.Id)
+		if (id != request.ProjectId)
 		{
 			return BadRequest();
 		}
 
-		return await HandleRequestAsync<AddPartRequest, ApiResponse<PartDTO>>(request, cancellationToken);
+		return await HandleRequestAsync(request, cancellationToken);
 	}
 
 
@@ -275,7 +274,7 @@ public class ProjectController : ApiControllerBase
 		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		return await HandleRequestAsync<GetPartWithBranchesRequest, ApiResponse<ProjectPartDTO>>(
+		return await HandleRequestAsync<GetPartWithBranchesRequest, ApiResponse<ICollection<PartBranchDTO>>>(
 			new GetPartWithBranchesRequest(id), 
 			cancellationToken);
 	}

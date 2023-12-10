@@ -1,10 +1,8 @@
-﻿using SODP.Shared.DTO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace SODP.UI.Pages.Parts.ViewModels
+namespace SODP.UI.Pages.Parts.ViewModels;
+
+public class PartsVM
 {
-	public class PartsVM
-	{
-		public IList<PartDTO> Parts { get; set; }
-	}
+	public IList<PartVM> Parts { get; set; }
 }

@@ -1,8 +1,14 @@
 ﻿namespace SODP.Shared.DTO;
 
-public record PartDTO : NewPartDTO
+public record PartDTO
 {
-	public int Order { get; set; }
+    public int Id { get; set; }
+
+    public string Sign { get; set; }
+
+    public string Title { get; set; }
+
+    public int Order { get; set; }
 
 	public bool ActiveStatus { get; set; }
 }

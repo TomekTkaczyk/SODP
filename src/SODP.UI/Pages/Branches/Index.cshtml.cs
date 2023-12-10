@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Shared.DTO;
 using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
@@ -24,8 +23,8 @@ public class IndexModel : CollectionPageModel
 	public IndexModel(
 		IWebAPIProvider apiProvider,
 		ILogger<IndexModel> logger,
-		IMapper mapper,
-		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
+		LanguageTranslatorFactory translatorFactory, 
+		IMapper mapper) : base(apiProvider, logger, translatorFactory, mapper)
 	{
 		ReturnUrl = "/Branches";
 		_endpoint = "branches";
@@ -36,7 +35,7 @@ public class IndexModel : CollectionPageModel
 	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
 	{
 		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
-		var apiResponse = await GetApiResponseAsync<Page<BranchDTO>>(endpoint);
+		var apiResponse = await GetApiResponseAsync<Page<BranchVM>>(endpoint);
 
 		Branches = _mapper.Map<IReadOnlyCollection<BranchVM>>(apiResponse.Value.Collection);
 		PageInfo = GetPageInfo(apiResponse, searchString);
@@ -56,7 +55,7 @@ public class IndexModel : CollectionPageModel
 				return RedirectToPage($"/Errors/{responseMessage.StatusCode}");
 			}
 
-			var apiResponse = await responseMessage.Content.ReadAsAsync<ApiResponse<BranchDTO>>();
+			var apiResponse = await responseMessage.Content.ReadAsAsync<ApiResponse<BranchVM>>();
 			model = _mapper.Map<BranchVM>(apiResponse.Value);
 		}
 
@@ -88,8 +87,8 @@ public class IndexModel : CollectionPageModel
 			return RedirectToPage($"/Errors/{responseMessage.StatusCode}");
 		}
 
-		var apiResponse = await responseMessage.Content.ReadAsAsync<ApiResponse<BranchDTO>>();																		
-		var model = _mapper.Map<IReadOnlyCollection<LicenseVM>>(apiResponse.Value.Licenses);
+		var apiResponse = await responseMessage.Content.ReadAsAsync<ApiResponse<Page<LicenseVM>>>();																		
+		var model = _mapper.Map<IReadOnlyCollection<LicenseVM>>(apiResponse.Value.Collection);
 
 		return GetPartialView(model, _designersPartialViewName);
 	}

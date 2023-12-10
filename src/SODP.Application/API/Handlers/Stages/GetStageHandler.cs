@@ -2,7 +2,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
-using SODP.Application.Specifications.Stages;
+using SODP.Application.Specifications.Common;
+using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
@@ -30,7 +31,7 @@ public class GetStageHandler : IRequestHandler<GetStageRequest, ApiResponse<Stag
         CancellationToken cancellationToken)
     {
         var stage = await _stageRepository
-            .Get(new StageByIdSpecification(request.Id))
+            .Get(new ByIdSpecification<Stage>(request.Id))
             .SingleOrDefaultAsync(cancellationToken)
 			?? throw new StageNotFoundException();
 

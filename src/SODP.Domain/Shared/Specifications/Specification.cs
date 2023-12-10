@@ -11,6 +11,7 @@ public abstract class Specification<T> : ISpecification<T>
     private readonly List<Tuple<Expression<Func<T, object>>, bool>> _ordersByExpressionCollection = new();
 
     public Expression<Func<T, bool>> Criteria { get; }
+
     public List<Tuple<Expression<Func<T, object>>, bool>> OrderByExpressions
     {
         get
@@ -18,6 +19,7 @@ public abstract class Specification<T> : ISpecification<T>
             return _ordersByExpressionCollection;
         }
     }
+
     public List<Expression<Func<T, object>>> Includes
     {
         get
@@ -32,6 +34,7 @@ public abstract class Specification<T> : ISpecification<T>
     {
         Criteria = criteria;
     }
+
 
     protected void AddInclude(Expression<Func<T, object>> includeExpression)
         => Includes.Add(includeExpression);
@@ -56,5 +59,4 @@ public abstract class Specification<T> : ISpecification<T>
     {
         return left.And(right);
     }
-
 }

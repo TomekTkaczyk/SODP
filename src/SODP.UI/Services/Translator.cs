@@ -10,7 +10,7 @@ namespace SODP.UI.Services
 
     public class Translator : ITranslator
     {
-        private Languages _currentLanguage;
+        private readonly Languages _currentLanguage;
 
         public Languages CurrentLanguage => _currentLanguage;
 
@@ -23,34 +23,32 @@ namespace SODP.UI.Services
 
         public string Translate(string source, Languages lang)
         {
-			//var regex = new Regex("'(.*?)'");
-			//var regex = new Regex("'(.*?[^\\])'")
-			//var matches = regex.Match(source);
-
 			GetDictionary(lang).TryGetValue(source, out string translation);
 
-			return translation ?? "";
+			return translation ?? source;
         }
 
         private Dictionary<string, string> GetDictionary(Languages lang)
         {
             switch (lang)
             {
-                case Languages.Pl: return lang_pl;
-                default: return lang_en;
+                case Languages.Pl: return _lang_pl;
+                default: return _lang_en;
             }
         }
 
-        private readonly Dictionary<string, string> lang_pl = new Dictionary<string, string>
+        private readonly Dictionary<string, string> _lang_pl = new()
         {
             { "Designer", "Projektant" },
-            { "Checker", "Sprawdzający" }
+            { "Checker", "Sprawdzający" },
+            { "BadRequest", "Błędne żądanie" }
         };
 
-        private readonly Dictionary<string, string> lang_en = new Dictionary<string, string>
+        private readonly Dictionary<string, string> _lang_en = new()
         {
             { "Designer", "Designer" },
-            { "Checker", "Checker" }
+            { "Checker", "Checker" },
+            { "BadRequest", "Bad request" }
         };
 
 	}

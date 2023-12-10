@@ -2,25 +2,20 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Designers
 {
     [Authorize(Roles = "ProjectManager")]
-	public class IndexModel : ListPageModel<DesignerDTO>
+	public class IndexModel : ListPageModel<DesignerVM>
     {
         const string _newLicenseModalViewName = "ModalView/_NewLicenseModalView";
         const string _editDesignerModalViewName = "ModalView/_EditDesignerModalView";
@@ -48,7 +43,7 @@ namespace SODP.UI.Pages.Designers
             PageInfo = GetPageInfo(apiResponse, searchString);
             Designers = new DesignersVM
             {
-                Designers = apiResponse.Value.Collection.ToList(),
+                Designers = apiResponse.Value.Collection,
                 PageInfo = PageInfo
 			};
 
@@ -65,9 +60,13 @@ namespace SODP.UI.Pages.Designers
 				{
 					RedirectToPage("Errors/404");
 				}
-				var response = await apiResponse.Content.ReadAsAsync<ApiResponse<DesignerDTO>>();
-				model = response.Value.ToViewModel();
-			}
+				var response = await apiResponse.Content.ReadAsAsync<ApiResponse<DesignerVM>>();
+                model.Id = response.Value.Id;
+                model.Title = response.Value.Title;
+                model.Firstname = response.Value.Firstname;
+                model.Lastname = response.Value.Lastname;
+
+            }
 
 			return GetPartialView(model, _editDesignerModalViewName);
 		}
@@ -102,11 +101,11 @@ namespace SODP.UI.Pages.Designers
             var apiResponse = await _apiProvider.GetAsync($"designers/{id}/licenses");
             if (apiResponse.IsSuccessStatusCode)
             {
-                var response = await _apiProvider.GetContent<ApiResponse<Page<LicenseWithBranchesDTO>>>(apiResponse);
+                var response = await _apiProvider.GetContent<ApiResponse<Page<LicenseWithBranchesVM>>>(apiResponse);
                 Licenses = new LicensesVM
                 {
                     DesignerId = id,
-                    Licenses = response.Value.Collection.Select(x => x.ToViewModel()).ToList(),
+//                     Licenses = response.Value.Collection.Select(x => x.ToViewModel()).ToList(),
                 };
             }
 
@@ -132,7 +131,7 @@ namespace SODP.UI.Pages.Designers
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<ApiResponse<LicenseDTO>>(apiResponse);
+                        var response = await _apiProvider.GetContent<ApiResponse<LicenseVM>>(apiResponse);
                         //if (!response.Success)
                         //{
                         //    SetModelErrors(response);

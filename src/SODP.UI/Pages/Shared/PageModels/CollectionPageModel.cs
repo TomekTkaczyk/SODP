@@ -21,9 +21,9 @@ public abstract class CollectionPageModel : AppPageModel
 	protected CollectionPageModel(
 		IWebAPIProvider apiProvider,
 		ILogger<CollectionPageModel> logger,
-		IMapper mapper,
-		LanguageTranslatorFactory translatorFactory)
-		: base(apiProvider, logger, mapper, translatorFactory)
+		LanguageTranslatorFactory translatorFactory,
+		IMapper mapper)
+		: base(apiProvider, logger, translatorFactory, mapper )
 	{
 		foreach (var item in PageSizeSelectList.PageSizeList)
 		{
@@ -31,7 +31,7 @@ public abstract class CollectionPageModel : AppPageModel
 		}
 	}
 
-	protected string GetPageUrl(int pageNumber, int pageSize, string searchString)
+	protected virtual string GetPageUrl(int pageNumber, int pageSize, string searchString)
 	{
 		var url = new StringBuilder();
 		url.Append(_endpoint);

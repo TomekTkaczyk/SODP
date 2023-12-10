@@ -1,6 +1,4 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;

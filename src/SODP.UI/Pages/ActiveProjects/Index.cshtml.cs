@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.UI.Api;
 using SODP.UI.Extensions;
@@ -13,39 +12,41 @@ using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects;
 
 [Authorize(Roles = "User, ProjectManager")]
-public sealed class IndexModel : ProjectsPageModel
+public sealed class IndexModel : ProjectsPageModel<ProjectVM>
 {
 	const string _newProjectModalViewName = "ModalView/_NewProjectModalView";
 
-	public IndexModel(
+    public IndexModel(
 		IWebAPIProvider apiProvider,
 		ILogger<IndexModel> logger,
-		IMapper mapper,
-		LanguageTranslatorFactory translatorFactory)
-		: base(apiProvider, logger, mapper, translatorFactory)
+		LanguageTranslatorFactory translatorFactory,
+		IMapper mapper)
+		: base(apiProvider, logger, translatorFactory, mapper)
 	{
 		ReturnUrl = "/ActiveProjects";
+
 	}
 
 
-	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
-	{
-		return await OnGetAsync(ProjectStatus.Active, pageNumber, pageSize, searchString);
-	}
+    public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
+    {
+        return await GetAsync(ProjectStatus.Active,pageNumber,pageSize,searchString);
+    }
 
-	public async Task<IActionResult> OnGetProjectPartialAsync(int id)
-	{
-		return await GetProjectPartialAsync(id);
-	}
+    public async Task<IActionResult> OnGetProjectPartialAsync(int id)
+    {
+		return await GetProjectPartialAsync<ProjectDetailsVM>(id);
+    }
 
-	public async Task<IActionResult> OnGetNewProjectAsync()
+    public async Task<IActionResult> OnGetNewProjectAsync()
 	{
-		return await GetNewProjectPartialViewAsync(new NewProjectVM());
+		return await GetNewProjectPartialViewAsync();
 	}
 
 	public async Task<IActionResult> OnPostNewProjectAsync(NewProjectVM project)
@@ -67,7 +68,7 @@ public sealed class IndexModel : ProjectsPageModel
 					}
 					break;
 				case System.Net.HttpStatusCode.Conflict:
-					var response = await _apiProvider.GetContent<ApiResponse<ProjectDTO>>(apiResponse);
+					var response = await _apiProvider.GetContent<ApiResponse<ProjectVM>>(apiResponse);
 					if (!response.IsSuccess)
 					{
 						SetModelErrors(response);
@@ -77,28 +78,30 @@ public sealed class IndexModel : ProjectsPageModel
 					break;
 			}
 		}
-
-		project.Stages = await GetStagesItems();
-
-		return GetPartialView(project, _newProjectModalViewName);
-	}
-
-	private async Task<IActionResult> GetNewProjectPartialViewAsync(NewProjectVM project)
-	{
-		project.Stages = await GetStagesItems();
+		project.Stages = await GetStagesItemsAsync();
 
 		return GetPartialView(project, _newProjectModalViewName);
 	}
 
-	private async Task<IEnumerable<SelectListItem>> GetStagesItems()
+	private async Task<IActionResult> GetNewProjectPartialViewAsync()
 	{
-		var _apiResponse = await GetApiResponseAsync<Page<StageDTO>>("stages?ActiveStatus=true");
+		var project = new NewProjectVM
+		{
+			Stages = await GetStagesItemsAsync()
+		};
+
+		return GetPartialView(project, _newProjectModalViewName);
+	}
+
+	private async Task<IEnumerable<SelectListItem>> GetStagesItemsAsync()
+	{
+		var _apiResponse = await GetApiResponseAsync<Page<StageVM>>("stages?ActiveStatus=true");
 
 		return _apiResponse.Value.Collection
 			.Select(x => new SelectListItem
 			{
 				Value = x.Sign,
-				Text = x.ToString()
+				Text = x.Title
 			});
 	}
 }

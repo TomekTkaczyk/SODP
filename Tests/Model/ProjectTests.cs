@@ -1,21 +1,21 @@
 ﻿using SODP.Domain.Entities;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Tests.Model;
 
 public class ProjectTests
 {
-	//[Theory]
- //   [InlineData("1101PB_SomeName_Project")]
- //   [InlineData("1101_SomeName_Project_PB")]
- //   public void New_project_created_from_foldername_has_valid_stage_PB(string foldername)
- //   {
- //       var stage = Stage.Create("PB", "");
- //       var project = new Project(foldername);
+	public IReadOnlyCollection<string> Collection { get; set; }
 
- //       var expected = Project.Create("1101", stage, "SomeName_Project");
+	[Fact]
+	public void when_add_ProjectPart_to_Project_ProjectPartCollection_has_one_element()
+	{
+		var project = Project.Create("1111",Stage.Create("PB",""),"Project");
 
- //       Assert.Equal(expected.Symbol, project.Symbol);
- //       // Assert.Equal(expected.Title, project.Title);
- //   }
+        project.AddPart("PB", "PROJEKT BUDOWLANY");
+
+		Assert.Collection(project.Parts, part => Assert.True(part.Sign.Equals("PB")));
+	}
 }

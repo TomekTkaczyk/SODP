@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Investors;
+using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Investors;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
@@ -35,7 +36,7 @@ public class ChangeInvestorNameHandler : IRequestHandler<ChangeInvestorNameReque
         }
 
 		investor = await _investorRepository
-			.Get(new InvestorByIdSpecification(request.Id))
+			.Get(new ByIdSpecification<Investor>(request.Id))
 			.SingleOrDefaultAsync(cancellationToken)
             ?? throw new NotFoundException("Investor");
 

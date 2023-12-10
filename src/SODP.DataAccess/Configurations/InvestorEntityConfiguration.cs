@@ -2,27 +2,26 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SODP.Domain.Entities;
 
-namespace SODP.DataAccess.Configurations
+namespace SODP.DataAccess.Configurations;
+
+internal class InvestorEntityConfiguration : IEntityTypeConfiguration<Investor>
 {
-	internal class InvestorEntityConfiguration : IEntityTypeConfiguration<Investor>
+	public void Configure(EntityTypeBuilder<Investor> builder)
 	{
-		public void Configure(EntityTypeBuilder<Investor> builder)
-		{
-			builder.Property(x => x.Name)
-				.HasColumnType("nvarchar(256)")
-				.IsRequired();
+		builder.Property(x => x.Name)
+			.HasColumnType("nvarchar(256)")
+			.IsRequired();
 
-			builder.Property(x => x.ActiveStatus)
-				.HasColumnType("tinyint(1)")
-				.HasDefaultValue(true)
-				.IsRequired();
-			
-			builder.HasKey(u => u.Id);
+		builder.Property(x => x.ActiveStatus)
+			.HasColumnType("tinyint(1)")
+			.HasDefaultValue(true)
+			.IsRequired();
+		
+		builder.HasKey(u => u.Id);
 
-			builder.HasIndex(x => new { x.Name })
-				.HasName("InvestorsIX_Name");
+		builder.HasIndex(x => new { x.Name })
+			.HasName("InvestorsIX_Name");
 
-			builder.ToTable("Investors");
-		}
+		builder.ToTable("Investors");
 	}
 }

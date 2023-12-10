@@ -1,7 +1,8 @@
-﻿@using SODP.UI.Pages.Shared.ViewModels;
-@using SODP.UI.Services;
+﻿@using SODP.UI.Services;
+@using SODP.UI.Pages.ArchiveProjects.ViewModels;
 
-@model ProjectDTO
+@model ProjectDetailsVM
+
 @inject LanguageTranslatorFactory _translatorFactory;
 
 <div>
@@ -91,25 +92,28 @@
 		</div>
 	</div>
 
-	<div>
-		<label class="text-secondary">Części:</label>
-		@foreach (var item in Model.Parts)
-		{
-			<div class="row ml-2 text-primary">
-				<span class="font-weight-bold" style="white-space: pre-line">@item.Title</span>
-			</div>
-			@foreach (var branch in item.Branches)
+	@if (!(Model.Parts==null) && Model.Parts.Count > 0)
+	{
+		<div>
+			<label class="text-secondary">Części:</label>
+			@foreach (var item in Model.Parts)
 			{
-				<div class="row">
-					<div class="col my-auto ml-2 text-primary">@branch.Branch.ToString()</div>
+				<div class="row ml-2 text-primary">
+					<span class="font-weight-bold" style="white-space: pre-line">@item.Title</span>
 				</div>
-				@foreach(var role in branch.Roles)
+				@foreach (var branch in item.Branches)
 				{
 					<div class="row">
-						<div class="col my-auto ml-2 text-primary">@_translatorFactory.GetTranslator().Translate(role.Role) : @role.License.Designer (@role.License.Content)</div>
+						<div class="col my-auto ml-2 text-primary">@branch.Branch.ToString()</div>
 					</div>
+					@foreach(var role in branch.Roles)
+					{
+						<div class="row">
+							<div class="col my-auto ml-2 text-primary">@_translatorFactory.GetTranslator().Translate(role.Role) : @role.License.Designer (@role.License.Content)</div>
+						</div>
+					}
 				}
 			}
-		}
-	</div>
+		</div>
+	}
 </div>
