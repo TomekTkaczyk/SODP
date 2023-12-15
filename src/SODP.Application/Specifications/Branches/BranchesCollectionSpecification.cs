@@ -3,7 +3,7 @@ using SODP.Domain.Shared.Specifications;
 
 namespace SODP.Application.Specifications.Branches;
 
-public class BranchesCollectionSpecification : Specification<Branch>
+internal sealed class BranchesCollectionSpecification : Specification<Branch>
 {
 	public BranchesCollectionSpecification(bool? active = null, string searchString = null)
 		: base(branch =>

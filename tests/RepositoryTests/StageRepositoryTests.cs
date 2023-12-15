@@ -3,10 +3,9 @@ using Moq;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Infrastructure.Repositories;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using Tests;
+using tests.Utils;
 using Xunit;
 
 namespace tests.RepositoryTests;

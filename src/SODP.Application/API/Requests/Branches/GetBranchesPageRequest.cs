@@ -8,5 +8,4 @@ public sealed record GetBranchesPageRequest(
     bool? ActiveStatus,
     string SearchString,
     int PageNumber,
-    int PageSize) : IRequest<ApiResponse<Page<BranchDTO>>>
-{ }
+    int PageSize) : IRequest<ApiResponse<Page<BranchDTO>>>;

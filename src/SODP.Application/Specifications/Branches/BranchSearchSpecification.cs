@@ -4,7 +4,7 @@ using System;
 
 namespace SODP.Application.Specifications.Branches;
 
-internal class BranchSearchSpecification : Specification<Branch>
+internal sealed class BranchSearchSpecification : Specification<Branch>
 {
 	public BranchSearchSpecification(bool? active = null, string searchString = null)
 		: base(stage =>

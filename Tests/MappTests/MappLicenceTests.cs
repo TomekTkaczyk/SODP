@@ -10,7 +10,7 @@ using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using Xunit;
 
-namespace Tests.MappTests
+namespace tests.MappTests
 {
     public class MappLicenseTests
     {

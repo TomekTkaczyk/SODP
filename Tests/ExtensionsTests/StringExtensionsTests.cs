@@ -1,7 +1,7 @@
 ﻿using SODP.Shared.Extensions;
 using Xunit;
 
-namespace Tests.ExtensionsTests
+namespace tests.ExtensionsTests
 {
 	public class StringExtensionsTests
     {

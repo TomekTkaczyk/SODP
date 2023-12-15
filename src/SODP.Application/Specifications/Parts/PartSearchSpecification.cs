@@ -4,7 +4,7 @@ using System;
 
 namespace SODP.Application.Specifications.Parts;
 
-internal class PartSearchSpecification : Specification<Part>
+internal sealed class PartSearchSpecification : Specification<Part>
 {
 	public PartSearchSpecification(bool? active = null, string searchString = null)
 		: base(part =>

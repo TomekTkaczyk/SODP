@@ -18,7 +18,7 @@ namespace SODP.WebApi.v0_01.Controllers;
 // [Authorize]
 [ApiController]
 [Route("api/v0_01/projects")]
-public class ProjectController : ApiControllerBase
+public class ProjectController : ApiBaseController
 {
 	public ProjectController(
 		ISender sender,

@@ -15,7 +15,7 @@ namespace SODP.WebApi.v0_01.Controllers;
 // [Authorize]
 [ApiController]
 [Route("api/v0_01/users")]
-public class UserController : ApiControllerBase
+public class UserController : ApiBaseController
 {
 
 	public UserController(

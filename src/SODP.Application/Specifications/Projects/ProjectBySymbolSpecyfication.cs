@@ -3,7 +3,7 @@ using SODP.Domain.Shared.Specifications;
 
 namespace SODP.Infrastructure.Specifications.Projects;
 
-public class ProjectBySymbolSpecification : Specification<Project>
+internal sealed class ProjectBySymbolSpecification : Specification<Project>
 {
 	public ProjectBySymbolSpecification(string number, string stageSign)
 		: base(project =>

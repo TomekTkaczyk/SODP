@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace SODP.Application.Specifications.Branches;
 
-public class BranchLicensesSpecification : Specification<Branch>
+internal sealed class BranchLicensesSpecification : Specification<Branch>
 {
 	public BranchLicensesSpecification(int id) 
 		: base(branch =>

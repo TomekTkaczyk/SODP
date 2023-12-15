@@ -5,7 +5,7 @@ using SODP.Domain.Entities;
 using SODP.UI.Services;
 using Xunit;
 
-namespace Tests.UITests.ServiceTests
+namespace tests.UITests.ServiceTests
 {
     public class PaginationCalculatorTests
     {

@@ -5,7 +5,7 @@ using System;
 
 namespace SODP.Infrastructure.Specifications.Projects;
 
-public class ProjectsSearchSpecyfication : Specification<Project>
+internal sealed class ProjectsSearchSpecyfication : Specification<Project>
 {
 	public ProjectsSearchSpecyfication(ProjectStatus? status = null, string searchString = null)
 		: base(project =>

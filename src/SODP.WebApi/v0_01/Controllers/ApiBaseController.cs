@@ -9,13 +9,13 @@ using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
-public abstract class ApiControllerBase : ControllerBase
+public abstract class ApiBaseController : ControllerBase
 {
 	protected readonly ISender _sender;
-	protected readonly ILogger<ApiControllerBase> _logger;
+	protected readonly ILogger<ApiBaseController> _logger;
 	protected readonly IMapper _mapper;
 
-	public ApiControllerBase(ISender sender, ILogger<ApiControllerBase> logger, IMapper mapper)
+	public ApiBaseController(ISender sender, ILogger<ApiBaseController> logger, IMapper mapper)
 	{
 		_sender = sender ?? throw new ArgumentNullException(nameof(sender));
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));

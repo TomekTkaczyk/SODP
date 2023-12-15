@@ -6,7 +6,7 @@ using SODP.Application.Services;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Tests.ApiControllerTests
+namespace tests.ApiControllerTests
 {
     public class DesignerControllerTests
     {

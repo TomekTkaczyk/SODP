@@ -13,7 +13,7 @@ namespace SODP.WebApi.v0_01.Controllers;
 // [Authorize]
 [ApiController]
 [Route("api/v0_01/roles")]
-public class RoleController : ApiControllerBase
+public class RoleController : ApiBaseController
 {
 	public RoleController(
 		ISender sender,

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SODP.Domain.Entities;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;

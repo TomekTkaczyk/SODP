@@ -5,7 +5,7 @@ using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Infrastructure.Repositories;
 using System.Linq;
-using Tests;
+using tests.Utils;
 using Xunit;
 
 namespace tests.SpecificationTests;

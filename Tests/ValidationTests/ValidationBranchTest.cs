@@ -3,7 +3,7 @@ using SODP.Application.Validators;
 using SODP.Domain.Entities;
 using Xunit;
 
-namespace Tests.ValidationTests;
+namespace tests.ValidationTests;
 
 public class ValidationBranchTest
 {

@@ -2,6 +2,6 @@
 
 namespace SODP.Application.API.Requests.Designers;
 
-public record AddBranchToLicenseRequest(
+public sealed record AddBranchToLicenseRequest(
 	int LicenseId,
 	int BranchId) : IRequest;

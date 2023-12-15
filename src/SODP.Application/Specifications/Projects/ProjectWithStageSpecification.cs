@@ -1,18 +1,10 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Shared.Specifications;
-using System;
-using System.Linq.Expressions;
 
-namespace SODP.Application.Specifications.Projects
+namespace SODP.Application.Specifications.Projects;
+
+internal sealed class ProjectWithStageSpecification : Specification<Project>
 {
-    public class ProjectWithStageSpecification : Specification<Project>
-	{
-		public ProjectWithStageSpecification(int stageId)
-			: base(project => project.StageId == stageId) { }
-
-		public override Expression<Func<Project, bool>> AsPredicateExpression()
-		{
-			throw new NotImplementedException();
-		}
-	}
+	public ProjectWithStageSpecification(int stageId)
+		: base(project => project.StageId == stageId) { }
 }

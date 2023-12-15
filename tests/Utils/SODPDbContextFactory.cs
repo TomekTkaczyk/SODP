@@ -2,7 +2,7 @@
 using SODP.DataAccess;
 using SODP.Infrastructure.Services;
 
-namespace Tests;
+namespace tests.Utils;
 
 public class SODPDbContextFactory
 {
@@ -10,7 +10,7 @@ public class SODPDbContextFactory
 
     public static SODPDBContext CreateDbContext(string connectionString)
     {
-		var options = new DbContextOptionsBuilder<SODPDBContext>().UseMySql(connectionString).Options;
-		return new SODPDBContext(options, new DateTimeService());
+        var options = new DbContextOptionsBuilder<SODPDBContext>().UseMySql(connectionString).Options;
+        return new SODPDBContext(options, new DateTimeService());
     }
 }

@@ -4,7 +4,7 @@ using System;
 
 namespace SODP.Application.Specifications.Designers;
 
-internal class DesignerSearchSpecification : Specification<Designer>
+internal sealed class DesignerSearchSpecification : Specification<Designer>
 {
 	public DesignerSearchSpecification(bool? active = null, string searchString = null)
 		: base(designer =>

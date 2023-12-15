@@ -5,100 +5,99 @@ using SODP.Domain.Entities;
 using System;
 using Xunit;
 
-namespace Tests.ValidationTests
+namespace tests.ValidationTests;
+
+public class ValidationDictionaryTest
 {
-    public class ValidationDictionaryTest
+    private DictionaryValidator _validator;
+
+    public ValidationDictionaryTest()
     {
-        private DictionaryValidator _validator;
-
-        public ValidationDictionaryTest()
-        {
-            _validator = new DictionaryValidator();
-        }
-
-        [Fact]
-        public void should_have_error_when_sign_is_null()
-        {
-            var dictionary = new AppDictionary()
-            {
-                Title = "SPECIFIED"
-            };
-
-            var result = _validator.TestValidate(dictionary);
-
-            result.ShouldHaveValidationErrorFor(b => b.Sign);
-        }
-
-        [Fact]
-        public void should_have_error_when_sign_is_empty()
-        {
-            var dictionary = new AppDictionary()
-            {
-                Sign = "",
-                Title = "SPECIFIED"
-            };
-
-            var result = _validator.TestValidate(dictionary);
-
-            result.ShouldHaveValidationErrorFor(b => b.Sign);
-        }
-
-        [Fact]
-        public void should_have_error_when_name_is_null()
-        {
-            var dictionary = new AppDictionary()
-            {
-                Sign = "SPECIFIED",
-            };
-
-            var result = _validator.TestValidate(dictionary);
-
-            result.ShouldHaveValidationErrorFor(b => b.Title);
-        }
-
-        [Fact]
-        public void should_have_error_when_name_is_empty()
-        {
-            var dictionary = new AppDictionary()
-            {
-                Sign = "SPECIFIED",
-                Title = "",
-            };
-
-            var result = _validator.TestValidate(dictionary);
-
-            result.ShouldHaveValidationErrorFor(b => b.Title);
-        }
-
-        [Fact]
-        public void should_not_have_error_when_sign_and_name_is_specified()
-        {
-            var dictionary = new AppDictionary()
-            {
-                Sign = "PARTS",
-                Title = "CZĘŚCI PROJEKTU"
-            };
-
-            var result = _validator.TestValidate(dictionary);
-
-            result.ShouldNotHaveValidationErrorFor(b => b.Sign);
-            result.ShouldNotHaveValidationErrorFor(b => b.Title);
-        }
-
-        [Fact]
-        public void should_have_error_when_sign_and_name_is_too_long()
-        {
-            var dictionary = new AppDictionary()
-            {
-                Sign = new String('a', 11),
-                Title = new String('a',51)
-            };
-
-            var result = _validator.TestValidate(dictionary);
-
-            result.ShouldHaveValidationErrorFor(b => b.Sign);
-            result.ShouldHaveValidationErrorFor(b => b.Title);
-        }
-
+        _validator = new DictionaryValidator();
     }
+
+    [Fact]
+    public void should_have_error_when_sign_is_null()
+    {
+        var dictionary = new AppDictionary()
+        {
+            Title = "SPECIFIED"
+        };
+
+        var result = _validator.TestValidate(dictionary);
+
+        result.ShouldHaveValidationErrorFor(b => b.Sign);
+    }
+
+    [Fact]
+    public void should_have_error_when_sign_is_empty()
+    {
+        var dictionary = new AppDictionary()
+        {
+            Sign = "",
+            Title = "SPECIFIED"
+        };
+
+        var result = _validator.TestValidate(dictionary);
+
+        result.ShouldHaveValidationErrorFor(b => b.Sign);
+    }
+
+    [Fact]
+    public void should_have_error_when_name_is_null()
+    {
+        var dictionary = new AppDictionary()
+        {
+            Sign = "SPECIFIED",
+        };
+
+        var result = _validator.TestValidate(dictionary);
+
+        result.ShouldHaveValidationErrorFor(b => b.Title);
+    }
+
+    [Fact]
+    public void should_have_error_when_name_is_empty()
+    {
+        var dictionary = new AppDictionary()
+        {
+            Sign = "SPECIFIED",
+            Title = "",
+        };
+
+        var result = _validator.TestValidate(dictionary);
+
+        result.ShouldHaveValidationErrorFor(b => b.Title);
+    }
+
+    [Fact]
+    public void should_not_have_error_when_sign_and_name_is_specified()
+    {
+        var dictionary = new AppDictionary()
+        {
+            Sign = "PARTS",
+            Title = "CZĘŚCI PROJEKTU"
+        };
+
+        var result = _validator.TestValidate(dictionary);
+
+        result.ShouldNotHaveValidationErrorFor(b => b.Sign);
+        result.ShouldNotHaveValidationErrorFor(b => b.Title);
+    }
+
+    [Fact]
+    public void should_have_error_when_sign_and_name_is_too_long()
+    {
+        var dictionary = new AppDictionary()
+        {
+            Sign = new String('a', 11),
+            Title = new String('a',51)
+        };
+
+        var result = _validator.TestValidate(dictionary);
+
+        result.ShouldHaveValidationErrorFor(b => b.Sign);
+        result.ShouldHaveValidationErrorFor(b => b.Title);
+    }
+
 }

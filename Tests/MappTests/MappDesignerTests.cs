@@ -6,7 +6,7 @@ using SODP.Shared.DTO;
 using System.Linq;
 using Xunit;
 
-namespace Tests.MappTests;
+namespace tests.MappTests;
 
 public class MappDesignerTests
 {

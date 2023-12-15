@@ -4,7 +4,7 @@ using System;
 
 namespace SODP.Application.Specifications.Investors;
 
-internal class InvestorSearchSpecification : Specification<Investor>
+internal sealed class InvestorSearchSpecification : Specification<Investor>
 {
 	public InvestorSearchSpecification(bool? active = null, string searchString = null)
 		: base(investor =>

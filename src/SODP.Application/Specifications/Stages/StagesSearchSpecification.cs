@@ -4,7 +4,7 @@ using System;
 
 namespace SODP.Application.Specifications.Stages;
 
-public class StagesSearchSpecification : Specification<Stage>
+internal sealed class StagesSearchSpecification : Specification<Stage>
 {
 	public StagesSearchSpecification(bool? active = null, string searchString = null)
 		: base(stage =>

@@ -17,7 +17,7 @@ namespace SODP.WebApi.v0_01.Controllers;
 // [Authorize]
 [ApiController]
 [Route("api/v0_01/licenses")]
-public class LicenseController : ApiControllerBase
+public class LicenseController : ApiBaseController
 {
 	public LicenseController(
 		ISender sender,
