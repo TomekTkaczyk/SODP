@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SODP.Application.Abstractions;
 using SODP.DataAccess;
 using SODP.Domain.Repositories;
@@ -20,21 +19,19 @@ public static class DependecyInjection
 {
 	public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
 	{
-
 		services.AddDbContext<SODPDBContext>(options =>
 		{
 			options.EnableDetailedErrors();
 			if (services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment())
-			{
+			{ 
 				options.EnableSensitiveDataLogging();
 			}
 			options.UseMySql(
 				configuration.GetConnectionString("DefaultDbConnection"),
+				new MariaDbServerVersion(ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultDbConnection"))),
 				b =>
 				{
 					b.SchemaBehavior(MySqlSchemaBehavior.Ignore);
-					b.CharSetBehavior(CharSetBehavior.NeverAppend);
-					b.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MariaDb));
 				});
 		});
 
@@ -76,9 +73,6 @@ public static class DependecyInjection
 					Url = new Uri(configuration.GetSection($"AppSettings:licenseUrl").Value)
 				}
 			});
-
-			//var filePath = Path.Combine(AppContext.BaseDirectory, "SODP.UI.xml");
-			//c.IncludeXmlComments(filePath);
 
 			c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 			{

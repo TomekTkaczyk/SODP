@@ -10,8 +10,8 @@ using Microsoft.Extensions.Hosting;
 using SODP.Application;
 using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.Domain.Entities;
 using SODP.Infrastructure;
+using SODP.Domain.Entities;
 using SODP.Infrastructure.Managers;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
@@ -52,7 +52,9 @@ public class Startup
         services.AddSwagger(Configuration);
 
         services.AddCors(options => 
-            options.AddPolicy(name: "SODPOriginsSpecification", builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
+            options.AddPolicy(
+                name: "SODPOriginsSpecification", 
+                builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
 
         services.AddDataAccess(Configuration);
 
@@ -60,9 +62,7 @@ public class Startup
 
         var app = AppDomain.CurrentDomain
                 .GetAssemblies()
-                .Where(x => x.GetName()
-                .Name
-                .Contains(_appPrefix))
+                .Where(x => x.GetName().Name.Contains(_appPrefix))
                 .ToArray();
 
         services.Scan(scan =>
@@ -132,8 +132,7 @@ public class Startup
             .AddRazorRuntimeCompilation();
 
         // remove if use .net core 5 or higher
-        services
-            .AddMvc(options => options.SuppressAsyncSuffixInActionNames = false);
+        //services.AddMvc(options => options.SuppressAsyncSuffixInActionNames = false);
 
     }
 
@@ -170,7 +169,6 @@ public class Startup
         {
             endpoints.MapControllers();
             endpoints.MapRazorPages();
-
         });
     }
 }
