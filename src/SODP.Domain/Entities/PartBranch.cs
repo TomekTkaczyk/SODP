@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace SODP.Domain.Entities;
 
@@ -15,6 +14,6 @@ public class PartBranch : BaseEntity
 
     public virtual Branch Branch { get; set; }
 
-    public IReadOnlyCollection<BranchRole> Roles => new ReadOnlyCollection<BranchRole>(_roles);
+    public ICollection<BranchRole> Roles { get; private set; }
 
 }

@@ -11,8 +11,6 @@ namespace SODP.Domain.Entities;
 
 public class Project : BaseEntity
 {
-    private IList<ProjectPart> _parts = new List<ProjectPart>();
-
     public ProjectNumber Number { get; private set; }	// Project number
     public int StageId { get; private set; }            // Project stage Id
     public Stage Stage { get; private set; }            // Stage object
@@ -26,7 +24,7 @@ public class Project : BaseEntity
     public string Description { get; private set; }     
     public DateTime? DevelopmentDate { get; private set; }
     public ProjectStatus Status { get; private set; }
-    public IReadOnlyCollection<ProjectPart> Parts => new ReadOnlyCollection<ProjectPart>(_parts);
+    public ICollection<ProjectPart> Parts { get; private set; }
 
 	private Project() { }
 
@@ -52,12 +50,12 @@ public class Project : BaseEntity
 
     public void AddPart(Sign sign, Title title)
     {
-		if(_parts.Any(x => x.Sign.Equals(sign)))
+		if(Parts.Any(x => x.Sign.Equals(sign)))
 		{
 			throw new ProjectPartConflictException();
 		}
 
-        _parts.Add(ProjectPart.Create(this, sign, title));
+        Parts.Add(ProjectPart.Create(this, sign, title));
     }
 
 	public void UpdatePart(int PartId, Sign sign, Title title)

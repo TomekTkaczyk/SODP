@@ -6,14 +6,12 @@ namespace SODP.Domain.Entities;
 
 public class ProjectPart : BaseEntity
 {
-    private IList<PartBranch> _partBranches  = new List<PartBranch>();
-
     public int ProjectId { get; set; }
     public virtual Project Project { get; private set; }
 	public Sign Sign { get; private set; }
 	public Title Title { get; private set; }
     public int Order { get; private set; } = 1;
-	public IReadOnlyCollection<PartBranch> Branches => new ReadOnlyCollection<PartBranch>(_partBranches);
+	public IReadOnlyCollection<PartBranch> Branches { get; private set; }
 
 	private ProjectPart() { }
 

@@ -1,12 +1,10 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
 using SODP.Application.Specifications.Stages;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
-using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,16 +15,13 @@ public sealed class CreateStageHandler : IRequestHandler<CreateStageRequest, Api
 {
     private readonly IStageRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
-	private readonly IMapper _mapper;
 
 	public CreateStageHandler(
         IStageRepository repository,
-        IUnitOfWork unitOfWork,
-        IMapper mapper)
+        IUnitOfWork unitOfWork)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
-		_mapper = mapper;
 	}
 
     public async Task<ApiResponse<int>> Handle(CreateStageRequest request, CancellationToken cancellationToken)
