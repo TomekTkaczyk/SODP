@@ -1,16 +1,24 @@
-﻿namespace SODP.Domain.ValueObjects;
+﻿using System.Collections.Generic;
 
-public record Title
+namespace SODP.Domain.ValueObjects;
+
+public record Title : ValueObject
 {
 	public string Value { get; }
 
     public Title(string title)
     {
-        Value = title;
+        Value = title ?? "";
     }
+
+    public static Title Default => new("");
 
 	public static implicit operator string(Title title) => title?.Value;
 
 	public static implicit operator Title(string title) => new(title);
 
+	public override IEnumerable<object> GetAtomicValues()
+	{
+		yield return Value;
+	}
 }

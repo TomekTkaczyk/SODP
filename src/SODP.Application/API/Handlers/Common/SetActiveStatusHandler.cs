@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Common;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -23,6 +24,8 @@ public sealed class SetActiveStatusHandler<TEntity>
         _repository = repository;
         _unitOfWork = unitOfWork;
     }
+
+    [IgnoreMethodAsyncNameConvention]
     public async Task<Unit> Handle(SetActiveStatusRequest<TEntity> request, CancellationToken cancellationToken)
     {
         var entity = await _repository

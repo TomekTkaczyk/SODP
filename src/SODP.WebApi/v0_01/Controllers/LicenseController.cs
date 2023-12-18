@@ -4,13 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Licenses;
-using SODP.Application.Services;
 using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System.Net;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
 
 namespace SODP.WebApi.v0_01.Controllers;
 

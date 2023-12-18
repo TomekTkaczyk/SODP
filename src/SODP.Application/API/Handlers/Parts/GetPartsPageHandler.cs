@@ -2,6 +2,7 @@
 using MediatR;
 using SODP.Application.API.Requests.Parts;
 using SODP.Application.Specifications.Parts;
+using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -23,6 +24,7 @@ public sealed class GetPartsPageHandler : IRequestHandler<GetPartsPageRequest, A
 		_mapper = mapper;
 	}
 
+	[IgnoreMethodAsyncNameConvention]
 	public async Task<ApiResponse<Page<PartDTO>>> Handle(
 		GetPartsPageRequest request,
 		CancellationToken cancellationToken)

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Branches;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -23,7 +24,8 @@ public sealed class UpdateBranchHandler : IRequestHandler<UpdateBranchRequest>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Unit> Handle(UpdateBranchRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(UpdateBranchRequest request, CancellationToken cancellationToken)
     {
         var branch = await _branchRepository
             .Get(new ByIdSpecification<Branch>(request.Id))

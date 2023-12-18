@@ -4,8 +4,18 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Stages;
 
-public sealed record GetStagesPageRequest(
-	bool? ActiveStatus,
-	string SearchString = "",
-	int PageNumber = 1,
-	int PageSize = 0) : IRequest<ApiResponse<Page<StageDTO>>>;
+public sealed record GetStagesPageRequest : IRequest<ApiResponse<Page<StageDTO>>>
+{
+	public bool? ActiveStatus { get; init; }
+	public string SearchString { get; init; }
+	public int PageNumber { get; init; }
+	public int PageSize { get; init; }
+
+	public GetStagesPageRequest(bool? activeStatus, string searchString, int pageNumber, int pageSize)
+	{
+		ActiveStatus = activeStatus;
+		SearchString = searchString.ToUpper();
+		PageNumber = pageNumber;
+		PageSize = pageSize;
+	}
+}

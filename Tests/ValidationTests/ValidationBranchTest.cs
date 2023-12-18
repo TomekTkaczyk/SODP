@@ -1,36 +1,14 @@
-﻿using FluentValidation.TestHelper;
-using SODP.Application.Validators;
-using SODP.Domain.Entities;
+﻿using SODP.Domain.Entities;
+using SODP.Domain.Exceptions.PartExceptions;
 using Xunit;
 
 namespace tests.ValidationTests;
 
-public class ValidationBranchTest
+public class ValidationBranchTests
 {
-	private BranchValidator _validator;
-
-	public ValidationBranchTest()
-	{
-		_validator = new BranchValidator();
-	}
-
 	[Fact]
-	public void should_have_error_when_sign_is_null()
+	internal void when_sign_is_null_then_throw_exception()
 	{
-		var branch = Branch.Create(null, "");
-
-		var result = _validator.TestValidate(branch);
-
-		result.ShouldHaveValidationErrorFor(b => b.Sign);
-	}
-
-	[Fact]
-	public void should_not_have_error_when_sign_is_specified()
-	{
-		var branch = Branch.Create("A", "");
-
-		var result = _validator.TestValidate(branch);
-
-		result.ShouldNotHaveValidationErrorFor(b => b.Sign);
+		Assert.Throws<BranchSignIsInvalidException>(() => Branch.Create(null, ""));
 	}
 }

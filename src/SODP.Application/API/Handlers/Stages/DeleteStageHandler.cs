@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
 using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Stages;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
@@ -28,7 +29,8 @@ public class DeleteStageHandler : IRequestHandler<DeleteStageRequest>
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Unit> Handle(DeleteStageRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(DeleteStageRequest request, CancellationToken cancellationToken)
     {
 		var stage = await _stageRepository
 			.Get(new ByIdSpecification<Stage>(request.Id))

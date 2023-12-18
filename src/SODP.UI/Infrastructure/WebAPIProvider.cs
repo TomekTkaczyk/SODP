@@ -57,7 +57,7 @@ public class WebAPIProvider : IWebAPIProvider
 		return apiResponse;
 	}
 
-	public async Task<T> GetContent<T>(HttpResponseMessage message)
+	public async Task<T> GetContentAsync<T>(HttpResponseMessage message)
 	{
 		return await message.Content.ReadAsAsync<T>();
 	}

@@ -20,7 +20,7 @@ public class StageRepositoryTests
 	}
 
 	[Fact]
-	public void repository_GetAll_should_return_entities()
+	internal void repository_GetAll_should_return_entities()
 	{
 		var mock = new Mock<ILogger<Stage>>();
 		var repository = new StageRepository(_context, mock.Object);
@@ -32,7 +32,7 @@ public class StageRepositoryTests
 	}
 
 	[Fact]
-	public void repository_GetAll_with_where_clausure_should_return_one_entity()
+	internal void repository_GetAll_with_where_clausure_should_return_one_entity()
 	{
 		var mock = new Mock<ILogger<Stage>>();
 		var repository = new StageRepository(_context, mock.Object);

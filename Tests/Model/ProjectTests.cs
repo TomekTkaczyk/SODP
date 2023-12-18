@@ -1,21 +1,31 @@
-﻿using SODP.Domain.Entities;
+﻿using NSubstitute.ExceptionExtensions;
+using SODP.Domain.Entities;
+using SODP.Domain.Exceptions.ProjectExceptions;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace tests.Model;
 
 public class ProjectTests
 {
-	public IReadOnlyCollection<string> Collection { get; set; }
 
 	[Fact]
-	public void when_add_ProjectPart_to_Project_ProjectPartCollection_has_one_element()
+	internal void when_add_ProjectPart_to_Project_ProjectPartCollection_has_one_element()
 	{
 		var project = Project.Create("1111",Stage.Create("PB",""),"Project");
 
         project.AddPart("PB", "PROJEKT BUDOWLANY");
 
-		Assert.Collection(project.Parts, part => Assert.True(part.Sign.Equals("PB")));
+		Assert.Single(project.Parts, part => part.Sign.Equals("PB"));
+	}
+
+	[Fact]
+	internal void when_add_second_same_ProjectPart_to_Project_throw_exception()
+	{
+		var project = Project.Create("1111", Stage.Create("PB", ""), "Project");
+
+		project.AddPart("PB", "PROJEKT BUDOWLANY");
+
+		Assert.Throws<ProjectPartConflictException>(() => project.AddPart("PB", "PROJEKT BUDOWLANY"));
 	}
 }

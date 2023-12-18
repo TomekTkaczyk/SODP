@@ -13,5 +13,5 @@ public interface IFolderCommandCreator
 	string GetCommandArchiveFolder(string name);
 	string GetCommandRestoreFolder(string name);
 
-	Task<string> RunCommand(string command, CancellationToken cancellationToken);
+	Task<string> RunCommandAsync(string command, CancellationToken cancellationToken);
 }

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Investors;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -26,7 +27,8 @@ public sealed class GetInvestorHandler : IRequestHandler<GetInvestorRequest, Api
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<InvestorDTO>> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<InvestorDTO>> Handle(
         GetInvestorRequest request,
         CancellationToken cancellationToken)
     {

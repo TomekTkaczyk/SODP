@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Parts;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -23,6 +24,7 @@ public sealed class DeletePartHandler : IRequestHandler<DeletePartRequest>
 		_unitOfWork = unitOfWork;
 	}
 
+	[IgnoreMethodAsyncNameConvention]
 	public async Task<Unit> Handle(DeletePartRequest request, CancellationToken cancellationToken)
 	{
 		var part = await _partRepository

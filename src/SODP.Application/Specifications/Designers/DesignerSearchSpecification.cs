@@ -15,7 +15,9 @@ internal sealed class DesignerSearchSpecification : Specification<Designer>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			((string)designer.Title).Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+			((string)designer.Title).Contains(searchString) ||
+			((string)designer.Firstname).Contains(searchString)	||
+			((string)designer.Lastname).Contains(searchString)
 		))
 	{
 		AddOrderByExpression(x => x.Title);

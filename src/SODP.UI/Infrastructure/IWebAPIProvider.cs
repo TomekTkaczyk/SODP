@@ -11,6 +11,6 @@ namespace SODP.UI.Infrastructure
         Task<HttpResponseMessage> PatchAsync(string endPoint, StringContent content);
         Task<HttpResponseMessage> DeleteAsync(string endPoint);
 
-        Task<T> GetContent<T>(HttpResponseMessage message);
+        Task<T> GetContentAsync<T>(HttpResponseMessage message);
     }
 }

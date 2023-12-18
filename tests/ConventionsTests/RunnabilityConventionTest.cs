@@ -1,44 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MediatR;
+using NuGet.Protocol.Plugins;
+using System;
 using System.Linq;
-using tests.Utils;
 using Xunit;
 
 namespace tests.ConventionsTests;
 
-public class RunnabilityConventionTest
+public class RunnabilityConventionTests
 {
 	[Fact]
-	public void each_interface_has_implementation()
+	internal void each_cqrs_request_has_one_handler()
 	{
-		var interfaces = ConventionsHelper.interfaces();
-
-		var concrete_types = ConventionsHelper.classes()
+		var requests = ConventionsHelper.classes()
 			.Where(x => !x.IsAbstract)
+			.Where(x => x.IsAssignableTo(typeof(IRequest)))
 			.ToList();
 
-		var interfacesWithoutImplementation = new List<Type>();
+		var handlers = ConventionsHelper.classes()
+			.Where(x => !x.IsAbstract)
+			.Where(x => x.IsAssignableTo(typeof(IRequestHandler)))
+			.ToList();
 
-		foreach (var @interface in interfaces)
+		Assert.NotEmpty(requests);
+
+		foreach(var request in requests)
 		{
-			var types_assignable_to_interface = concrete_types
-				.Where(x => @interface.IsAssignableFrom(x));
+			var handler_type = typeof(IRequestHandler<>)
+				.MakeGenericType(request);
 
-			if (!types_assignable_to_interface.Any())
-			{
-				interfacesWithoutImplementation.Add(@interface);
-			}
-		}
+			var request_handlers = handlers
+				.Where(x => x.GetInterfaces().Contains(handler_type));
 
-		if (interfacesWithoutImplementation.Any())
-		{
-			string interfacesList = string.Join(", ", interfacesWithoutImplementation.Select(i => i.ToString()));
-			Assert.Fail($"Interfaces without implementation: {interfacesList}");
+			Assert.Single(request_handlers,request);
 		}
 	}
 
 	[Fact]
-	public void each_cqrs_request_implementing_the_IRequest_interface_is_of_type_record()
+	internal void each_cqrs_request_that_implements_IRequest_interface_is_of_type_record()
 	{
+		var types = ConventionsHelper.classes()
+			.Where(x => !x.IsAbstract)
+			.Where(x => typeof(IRequest).IsAssignableFrom(x));
+
+		Assert.NotEmpty(types);
+
+		var cqrs_requests_that_are_not_record = types
+			.Where(x => !x.IsRecord())
+			.ToList();
+
+		Assert.Empty(cqrs_requests_that_are_not_record);
+	}
+
+	[Fact]
+	internal void each_cqrs_request_that_implements_IRequest_interface_is_sealed()
+	{
+		var types = ConventionsHelper.classes()
+			.Where(x => !x.IsAbstract)
+			.Where(x => typeof(IRequest).IsAssignableFrom(x));
+
+		Assert.NotEmpty(types);
+
+		var cqrs_requests_that_are_not_sealed = types
+			.Where(x => !x.IsSealed)
+			.ToList();
+
+		Assert.Empty(cqrs_requests_that_are_not_sealed);
 	}
 }

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Parts;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -26,6 +27,7 @@ public class GetPartHandler : IRequestHandler<GetPartRequest, ApiResponse<PartDT
 		_mapper = mapper;
 	}
 
+	[IgnoreMethodAsyncNameConvention]
 	public async Task<ApiResponse<PartDTO>> Handle(GetPartRequest request, CancellationToken cancellationToken)
 	{
 		var part = await _partRepository

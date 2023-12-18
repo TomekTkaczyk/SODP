@@ -10,7 +10,7 @@ public class CertificateEntityConfiguration : IEntityTypeConfiguration<Certifica
     public void Configure(EntityTypeBuilder<Certificate> builder)
     {
         builder.Property(x => x.Number)
-				.HasConversion(x => x.Value, x => new CertyficateNumber(x))
+				.HasConversion(x => x.Value, x => new CertificateNumber(x))
 				.HasColumnType("nvarchar(20)")
             .IsRequired();
 

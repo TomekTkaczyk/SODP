@@ -1,9 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
-using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Stages;
-using SODP.Domain.Entities;
+using SODP.Domain.Attributes;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.Response;
@@ -25,7 +24,8 @@ internal sealed class UpdateStageBySignHandler : IRequestHandler<UpdateStageBySi
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ApiResponse> Handle(UpdateStageBySignRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse> Handle(UpdateStageBySignRequest request, CancellationToken cancellationToken)
     {
 		var stage = await _repository
             .Get(new StageBySignSpecification(request.Sign))

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Investors;
 using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Investors;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -24,7 +25,8 @@ public sealed class DeleteInvestorHandler : IRequestHandler<DeleteInvestorReques
         _investorRepository = investorRepository;
     }
 
-    public async Task<Unit> Handle(DeleteInvestorRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(DeleteInvestorRequest request, CancellationToken cancellationToken)
     {
         var investor = await _investorRepository
             .Get(new ByIdSpecification<Investor>(request.Id))

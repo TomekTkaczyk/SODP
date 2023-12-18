@@ -16,18 +16,18 @@ public class UserInitializer : IDisposable
 
     public void UserInit()
     {
-        CreateRoleIfNotExist( "Administrator").Wait();
-        CreateRoleIfNotExist("User").Wait();
-        CreateRoleIfNotExist("ProjectManager").Wait();
+        CreateRoleIfNotExistAsync( "Administrator").Wait();
+        CreateRoleIfNotExistAsync("User").Wait();
+        CreateRoleIfNotExistAsync("ProjectManager").Wait();
 
-        CreateUserIfNotExist("Administrator", "Administrator").Wait();
-        AddToRoleIfNotExist("Administrator", "Administrator").Wait();
+        CreateUserIfNotExistAsync("Administrator", "Administrator").Wait();
+        AddToRoleIfNotExistAsync("Administrator", "Administrator").Wait();
 
-        CreateUserIfNotExist("PManager", "PManager").Wait();
-        AddToRoleIfNotExist("PManager", "ProjectManager").Wait();
+        CreateUserIfNotExistAsync("PManager", "PManager").Wait();
+        AddToRoleIfNotExistAsync("PManager", "ProjectManager").Wait();
     }
 
-    private async Task<bool> CreateRoleIfNotExist(string role)
+    private async Task<bool> CreateRoleIfNotExistAsync(string role)
     {
         var result = await _roleManager.RoleExistsAsync(role);
 
@@ -40,7 +40,7 @@ public class UserInitializer : IDisposable
         return result;
     }
 
-    private async Task<bool> CreateUserIfNotExist(string userName, string password)
+    private async Task<bool> CreateUserIfNotExistAsync(string userName, string password)
     {
         var user = await _userManager.FindByNameAsync(userName);
 
@@ -55,7 +55,7 @@ public class UserInitializer : IDisposable
         return true;
     }
 
-    private async Task<bool> AddToRoleIfNotExist(string userName, string role)
+    private async Task<bool> AddToRoleIfNotExistAsync(string userName, string role)
     {
         var user = await _userManager.FindByNameAsync(userName);
         if (!await _userManager.IsInRoleAsync(user, role))

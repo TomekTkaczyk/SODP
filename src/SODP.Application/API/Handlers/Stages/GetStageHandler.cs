@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
@@ -26,7 +27,8 @@ public class GetStageHandler : IRequestHandler<GetStageRequest, ApiResponse<Stag
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<StageDTO>> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<StageDTO>> Handle(
         GetStageRequest request,
         CancellationToken cancellationToken)
     {

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
@@ -24,7 +25,8 @@ internal sealed class UpdateStageByIdHandler : IRequestHandler<UpdateStageByIdRe
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ApiResponse> Handle(UpdateStageByIdRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse> Handle(UpdateStageByIdRequest request, CancellationToken cancellationToken)
     {
 		var stage = await _repository
             .Get(new ByIdSpecification<Stage>(request.Id))

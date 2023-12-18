@@ -39,11 +39,11 @@ namespace SODP.UI.Pages.Users
         [BindProperty]
         public IDictionary<string,bool> AllRoles { get; set; }
 
-        public async Task<IActionResult> OnGet(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            var roles = await GetRoles();
+            var roles = await GetRolesAsync();
             AllRoles = roles.Value.Collection.ToDictionary(x => x.Role, x => false);
-            CurrentUser = await GetUser(id);
+            CurrentUser = await GetUserAsync(id);
             if(CurrentUser == null)
             {
                 return Redirect("/Errors/404");
@@ -52,7 +52,7 @@ namespace SODP.UI.Pages.Users
             return Page();
         }
 
-		public async Task<IActionResult> OnPost()
+		public async Task<IActionResult> OnPostAsync()
 		{
 			if (ModelState.IsValid)
 			{
@@ -67,7 +67,7 @@ namespace SODP.UI.Pages.Users
 			return Page();
 		}
 
-		private async Task<UserVM> GetUser(int id)
+		private async Task<UserVM> GetUserAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"users/{id}");
             if (apiResponse.IsSuccessStatusCode) 
@@ -82,7 +82,7 @@ namespace SODP.UI.Pages.Users
             return null;
         }
 
-        private async Task<ApiResponse<Page<RoleVM>>> GetRoles()
+        private async Task<ApiResponse<Page<RoleVM>>> GetRolesAsync()
         {
             var apiResponse = await _apiProvider.GetAsync($"roles");
             if (apiResponse.IsSuccessStatusCode)

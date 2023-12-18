@@ -15,8 +15,8 @@ internal sealed class PartSearchSpecification : Specification<Part>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			((string)part.Sign).Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
-			((string)part.Title).Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+			((string)part.Sign).Contains(searchString) ||
+			((string)part.Title).Contains(searchString)
 		))
 	{
 		AddOrderByExpression(x => x.Order);

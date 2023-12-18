@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Stages;
 using SODP.Application.Specifications.Stages;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.StageExceptions;
 using SODP.Domain.Repositories;
@@ -24,7 +25,8 @@ public sealed class CreateStageHandler : IRequestHandler<CreateStageRequest, Api
         _unitOfWork = unitOfWork;
 	}
 
-    public async Task<ApiResponse<int>> Handle(CreateStageRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<int>> Handle(CreateStageRequest request, CancellationToken cancellationToken)
     {
         var specification = new StageBySignSpecification(request.Sign.ToUpper());
 

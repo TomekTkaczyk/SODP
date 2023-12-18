@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Investors;
 using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Investors;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -24,7 +25,8 @@ public class ChangeInvestorNameHandler : IRequestHandler<ChangeInvestorNameReque
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Unit> Handle(ChangeInvestorNameRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(ChangeInvestorNameRequest request, CancellationToken cancellationToken)
     {
 		var investor = await _investorRepository
             .Get(new InvestorByNameAndDifferentIdSpecification(request.Id, request.Name))

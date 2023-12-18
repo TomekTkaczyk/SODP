@@ -1,11 +1,6 @@
-﻿namespace SODP.UI.Services
+﻿namespace SODP.UI.Services;
+
+public interface IPaginationCalculator
 {
-    public interface IPaginationCalculator
-    {
-        int Current { get; set; }
-        int Left { get; }
-        int Right { get; }
-        int Total { get; set; }
-        int Margin { get; set; }
-    }
+	(int Left, int Right) Calculate(int total, int margin, int current);
 }

@@ -20,7 +20,7 @@ namespace SODP.UI.Areas.Identity.Pages.Account.Manage
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)

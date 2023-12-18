@@ -3,6 +3,7 @@ using MediatR;
 using SODP.Application.API.Requests.Stages;
 using SODP.Application.Extensions;
 using SODP.Application.Specifications.Stages;
+using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -24,7 +25,8 @@ public sealed class GetStagesPageHandler : IRequestHandler<GetStagesPageRequest,
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<Page<StageDTO>>> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<Page<StageDTO>>> Handle(
         GetStagesPageRequest request,
         CancellationToken cancellationToken)
     {

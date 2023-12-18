@@ -68,7 +68,7 @@ public sealed class IndexModel : ProjectsPageModel<ProjectVM>
 					}
 					break;
 				case System.Net.HttpStatusCode.Conflict:
-					var response = await _apiProvider.GetContent<ApiResponse<ProjectVM>>(apiResponse);
+					var response = await _apiProvider.GetContentAsync<ApiResponse<ProjectVM>>(apiResponse);
 					if (!response.IsSuccess)
 					{
 						SetModelErrors(response);

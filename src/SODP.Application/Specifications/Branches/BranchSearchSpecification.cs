@@ -15,11 +15,11 @@ internal sealed class BranchSearchSpecification : Specification<Branch>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			((string)stage.Sign).Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
-			((string)stage.Title).Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+			((string)stage.Sign).Contains(searchString) ||
+			((string)stage.Title).Contains(searchString)
 		))
 	{
 		AddOrderByExpression(x => x.Order);
-		AddOrderByExpression(x => x.Title);
+		AddOrderByExpression(x => x.Sign);
 	}
  }

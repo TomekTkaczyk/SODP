@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using SODP.Application.API.Requests.Roles;
+using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -22,6 +23,7 @@ namespace SODP.Application.API.Handlers.Roles
 			this._mapper = _mapper;
 		}
 
+		[IgnoreMethodAsyncNameConvention]
 		public async Task<ApiResponse<Page<RoleDTO>>> Handle(GetRolesPageRequest request, CancellationToken cancellationToken)
 		{
 			var page = await _roleRepository.GetPageAsync(

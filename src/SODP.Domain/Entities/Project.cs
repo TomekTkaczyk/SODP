@@ -22,9 +22,9 @@ public class Project : BaseEntity
     public string Investor { get; private set; }
     public string BuildingPermit { get; private set; }
     public string Description { get; private set; }     
-    public DateTime? DevelopmentDate { get; private set; }
+    public DateOnly? DevelopmentDate { get; private set; }
     public ProjectStatus Status { get; private set; }
-    public ICollection<ProjectPart> Parts { get; private set; }
+    public ICollection<ProjectPart> Parts { get; private set; }	= new List<ProjectPart>();
 
 	private Project() { }
 
@@ -94,7 +94,7 @@ public class Project : BaseEntity
 		string Investor,
 		string BuildingPermit,
 		string Description,
-		DateTime? DevelopmentDate
+		DateOnly? DevelopmentDate
 	)
 	{
 		this.Name = string.IsNullOrEmpty(Name) ? "" : Name;

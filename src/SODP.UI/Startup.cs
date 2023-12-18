@@ -1,6 +1,5 @@
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -8,10 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SODP.Application;
-using SODP.Application.Services;
 using SODP.DataAccess;
-using SODP.Infrastructure;
 using SODP.Domain.Entities;
+using SODP.Infrastructure;
 using SODP.Infrastructure.Managers;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
@@ -69,11 +67,6 @@ public class Startup
         {
             scan
                 .FromAssemblies(app)
-                .AddClasses(classes => classes.AssignableTo(typeof(IAppService)))
-                .AsImplementedInterfaces()
-                .WithTransientLifetime();
-            scan
-                .FromAssemblies(app)
                 .AddClasses(classes => classes.AssignableTo(typeof(IValidator)))
                 .AsImplementedInterfaces()
                 .WithTransientLifetime();
@@ -89,6 +82,8 @@ public class Startup
         services.AddSingleton<LanguageTranslatorFactory>();
 
         services.AddScoped<IWebAPIProvider, WebAPIProvider>();
+
+		services.AddSingleton<IPaginationCalculator, PaginationCalculator>();
 
         services.AddTransient<IdentityErrorDescriber, CustomIdentityErrorDescriber>();
 

@@ -9,6 +9,13 @@ namespace SODP.UI.TagHelpers
     [HtmlTargetElement("div", Attributes = "page-model")]
     public class PageLinkTagHelper : TagHelper
     {
+		private readonly IPaginationCalculator _paginationCalculator;
+
+		public PageLinkTagHelper(IPaginationCalculator paginationCalculator)
+        {
+			_paginationCalculator = paginationCalculator;
+		}
+
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
@@ -22,7 +29,7 @@ namespace SODP.UI.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            var _paginationCalculator = new PaginationCalculator(PageModel.TotalPages, NavMargin, PageModel.CurrentPage);
+            var (left,right) = _paginationCalculator.Calculate(PageModel.TotalPages, NavMargin, PageModel.CurrentPage);
             
             var tagBuilder = new TagBuilder("div");
 
@@ -36,17 +43,17 @@ namespace SODP.UI.TagHelpers
                 tagBuilder.InnerHtml.AppendHtml(GetTag(1, 1.ToString(), PageModel.CurrentPage == 1 ? PageClassSelected : PageClassNormal));
             }
 
-            if (_paginationCalculator.Left > 3)
+            if (left > 3)
             {
                 tagBuilder.InnerHtml.AppendHtml(GetTag(0, "...", PageClassPrevNext));
             }
 
-            for (int i= _paginationCalculator.Left; i<= _paginationCalculator.Right; i++)
+            for (int i= left; i<= right; i++)
             {
                 tagBuilder.InnerHtml.AppendHtml(GetTag(i, i.ToString(), PageModel.CurrentPage == i ? PageClassSelected : PageClassNormal));
             }
 
-            if (_paginationCalculator.Right < PageModel.TotalPages - 2)
+            if (right < PageModel.TotalPages - 2)
             {
                 tagBuilder.InnerHtml.AppendHtml(GetTag(0, "...", PageClassPrevNext));
             }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Projects;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Exceptions.ProjectExceptions;
@@ -30,6 +31,7 @@ internal class ArchiveProjectHandler : IRequestHandler<ArchiveProjectRequest>
 		_folderManager = folderManager;
 	}
 
+	[IgnoreMethodAsyncNameConvention]
 	public async Task<Unit> Handle(ArchiveProjectRequest request, CancellationToken cancellationToken)
 	{
 		var project = await _projectRepository

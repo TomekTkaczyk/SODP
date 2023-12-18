@@ -99,7 +99,7 @@ namespace SODP.UI.Pages.Licenses
         private async Task GetLicenseAsync(int id)
         {
             var apiResponse = await _apiProvider.GetAsync($"licenses/{id}/branches");
-            var response = await _apiProvider.GetContent<ApiResponse<LicenseWithBranchesVM>>(apiResponse);
+            var response = await _apiProvider.GetContentAsync<ApiResponse<LicenseWithBranchesVM>>(apiResponse);
             if (apiResponse.IsSuccessStatusCode)
             {
                 License = new LicenseVM
@@ -123,7 +123,7 @@ namespace SODP.UI.Pages.Licenses
         private async Task<List<SelectListItem>> GetBranchesAsync(List<SelectListItem> exclusionList)
         {
             var apiResponse = await _apiProvider.GetAsync($"branches");
-            var responseBranch = await _apiProvider.GetContent<ApiResponse<Page<BranchVM>>>(apiResponse);
+            var responseBranch = await _apiProvider.GetContentAsync<ApiResponse<Page<BranchVM>>>(apiResponse);
             var result = responseBranch.Value.Collection
                 .OrderBy(x => x.Order)
                 .Select(x => new SelectListItem

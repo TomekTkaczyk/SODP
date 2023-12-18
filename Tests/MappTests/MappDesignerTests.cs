@@ -11,7 +11,7 @@ namespace tests.MappTests;
 public class MappDesignerTests
 {
     [Fact]
-    public void AutoMapper_ConvertFromDesigner_IsValid()
+    internal void AutoMapper_ConvertFromDesigner_IsValid()
     {
         var fixture = new Fixture();
         fixture.Behaviors
@@ -33,7 +33,7 @@ public class MappDesignerTests
     }
 
     [Fact]
-    public void AutoMapper_ConvertFromDesignerDTO_IsValid()
+    internal void AutoMapper_ConvertFromDesignerDTO_IsValid()
     {
         var fixture = new Fixture();
         fixture.Behaviors

@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using FluentValidation.TestHelper;
+﻿using FluentValidation.TestHelper;
 using SODP.Application.Validators;
 using SODP.Domain.Entities;
 using System;
@@ -7,17 +6,17 @@ using Xunit;
 
 namespace tests.ValidationTests;
 
-public class ValidationDictionaryTest
+public class ValidationDictionaryTests
 {
     private DictionaryValidator _validator;
 
-    public ValidationDictionaryTest()
+    public ValidationDictionaryTests()
     {
         _validator = new DictionaryValidator();
     }
 
     [Fact]
-    public void should_have_error_when_sign_is_null()
+    internal void should_have_error_when_sign_is_null()
     {
         var dictionary = new AppDictionary()
         {
@@ -30,7 +29,7 @@ public class ValidationDictionaryTest
     }
 
     [Fact]
-    public void should_have_error_when_sign_is_empty()
+    internal void should_have_error_when_sign_is_empty()
     {
         var dictionary = new AppDictionary()
         {
@@ -44,7 +43,7 @@ public class ValidationDictionaryTest
     }
 
     [Fact]
-    public void should_have_error_when_name_is_null()
+    internal void should_have_error_when_name_is_null()
     {
         var dictionary = new AppDictionary()
         {
@@ -57,7 +56,7 @@ public class ValidationDictionaryTest
     }
 
     [Fact]
-    public void should_have_error_when_name_is_empty()
+    internal void should_have_error_when_name_is_empty()
     {
         var dictionary = new AppDictionary()
         {
@@ -71,7 +70,7 @@ public class ValidationDictionaryTest
     }
 
     [Fact]
-    public void should_not_have_error_when_sign_and_name_is_specified()
+    internal void should_not_have_error_when_sign_and_name_is_specified()
     {
         var dictionary = new AppDictionary()
         {
@@ -86,7 +85,7 @@ public class ValidationDictionaryTest
     }
 
     [Fact]
-    public void should_have_error_when_sign_and_name_is_too_long()
+    internal void should_have_error_when_sign_and_name_is_too_long()
     {
         var dictionary = new AppDictionary()
         {

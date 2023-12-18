@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Parts;
 using SODP.Application.Specifications.Parts;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.PartExceptions;
 using SODP.Domain.Repositories;
@@ -24,7 +25,8 @@ public sealed class CreatePartHandler : IRequestHandler<CreatePartRequest, ApiRe
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<ApiResponse<int>> Handle(CreatePartRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<int>> Handle(CreatePartRequest request, CancellationToken cancellationToken)
 	{
 		var specification = new PartBySignSpecification(request.Sign.ToUpper());
 

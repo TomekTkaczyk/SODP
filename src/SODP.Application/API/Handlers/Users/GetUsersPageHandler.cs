@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using SODP.Application.API.Requests.Users;
+using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -22,6 +23,7 @@ namespace SODP.Application.API.Handlers.Users
 			this._mapper = _mapper;
 		}
 
+		[IgnoreMethodAsyncNameConvention]
 		public async Task<ApiResponse<Page<UserDTO>>> Handle(GetUsersPageRequest request, CancellationToken cancellationToken)
 		{
 			var page = await _userRepository.GetPageAsync(

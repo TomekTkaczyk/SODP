@@ -16,10 +16,10 @@ internal sealed class ProjectsSearchSpecyfication : Specification<Project>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			((string)project.Number).Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
-			((string)project.Name).Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
-			((string)project.Title).Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
-            project.Description.Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+			((string)project.Number).Contains(searchString) ||
+			((string)project.Name).Contains(searchString) ||
+			((string)project.Title).Contains(searchString) ||
+            project.Description.Contains(searchString)
 		))
     {
 		AddInclude(x => x.Stage);

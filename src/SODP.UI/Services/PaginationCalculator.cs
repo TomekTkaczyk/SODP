@@ -2,40 +2,36 @@
 
 public class PaginationCalculator : IPaginationCalculator
 {
-	public int Total { get; set; }
-	public int Margin { get; set; }
-	public int Current { get; set; }
+	private int _total;
+	private int _margin;
+	private int _current;
 
-	public PaginationCalculator(int total, int margin, int current)
+	public (int Left, int Right) Calculate(int total, int margin, int current)
 	{
-		Total = total;
-		Margin = margin;
-		Current = current;
+		_total = total;
+		_margin = margin;
+		_current = current;
+
+		return(Left(),Right());
 	}
 
-	public int Left
+	private int Left()
 	{
-		get
+		if (_current - _margin > 3)
 		{
-			if (Current - Margin > 3)
-			{
-				return Current - Margin;
-			}
-
-			return 2;
+			return _current - _margin;
 		}
+
+		return 2;
 	}
 
-	public int Right
+	private int Right()
 	{
-		get
+		if (_current + _margin < _total - 2)
 		{
-			if (Current + Margin < Total - 2)
-			{
-				return Current + Margin;
-			}
-
-			return Total - 1;
+			return _current + _margin;
 		}
+
+		return _total - 1;
 	}
 }

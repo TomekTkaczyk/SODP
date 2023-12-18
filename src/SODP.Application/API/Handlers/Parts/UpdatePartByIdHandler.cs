@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Parts;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.PartExceptions;
 using SODP.Domain.Repositories;
@@ -24,6 +25,7 @@ public sealed class UpdatePartByIdHandler : IRequestHandler<UpdatePartByIdReques
 		_unitOfWork = unitOfWork;
 	}
 
+	[IgnoreMethodAsyncNameConvention]
 	public async Task<ApiResponse> Handle(UpdatePartByIdRequest request, CancellationToken cancellationToken)
 	{
 		var part = await _repository

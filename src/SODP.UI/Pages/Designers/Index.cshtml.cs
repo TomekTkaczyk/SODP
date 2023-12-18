@@ -101,7 +101,7 @@ namespace SODP.UI.Pages.Designers
             var apiResponse = await _apiProvider.GetAsync($"designers/{id}/licenses");
             if (apiResponse.IsSuccessStatusCode)
             {
-                var response = await _apiProvider.GetContent<ApiResponse<Page<LicenseWithBranchesVM>>>(apiResponse);
+                var response = await _apiProvider.GetContentAsync<ApiResponse<Page<LicenseWithBranchesVM>>>(apiResponse);
                 Licenses = new LicensesVM
                 {
                     DesignerId = id,
@@ -131,7 +131,7 @@ namespace SODP.UI.Pages.Designers
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContent<ApiResponse<LicenseVM>>(apiResponse);
+                        var response = await _apiProvider.GetContentAsync<ApiResponse<LicenseVM>>(apiResponse);
                         //if (!response.Success)
                         //{
                         //    SetModelErrors(response);

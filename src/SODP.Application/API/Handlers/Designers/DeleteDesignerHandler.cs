@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -23,7 +24,8 @@ public sealed class DeleteDesignerHandler : IRequestHandler<DeleteDesignerReques
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Unit> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(
         DeleteDesignerRequest request,
         CancellationToken cancellationToken)
     {

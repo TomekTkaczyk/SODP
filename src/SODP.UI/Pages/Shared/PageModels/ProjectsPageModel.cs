@@ -43,7 +43,7 @@ public abstract class ProjectsPageModel<T> : CollectionPageModel
 	protected async Task<IActionResult> GetProjectPartialAsync<TDetail>(int id)
 	{
 		var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}/details");
-		var response = await _apiProvider.GetContent<ApiResponse<TDetail>>(apiResponse);
+		var response = await _apiProvider.GetContentAsync<ApiResponse<TDetail>>(apiResponse);
 
 		return GetPartialView(response.Value, _projectPartialViewName);
 	}

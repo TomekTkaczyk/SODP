@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Licenses;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -26,7 +27,8 @@ public sealed class DeleteLicenseHandler : IRequestHandler<DeleteLicenseRequest>
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<Unit> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(
 		DeleteLicenseRequest request, 
 		CancellationToken cancellationToken)
 	{

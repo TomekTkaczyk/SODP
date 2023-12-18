@@ -5,5 +5,6 @@ namespace SODP.Domain.Services
     public interface IDateTime
     {
         DateTime UtcNow { get; }
+        DateOnly DateNow { get; }
     }
 }

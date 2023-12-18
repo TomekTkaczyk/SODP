@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Projects;
+using SODP.Domain.Attributes;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Exceptions.ProjectExceptions;
 using SODP.Domain.Repositories;
@@ -28,7 +29,8 @@ internal sealed class UpdateProjectHandler : IRequestHandler<UpdateProjectReques
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<Unit> Handle(UpdateProjectRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(UpdateProjectRequest request, CancellationToken cancellationToken)
     {
         var project = await _projectRepository.Get(new ProjectByIdSpecification(request.Id))
             .FirstOrDefaultAsync(cancellationToken)

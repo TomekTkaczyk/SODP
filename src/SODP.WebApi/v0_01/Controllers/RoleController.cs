@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Roles;
-using SODP.Application.Services;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 

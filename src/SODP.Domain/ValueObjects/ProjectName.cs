@@ -1,10 +1,11 @@
 ﻿using SODP.Domain.Exceptions.ValueObjectExceptions;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace SODP.Domain.ValueObjects;
 
-public record ProjectName
+public record ProjectName : ValueObject
 {
 	public string Value { get; }
 
@@ -25,4 +26,9 @@ public record ProjectName
 	public static implicit operator string(ProjectName name) => name?.Value;
 
 	public static implicit operator ProjectName(string name) => new(name);
+
+	public override IEnumerable<object> GetAtomicValues()
+	{
+		yield return Value;
+	}
 }

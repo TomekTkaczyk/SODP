@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
 using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Designers;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -24,6 +25,7 @@ public class ChangeDesignerNameHandler : IRequestHandler<ChangeDesignerNameReque
 		_unitOfWork = unitOfWork;
 	}
 
+	[IgnoreMethodAsyncNameConvention]
 	public async Task<Unit> Handle(ChangeDesignerNameRequest request, CancellationToken cancellationToken)
 	{
 		var designerExist = await _designerRepository

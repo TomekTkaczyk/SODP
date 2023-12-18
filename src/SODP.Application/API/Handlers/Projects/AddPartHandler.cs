@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using SODP.Application.API.Requests.Projects;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.PartExceptions;
 using SODP.Domain.Exceptions.ProjectExceptions;
@@ -30,7 +31,8 @@ public sealed class AddPartHandler : IRequestHandler<AddPartRequest>
     }
 
 
-    public async Task<Unit> Handle(AddPartRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(AddPartRequest request, CancellationToken cancellationToken)
     {
         if ( string.IsNullOrWhiteSpace(request.Sign))
         {

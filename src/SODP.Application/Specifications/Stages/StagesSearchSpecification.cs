@@ -15,8 +15,8 @@ internal sealed class StagesSearchSpecification : Specification<Stage>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			((string)stage.Sign).Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
-            ((string)stage.Title).Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+			((string)stage.Sign).Contains(searchString) ||
+            ((string)stage.Title).Contains(searchString)
 		))
 	{
 		AddOrderByExpression(x => x.Order);

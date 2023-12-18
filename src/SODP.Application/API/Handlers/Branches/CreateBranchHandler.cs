@@ -3,11 +3,13 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Branches;
 using SODP.Application.Specifications.Branches;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,10 +31,11 @@ public sealed class CreateBranchHandler : IRequestHandler<CreateBranchRequest, A
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<BranchDTO>> Handle(CreateBranchRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<BranchDTO>> Handle(CreateBranchRequest request, CancellationToken cancellationToken)
     {
         var branchExist = await _branchRepository
-            .Get(new BranchesCollectionSpecification(null, request.Title))
+            .Get(new BranchesCollectionSpecification(null, request.Sign))
             .AnyAsync(cancellationToken);
 
         if (branchExist)

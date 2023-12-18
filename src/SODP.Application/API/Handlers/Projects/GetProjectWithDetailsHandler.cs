@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using SODP.Application.API.Requests.Projects;
+using SODP.Domain.Attributes;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
@@ -23,7 +24,8 @@ public class GetProjectWithDetailsHandler : IRequestHandler<GetProjectWithDetail
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<ProjectDTO>> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<ProjectDTO>> Handle(
         GetProjectWithDetailsRequest request,
         CancellationToken cancellationToken)
     {

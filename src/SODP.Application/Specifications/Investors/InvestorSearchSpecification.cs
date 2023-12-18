@@ -15,7 +15,7 @@ internal sealed class InvestorSearchSpecification : Specification<Investor>
 		&&
 		(
 			string.IsNullOrWhiteSpace(searchString) ||
-			((string)investor.Name).Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+			((string)investor.Name).Contains(searchString)
 		))
 	{
 		AddOrderByExpression(x => x.Name);

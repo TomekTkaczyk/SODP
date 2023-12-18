@@ -72,7 +72,7 @@ public class EditModel : AppPageModel
 				return RedirectToPage("Index");
 			}
 
-			var response = await _apiProvider.GetContent<ApiResponse>(apiResponse);
+			var response = await _apiProvider.GetContentAsync<ApiResponse>(apiResponse);
 			if (!string.IsNullOrEmpty(response.Message))
 			{
 				ModelState.AddModelError("", response.Message);
@@ -195,7 +195,7 @@ public class EditModel : AppPageModel
 		return GetPartialView(model, _addPartBranchViewName);
 	}
 
-	public async Task<PartialViewResult> OnPostAddPartBranch(AvailableBranchesVM model)
+	public async Task<PartialViewResult> OnPostAddPartBranchAsync(AvailableBranchesVM model)
 	{
 		model.Items = new List<SelectListItem>();
 		if (ModelState.IsValid)
@@ -205,7 +205,7 @@ public class EditModel : AppPageModel
 				var apiResponse = await _apiProvider.PostAsync($"projects/parts/{model.ProjectPartId}/branches/{model.SelectedId}", new StringContent(""));
 				if (apiResponse.StatusCode == HttpStatusCode.OK)
 				{
-					var response = await _apiProvider.GetContent<ApiResponse>(apiResponse);
+					var response = await _apiProvider.GetContentAsync<ApiResponse>(apiResponse);
 					if (!response.IsSuccess)
 					{
 						// SetModelErrors(response);
@@ -233,7 +233,7 @@ public class EditModel : AppPageModel
 		return GetPartialView(model, _addTechnicalRoleViewName);
 	}
 
-	public async Task<PartialViewResult> OnPostAddTechnicalRole(AvailableRolesVM model)
+	public async Task<PartialViewResult> OnPostAddTechnicalRoleAsync(AvailableRolesVM model)
 	{
 		var partBranchResponse = await PartBranchServiceResponseAsync(model.PartBranchId);
 		model.ItemsRole = GetAvailableRoles(partBranchResponse.Value);
@@ -249,7 +249,7 @@ public class EditModel : AppPageModel
 			var apiResponse = await _apiProvider.PostAsync($"projects/parts/branches/roles", new StringContent(JsonSerializer.Serialize(role), Encoding.UTF8, "application/json"));
 			if (apiResponse.StatusCode == HttpStatusCode.OK)
 			{
-				var response = await _apiProvider.GetContent<ApiResponse>(apiResponse);
+				var response = await _apiProvider.GetContentAsync<ApiResponse>(apiResponse);
 				if (!response.IsSuccess)
 				{
 					// SetModelErrors(response);

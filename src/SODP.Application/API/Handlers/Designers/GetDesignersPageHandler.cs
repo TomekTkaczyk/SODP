@@ -2,6 +2,7 @@
 using MediatR;
 using SODP.Application.API.Requests.Designers;
 using SODP.Application.Specifications.Designers;
+using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -24,7 +25,8 @@ public sealed class GetDesignersPageHandler : IRequestHandler<GetDesignersPageRe
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<Page<DesignerDTO>>> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<Page<DesignerDTO>>> Handle(
         GetDesignersPageRequest request,
         CancellationToken cancellationToken)
     {

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Projects;
+using SODP.Domain.Attributes;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Infrastructure.Specifications.Projects;
@@ -26,7 +27,8 @@ public sealed class DeleteProjectHandler : IRequestHandler<DeleteProjectRequest>
 		_projectRepository = projectRepository;
     }
 
-    public async Task<Unit> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(
         DeleteProjectRequest request,
         CancellationToken cancellationToken)
     {

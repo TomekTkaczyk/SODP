@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Investors;
 using SODP.Application.Specifications.Investors;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -29,7 +30,8 @@ public sealed class CreateInvestorHandler : IRequestHandler<CreateInvestorReques
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<ApiResponse<InvestorDTO>> Handle(CreateInvestorRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<InvestorDTO>> Handle(CreateInvestorRequest request, CancellationToken cancellationToken)
     {
         var investorExist = await _investorRepository
 			.Get(new InvestorSearchSpecification(null, request.Name))

@@ -24,28 +24,28 @@ public class StageByNameSpecificationTests
 	}
 
 	[Fact]
-	public void repository_GetAll_shuld_return_one_stage_PWKS()
+	internal void repository_GetAll_shuld_return_one_stage_PWKS()
 	{
 		var specification = new StagesSearchSpecification(null, "PWKS");
 		var stage = _stageRepository.Get(specification).FirstOrDefault();
 
 		Assert.NotNull(stage);
-		Assert.True(stage.Sign == "PWKS");
+		Assert.Equal("PWKS", stage.Sign.Value);
 	}
 
 	[Fact]
-	public void repository_GetAll_should_return_the_full_sorted_list()
+	internal void repository_GetAll_should_return_the_full_sorted_list()
 	{
 		var specification = new StagesSearchSpecification();
 
 		var stage = _stageRepository.Get(specification).FirstOrDefault();
 
 		Assert.NotNull(stage);
-		Assert.True(stage.Sign == "IB");
+		Assert.True(stage.Sign == "IO");
 	}
 
 	[Fact]
-	public void repository_GetAll_should_return_the_sorted_list_content_OPINIA()
+	internal void repository_GetAll_should_return_the_sorted_list_content_OPINIA()
 	{
 		var specification = new StagesSearchSpecification(null,"opinia");
 

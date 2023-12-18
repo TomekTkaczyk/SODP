@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
 using SODP.Application.Specifications.Designers;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -26,7 +27,8 @@ public class GetDesignerWithDetailsHandler : IRequestHandler<GetDesignerWithDeta
         _designerRepository = designerRepository;
         _mapper = mapper;
     }
-    public async Task<ApiResponse<DesignerLicensesDTO>> Handle(GetDesignerWithDetailsRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<DesignerLicensesDTO>> Handle(GetDesignerWithDetailsRequest request, CancellationToken cancellationToken)
     {
         var designer = await _designerRepository
             .Get(new DesignerLicensesSpecification(request.DesignerId))

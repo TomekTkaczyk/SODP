@@ -1,29 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AutoFixture;
-using AutoFixture.Xunit2;
+﻿using AutoFixture;
 using AutoMapper;
 using SODP.Domain;
 using SODP.Domain.Entities;
 using SODP.Shared.DTO;
+using System.Linq;
 using Xunit;
 
 namespace tests.MappTests
 {
-    public class MappLicenseTests
+	public class MappLicenseTests
     {
         [Fact]
-        public void AutoMapper_Configuration_IsValid()
+        internal void AutoMapper_Configuration_IsValid()
         {
             var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
             config.AssertConfigurationIsValid();
         }
 
-
         [Fact]
-        public void AutoMapper_ConvertFromLicense_IsValid()
+        internal void AutoMapper_ConvertFromLicense_IsValid()
         {
             var fixture = new Fixture();
             fixture.Behaviors
@@ -43,7 +38,7 @@ namespace tests.MappTests
         }
 
         [Fact]
-        public void AutoMapper_ConvertFromLicense_ToLicenseWithBranch_IsValid()
+        internal void AutoMapper_ConvertFromLicense_ToLicenseWithBranch_IsValid()
         {
             var fixture = new Fixture();
             fixture.Behaviors

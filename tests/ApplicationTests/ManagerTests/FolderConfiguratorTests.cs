@@ -8,10 +8,10 @@ using Xunit;
 
 namespace tests.ApplicationTests.ManagerTests;
 
-public class FolderConfiguratorTest
+public class FolderConfiguratorTests
 {
 	[Fact]
-	public void FolderCommanCreator_shold_return_valid_commands()
+	internal void FolderCommanCreator_shold_return_valid_commands()
 	{
 		IConfiguration configuration = new ConfigurationBuilder()
 			.AddJsonFile("appsettings.json", optional: true)

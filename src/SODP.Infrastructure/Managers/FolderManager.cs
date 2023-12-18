@@ -34,13 +34,13 @@ namespace SODP.Infrastructure.Managers
             {
                 case 0:
                     _command = _folderCommandCreator.GetCommandCreateFolder(ProjectsFolder.Active, projectFolder);
-                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+                    _message = await _folderCommandCreator.RunCommandAsync(_command, cancellationToken);
                     _logger.LogInformation("[FolderManager,Create folder] : {message}", _message);
 
                     return (Directory.Exists(_folderConfigurator.ActiveFolder + projectFolder), $"{_command} {_message}");
                 case 1:
                     _command = _folderCommandCreator.GetCommandRenameFolder(ProjectsFolder.Active, matchFolders[0], projectFolder);
-                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+                    _message = await _folderCommandCreator.RunCommandAsync(_command, cancellationToken);
 					_logger.LogInformation("[FolderManager,Rename folder] : {message}", _message);
 
 					return (Directory.Exists(_folderConfigurator.ActiveFolder + projectFolder), $"{_command} {_message}");
@@ -59,7 +59,7 @@ namespace SODP.Infrastructure.Managers
                     return await CreateProjectFolderAsync(project, cancellationToken);
                 case 1:
                     _command = _folderCommandCreator.GetCommandRenameFolder(ProjectsFolder.Active, matchFolders[0], projectFolder);
-                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+                    _message = await _folderCommandCreator.RunCommandAsync(_command, cancellationToken);
 					_logger.LogInformation("[FolderManager,Rename folder] : {message}", _message);
 
 					return (Directory.Exists(_folderConfigurator.ActiveFolder + projectFolder), $"{_command} {_message}");
@@ -82,7 +82,7 @@ namespace SODP.Infrastructure.Managers
                         return (false,$"Folder {project.Symbol} not empty.");
                     }
                     _command = _folderCommandCreator.GetCommandDeleteFolder(ProjectsFolder.Active, matchFolders[0]);
-                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+                    _message = await _folderCommandCreator.RunCommandAsync(_command, cancellationToken);
 					_logger.LogInformation("[FolderManager,Delete folder] : {message}", _message);
 
 					return (!Directory.Exists(_folderConfigurator.ActiveFolder + matchFolders[0]), $"{_command} {_message}");
@@ -113,7 +113,7 @@ namespace SODP.Infrastructure.Managers
                         }
                     }
                     _command = _folderCommandCreator.GetCommandArchiveFolder(projectFolder);
-                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+                    _message = await _folderCommandCreator.RunCommandAsync(_command, cancellationToken);
 					_logger.LogInformation("[FolderManager,Archive folder] : {message}", _message);
 
 					return (Directory.Exists(_folderConfigurator.ArchiveFolder + projectFolder), $"{_command} {_message}");
@@ -132,7 +132,7 @@ namespace SODP.Infrastructure.Managers
                     return(false, $"Folder {project.Symbol} not exist.");
                 case 1:
                     _command = _folderCommandCreator.GetCommandRestoreFolder(matchFolders[0]);
-                    _message = await _folderCommandCreator.RunCommand(_command, cancellationToken);
+                    _message = await _folderCommandCreator.RunCommandAsync(_command, cancellationToken);
 
 					if (!matchFolders[0].Equals(projectFolder))
 					{

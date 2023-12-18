@@ -1,6 +1,8 @@
-﻿namespace SODP.Domain.ValueObjects;
+﻿using System.Collections.Generic;
 
-public record LastName
+namespace SODP.Domain.ValueObjects;
+
+public record LastName : ValueObject
 {
 	public string Value { get; }
 
@@ -9,7 +11,15 @@ public record LastName
 		Value = lastName;
 	}
 
+	public static LastName Default => new("");
+
+
 	public static implicit operator string(LastName lastName) => lastName?.Value;
 
 	public static implicit operator LastName(string lastName) => new(lastName);
+
+	public override IEnumerable<object> GetAtomicValues()
+	{
+		yield return Value;
+	}
 }

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Licenses;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -26,6 +27,7 @@ public class GetLicenseWithBranchesHandler : IRequestHandler<GetLicenseWithBranc
 		_mapper = mapper;
 	}
 
+	[IgnoreMethodAsyncNameConvention]
 	public async Task<ApiResponse<LicenseDTO>> Handle(
 		GetLicenseWithBranchesRequest request, 
 		CancellationToken cancellationToken)

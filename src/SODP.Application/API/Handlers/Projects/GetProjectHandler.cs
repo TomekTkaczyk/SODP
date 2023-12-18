@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Projects;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -26,7 +27,8 @@ public class GetProjectHandler : IRequestHandler<GetProjectRequest, ApiResponse<
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<ProjectDTO>> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<ProjectDTO>> Handle(
         GetProjectRequest request,
         CancellationToken cancellationToken)
     {

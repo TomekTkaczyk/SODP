@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SODP.Application.Abstractions;
 using SODP.Application.API.Requests.Projects;
 using SODP.Application.Specifications.Stages;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Exceptions.StageExceptions;
@@ -34,7 +35,8 @@ internal class CreateProjectHandler : IRequestHandler<CreateProjectRequest, ApiR
 		_unitOfWork = unitOfWork;
 	}
 
-    public async Task<ApiResponse<int>> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<int>> Handle(CreateProjectRequest request, CancellationToken cancellationToken)
     {
 		var stage = await _stageRepository
 			.Get(new StageBySignSpecification(request.StageSign))

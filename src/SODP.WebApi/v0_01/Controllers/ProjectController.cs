@@ -2,14 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Projects;
-using SODP.Application.Services;
 using SODP.Domain.Exceptions;
-using SODP.Domain.Shared.Results;
 using SODP.Shared.DTO;
-using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using System.Net;
 
@@ -125,7 +121,7 @@ public class ProjectController : ApiBaseController
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> Update(
+	public async Task<IActionResult> UpdateAsync(
 		[FromRoute] int id,
 		[FromBody] UpdateProjectRequest request,
 		CancellationToken cancellationToken)
@@ -143,7 +139,7 @@ public class ProjectController : ApiBaseController
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> Archive(
+	public async Task<IActionResult> ArchiveAsync(
 		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
@@ -157,7 +153,7 @@ public class ProjectController : ApiBaseController
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> Restore(
+	public async Task<IActionResult> RestoreAsync(
 		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{

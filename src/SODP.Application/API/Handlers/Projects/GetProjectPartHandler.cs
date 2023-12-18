@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using SODP.Application.API.Requests.Projects;
+using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -22,7 +23,8 @@ public class GetProjectPartHandler : IRequestHandler<GetProjectPartRequest, ApiR
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<ProjectPartDTO>> Handle(GetProjectPartRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<ProjectPartDTO>> Handle(GetProjectPartRequest request, CancellationToken cancellationToken)
 	{
 		var projectPart = await _projectRepository.GetPartAsync(request.ProjectPartId, cancellationToken);
 

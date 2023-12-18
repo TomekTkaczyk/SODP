@@ -53,7 +53,7 @@ public class FolderCommandCreator : IFolderCommandCreator
 		return result;
 	}
 
-	public async Task<string> RunCommand(string command, CancellationToken cancellationToken)
+	public async Task<string> RunCommandAsync(string command, CancellationToken cancellationToken)
 	{
 		return await Task.Run(() => command.RunShell(_logger), cancellationToken);
 	}

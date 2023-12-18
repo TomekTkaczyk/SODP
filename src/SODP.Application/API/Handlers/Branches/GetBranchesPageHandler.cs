@@ -2,6 +2,7 @@
 using MediatR;
 using SODP.Application.API.Requests.Branches;
 using SODP.Application.Specifications.Branches;
+using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -23,7 +24,8 @@ public sealed class GetBranchesPageHandler : IRequestHandler<GetBranchesPageRequ
 		_mapper = mapper;
 	}
 
-    public async Task<ApiResponse<Page<BranchDTO>>> Handle(
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<Page<BranchDTO>>> Handle(
         GetBranchesPageRequest request,
         CancellationToken cancellationToken)
     {

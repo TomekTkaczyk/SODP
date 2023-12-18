@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Parts;
 using SODP.Application.Specifications.Common;
 using SODP.Application.Specifications.Parts;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.PartExceptions;
 using SODP.Domain.Repositories;
@@ -26,6 +27,7 @@ internal sealed class UpdatePartBySignHandler : IRequestHandler<UpdatePartBySign
 		_unitOfWork = unitOfWork;
 	}
 
+	[IgnoreMethodAsyncNameConvention]
 	public async Task<ApiResponse> Handle(UpdatePartBySignRequest request, CancellationToken cancellationToken)
 	{
 		var part = await _repository

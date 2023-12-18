@@ -13,9 +13,4 @@ internal sealed class BranchLicensesSpecification : Specification<Branch>
 	{
 		AddInclude(x => x.Licenses);
 	}
-
-	public override Expression<Func<Branch, bool>> AsPredicateExpression()
-	{
-		throw new NotImplementedException();
-	}
 }

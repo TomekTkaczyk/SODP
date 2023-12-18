@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
 using SODP.Application.Specifications.Common;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -11,7 +12,7 @@ using SODP.Shared.Response;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SODP.Application.Queries.Designers;
+namespace SODP.Application.API.Handlers.Designers;
 
 public sealed class GetDesignerHandler : IRequestHandler<GetDesignerRequest, ApiResponse<DesignerDTO>>
 {
@@ -26,6 +27,7 @@ public sealed class GetDesignerHandler : IRequestHandler<GetDesignerRequest, Api
 		_mapper = mapper;
 	}
 
+	[IgnoreMethodAsyncNameConvention]
     public async Task<ApiResponse<DesignerDTO>> Handle(
 		GetDesignerRequest request, 
 		CancellationToken cancellationToken)

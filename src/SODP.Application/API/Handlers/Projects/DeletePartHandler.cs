@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Projects;
 using SODP.Application.Specifications.Projects;
+using SODP.Domain.Attributes;
 using SODP.Domain.Exceptions.ProjectExceptions;
 using SODP.Domain.Repositories;
 using System.Threading;
@@ -23,7 +24,8 @@ public sealed class DeletePartHandler : IRequestHandler<DeletePartRequest>
     }
 
 
-    public async Task<Unit> Handle(DeletePartRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<Unit> Handle(DeletePartRequest request, CancellationToken cancellationToken)
     {
         var projectPart = await _projectPartRepository
             .Get(new ProjectPartByIdSpecification(request.ProjectPartId))

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Designers;
 using SODP.Application.Specifications.Designers;
+using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
@@ -29,7 +30,8 @@ public class CreateDesignerHandler : IRequestHandler<CreateDesignerRequest, ApiR
 		_mapper = mapper;
     }
 
-    public async Task<ApiResponse<DesignerDTO>> Handle(CreateDesignerRequest request, CancellationToken cancellationToken)
+	[IgnoreMethodAsyncNameConvention]
+	public async Task<ApiResponse<DesignerDTO>> Handle(CreateDesignerRequest request, CancellationToken cancellationToken)
     {
         var designerExist = await _designerRepository
             .Get(new DesignerByNameSpecification(null, request.Firstname, request.Lastname))

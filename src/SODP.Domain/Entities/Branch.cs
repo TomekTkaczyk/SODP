@@ -1,4 +1,5 @@
-﻿using SODP.Domain.ValueObjects;
+﻿using SODP.Domain.Exceptions.PartExceptions;
+using SODP.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 
@@ -27,6 +28,8 @@ public sealed class Branch : ActiveStatusEntity, IOrdered
 
 	public static Branch Create(string sign, string title)
 	{
+		if(string.IsNullOrEmpty(sign)) throw new BranchSignIsInvalidException();
+
 		return new Branch(sign, title);
 	}
 
