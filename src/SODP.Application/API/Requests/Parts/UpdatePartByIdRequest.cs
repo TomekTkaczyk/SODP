@@ -5,12 +5,8 @@ namespace SODP.Application.API.Requests.Parts;
 
 public sealed record UpdatePartByIdRequest : IRequest<ApiResponse>
 {
-	public int Id { get; init; }
-	public string Title { get; init;}
+	private string _title;
 
-    public UpdatePartByIdRequest(int id, string title = "")
-    {                                                
-        Id = id;
-        Title = title.ToUpper();
-    }
+	public int Id { get; init; }
+	public string Title { get => _title; init => _title = value?.ToUpper(); }
 }

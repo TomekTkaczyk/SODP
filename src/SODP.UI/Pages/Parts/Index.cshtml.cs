@@ -28,11 +28,11 @@ public sealed class IndexModel : CollectionPageModel
         _endpoint = "parts";
     }
 
-    public IReadOnlyCollection<PartVM> Parts { get; set; }
+    public ICollection<PartVM> Parts { get; set; }
 
-    public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
+    public async Task<IActionResult> OnGetAsync(string searchString, int pageNumber = 1, int pageSize = 0)
     {
-        var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
+        var endpoint = GetPageUrl(searchString, pageNumber, pageSize);
         var apiResponse = await GetApiResponseAsync<Page<PartVM>>(endpoint);
 
         if (!apiResponse.IsSuccess)
@@ -40,7 +40,7 @@ public sealed class IndexModel : CollectionPageModel
             RedirectToPage($"Errors/{apiResponse.HttpCode}");
         }
 
-        Parts = _mapper.Map<IReadOnlyCollection<PartVM>>(apiResponse.Value.Collection);
+        Parts = _mapper.Map<ICollection<PartVM>>(apiResponse.Value.Collection);
         PageInfo = GetPageInfo(apiResponse, searchString);
 
         return Page();

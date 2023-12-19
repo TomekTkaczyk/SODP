@@ -28,9 +28,9 @@ public sealed class IndexModel : ProjectsPageModel<ProjectVM>
 	}
 
 
-    public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
+    public async Task<IActionResult> OnGetAsync(string searchString, int pageNumber = 1, int pageSize = 0)
     {
-		return await GetAsync(ProjectStatus.Archival, pageNumber, pageSize, searchString);
+		return await GetAsync(ProjectStatus.Archival, searchString, pageNumber, pageSize);
 	}
 
 	public async Task<IActionResult> OnGetProjectPartialAsync(int id)

@@ -5,12 +5,9 @@ namespace SODP.Application.API.Requests.Parts;
 
 public sealed record CreatePartRequest : IRequest<ApiResponse<int>>
 {
-	public string Sign { get; init; }
-	public string Title { get; init; }
+	private string _sign;
+	private string _title;
 
-    public CreatePartRequest(string sign, string title = "")
-    {                                                      
-        Sign = sign.ToUpper();
-        Title = title.ToUpper();
-    }
+	public string Sign { get => _sign; init => _sign = value?.ToUpper(); }
+	public string Title { get => _title; init => _title = value?.ToUpper(); }
 }

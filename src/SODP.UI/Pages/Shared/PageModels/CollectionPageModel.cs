@@ -31,7 +31,7 @@ public abstract class CollectionPageModel : AppPageModel
 		}
 	}
 
-	protected virtual string GetPageUrl(int pageNumber, int pageSize, string searchString)
+	protected virtual string GetPageUrl(string searchString, int pageNumber, int pageSize)
 	{
 		var url = new StringBuilder();
 		url.Append(_endpoint);
@@ -62,7 +62,7 @@ public abstract class CollectionPageModel : AppPageModel
 
 		return pageInfo;
 	}
-	protected IReadOnlyCollection<T> GetCollection<T>(ApiResponse<Page<T>> response)
+	protected ICollection<T> GetCollection<T>(ApiResponse<Page<T>> response)
 	{
 		return response.Value.Collection;
 	}

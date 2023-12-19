@@ -40,8 +40,6 @@ public sealed class GetProjectsPageHandler : IRequestHandler<GetProjectsPageRequ
                 request.PageSize, 
                 cancellationToken);
 
-        var m = _mapper.Map<Page<ProjectDTO>>(page);
-
-		return ApiResponse.Success(m);
+		return ApiResponse.Success(_mapper.Map<Page<ProjectDTO>>(page));
 	}
 }

@@ -28,24 +28,19 @@ public class UserController : ApiBaseController
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public virtual async Task<IActionResult> GetPageAsync(
-		bool? active,
-		string searchString = "", 
-		int pageNumber = 1, 
-		int pageSize = 0,
+		[FromQuery] GetUsersPageRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		if (pageNumber < 1)
+		if (request.PageNumber < 1)
 		{
 			return BadRequest(new Error("pageNumber is invalid."));
 		}
 
-		if (pageNumber > 1 && pageSize == 0)
+		if (request.PageNumber > 1 && request.PageSize == 0)
 		{
 			return BadRequest(new Error("pageNumber and/or pageSize is invalid."));
 		}
 
-		var request = new GetUsersPageRequest(active, searchString, pageNumber, pageSize);
-		
 		return await HandleRequestAsync<GetUsersPageRequest, ApiResponse<Page<UserDTO>>>(request, cancellationToken);
 	}
 

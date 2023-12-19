@@ -26,14 +26,9 @@ public class DesignerController : ActiveStatusController<Designer>
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetPageAsync(
-			bool? active,
-			string searchString = "",
-			int pageNumber = 1,
-			int pageSize = 0,
+			[FromQuery] GetDesignersPageRequest request,
 			CancellationToken cancellationToken = default)
 	{
-		var request = new GetDesignersPageRequest(active, searchString, pageNumber, pageSize);
-
 		return await HandleRequestAsync<GetDesignersPageRequest, ApiResponse<Page<DesignerDTO>>>(request, cancellationToken);
 	}
 

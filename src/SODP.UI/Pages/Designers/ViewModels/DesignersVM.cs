@@ -5,6 +5,6 @@ namespace SODP.UI.Pages.Designers.ViewModels;
 
 public class DesignersVM
 {
-    public IReadOnlyCollection<DesignerVM> Designers { get; set; }
+    public ICollection<DesignerVM> Designers { get; set; }
     public PageInfo PageInfo { get; set; }
 }

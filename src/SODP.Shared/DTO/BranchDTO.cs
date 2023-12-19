@@ -14,5 +14,5 @@ public record BranchDTO
 
 	public bool ActiveStatus { get; set; }
 
-	public IReadOnlyCollection<LicenseDTO> Licenses { get; set; }
+	public ICollection<LicenseDTO> Licenses { get; set; }
 }

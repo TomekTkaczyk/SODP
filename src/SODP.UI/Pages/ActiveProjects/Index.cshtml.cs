@@ -12,7 +12,6 @@ using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.ActiveProjects;
@@ -34,9 +33,9 @@ public sealed class IndexModel : ProjectsPageModel<ProjectVM>
 	}
 
 
-    public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
+    public async Task<IActionResult> OnGetAsync(string searchString, int pageNumber = 1, int pageSize = 0)
     {
-        return await GetAsync(ProjectStatus.Active,pageNumber,pageSize,searchString);
+        return await GetAsync(ProjectStatus.Active, searchString, pageNumber,pageSize);
     }
 
     public async Task<IActionResult> OnGetProjectPartialAsync(int id)

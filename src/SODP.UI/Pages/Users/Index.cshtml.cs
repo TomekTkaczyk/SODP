@@ -24,11 +24,11 @@ public class IndexModel : CollectionPageModel
 		ReturnUrl = "/Users";
 		_endpoint = "users";
 	}
-	public IReadOnlyCollection<UserVM> Users { get; set; }
+	public ICollection<UserVM> Users { get; set; }
 
-	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
+	public async Task<IActionResult> OnGetAsync(string searchString, int pageNumber = 1, int pageSize = 0)
 	{
-		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
+		var endpoint = GetPageUrl(searchString, pageNumber, pageSize);
 		var apiResponse = await GetApiResponseAsync<Page<UserVM>>(endpoint);
 
 		Users = GetCollection(apiResponse);

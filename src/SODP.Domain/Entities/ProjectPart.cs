@@ -11,7 +11,7 @@ public class ProjectPart : BaseEntity
 	public Sign Sign { get; private set; }
 	public Title Title { get; private set; }
     public int Order { get; private set; } = 1;
-	public IReadOnlyCollection<PartBranch> Branches { get; private set; }
+	public ICollection<PartBranch> Branches { get; private set; }
 
 	private ProjectPart() { }
 

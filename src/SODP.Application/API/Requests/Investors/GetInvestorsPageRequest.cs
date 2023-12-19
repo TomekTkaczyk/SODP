@@ -4,8 +4,12 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Investors;
 
-public sealed record GetInvestorsPageRequest(
-    bool? ActiveStatus,
-    string SearchString,
-    int PageNumber,
-    int PageSize) : IRequest<ApiResponse<Page<InvestorDTO>>>;
+public sealed record GetInvestorsPageRequest : IRequest<ApiResponse<Page<InvestorDTO>>>
+{
+	private string _searchString;
+
+	public bool? ActiveStatus { get; init; }
+	public string SearchString { get => _searchString; init => _searchString = value?.ToUpper(); }
+	public int PageNumber { get; init; } = 1;
+	public int PageSize { get; init; } = 0;
+}

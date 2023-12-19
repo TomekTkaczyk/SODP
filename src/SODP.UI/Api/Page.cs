@@ -14,5 +14,5 @@ public record Page
 
 public record Page<T> : Page
 {
-	public IReadOnlyCollection<T> Collection { get; set; }
+	public ICollection<T> Collection { get; set; }
 }

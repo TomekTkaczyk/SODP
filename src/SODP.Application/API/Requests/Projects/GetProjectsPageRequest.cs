@@ -6,17 +6,11 @@ using SODP.Shared.Response;
 namespace SODP.Application.API.Requests.Projects;
 
 public sealed record GetProjectsPageRequest : IRequest<ApiResponse<Page<ProjectDTO>>>
-{					
-	public ProjectStatus Status { get; init; }
-	public string SearchString { get; init; }
-	public int PageNumber { get; init; }
-	public int PageSize { get; init; }
+{
+	private string _searchString;
 
-	public GetProjectsPageRequest(ProjectStatus status,	string searchString, int pageNumber, int pageSize)
-	{	  
-		Status = status;
-		SearchString = searchString.ToUpper();
-		PageNumber = pageNumber;
-		PageSize = pageSize;
-	}
+	public ProjectStatus Status { get; init; }
+	public string SearchString { get => _searchString; init => _searchString = value?.ToUpper(); }
+	public int PageNumber { get; init; } = 1;
+	public int PageSize { get; init; } = 0;
 }

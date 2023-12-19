@@ -29,12 +29,12 @@ public sealed class IndexModel : CollectionPageModel
 	}
 
 
-	public IReadOnlyCollection<InvestorVM> Investors { get; private set; }
+	public ICollection<InvestorVM> Investors { get; private set; }
 
 
-	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
+	public async Task<IActionResult> OnGetAsync(string searchString, int pageNumber = 1, int pageSize = 0)
 	{
-		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
+		var endpoint = GetPageUrl(searchString, pageNumber, pageSize);
 		var apiResponse = await GetApiResponseAsync<Page<InvestorVM>>(endpoint);
 
 		Investors = GetCollection(apiResponse);

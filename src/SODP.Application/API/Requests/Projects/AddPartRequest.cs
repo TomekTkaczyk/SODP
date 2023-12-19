@@ -4,14 +4,10 @@ namespace SODP.Application.API.Requests.Projects;
 
 public sealed record AddPartRequest : IRequest
 {
-	public int ProjectId { get; init; }
-	public string Sign {  get; init; }
-	public string Title { get; init; }
+	private string _sign;
+	private string _title;
 
-    public AddPartRequest(int projectId, string sign, string title = "")
-    {                                                             
-        ProjectId = projectId;
-        Sign = sign.ToUpper();
-        Title = title.ToUpper();
-    }
+	public int ProjectId { get; init; }
+	public string Sign { get => _sign; init => _sign = value?.ToUpper(); }
+	public string Title { get => _title; init => _title = value?.ToUpper(); }
 }

@@ -30,14 +30,14 @@ public class IndexModel : CollectionPageModel
 		_endpoint = "branches";
 	}
 
-	public IReadOnlyCollection<BranchVM> Branches { get; set; }
+	public ICollection<BranchVM> Branches { get; set; }
 
-	public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
+	public async Task<IActionResult> OnGetAsync(string searchString, int pageNumber = 1, int pageSize = 0)
 	{
-		var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
+		var endpoint = GetPageUrl(searchString, pageNumber, pageSize);
 		var apiResponse = await GetApiResponseAsync<Page<BranchVM>>(endpoint);
 
-		Branches = _mapper.Map<IReadOnlyCollection<BranchVM>>(apiResponse.Value.Collection);
+		Branches = _mapper.Map<ICollection<BranchVM>>(apiResponse.Value.Collection);
 		PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();
@@ -88,7 +88,7 @@ public class IndexModel : CollectionPageModel
 		}
 
 		var apiResponse = await responseMessage.Content.ReadAsAsync<ApiResponse<Page<LicenseVM>>>();																		
-		var model = _mapper.Map<IReadOnlyCollection<LicenseVM>>(apiResponse.Value.Collection);
+		var model = _mapper.Map<ICollection<LicenseVM>>(apiResponse.Value.Collection);
 
 		return GetPartialView(model, _designersPartialViewName);
 	}

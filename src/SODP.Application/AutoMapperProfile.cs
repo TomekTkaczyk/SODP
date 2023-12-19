@@ -263,7 +263,7 @@ public class AutoMapperProfile : Profile
             ResolutionContext context)
         {
             return Page<TDestination>.Create(
-                context.Mapper.Map<IReadOnlyCollection<TSource>, IReadOnlyCollection<TDestination>>(source.Collection),
+                context.Mapper.Map<ICollection<TSource>, ICollection<TDestination>>(source.Collection),
                 source.PageNumber,
                 source.PageSize,
                 source.TotalCount);

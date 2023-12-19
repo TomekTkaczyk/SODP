@@ -6,16 +6,10 @@ namespace SODP.Application.API.Requests.Branches;
 
 public sealed record GetBranchesPageRequest : IRequest<ApiResponse<Page<BranchDTO>>>
 {
-	public bool? ActiveStatus { get; init; }
-	public string SearchString { get; init; }
-	public int PageNumber { get; init; }
-	public int PageSize { get; init; }
+	private string _searchString;
 
-    public GetBranchesPageRequest(bool? activeStatus, string searchString, int pageNumber, int pageSize)
-    {                                                                                                  
-        ActiveStatus = activeStatus;
-        SearchString = searchString.ToUpper();
-        PageNumber = pageNumber;
-        PageSize = pageSize;
-    }
+	public bool? ActiveStatus { get; init; }
+	public string SearchString { get => _searchString; init => _searchString = value?.ToUpper(); }
+	public int PageNumber { get; init; } = 1;
+	public int PageSize { get; init; } = 0;
 }

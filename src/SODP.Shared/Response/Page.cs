@@ -20,14 +20,14 @@ public record Page
 
 public record Page<T> : Page
 {
-    public Page(IReadOnlyCollection<T> collection, int pageNumber, int pageSize, int tootalCount) : base(pageNumber, pageSize, tootalCount)	
+    public Page(ICollection<T> collection, int pageNumber, int pageSize, int tootalCount) : base(pageNumber, pageSize, tootalCount)	
     {
 		Collection = collection;
     }
 
-    public IReadOnlyCollection<T> Collection { get; set; }
+    public ICollection<T> Collection { get; set; }
 	
-	public static Page<T> Create(IReadOnlyCollection<T> collection, int pageNumber, int pageSize, int tootalCount)
+	public static Page<T> Create(ICollection<T> collection, int pageNumber, int pageSize, int tootalCount)
 	{
 		 return new Page<T>(collection, pageNumber, pageSize, tootalCount);
 	}

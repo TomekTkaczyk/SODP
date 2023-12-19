@@ -5,14 +5,9 @@ namespace SODP.Application.API.Requests.Projects;
 
 public sealed record CreateProjectRequest : IRequest<ApiResponse<int>>
 {
-	public string Number { get; init; }
-	public string StageSign { get; init; }
-	public string Name { get; init; }
+	private string _stageSign;
 
-	public CreateProjectRequest(string number, string stageSign, string name)
-	{
-		Number = number;
-		StageSign = stageSign.ToUpper();
-		Name = name;
-	}
+	public string Number { get; init; }
+	public string StageSign { get => _stageSign; init => _stageSign = value?.ToUpper(); }
+	public string Name { get; init; }
 }

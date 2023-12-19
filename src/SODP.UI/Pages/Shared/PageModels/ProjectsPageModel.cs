@@ -27,11 +27,11 @@ public abstract class ProjectsPageModel<T> : CollectionPageModel
 
 	protected T Project { get; set; }
 
-	public IReadOnlyCollection<T> Projects { get; set; }
+	public ICollection<T> Projects { get; set; }
 
-	protected async Task<IActionResult> GetAsync(ProjectStatus status, int pageNumber = 1, int pageSize = 0, string searchString = "")
+	protected async Task<IActionResult> GetAsync(ProjectStatus status, string searchString, int pageNumber, int pageSize)
 	{
-		var endpoint = GetPageUrl(status, pageNumber, pageSize, searchString);
+		var endpoint = GetPageUrl(status, searchString, pageNumber, pageSize);
 		var apiResponse = await GetApiResponseAsync<Page<T>>(endpoint);
 
 		Projects = GetCollection(apiResponse);
@@ -48,7 +48,7 @@ public abstract class ProjectsPageModel<T> : CollectionPageModel
 		return GetPartialView(response.Value, _projectPartialViewName);
 	}
 
-	protected string GetPageUrl(ProjectStatus status, int pageNumber, int pageSize, string searchString)
+	protected string GetPageUrl(ProjectStatus status, string searchString, int pageNumber, int pageSize)
 	{
 		var url = new StringBuilder();
 		url.Append(_endpoint);

@@ -6,16 +6,10 @@ namespace SODP.Application.API.Requests.Roles;
 
 public sealed record GetRolesPageRequest : IRequest<ApiResponse<Page<RoleDTO>>>
 {
-	public bool? ActiveStatus { get; init; }
-	public string SearchString { get; init; }
-	public int PageNumber { get; init; }
-	public int PageSize { get; init; }
+	private string _searchString;
 
-	public GetRolesPageRequest(bool? activeStatus, string searchString, int pageNumber, int pageSize)
-	{
-		ActiveStatus = activeStatus;
-		SearchString = searchString.ToUpper();
-		PageNumber = pageNumber;
-		PageSize = pageSize;
-	}
+	public bool? ActiveStatus { get; init; }
+	public string SearchString { get => _searchString; init => _searchString = value?.ToUpper(); }
+	public int PageNumber { get; init; } = 1;
+	public int PageSize { get; init; } = 0;
 }

@@ -4,8 +4,12 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Designers;
 
-public sealed record GetDesignersPageRequest(
-    bool? ActiveStatus,
-    string SearchString,
-    int PageNumber,
-    int PageSize) : IRequest<ApiResponse<Page<DesignerDTO>>>;
+public sealed record GetDesignersPageRequest : IRequest<ApiResponse<Page<DesignerDTO>>>
+{
+	private string _searchString;
+
+	public bool? ActiveStatus { get; init; }
+	public string SearchString { get => _searchString; init => _searchString = value?.ToUpper(); }
+	public int PageNumber { get; init; } = 1;
+	public int PageSize { get; init; } = 0;
+}
