@@ -1,0 +1,10 @@
+### ActiveProjects
+Get https://localhost:44303/api/v0_01/projects?pageNumber=1&pageSize=15&status=Active
+
+### ArchivedProjects
+Get https://localhost:44303/api/v0_01/projects?pageNumber=1&pageSize=15&status=Archival
+
+### ProjectById
+Get https://localhost:44303/api/v0_01/projects/980
+
+ś

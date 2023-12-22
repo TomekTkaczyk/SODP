@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using NuGet.Protocol.Plugins;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -11,28 +11,40 @@ public class RunnabilityConventionTests
 	[Fact]
 	internal void each_cqrs_request_has_one_handler()
 	{
+		var requests_that_have_different_number_of_handlers_than_one = new List<(Type,int)>();
+
 		var requests = ConventionsHelper.classes()
 			.Where(x => !x.IsAbstract)
 			.Where(x => x.IsAssignableTo(typeof(IRequest)))
 			.ToList();
 
 		var handlers = ConventionsHelper.classes()
-			.Where(x => !x.IsAbstract)
-			.Where(x => x.IsAssignableTo(typeof(IRequestHandler)))
+			.Where(type => !type.IsAbstract && type.GetInterfaces()
+				.Any(i =>
+					i.IsGenericType &&
+					i.GetGenericTypeDefinition() == typeof(IRequestHandler<>))
+					)
 			.ToList();
 
 		Assert.NotEmpty(requests);
+		Assert.NotEmpty(handlers);
 
-		foreach(var request in requests)
+		foreach (var request in requests)
 		{
 			var handler_type = typeof(IRequestHandler<>)
 				.MakeGenericType(request);
 
 			var request_handlers = handlers
-				.Where(x => x.GetInterfaces().Contains(handler_type));
+				.Where(x => x.GetInterfaces().Any(i => i == handler_type))
+				.ToList();
 
-			Assert.Single(request_handlers,request);
+			if (request_handlers.Count != 1)
+			{
+				requests_that_have_different_number_of_handlers_than_one.Add(new(request, request_handlers.Count));
+			}
 		}
+
+		Assert.Empty(requests_that_have_different_number_of_handlers_than_one);
 	}
 
 	[Fact]

@@ -11,4 +11,9 @@ public record BranchVM
     public int Order { get; set; }
 
     public bool ActiveStatus { get; set; }
+
+	public override string ToString()
+	{
+        return Sign.Trim() + "-" + Title.Trim();
+	}
 }
