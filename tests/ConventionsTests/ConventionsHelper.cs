@@ -10,7 +10,7 @@ namespace tests.ConventionsTests;
 public static class ConventionsHelper
 {
 
-	public static IEnumerable<Assembly> assemblies()
+	public static IEnumerable<Assembly> Assemblies()
     {
         var sodpDllFiles = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "SODP" + "*.dll");
 
@@ -20,34 +20,34 @@ public static class ConventionsHelper
         }
     }
 
-    public static IEnumerable<Type> types()
+    public static IEnumerable<Type> Types()
     {
-        return assemblies().SelectMany(x => x.GetTypes());
+        return Assemblies().SelectMany(x => x.GetTypes());
     }
 
-	public static IEnumerable<Type> types(Assembly assembly)
+	public static IEnumerable<Type> Types(Assembly assembly)
 	{
 		return assembly.GetTypes();
 	}
 
-	public static IEnumerable<Type> classes()
+	public static IEnumerable<Type> Classes()
     {
-        return types().Where(x => x.IsClass);
+        return Types().Where(x => x.IsClass);
     }
 
-	public static IEnumerable<Type> records()
+	public static IEnumerable<Type> Records()
 	{
-		return classes().Where(x => x.GetMethod("<Clone>$") != null);
+		return Classes().Where(x => x.GetMethod("<Clone>$") != null);
 	}
 
-	public static IEnumerable<Type> interfaces()
+	public static IEnumerable<Type> Interfaces()
     {
-        return types().Where(x => x.IsInterface);
+        return Types().Where(x => x.IsInterface);
     }
 
-	public static IEnumerable<MethodInfo> methods()
+	public static IEnumerable<MethodInfo> Methods()
 	{
-		return classes()
+		return Classes()
             .SelectMany(x => x.GetMethods(
                 BindingFlags.NonPublic |
                 BindingFlags.Public |

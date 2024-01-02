@@ -17,9 +17,7 @@ public class ProjectRepository : PagedRepository<Project>, IProjectRepository
 			.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
 	}
 
-	public async Task<Project> GetWithDetailsAsync(
-		int id, 
-		CancellationToken cancellationToken)
+	public async Task<Project> GetWithDetailsAsync(	int id,	CancellationToken cancellationToken)
 	{
 		return await _dbContext.Set<Project>()
 			.Include(s => s.Stage)

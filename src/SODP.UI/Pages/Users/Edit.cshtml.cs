@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,26 +10,20 @@ using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Users
 {
 	[Authorize(Roles = "Administrator")]
     [ValidateAntiForgeryToken()]
-    public class EditModel : SODPPageModel
+    public class EditModel : AppPageModel
 	{
-        private readonly IWebAPIProvider _apiProvider;
-
         public EditModel(
             IWebAPIProvider apiProvider, 
             ILogger<EditModel> logger, 
-            IMapper mapper, 
-            LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory)
+            LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
         {
             ReturnUrl = "/Users/Edit";
-			_apiProvider = apiProvider;
         }
 
         [BindProperty]

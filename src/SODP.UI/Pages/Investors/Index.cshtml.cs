@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Shared.Response;
 using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
@@ -20,9 +21,7 @@ public sealed class IndexModel : CollectionPageModel
 	public IndexModel(
 		IWebAPIProvider apiProvider, 
 		ILogger<IndexModel> logger, 
-		LanguageTranslatorFactory translatorFactory,
-		IMapper mapper) 
-		: base(apiProvider, logger, translatorFactory, mapper)
+		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
 	{
 		ReturnUrl = "/Investors";
 		_endpoint = "investors";
@@ -61,7 +60,7 @@ public sealed class IndexModel : CollectionPageModel
 
 		var response = await apiResponse.Content.ReadAsAsync<ApiResponse<InvestorVM>>();
 
-		return GetPartialView(_mapper.Map<InvestorVM>(response.Value), _editInvestorModalViewName);
+		return GetPartialView(response.Value, _editInvestorModalViewName);
 	}
 
 

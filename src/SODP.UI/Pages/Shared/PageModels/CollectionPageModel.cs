@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using SODP.Shared.Response;
 using SODP.UI.Api;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
@@ -21,9 +21,8 @@ public abstract class CollectionPageModel : AppPageModel
 	protected CollectionPageModel(
 		IWebAPIProvider apiProvider,
 		ILogger<CollectionPageModel> logger,
-		LanguageTranslatorFactory translatorFactory,
-		IMapper mapper)
-		: base(apiProvider, logger, translatorFactory, mapper )
+		LanguageTranslatorFactory translatorFactory)
+		: base(apiProvider, logger, translatorFactory)
 	{
 		foreach (var item in PageSizeSelectList.PageSizeList)
 		{

@@ -1,11 +1,11 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Domain.Entities;
+using SODP.Domain.Shared.Results;
 using SODP.Shared.Enums;
-using SODP.UI.Api;
+using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
@@ -29,14 +29,14 @@ public class EditModel : AppPageModel
 	const string _addTechnicalRoleViewName = "ModalView/_AddTechnicalRoleModalView";
 	const string _addPartBranchViewName = "ModalView/_AddPartBranchModalView";
 	const string _getInvestorViewName = "ModalView/_GetInvestorModalView";
-	const string _partBranchesViewName = "PartialView/_PartBranchesPartialView";
+
+	const string _projectPartDetailsViewName = "PartialView/_ProjectPartDetailsPartialView";
 
 	public EditModel(
 		IWebAPIProvider apiProvider,
 		ILogger<EditModel> logger,
-		LanguageTranslatorFactory translatorFactory, 
-		IMapper mapper)
-		: base(apiProvider, logger, translatorFactory, mapper) 
+		LanguageTranslatorFactory translatorFactory) 
+		: base(apiProvider, logger, translatorFactory) 
 	{
 		_endpoint = "projects";
 	}
@@ -110,7 +110,7 @@ public class EditModel : AppPageModel
 
 	public async Task<IActionResult> OnGetEditProjectPartAsync(int projectId, int projectPartId)
 	{
-		var model = new PartVM()
+		var model = new ProjectPartEditVM()
 		{
 			Id = projectPartId,
 			ProjectId = projectId,
@@ -127,7 +127,7 @@ public class EditModel : AppPageModel
 		return GetPartialView(model, _editProjectPartViewName);
 	}
 
-	public async Task<IActionResult> OnPostEditProjectPartAsync(PartVM part)
+	public async Task<IActionResult> OnPostEditProjectPartAsync(ProjectPartEditVM part)
 	{
 		if (ModelState.IsValid)
 		{
@@ -146,21 +146,28 @@ public class EditModel : AppPageModel
 		return GetPartialView(part, _editProjectPartViewName);
 	}
 
-    public async Task<PartialViewResult> OnGetPartBranchesPartialAsync(int projectPartId)
+    public async Task<PartialViewResult> OnGetPartDetailsPartialAsync(int projectPartId)
 	{
-		var model = new ProjectPartVM();
+		var apiResponse = await GetApiResponseAsync<ProjectPartDetailsVM>($"projects/parts/{projectPartId}/details");
 
-		var apiResponse = await GetApiResponseAsync<ProjectPartVM>($"projects/parts/{projectPartId}/branches");
+		var projectPart = apiResponse.Value;
 
-		// var apiResponse = await _apiProvider.GetAsync($"projects/parts/{projectPartId}/branches");
-		if (apiResponse.IsSuccess)
+
+		projectPart.BranchesToSelect = new AvailableBranchesVM()
 		{
-			//var aaa = apiResponse.Value;
-			//var result = await apiResponse.Content.ReadAsAsync<ServiceResponse<ProjectPartDTO>>();
-			model = _mapper.Map<ProjectPartVM>(apiResponse.Value);
-		}
+			ProjectPartId = projectPartId,
+			Items = projectPart.AvailableBranches.Select(x => new SelectListItem
+			{
+				Value = x.Id.ToString(),
+				Text = x.ToString()
+			}).ToList()
+		};
 
-		return GetPartialView(model, _partBranchesViewName);
+        var partialView =  GetPartialView(apiResponse.Value, _projectPartDetailsViewName);
+
+		partialView.ViewData.Add("ProjectPartId", projectPartId);
+
+		return partialView;
 	}
 
 	public async Task<PartialViewResult> OnGetAddPartBranchAsync(int projectPartId)
@@ -170,27 +177,25 @@ public class EditModel : AppPageModel
 			ProjectPartId = projectPartId
 		};
 
-		var apiResponse = await _apiProvider.GetAsync($"branches?active=true");
-		if (apiResponse.IsSuccessStatusCode)
-		{
-			var result = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<BranchVM>>>();
-			model.Items = result.Value.Collection.Select(x => new SelectListItem
-			{
-				Value = x.Id.ToString(),
-				Text = x.ToString()
-			}).ToList();
+		var branchesApiResponse = await GetApiResponseAsync<Page<BranchVM>>($"Branches?ActiveStatus=true");
+        if (branchesApiResponse.IsSuccess)
+        {
+			model.Items = branchesApiResponse.Value.Collection.Select(x => new SelectListItem
+            {
+                Value = x.Id.ToString(),
+                Text = x.ToString()
+            }).ToList();
+        }
 
-			apiResponse = await _apiProvider.GetAsync($"projects/parts/{projectPartId}");
-			if (apiResponse.IsSuccessStatusCode)
-			{
-				var part = await apiResponse.Content.ReadAsAsync<ApiResponse<ProjectPartVM>>();
-				foreach (var item in part.Value.Branches)
-				{
-					var selected = model.Items.SingleOrDefault(x => x.Value == item.Branch.Id.ToString());
-					model.Items.Remove(selected);
-				}
-			}
-		}
+		var partApiResponse = await GetApiResponseAsync<ProjectPartVM>($"projects/parts/{projectPartId}/details");
+		if (partApiResponse.IsSuccess)
+		{
+            foreach (var item in partApiResponse.Value.Branches)
+            {
+                var selected = model.Items.SingleOrDefault(x => x.Value == item.Branch.Id.ToString());
+                model.Items.Remove(selected);
+            }
+        }
 
 		return GetPartialView(model, _addPartBranchViewName);
 	}
@@ -313,7 +318,7 @@ public class EditModel : AppPageModel
 
 	private async Task<IList<SelectListItem>> GetAvailablePartsAsync()
 	{
-		var apiResponse = await GetApiResponseAsync<Page<PartVM>>($"parts?active=true");
+		var apiResponse = await GetApiResponseAsync<Page<ProjectPartEditVM>>($"parts?active=true");
 		if (apiResponse.IsSuccess)
 		{
 			return apiResponse.Value.Collection.Select(x => new SelectListItem
@@ -328,22 +333,9 @@ public class EditModel : AppPageModel
 
 	private async Task<ApiResponse<PartBranchVM>> PartBranchServiceResponseAsync(int partBranchId)
 	{
-		ApiResponse<PartBranchVM> response = new();
-		var apiResponse = await _apiProvider.GetAsync($"projects/parts/branches/{partBranchId}");
-		if (apiResponse.IsSuccessStatusCode)
-		{
-			response = await apiResponse.Content.ReadAsAsync<ApiResponse<PartBranchVM>>();
-			if (!response.IsSuccess)
-			{
-				// response..SetError(response.Message, 500);
-			}
-		}
-		else
-		{
-			// response.SetError("REST API error", response.HttpCode);
-		}
+		var apiResponse = await GetApiResponseAsync<PartBranchVM>($"projects/parts/branches/{partBranchId}");
 
-		return response;
+		return apiResponse;
 	}
     
 	#endregion

@@ -2,5 +2,5 @@
 
 public class ProjectPartNotFoundException : DomainException
 {
-    public ProjectPartNotFoundException() : base("Project part not found.") { }
+    public ProjectPartNotFoundException() : base("Part of project not found.") { }
 }

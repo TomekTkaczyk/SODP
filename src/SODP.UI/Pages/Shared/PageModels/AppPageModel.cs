@@ -1,15 +1,11 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
-using SODP.UI.Api;
+using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
-using System;
 using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Shared.PageModels;
@@ -20,23 +16,19 @@ public abstract class AppPageModel : PageModel
 
 	protected readonly IWebAPIProvider _apiProvider;
 	protected readonly ILogger<AppPageModel> _logger;
-	protected readonly ITranslator _translator;
-	protected readonly IMapper _mapper;
+    protected readonly ITranslator _translator;
 
 	protected string ReturnUrl { get; set; }
 
-	protected AppPageModel(
+	public AppPageModel(
 		IWebAPIProvider apiProvider,
 		ILogger<AppPageModel> logger,
-		LanguageTranslatorFactory translatorFactory,
-		IMapper mapper)
+		LanguageTranslatorFactory translatorFactory)
 	{
 		_apiProvider = apiProvider;
 		_logger = logger;
-		_mapper = mapper;
 		_translator = translatorFactory.GetTranslator();
 	}
-
 
     protected virtual void SetModelErrors(HttpResponseMessage message) 
 	{
@@ -58,6 +50,7 @@ public abstract class AppPageModel : PageModel
 
 	protected virtual PartialViewResult GetPartialView<T>(T model, string partialViewName)
 	{
+		ViewData.Add("Translator", _translator);
 		return new PartialViewResult()
 		{
 			ViewName = partialViewName,

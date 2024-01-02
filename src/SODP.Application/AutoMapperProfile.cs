@@ -262,11 +262,11 @@ public class AutoMapperProfile : Profile
             Page<TDestination> destination,
             ResolutionContext context)
         {
-            return Page<TDestination>.Create(
-                context.Mapper.Map<ICollection<TSource>, ICollection<TDestination>>(source.Collection),
+            return new Page<TDestination>(
                 source.PageNumber,
                 source.PageSize,
-                source.TotalCount);
+                source.TotalCount,
+                context.Mapper.Map<ICollection<TSource>, ICollection<TDestination>>(source.Collection));
         }
     }
 }

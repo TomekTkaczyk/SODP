@@ -2,7 +2,7 @@
 
 namespace SODP.UI.Pages.Shared.ViewModels
 {
-    public class ProjectPartVM
+    public class ProjectPartDetailsVM
     {
         public int Id { get; set; }
 

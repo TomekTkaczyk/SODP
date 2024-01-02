@@ -27,7 +27,7 @@ public class UserRepository : IUserRepository
 
 		var collection = await GetPageQuery(queryable, pageNumber, pageSize).ToListAsync(cancellationToken);
 
-		return Page<User>.Create(collection, pageNumber, pageSize, totalItems);
+		return new Page<User>(pageNumber, pageSize, totalItems, collection);
 	}
 	
 

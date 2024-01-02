@@ -30,10 +30,10 @@
 
 <partial name="_SearchString" />
 
-@if (Model.Designers.Designers.Count() > 0)
+@if (Model.Designers.Count > 0)
 {
 	<div id="designersAccordion" class="accordion">
-		@foreach (var item in Model.Designers.Designers)
+		@foreach (var item in Model.Designers)
 		{
 			<div class="button card p-0 border-light">
 				<div class="card-header p-0 border-light d-flex align-items-center" style="background-color:white" id="card-header-@item.Id">

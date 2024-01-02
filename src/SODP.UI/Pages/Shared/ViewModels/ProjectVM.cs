@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SODP.UI.Pages.Shared.ViewModels
 {
-    public class ProjectVM
+	public class ProjectVM
     {
         public int Id { get; set; }
 
@@ -40,6 +40,6 @@ namespace SODP.UI.Pages.Shared.ViewModels
 
         public ProjectStatus Status { get; set; }
 
-        public ICollection<ProjectPartVM> Parts { get; set; }
+        public ICollection<ProjectPartDetailsVM> Parts { get; set; }
     }
 }

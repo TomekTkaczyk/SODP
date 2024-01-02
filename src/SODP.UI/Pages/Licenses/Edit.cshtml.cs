@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -21,17 +19,11 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Licenses
 {
-    [Authorize(Roles = "ProjectManager")]
-	public class EditModel : SODPPageModel
+	[Authorize(Roles = "ProjectManager")]
+	public class EditModel : AppPageModel
     {
-        private readonly IWebAPIProvider _apiProvider;
-
-        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory)
-        {
-            _apiProvider = apiProvider;
-            var prev = Request;
-        }
-
+        public EditModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory) { }
+        
         [BindProperty]
         public LicenseVM License { get; set; }
 

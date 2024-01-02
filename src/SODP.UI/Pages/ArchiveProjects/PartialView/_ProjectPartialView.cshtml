@@ -3,7 +3,9 @@
 
 @model ProjectDetailsVM
 
-@inject LanguageTranslatorFactory _translatorFactory;
+@{
+	var _translator = ViewData["Translator"] as ITranslator;
+}
 
 <div>
 	@if (!string.IsNullOrWhiteSpace(Model.Title))
@@ -109,7 +111,7 @@
 					@foreach(var role in branch.Roles)
 					{
 						<div class="row">
-							<div class="col my-auto ml-2 text-primary">@_translatorFactory.GetTranslator().Translate(role.Role) : @role.License.Designer (@role.License.Content)</div>
+							<div class="col my-auto ml-2 text-primary">@_translator.Translate(role.Role) : @role.License.Designer (@role.License.Content)</div>
 						</div>
 					}
 				}

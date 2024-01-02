@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Projects;
 
-public sealed class DeletePartHandler : IRequestHandler<DeletePartRequest>
+public sealed class RemovePartFromProjectHandler : IRequestHandler<RemovePartFromProjectRequest>
 {
     private readonly IProjectPartRepository _projectPartRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public DeletePartHandler(
+    public RemovePartFromProjectHandler(
         IProjectPartRepository projectPartRepository,
         IUnitOfWork unitOfWork)
     {
@@ -25,7 +25,7 @@ public sealed class DeletePartHandler : IRequestHandler<DeletePartRequest>
 
 
 	[IgnoreMethodAsyncNameConvention]
-	public async Task<Unit> Handle(DeletePartRequest request, CancellationToken cancellationToken)
+	public async Task<Unit> Handle(RemovePartFromProjectRequest request, CancellationToken cancellationToken)
     {
         var projectPart = await _projectPartRepository
             .Get(new ProjectPartByIdSpecification(request.ProjectPartId))

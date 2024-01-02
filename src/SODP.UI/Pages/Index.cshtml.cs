@@ -1,12 +1,12 @@
-using AutoMapper;
 using Microsoft.Extensions.Logging;
+using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 
 namespace SODP.UI.Pages
 {
-    public class IndexModel : SODPPageModel
+	public class IndexModel : AppPageModel
     {
-        public IndexModel(ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory) { } 
+        public IndexModel(IWebAPIProvider provider, ILogger<IndexModel> logger, LanguageTranslatorFactory translatorFactory) : base(provider, logger, translatorFactory) { } 
     }
 }

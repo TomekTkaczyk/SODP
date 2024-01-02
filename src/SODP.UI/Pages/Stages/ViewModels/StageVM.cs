@@ -1,15 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace SODP.UI.Pages.Stages.ViewModels;
 
-namespace SODP.UI.Pages.Stages.ViewModels
+public class StageVM
 {
-    public class StageVM
-    {
-        public int Id { get; set; }
+	public int Id { get; set; }
 
-		public string Sign { get; set; }
+	public string Sign { get; set; }
 
-		public string Title { get; set; }
+	public string Title { get; set; }
 
-		public bool ActiveStatus { get; set; }
-	}
+	public bool ActiveStatus { get; set; }
 }

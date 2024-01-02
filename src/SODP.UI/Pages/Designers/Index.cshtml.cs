@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,26 +7,27 @@ using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Designers.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Designers
 {
-    [Authorize(Roles = "ProjectManager")]
-	public class IndexModel : ListPageModel<DesignerVM>
+	[Authorize(Roles = "ProjectManager")]
+	public class IndexModel : CollectionPageModel
     {
         const string _newLicenseModalViewName = "ModalView/_NewLicenseModalView";
         const string _editDesignerModalViewName = "ModalView/_EditDesignerModalView";
         const string _licensesPartialViewName = "PartialView/_LicensesPartialView";
 
-        public IndexModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
+        public IndexModel(IWebAPIProvider apiProvider, ILogger<IndexModel> logger, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
         {
             ReturnUrl = "/Designers";
             _endpoint = "designers";
         }
 
-        public DesignersVM Designers { get; set; }
+        public ICollection<DesignerVM> Designers { get; set; }
 
         public LicensesVM Licenses { get; set; }
 
@@ -37,15 +37,11 @@ namespace SODP.UI.Pages.Designers
 
         public async Task<IActionResult> OnGetAsync(int pageNumber = 1, int pageSize = 0, string searchString = "")
         {
-			var endpoint = GetPageUrl(pageNumber, pageSize, searchString);
-			var apiResponse = await GetApiResponseAsync(endpoint);
-			
+			var endpoint = GetPageUrl(searchString, pageNumber, pageSize);
+			var apiResponse = await GetApiResponseAsync<Page<DesignerVM>>(endpoint);
+
+            Designers = GetCollection(apiResponse);
             PageInfo = GetPageInfo(apiResponse, searchString);
-            Designers = new DesignersVM
-            {
-                Designers = apiResponse.Value.Collection,
-                PageInfo = PageInfo
-			};
 
             return Page();
         }

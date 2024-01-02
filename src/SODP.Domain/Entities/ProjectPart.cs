@@ -1,6 +1,7 @@
-﻿using SODP.Domain.ValueObjects;
+﻿using SODP.Domain.Exceptions.ProjecPartExceptions;
+using SODP.Domain.ValueObjects;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace SODP.Domain.Entities;
 
@@ -11,7 +12,7 @@ public class ProjectPart : BaseEntity
 	public Sign Sign { get; private set; }
 	public Title Title { get; private set; }
     public int Order { get; private set; } = 1;
-	public ICollection<PartBranch> Branches { get; private set; }
+	public ICollection<PartBranch> Branches { get; private set; } = new List<PartBranch>();
 
 	private ProjectPart() { }
 
@@ -32,4 +33,14 @@ public class ProjectPart : BaseEntity
         this.Sign = sign;
         this.Title = title;
     }
+
+	public void AddBranch(PartBranch partBranch)
+	{
+        if (Branches.Any(x => x.BranchId == partBranch.BranchId))
+        {
+            throw new PartBranchConflictException();
+        }
+
+        Branches.Add(partBranch);
+	}
 }

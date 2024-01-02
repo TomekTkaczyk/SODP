@@ -17,9 +17,8 @@ public class EditModel : AppPageModel
 	public EditModel(
 		IWebAPIProvider apiProvider, 
 		ILogger<EditModel> logger, 
-		LanguageTranslatorFactory translatorFactory,
-		IMapper mapper)
-		: base(apiProvider, logger, translatorFactory, mapper)
+		LanguageTranslatorFactory translatorFactory)
+		: base(apiProvider, logger, translatorFactory)
 	{
 		_endpoint = "projects";
 	}

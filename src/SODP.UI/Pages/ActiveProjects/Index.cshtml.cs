@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.Enums;
-using SODP.UI.Api;
+using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
@@ -24,14 +24,10 @@ public sealed class IndexModel : ProjectsPageModel<ProjectVM>
     public IndexModel(
 		IWebAPIProvider apiProvider,
 		ILogger<IndexModel> logger,
-		LanguageTranslatorFactory translatorFactory,
-		IMapper mapper)
-		: base(apiProvider, logger, translatorFactory, mapper)
+		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
 	{
 		ReturnUrl = "/ActiveProjects";
-
 	}
-
 
     public async Task<IActionResult> OnGetAsync(string searchString, int pageNumber = 1, int pageSize = 0)
     {
@@ -94,9 +90,9 @@ public sealed class IndexModel : ProjectsPageModel<ProjectVM>
 
 	private async Task<IEnumerable<SelectListItem>> GetStagesItemsAsync()
 	{
-		var _apiResponse = await GetApiResponseAsync<Page<StageVM>>("stages?ActiveStatus=true");
+		var apiResponse = await GetApiResponseAsync<Page<StageVM>>("stages?ActiveStatus=true");
 
-		return _apiResponse.Value.Collection
+		return apiResponse.Value.Collection
 			.Select(x => new SelectListItem
 			{
 				Value = x.Sign,

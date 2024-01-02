@@ -1,8 +1,7 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.UI.Api;
+using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Pages.Users.ViewModels;
@@ -18,8 +17,7 @@ public class IndexModel : CollectionPageModel
 	public IndexModel(
 		IWebAPIProvider apiProvider,
 		ILogger<IndexModel> logger,
-		LanguageTranslatorFactory translatorFactory,
-		IMapper mapper) : base(apiProvider, logger, translatorFactory, mapper)
+		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
 	{
 		ReturnUrl = "/Users";
 		_endpoint = "users";

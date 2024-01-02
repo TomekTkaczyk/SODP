@@ -271,7 +271,6 @@
 		}
 
 		function AddBranch(part) {
-			console.log(window.location.href);
 			$.ajax({
 				type: "Get",
 				url: `@Url.Page("Edit","AddPartBranch")&projectPartId=${part}`,
@@ -320,7 +319,7 @@
 
 		function accordionCollapse(part) {
 			if (document.getElementById(`card-head-${part}`).ariaExpanded !== "true") {
-				$(`#project-${part}`).load(`/ActiveProjects/Edit?handler=PartBranchesPartial&projectPartId=${part}`);
+				$(`#project-${part}`).load(`/ActiveProjects/Edit?handler=PartDetailsPartial&projectPartId=${part}`);
 			}
 		}
 

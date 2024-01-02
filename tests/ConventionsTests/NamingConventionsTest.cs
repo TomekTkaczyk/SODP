@@ -15,7 +15,7 @@ public class NamingConventionsTests
 	[Fact]
 	internal void each_interface_name_starts_with_capital_I_and_second_char_is_capital_letter()
 	{
-		var interfaces = ConventionsHelper.interfaces();
+		var interfaces = ConventionsHelper.Interfaces();
 
 		Assert.NotEmpty(interfaces);
 
@@ -30,7 +30,7 @@ public class NamingConventionsTests
 	[Fact]
 	internal void each_controller_name_ends_with_Controller()
 	{
-		var controllers = ConventionsHelper.classes()
+		var controllers = ConventionsHelper.Classes()
 			.Where(x => x.IsSubclassOf(typeof(ControllerBase)))
 			.ToList();
 
@@ -49,7 +49,7 @@ public class NamingConventionsTests
 	[Fact]
 	internal void each_async_method_name_ends_with_Async()
 	{
-		var methods = ConventionsHelper.methods()
+		var methods = ConventionsHelper.Methods()
 			.Where(x => x.GetCustomAttribute<AsyncStateMachineAttribute>() != null)
 			.Where(x => (x.ReturnType.BaseType == typeof(Task) || x.ReturnType.BaseType == typeof(ValueTask)))
 			.Where(x => !x.IsDefined(typeof(IgnoreMethodAsyncNameConventionAttribute)));

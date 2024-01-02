@@ -1,8 +1,7 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.UI.Api;
+using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Branches.ViewModels;
@@ -23,8 +22,7 @@ public class IndexModel : CollectionPageModel
 	public IndexModel(
 		IWebAPIProvider apiProvider,
 		ILogger<IndexModel> logger,
-		LanguageTranslatorFactory translatorFactory, 
-		IMapper mapper) : base(apiProvider, logger, translatorFactory, mapper)
+		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
 	{
 		ReturnUrl = "/Branches";
 		_endpoint = "branches";
@@ -37,7 +35,7 @@ public class IndexModel : CollectionPageModel
 		var endpoint = GetPageUrl(searchString, pageNumber, pageSize);
 		var apiResponse = await GetApiResponseAsync<Page<BranchVM>>(endpoint);
 
-		Branches = _mapper.Map<ICollection<BranchVM>>(apiResponse.Value.Collection);
+		Branches = GetCollection(apiResponse);
 		PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();
@@ -45,21 +43,19 @@ public class IndexModel : CollectionPageModel
 
 	public async Task<IActionResult> OnGetEditBranchAsync(int? id)
 	{
-		var model = new BranchVM();
-		if (id.HasValue)
+		if (!id.HasValue)
 		{
-			var responseMessage = await _apiProvider.GetAsync($"{_endpoint}/{id}");
-			if(!responseMessage.IsSuccessStatusCode) 
-			{
-				// SetError
-				return RedirectToPage($"/Errors/{responseMessage.StatusCode}");
-			}
-
-			var apiResponse = await responseMessage.Content.ReadAsAsync<ApiResponse<BranchVM>>();
-			model = _mapper.Map<BranchVM>(apiResponse.Value);
+			return GetPartialView(new BranchVM(), _editBranchModalViewName);
 		}
 
-		return GetPartialView(model, _editBranchModalViewName);
+		var apiResponse = await GetApiResponseAsync<BranchVM>($"{_endpoint}/{id}");
+
+		if (!apiResponse.IsSuccess)
+		{
+			return RedirectToPage($"/Errors/{apiResponse.HttpCode}");
+		}
+
+		return GetPartialView(apiResponse.Value, _editBranchModalViewName);
 	}
 
 	public async Task<IActionResult> OnPostEditBranchAsync(BranchVM model)
@@ -83,13 +79,11 @@ public class IndexModel : CollectionPageModel
 		var responseMessage = await _apiProvider.GetAsync($"{_endpoint}/{id}/licenses");
 		if (!responseMessage.IsSuccessStatusCode)
 		{
-			// SetError
 			return RedirectToPage($"/Errors/{responseMessage.StatusCode}");
 		}
 
 		var apiResponse = await responseMessage.Content.ReadAsAsync<ApiResponse<Page<LicenseVM>>>();																		
-		var model = _mapper.Map<ICollection<LicenseVM>>(apiResponse.Value.Collection);
 
-		return GetPartialView(model, _designersPartialViewName);
+		return GetPartialView(apiResponse.Value.Collection, _designersPartialViewName);
 	}
 }

@@ -3,7 +3,9 @@
 
 @model ProjectDetailsVM
 
-@inject LanguageTranslatorFactory _translatorFactory;
+@{
+	var _translator = ViewData["Translator"] as ITranslator;
+}
 
 <div>
 	@if (!string.IsNullOrWhiteSpace(Model.Title))
@@ -93,24 +95,24 @@
 	{
 		<div>
 			<label class="text-secondary">Części:</label>
-				@foreach (var item in Model.Parts)
-				{
+			@foreach (var item in Model.Parts)
+			{
 				<div class="row ml-2 text-primary">
 					<span class="font-weight-bold" style="white-space: pre-line">@item.Title</span>
 				</div>
-					@foreach (var branch in item.Branches)
-					{
+				@foreach (var branch in item.Branches)
+				{
 					<div class="row">
 						<div class="col my-auto ml-2 text-primary">@branch.Branch.ToString()</div>
 					</div>
-						@foreach (var role in branch.Roles)
-						{
-						<div class="row">
-							<div class="col my-auto ml-2 text-primary">@_translatorFactory.GetTranslator().Translate(role.Role) : @role.License.Designer (@role.License.Content)</div>
-						</div>
-						}
+					@foreach (var role in branch.Roles)
+					{
+					<div class="row">
+						<div class="col my-auto ml-2 text-primary">@_translator.Translate(role.Role) : @role.License.Designer (@role.License.Content)</div>
+					</div>
 					}
 				}
+			}
 		</div>
 	}
 </div>

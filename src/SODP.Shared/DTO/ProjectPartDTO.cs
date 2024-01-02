@@ -12,4 +12,5 @@ public class ProjectPartDTO : BaseDTO
 
 	public ICollection<PartBranchDTO> Branches { get; set; }
 
+	public ICollection<BranchDTO> AvailableBranches { get; set; }
 }

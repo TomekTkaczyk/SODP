@@ -1,7 +1,5 @@
-﻿using NSubstitute.ExceptionExtensions;
-using SODP.Domain.Entities;
+﻿using SODP.Domain.Entities;
 using SODP.Domain.Exceptions.ProjectExceptions;
-using System.Collections.Generic;
 using Xunit;
 
 namespace tests.Model;

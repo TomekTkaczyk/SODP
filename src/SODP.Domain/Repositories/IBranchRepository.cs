@@ -6,5 +6,5 @@ namespace SODP.Domain.Repositories;
 
 public interface IBranchRepository : IPageRepository<Branch>
 {
-	Task<Branch> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken);
+    Task<Branch> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken);
 }

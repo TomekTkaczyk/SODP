@@ -30,7 +30,7 @@ public class RoleRepository : IRoleRepository
 
 		var collection = await GetPageQuery(queryable, pageNumber, pageSize).ToListAsync(cancellationToken);
 
-		return Page<Role>.Create(collection, pageNumber, pageSize, totalItems);
+		return new Page<Role>(pageNumber, pageSize, totalItems, collection);
 	}
 
 

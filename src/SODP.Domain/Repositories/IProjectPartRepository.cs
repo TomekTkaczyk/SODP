@@ -1,8 +1,10 @@
 ﻿using SODP.Domain.Entities;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace SODP.Domain.Repositories;
 
-public interface IProjectPartRepository : IQueryableRepository<ProjectPart>
+public interface IProjectPartRepository : IRepository<ProjectPart> 
 {
-    void Delete(ProjectPart projectPart);
+	Task<ProjectPart> GetWithDetailsAsync(int id, CancellationToken cancellationToken);
 }

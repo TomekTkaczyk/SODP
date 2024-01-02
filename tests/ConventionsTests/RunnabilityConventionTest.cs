@@ -13,12 +13,12 @@ public class RunnabilityConventionTests
 	{
 		var requests_that_have_different_number_of_handlers_than_one = new List<(Type,int)>();
 
-		var requests = ConventionsHelper.classes()
+		var requests = ConventionsHelper.Classes()
 			.Where(x => !x.IsAbstract)
 			.Where(x => x.IsAssignableTo(typeof(IRequest)))
 			.ToList();
 
-		var handlers = ConventionsHelper.classes()
+		var handlers = ConventionsHelper.Classes()
 			.Where(type => !type.IsAbstract && type.GetInterfaces()
 				.Any(i =>
 					i.IsGenericType &&
@@ -50,7 +50,7 @@ public class RunnabilityConventionTests
 	[Fact]
 	internal void each_cqrs_request_that_implements_IRequest_interface_is_of_type_record()
 	{
-		var types = ConventionsHelper.classes()
+		var types = ConventionsHelper.Classes()
 			.Where(x => !x.IsAbstract)
 			.Where(x => typeof(IRequest).IsAssignableFrom(x));
 
@@ -66,7 +66,7 @@ public class RunnabilityConventionTests
 	[Fact]
 	internal void each_cqrs_request_that_implements_IRequest_interface_is_sealed()
 	{
-		var types = ConventionsHelper.classes()
+		var types = ConventionsHelper.Classes()
 			.Where(x => !x.IsAbstract)
 			.Where(x => typeof(IRequest).IsAssignableFrom(x));
 

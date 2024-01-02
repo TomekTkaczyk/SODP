@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using SODP.Shared.Response;
 using SODP.UI.Api;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +12,9 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.Shared.PageModels;
 
 
-public abstract class ListPageModel<T> : ListPageModel //where T : BaseDTO
+public abstract class ListPageModel<T> : ListPageModel
 {
-	protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory) { }
+	protected ListPageModel(IWebAPIProvider apiProvider, ILogger<ListPageModel<T>> logger, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory) { }
 
 	protected void SetPageProperty(StringBuilder url, int pageSize, string searchString)
 	{
@@ -63,33 +62,10 @@ public abstract class ListPageModel<T> : ListPageModel //where T : BaseDTO
 
 		return pageInfo;
 	}
-
-
-	protected async Task<IList<T>> GetCollectionAsync(string url)
-	{
-
-		var apiResponse = await _apiProvider.GetAsync(url);
-
-		if (apiResponse.IsSuccessStatusCode)
-		{
-			var response = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<T>>>();
-			//PageInfo.TotalItems = response.Data.TotalCount;
-			//PageInfo.CurrentPage = response.Data.PageNumber;
-			//PageInfo.ItemsPerPage = response.Data.PageSize;
-			//PageInfo.Url = GetUrl(ReturnUrl,response.Data.PageSize,response.Data.;
-
-			return response.Value.Collection.ToList();
-		}
-
-		return new List<T>();
-	}
 }
 
-public abstract class ListPageModel : SODPPageModel
+public abstract class ListPageModel : AppPageModel
 {
-	protected readonly IWebAPIProvider _apiProvider;
-	protected string _endpoint;
-
 	public string SearchString { get; set; }
 
 	public PageInfo PageInfo { get; set; } = new PageInfo();
@@ -98,9 +74,8 @@ public abstract class ListPageModel : SODPPageModel
 
 	public int PageSize { get; set; }
 
-	protected ListPageModel(IWebAPIProvider apiProvider, ILogger<SODPPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(logger, mapper, translatorFactory)
+	protected ListPageModel(IWebAPIProvider apiProvider, ILogger<ListPageModel> logger, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
 	{
-		_apiProvider = apiProvider;
 		foreach (var item in PageSizeSelectList.PageSizeList)
 		{
 			PageSizeList.Add(new SelectListItem(item.ToString(), item.ToString()));

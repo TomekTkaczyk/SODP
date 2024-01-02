@@ -20,9 +20,7 @@ public sealed class IndexModel : ProjectsPageModel<ProjectVM>
     public IndexModel(
 		IWebAPIProvider apiProvider,
 		ILogger<IndexModel> logger,
-		LanguageTranslatorFactory translatorFactory,
-        IMapper mapper)
-		: base(apiProvider, logger, translatorFactory, mapper)
+		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
 	{
 		ReturnUrl = "/ArchiveProjects";
 	}

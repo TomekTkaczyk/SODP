@@ -1,5 +1,4 @@
-﻿using SODP.Domain.Entities;
-using SODP.Domain.Shared.Specifications;
+﻿using SODP.Domain.Shared.Specifications;
 using System.Linq;
 
 namespace SODP.Domain.Repositories;

@@ -82,7 +82,7 @@ public class TestsConventionsTests
 
 	private IEnumerable<Type> GetxUnitTestClasses()
 	{
-		return ConventionsHelper.types(Assembly.GetExecutingAssembly())
+		return ConventionsHelper.Types(Assembly.GetExecutingAssembly())
 			.Where(x => GetxUnitTestMethods(x).Any());
 	}
 }

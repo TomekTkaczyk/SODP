@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.Enums;
+using SODP.Shared.Response;
 using SODP.UI.Api;
 using SODP.UI.Infrastructure;
+using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Text;
@@ -13,14 +15,12 @@ namespace SODP.UI.Pages.Shared.PageModels;
 
 public abstract class ProjectsPageModel<T> : CollectionPageModel
 {
-	protected const string _projectPartialViewName = "PartialView/_ProjectPartialView";
+	protected const string _projectDetailsPartialViewName = "PartialView/_ProjectDetailsPartialView";
 
 	protected ProjectsPageModel(
 		IWebAPIProvider apiProvider,
 		ILogger<ProjectsPageModel<T>> logger,
-		LanguageTranslatorFactory translatorFactory,
-		IMapper mapper)
-		: base(apiProvider, logger, translatorFactory, mapper)
+		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
 	{
 		_endpoint = "projects";
 	}
@@ -42,10 +42,9 @@ public abstract class ProjectsPageModel<T> : CollectionPageModel
 
 	protected async Task<IActionResult> GetProjectPartialAsync<TDetail>(int id)
 	{
-		var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}/details");
-		var response = await _apiProvider.GetContentAsync<ApiResponse<TDetail>>(apiResponse);
+		var apiResponse = await GetApiResponseAsync<TDetail>($"{_endpoint}/{id}/details");
 
-		return GetPartialView(response.Value, _projectPartialViewName);
+		return GetPartialView(apiResponse.Value, _projectDetailsPartialViewName);
 	}
 
 	protected string GetPageUrl(ProjectStatus status, string searchString, int pageNumber, int pageSize)

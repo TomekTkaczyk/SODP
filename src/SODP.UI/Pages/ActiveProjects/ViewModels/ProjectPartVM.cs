@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace SODP.UI.Pages.ActiveProjects.ViewModels
+namespace SODP.UI.Pages.ActiveProjects.ViewModels;
+
+public class ProjectPartVM
 {
-    public class ProjectPartVM
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Sign { get; set; }
+    public string Sign { get; set; }
 
-        public string Title { get; set; }
+    public string Title { get; set; }
 
-        public int Order { get; set; }
+    public int Order { get; set; }
 
-        public ICollection<PartBranchVM> Branches { get; set; }
-    }
+    public ICollection<PartBranchVM> Branches { get; set; }
 }

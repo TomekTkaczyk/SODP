@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.UI.Api;
+using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Parts.ViewModels;
@@ -21,8 +21,7 @@ public sealed class IndexModel : CollectionPageModel
     public IndexModel(
         IWebAPIProvider apiProvider,
         ILogger<IndexModel> logger,
-        LanguageTranslatorFactory translatorFactory,
-        IMapper mapper) : base(apiProvider, logger, translatorFactory, mapper)
+        LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
     {
         ReturnUrl = "/Parts";
         _endpoint = "parts";
@@ -40,7 +39,7 @@ public sealed class IndexModel : CollectionPageModel
             RedirectToPage($"Errors/{apiResponse.HttpCode}");
         }
 
-        Parts = _mapper.Map<ICollection<PartVM>>(apiResponse.Value.Collection);
+        Parts = apiResponse.Value.Collection;
         PageInfo = GetPageInfo(apiResponse, searchString);
 
         return Page();
@@ -60,7 +59,7 @@ public sealed class IndexModel : CollectionPageModel
             RedirectToPage($"Errors/{apiResponse.HttpCode}");
         }
 
-        return GetPartialView(_mapper.Map<PartVM>(apiResponse.Value), _editPartModalViewName);
+        return GetPartialView(apiResponse.Value, _editPartModalViewName);
     }
 
     public async Task<IActionResult> OnPostEditPartAsync(PartVM model)
