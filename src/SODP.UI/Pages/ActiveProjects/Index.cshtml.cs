@@ -78,6 +78,12 @@ public sealed class IndexModel : ProjectsPageModel<ProjectVM>
 		return GetPartialView(project, _newProjectModalViewName);
 	}
 
+	public IActionResult OnPostDelete(string item)
+	{
+		var itemToRemove = Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectVM>(item);
+		return RedirectToPage();
+	}
+
 	private async Task<IActionResult> GetNewProjectPartialViewAsync()
 	{
 		var project = new NewProjectVM

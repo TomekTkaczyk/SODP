@@ -25,8 +25,9 @@ public abstract class ProjectsPageModel<T> : CollectionPageModel
 		_endpoint = "projects";
 	}
 
-	protected T Project { get; set; }
+	//	protected T Project { get; set; }
 
+	[BindProperty]
 	public ICollection<T> Projects { get; set; }
 
 	protected async Task<IActionResult> GetAsync(ProjectStatus status, string searchString, int pageNumber, int pageSize)
