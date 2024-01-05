@@ -1,7 +1,6 @@
 ﻿using SODP.Domain.Entities;
 using SODP.Domain.Shared.Specifications;
 using SODP.Shared.Enums;
-using System;
 
 namespace SODP.Infrastructure.Specifications.Projects;
 

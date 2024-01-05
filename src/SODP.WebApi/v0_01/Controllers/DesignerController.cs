@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Designers;
+using SODP.Application.API.Requests.Projects;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;

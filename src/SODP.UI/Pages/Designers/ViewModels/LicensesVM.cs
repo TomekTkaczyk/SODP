@@ -6,6 +6,6 @@ public class LicensesVM
 {
     public int DesignerId { get; set; }
     
-    public List<LicenseVM> Licenses { get; set; }
+    public ICollection<LicenseVM> Licenses { get; set; }
 
 }

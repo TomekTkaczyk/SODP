@@ -3,16 +3,14 @@ using System.Collections.Generic;
 
 namespace SODP.UI.Pages.Designers.ViewModels
 {
-    public class LicenseVM  : NewLicenseVM
+    public class LicenseVM
     {
         public int Id { get; set; }
+		
+        public DesignerVM Designer { get; set; }
 
-        public SelectListItem Branch { get; set; }
+		public string Content { get; set; }
 
-        public int BranchId { get; set; }
-
-        public List<SelectListItem> Branches { get; set; }
-
-        public List<SelectListItem> ApplyBranches { get; set; }
+        public ICollection<BranchVM> Branches { get; set; }
     }
 }

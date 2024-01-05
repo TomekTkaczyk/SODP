@@ -2,7 +2,7 @@
 
 namespace SODP.Shared.DTO;
 
-public record LicenseDTO // : BaseDTO
+public record LicenseDTO
 {
 	public int Id { get; set; }
 
@@ -10,5 +10,5 @@ public record LicenseDTO // : BaseDTO
 
 	public string Content { get; set; }
 
-	public IList<BranchDTO> Branches { get; set; }
+	public ICollection<BranchDTO> Branches { get; set; }
 }

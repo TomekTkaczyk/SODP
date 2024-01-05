@@ -75,30 +75,6 @@
 							   title="Usuń projekt">
 								<i class="fas fa-times fa-lg text-danger"></i>
 							</a>
-
-							<div class="row">
-
-								<form class="col m-1 p-0" method="post" asp-page-handler="Delete">
-									<input 
-										type="hidden" 
-										name="item" 
-										value="@Newtonsoft.Json.JsonConvert.SerializeObject(item)" />
-									<button class="btn" type="submit"><i class="fas fa-times fa-lg text-danger"></i></button>
-								</form>
-								<form class="col m-1 p-0" method="post" asp-page-handler="Delete">
-									<input type="hidden"
-										   name="item"
-										   value="@Newtonsoft.Json.JsonConvert.SerializeObject(item)" />
-									<button class="btn" type="submit"><i class="fas fa-times fa-lg text-danger"></i></button>
-								</form>
-								<form class="col m-1 p-0" method="post" asp-page-handler="Delete">
-									<input 
-										type="hidden" 
-										name="item" 
-										value="@Newtonsoft.Json.JsonConvert.SerializeObject(item)" />
-									<button class="btn" type="submit"><i class="fas fa-times fa-lg text-danger"></i></button>
-								</form>
-							</div>
 						}
 					</div>
 				</div>

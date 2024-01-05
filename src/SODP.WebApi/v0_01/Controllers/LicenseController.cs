@@ -22,12 +22,12 @@ public class LicenseController : ApiBaseController
 		IMapper mapper) : base(sender, logger, mapper) { }
 
 
-	[HttpGet("{id:int}")]
+	[HttpGet("{id:int}", Name = "GetAsync")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetAsync(
-	int id,
+	[FromRoute] int id,
 	CancellationToken cancellationToken = default)
 	{
 		var request = new GetLicenseRequest(id);
@@ -37,33 +37,26 @@ public class LicenseController : ApiBaseController
 
 
 	[HttpPost]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
 		[FromBody] CreateLicenseRequest request,
 		CancellationToken cancellationToken = default)
 	{
+		// var response = await _sender.Send(request, cancellationToken);
+		await Task.CompletedTask;
+
 		try
 		{
-			var response = await _sender.Send(request, cancellationToken);
-			return CreatedAtAction(
-				nameof(GetAsync),
-				new { id = response.Value.Id },
-				response);
-		}
-		catch (NotFoundException ex)
-		{
-			return NotFound(ApiResponse.Failure(ex.Message, HttpStatusCode.NotFound, new List<Error>()));
-		}
-		catch (ConflictException ex)
-		{
-			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
+			var result = CreatedAtAction(
+				"Get",
+				new { id = 17 },
+				null);
+
+			return result;
 		}
 		catch (Exception ex)
 		{
-			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
-		}
+			throw ex;
+		} 
 	}
 
 
@@ -102,7 +95,7 @@ public class LicenseController : ApiBaseController
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetWithBranchesAsync(
+	public async Task<IActionResult> GetLicenseWithBranchesAsync(
 		int id,
 		CancellationToken cancellationToken)
 	{

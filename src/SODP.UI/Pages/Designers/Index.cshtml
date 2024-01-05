@@ -1,10 +1,10 @@
 ﻿@page
-@model IndexModel
-
 @using Microsoft.AspNetCore.Identity
 @using SODP.Domain.Entities
 @using System.Text.Json;
 @using System.Text.Json.Serialization;
+
+@model IndexModel
 
 @{
 	ViewData["Title"] = "Projektanci";
@@ -28,7 +28,7 @@
 	</div>
 </div>
 
-<partial name="_SearchString" />
+<partial name="_CollectionSearchString" />
 
 @if (Model.Designers.Count > 0)
 {

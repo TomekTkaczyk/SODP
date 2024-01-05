@@ -29,12 +29,12 @@
 
             </div>
 
-            @foreach (var branch in lic.ApplyBranches)
+            @foreach (var branch in lic.Branches)
             {
                 <div class="row">
                     <div class="col-1"></div>
                     <div class="col">
-                        @branch.Text
+                        @branch.Title
                     </div>
                 </div>
             }

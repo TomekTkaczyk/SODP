@@ -117,11 +117,11 @@ public class EditModel : AppPageModel
 			Items = await GetAvailablePartsAsync(),
 		};
 
-		var part = await GetProjectPartAsync(projectPartId);
-		if (part is not null)
+		var apiResponse = await GetApiResponseAsync<ProjectPartVM>($"projects/parts/{projectPartId}");
+		if (apiResponse.Value is not null)
 		{
-			model.Sign = part.Sign;
-			model.Title = part.Title;
+			model.Sign = apiResponse.Value.Sign;
+			model.Title = apiResponse.Value.Title;
 		}
 
 		return GetPartialView(model, _editProjectPartViewName);
@@ -224,7 +224,7 @@ public class EditModel : AppPageModel
 
 	public async Task<PartialViewResult> OnGetAddTechnicalRoleAsync(int partBranchId)
 	{
-		var response = await PartBranchServiceResponseAsync(partBranchId);
+		var response = await GetApiResponseAsync<PartBranchVM>($"projects/parts/branches/{partBranchId}");
 		var roles = GetAvailableRoles(response.Value);
 		var designers = await GetAvailableDesignersAsync(response.Value);
 
@@ -240,7 +240,7 @@ public class EditModel : AppPageModel
 
 	public async Task<PartialViewResult> OnPostAddTechnicalRoleAsync(AvailableRolesVM model)
 	{
-		var partBranchResponse = await PartBranchServiceResponseAsync(model.PartBranchId);
+		var partBranchResponse = await GetApiResponseAsync<PartBranchVM>($"projects/parts/branches/{model.PartBranchId}");
 		model.ItemsRole = GetAvailableRoles(partBranchResponse.Value);
 		model.ItemsLicense = await GetAvailableDesignersAsync(partBranchResponse.Value);
 		if (ModelState.IsValid)
@@ -265,7 +265,7 @@ public class EditModel : AppPageModel
 		return GetPartialView(model, _addTechnicalRoleViewName);
 	}
 
-    #region
+    #region private_methods
     
 	private SelectList GetAvailableRoles(PartBranchVM partBranch)
 	{
@@ -294,10 +294,9 @@ public class EditModel : AppPageModel
 
 	private async Task<SelectList> GetAvailableDesignersAsync(PartBranchVM partBranch)
 	{
-		var apiResponse = await _apiProvider.GetAsync($"licenses/branches/{partBranch.Branch.Id}");
-		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<LicenseVM>>>();
-		var licenses = result.Value.Collection;
-		//licenses.RemoveAll(x => partBranch.Roles.Select(x => x.License.Designer).Any(y => y.Id == x.Designer.Id));
+		var apiResponse = await GetApiResponseAsync<BranchDetailsVM>($"branches/{partBranch.Branch.Id}/licenses");
+		var licenses = apiResponse.Value.Licenses.ToList();
+		licenses.RemoveAll(x => partBranch.Roles.Select(x => x.License).Any());
 		var designers = licenses.Select(x => new SelectListItem
 		{
 			Value = x.Id.ToString(),
@@ -331,13 +330,6 @@ public class EditModel : AppPageModel
 		return new List<SelectListItem>();
 	}
 
-	private async Task<ApiResponse<PartBranchVM>> PartBranchServiceResponseAsync(int partBranchId)
-	{
-		var apiResponse = await GetApiResponseAsync<PartBranchVM>($"projects/parts/branches/{partBranchId}");
-
-		return apiResponse;
-	}
-    
 	#endregion
 }
 

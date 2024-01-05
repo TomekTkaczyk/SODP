@@ -32,7 +32,7 @@ public sealed class AddBranchToPartHandler : IRequestHandler<AddBranchToPartRequ
 	public async Task<Unit> Handle(AddBranchToPartRequest request, CancellationToken cancellationToken)
 	{
 		var projectPart = await _projectPartRepository
-			.Get(new ProjectPartWithDetailsSpecification(request.PartId))
+			.Get(new ProjectPartByIdSpecification(request.PartId))
 			.SingleOrDefaultAsync(cancellationToken)
 			?? throw new ProjectPartNotFoundException();
 

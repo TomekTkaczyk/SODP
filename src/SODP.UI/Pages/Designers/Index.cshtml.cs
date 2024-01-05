@@ -94,16 +94,13 @@ namespace SODP.UI.Pages.Designers
 
         public async Task<IActionResult> OnGetLicensesPartialAsync(int id)
         {
-            var apiResponse = await _apiProvider.GetAsync($"designers/{id}/licenses");
-            if (apiResponse.IsSuccessStatusCode)
+			var apiResponse = await GetApiResponseAsync<DesignerLicensesVM>($"designers/{id}/licenses");
+
+            Licenses = new LicensesVM()
             {
-                var response = await _apiProvider.GetContentAsync<ApiResponse<Page<LicenseWithBranchesVM>>>(apiResponse);
-                Licenses = new LicensesVM
-                {
-                    DesignerId = id,
-//                     Licenses = response.Value.Collection.Select(x => x.ToViewModel()).ToList(),
-                };
-            }
+                DesignerId = apiResponse.Value.Designer.Id,
+                Licenses = apiResponse.Value.Licenses
+            };
 
             return GetPartialView(Licenses, _licensesPartialViewName);
         }
@@ -123,7 +120,7 @@ namespace SODP.UI.Pages.Designers
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _apiProvider.PostAsync($"designers/{license.DesignerId}/licenses", license.ToHttpContent());
+                var apiResponse = await _apiProvider.PostAsync($"licenses/", license.ToHttpContent());
                 switch (apiResponse.StatusCode)
                 {
                     case HttpStatusCode.OK:
