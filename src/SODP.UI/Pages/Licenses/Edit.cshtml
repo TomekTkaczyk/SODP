@@ -104,10 +104,7 @@
     <script>
 
     function RemoveBranch(licenseId, branchId) {
-        console.log(licenseId);
-        console.log(branchId);
-        var aaa = document.getElementById("content").value;
-        console.log(aaa);
+        let content = document.getElementById("content").value;
         $.ajax({
             type: "Delete",
                 url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${branchId}&content=${content}`,
@@ -140,5 +137,4 @@
         })
     }
     </script>
-
 }

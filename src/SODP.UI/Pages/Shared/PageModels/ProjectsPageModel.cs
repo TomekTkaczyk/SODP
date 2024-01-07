@@ -1,42 +1,50 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using SODP.Shared.DTO;
 using SODP.Shared.Enums;
+using SODP.Shared.JSON;
 using SODP.Shared.Response;
 using SODP.UI.Api;
+using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.ActiveProjects.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Shared.PageModels;
 
-public abstract class ProjectsPageModel<T> : CollectionPageModel
+public abstract class ProjectsPageModel : CollectionPageModel
 {
 	protected const string _projectDetailsPartialViewName = "PartialView/_ProjectDetailsPartialView";
 
 	protected ProjectsPageModel(
 		IWebAPIProvider apiProvider,
-		ILogger<ProjectsPageModel<T>> logger,
+		ILogger<ProjectsPageModel> logger,
 		LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, translatorFactory)
 	{
 		_endpoint = "projects";
 	}
 
-	//	protected T Project { get; set; }
-
 	[BindProperty]
-	public ICollection<T> Projects { get; set; }
+	public ICollection<ProjectVM> Projects { get; set; }
 
 	protected async Task<IActionResult> GetAsync(ProjectStatus status, string searchString, int pageNumber, int pageSize)
 	{
 		var endpoint = GetPageUrl(status, searchString, pageNumber, pageSize);
-		var apiResponse = await GetApiResponseAsync<Page<T>>(endpoint);
+		var apiResponse = await _apiProvider.GetAsync(endpoint);
 
-		Projects = GetCollection(apiResponse);
-		PageInfo = GetPageInfo(apiResponse, searchString);
+		var jsonSettings = new JsonSerializerSettings();
+		jsonSettings.Converters.Add(new CustomDateOnlyConverter());
+		var httpClientSerializer = JsonSerializer.Create(jsonSettings);
+		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<ProjectDTO>>>(new[] { new JsonMediaTypeFormatter { SerializerSettings = jsonSettings } });
+
+		Projects = result.Value.Collection.Select(x => x.ToProjectVM()).ToList();
+		PageInfo = GetPageInfo(result, searchString);
 
 		return Page();
 	}

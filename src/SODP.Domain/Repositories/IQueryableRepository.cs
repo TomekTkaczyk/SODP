@@ -5,5 +5,5 @@ namespace SODP.Domain.Repositories;
 
 public interface IQueryableRepository<TEntity>
 {
-    IQueryable<TEntity> Get(ISpecification<TEntity> specification);
+    IQueryable<TEntity> Get(ISpecification<TEntity> specification = null);
 }

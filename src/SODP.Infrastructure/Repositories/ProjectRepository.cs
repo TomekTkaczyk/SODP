@@ -19,11 +19,13 @@ public class ProjectRepository : PagedRepository<Project>, IProjectRepository
 
 	public async Task<Project> GetWithDetailsAsync(	int id,	CancellationToken cancellationToken)
 	{
-		return await _dbContext.Set<Project>()
+		var project = await _dbContext.Set<Project>()
 			.Include(s => s.Stage)
 			.Include(x => x.Parts).ThenInclude(b => b.Branches).ThenInclude(r => r.Roles).ThenInclude(l => l.License).ThenInclude(b => b.Designer)
 			.Include(x => x.Parts).ThenInclude(b => b.Branches).ThenInclude(b => b.Branch)
 			.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+		return project;
 	}
 
 	//public async Task<Project> GetBySymbolAsync(

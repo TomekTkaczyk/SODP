@@ -6,4 +6,4 @@ namespace SODP.Application.API.Requests.Projects;
 public sealed record AddRoleToPartBranchRequest(
 	int PartBranchId, 
 	TechnicalRole Role, 
-	int LicenceId) : IRequest;
+	int LicenseId) : IRequest;

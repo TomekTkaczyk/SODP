@@ -46,7 +46,7 @@ public class Designer : ActiveStatusEntity
     {
 		if (Licenses.Where(x => x.Content.ToUpper().Equals(license.Content.ToUpper())).Any())
         {
-            throw new DesignerHaveLicenseException();
+            throw new LicenseExistException();
 		}
         Licenses.Add(license);
 

@@ -33,6 +33,9 @@ public class GetProjectWithDetailsHandler : IRequestHandler<GetProjectWithDetail
             .GetWithDetailsAsync(request.Id, cancellationToken)
 			?? throw new NotFoundException("Project");
 
-        return ApiResponse.Success(_mapper.Map<ProjectDTO>(project));
+        var result = _mapper.Map<ProjectDTO>(project);
+
+
+		return ApiResponse.Success(_mapper.Map<ProjectDTO>(project));
     }
 }

@@ -14,4 +14,16 @@ public class BranchRole : BaseEntity
 
     public virtual License License { get; set; }
 
+    private BranchRole() { }
+
+    private BranchRole(TechnicalRole role, License license)
+    {
+        Role = role;
+        License = license;
+    }
+
+    public static BranchRole Create(TechnicalRole role, License license)
+    {
+       return new BranchRole(role, license);
+    }
 }

@@ -71,21 +71,13 @@ namespace SODP.UI.Pages.Designers
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = designer.Id == 0
-                    ? await _apiProvider.PostAsync($"{_endpoint}", designer.ToHttpContent())
-                    : await _apiProvider.PutAsync($"{_endpoint}/{designer.Id}", designer.ToHttpContent());
-                switch (apiResponse.StatusCode)
+                if (designer.Id == 0)
                 {
-                    case HttpStatusCode.OK:
-                        //var response = await _apiProvider.GetContent<ServiceResponse<DesignerDTO>>(apiResponse);
-                        //if (!response.Success)
-                        //{
-                        //    SetModelErrors(response);
-                        //}
-                        break;
-                    default:
-                        // redirect to ErrorPage
-                        break;
+                    await _apiProvider.PostAsync($"{_endpoint}", designer.ToHttpContent());
+                }
+                else
+                {
+                    await _apiProvider.PutAsync($"{_endpoint}/{designer.Id}", designer.ToHttpContent());
                 }
             }
 
@@ -121,22 +113,14 @@ namespace SODP.UI.Pages.Designers
             if (ModelState.IsValid)
             {
                 var apiResponse = await _apiProvider.PostAsync($"licenses/", license.ToHttpContent());
-                switch (apiResponse.StatusCode)
+                if (!apiResponse.IsSuccessStatusCode)
                 {
-                    case HttpStatusCode.OK:
-                        var response = await _apiProvider.GetContentAsync<ApiResponse<LicenseVM>>(apiResponse);
-                        //if (!response.Success)
-                        //{
-                        //    SetModelErrors(response);
-                        //}
-                        break;
-                    default:
-                        // redirect to ErrorPage
-                        break;
+                    var content = await _apiProvider.GetContentAsync<ApiResponse>(apiResponse);
+                    SetModelErrors(content);
                 }
             }
 
-            return GetPartialView<NewLicenseVM>(license, _newLicenseModalViewName);
+            return GetPartialView(license, _newLicenseModalViewName);
         }
     }
 }

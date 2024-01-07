@@ -49,7 +49,7 @@ public class DesignerController : ActiveStatusController<Designer>
 
 
 	[HttpPost]
-	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	[ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -76,7 +76,7 @@ public class DesignerController : ActiveStatusController<Designer>
 	}
 
 
-	[HttpPatch("{id:int}")]
+	[HttpPut("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

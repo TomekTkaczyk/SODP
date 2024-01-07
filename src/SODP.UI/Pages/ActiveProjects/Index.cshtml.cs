@@ -1,8 +1,8 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace SODP.UI.Pages.ActiveProjects;
 
 [Authorize(Roles = "User, ProjectManager")]
-public sealed class IndexModel : ProjectsPageModel<ProjectVM>
+public sealed class IndexModel : ProjectsPageModel
 {
 	const string _newProjectModalViewName = "ModalView/_NewProjectModalView";
 
@@ -36,7 +36,9 @@ public sealed class IndexModel : ProjectsPageModel<ProjectVM>
 
     public async Task<IActionResult> OnGetProjectPartialAsync(int id)
     {
-		return await GetProjectPartialAsync<ProjectDetailsVM>(id);
+		var project = await GetProjectPartialAsync<ProjectDTO>(id);
+
+		return project;
     }
 
     public async Task<IActionResult> OnGetNewProjectAsync()
@@ -96,7 +98,7 @@ public sealed class IndexModel : ProjectsPageModel<ProjectVM>
 
 	private async Task<IEnumerable<SelectListItem>> GetStagesItemsAsync()
 	{
-		var apiResponse = await GetApiResponseAsync<Page<StageVM>>("stages?ActiveStatus=true");
+		var apiResponse = await GetApiResponseAsync<Page<StageDTO>>("stages?ActiveStatus=true");
 
 		return apiResponse.Value.Collection
 			.Select(x => new SelectListItem

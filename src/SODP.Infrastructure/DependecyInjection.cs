@@ -9,6 +9,7 @@ using SODP.Application.Abstractions;
 using SODP.DataAccess;
 using SODP.Domain.Repositories;
 using SODP.Domain.Services;
+using SODP.Infrastructure.Exceptions;
 using SODP.Infrastructure.Managers;
 using SODP.Infrastructure.Repositories;
 using SODP.Infrastructure.Services;
@@ -106,6 +107,7 @@ public static class DependecyInjection
 		services.AddScoped<IFolderConfigurator, FolderConfigurator>();
 		services.AddScoped<IFolderCommandCreator, FolderCommandCreator>();
 		services.AddScoped<IFolderManager, FolderManager>();
+		services.AddSingleton<ExceptionMiddleware>();
 
 		return services;
 	}

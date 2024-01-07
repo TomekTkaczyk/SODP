@@ -1,3 +1,3 @@
-﻿toastr.options.timeOut = 2000;
-toastr.options.progressBar = true;
+﻿toastr.options.timeOut = 1000;
+//toastr.options.progressBar = false;
 

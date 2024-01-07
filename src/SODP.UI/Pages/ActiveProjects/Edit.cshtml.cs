@@ -2,8 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using SODP.Domain.Entities;
-using SODP.Domain.Shared.Results;
+using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
@@ -251,7 +250,7 @@ public class EditModel : AppPageModel
 				Role = (TechnicalRole)Enum.Parse(typeof(TechnicalRole), model.SelectedRoleId.ToString()),
 				LicenseId = (int)model.SelectedLicenseId
 			};
-			var apiResponse = await _apiProvider.PostAsync($"projects/parts/branches/roles", new StringContent(JsonSerializer.Serialize(role), Encoding.UTF8, "application/json"));
+			var apiResponse = await _apiProvider.PostAsync($"projects/parts/branches/roles", role.ToHttpContent());
 			if (apiResponse.StatusCode == HttpStatusCode.OK)
 			{
 				var response = await _apiProvider.GetContentAsync<ApiResponse>(apiResponse);
@@ -294,7 +293,7 @@ public class EditModel : AppPageModel
 
 	private async Task<SelectList> GetAvailableDesignersAsync(PartBranchVM partBranch)
 	{
-		var apiResponse = await GetApiResponseAsync<BranchDetailsVM>($"branches/{partBranch.Branch.Id}/licenses");
+		var apiResponse = await GetApiResponseAsync<BranchDTO>($"branches/{partBranch.Branch.Id}/licenses");
 		var licenses = apiResponse.Value.Licenses.ToList();
 		licenses.RemoveAll(x => partBranch.Roles.Select(x => x.License).Any());
 		var designers = licenses.Select(x => new SelectListItem

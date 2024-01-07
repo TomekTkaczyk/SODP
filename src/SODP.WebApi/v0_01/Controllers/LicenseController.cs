@@ -22,7 +22,7 @@ public class LicenseController : ApiBaseController
 		IMapper mapper) : base(sender, logger, mapper) { }
 
 
-	[HttpGet("{id:int}", Name = "GetAsync")]
+	[HttpGet("{id:int}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -37,26 +37,19 @@ public class LicenseController : ApiBaseController
 
 
 	[HttpPost]
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status409Conflict)]
+	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
 		[FromBody] CreateLicenseRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		// var response = await _sender.Send(request, cancellationToken);
-		await Task.CompletedTask;
+		var response = await _sender.Send(request, cancellationToken);
 
-		try
-		{
-			var result = CreatedAtAction(
-				"Get",
-				new { id = 17 },
-				null);
-
-			return result;
-		}
-		catch (Exception ex)
-		{
-			throw ex;
-		} 
+		return CreatedAtAction(
+			nameof(GetAsync),
+			new { id = response.Value.Id },
+			response);
 	}
 
 
@@ -91,12 +84,13 @@ public class LicenseController : ApiBaseController
 		return await HandleRequestAsync(request, cancellationToken);
 	}
 
+
 	[HttpGet("{id:int}/branches")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetLicenseWithBranchesAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
 		var request = new GetLicenseWithBranchesRequest(id);
@@ -110,8 +104,8 @@ public class LicenseController : ApiBaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> AddBranchAsync(
-		int id,
-		int branchId,
+		[FromRoute] int id,
+		[FromRoute] int branchId,
 		CancellationToken cancellationToken)
 	{
 		var request = new AddBranchToLicenseRequest(id, branchId);

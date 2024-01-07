@@ -13,7 +13,6 @@ public class ProjectDTO : BaseDTO
 
 	public string Name { get; set; }
 
-
 	public string Title { get; set; }
 
 	public string Address { get; set; }
@@ -28,7 +27,7 @@ public class ProjectDTO : BaseDTO
 
 	public string Description { get; set; }
 
-	[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
+	[DisplayFormat(DataFormatString = "yyyy-MM-dd")]
 	public DateOnly? DevelopmentDate { get; set; }
 
 	public ProjectStatus Status { get; set; }

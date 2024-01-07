@@ -10,6 +10,7 @@ using SODP.Application;
 using SODP.DataAccess;
 using SODP.Domain.Entities;
 using SODP.Infrastructure;
+using SODP.Infrastructure.Exceptions;
 using SODP.Infrastructure.Managers;
 using SODP.UI.Areas.Identity;
 using SODP.UI.Infrastructure;
@@ -121,14 +122,13 @@ public class Startup
         services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
         services.AddControllers()
-            .AddApplicationPart(Application.AssemblyReference.Assembly);
+                .AddApplicationPart(Application.AssemblyReference.Assembly);
 
         services.AddRazorPages()
             .AddRazorRuntimeCompilation();
 
-        // remove if use .net core 5 or higher
-        //services.AddMvc(options => options.SuppressAsyncSuffixInActionNames = false);
-
+        // do not remove if use .net core 5 or higher
+        services.AddMvc(options => options.SuppressAsyncSuffixInActionNames = false);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -159,6 +159,8 @@ public class Startup
         app.UseAuthentication();
 
         app.UseAuthorization();
+
+        app.UseMiddleware<ExceptionMiddleware>();
 
         app.UseEndpoints(endpoints =>
         {

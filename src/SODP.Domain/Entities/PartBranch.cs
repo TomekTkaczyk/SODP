@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using SODP.Domain.Exceptions.ProjectExceptions;
+using SODP.Shared.Enums;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SODP.Domain.Entities;
 
@@ -28,4 +31,19 @@ public class PartBranch : BaseEntity
 	{
         return new PartBranch(part, branch);
 	}
+
+    public void AddRole(TechnicalRole Role, License license)
+    {
+        if( Roles.Where(x => x.Role == Role).Any())
+        {
+            throw new BranchRoleExistException();
+        }
+
+        if(Roles.Where(x => x.LicenseId == license.Id).Any())
+        {
+            throw new LicenceAlreadyUsedException();
+        }
+
+        Roles.Add(BranchRole.Create(Role, license));
+    }
 }

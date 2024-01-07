@@ -61,8 +61,9 @@ public abstract class AppPageModel : PageModel
 	protected async Task<ApiResponse<TValue>> GetApiResponseAsync<TValue>(string url)
 	{
 		var apiResponse = await _apiProvider.GetAsync(url);
+		var result =  await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>();
 
-		return await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>();
+		return result;
 	}
 
 	protected async Task<ApiResponse<TValue>> PostApiResponseAsync<TValue>(string url, StringContent content)
@@ -70,6 +71,13 @@ public abstract class AppPageModel : PageModel
 		var apiResponse = await _apiProvider.PostAsync(url, content);
 
 		return await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>();
+	}
+
+	protected async Task<ApiResponse> PostApiResponseAsync(string url, StringContent content)
+	{
+		var apiResponse = await _apiProvider.PostAsync(url, content);
+
+		return await apiResponse.Content.ReadAsAsync<ApiResponse>();
 	}
 
 	protected async Task<ApiResponse> PatchApiResponseAsync(string url, StringContent content)

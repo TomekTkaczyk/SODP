@@ -1,4 +1,4 @@
-﻿namespace SODP.UI.Pages.ActiveProjects.ViewModels;
+﻿namespace SODP.UI.Pages.Shared.PageModels;
 
 public class ProjectVM
 {

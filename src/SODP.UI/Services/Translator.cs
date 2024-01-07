@@ -41,14 +41,16 @@ namespace SODP.UI.Services
         {
             { "Designer", "Projektant" },
             { "Checker", "Sprawdzający" },
-            { "BadRequest", "Błędne żądanie" }
-        };
+            { "BadRequest", "Błędne żądanie" },
+			{ "License already exist", "Uprawnienia już istnieją"}
+		};
 
         private readonly Dictionary<string, string> _lang_en = new()
         {
             { "Designer", "Designer" },
             { "Checker", "Checker" },
-            { "BadRequest", "Bad request" }
+            { "BadRequest", "Bad request" },
+            { "License already exist", "License already exist"}
         };
 
 	}
