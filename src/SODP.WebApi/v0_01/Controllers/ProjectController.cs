@@ -111,9 +111,11 @@ public class ProjectController : ApiBaseController
 	[FromRoute] int id,
 	CancellationToken cancellationToken)
 	{
-		return await HandleRequestAsync<GetProjectWithDetailsRequest, ApiResponse<ProjectDTO>>(
+		var result = await HandleRequestAsync<GetProjectWithDetailsRequest, ApiResponse<ProjectDTO>>(
 			new GetProjectWithDetailsRequest(id),
 			cancellationToken);
+
+		return result;
 	}
 
 

@@ -8,7 +8,9 @@ using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ActiveProjects.ViewModels;
+using SODP.UI.Pages.Shared.Extensions;
 using SODP.UI.Pages.Shared.PageModels;
+using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,12 +38,10 @@ public sealed class IndexModel : ProjectsPageModel
 
     public async Task<IActionResult> OnGetProjectPartialAsync(int id)
     {
-		var project = await GetProjectPartialAsync<ProjectDTO>(id);
+		return await GetProjectPartialAsync(id);
+	}
 
-		return project;
-    }
-
-    public async Task<IActionResult> OnGetNewProjectAsync()
+	public async Task<IActionResult> OnGetNewProjectAsync()
 	{
 		return await GetNewProjectPartialViewAsync();
 	}

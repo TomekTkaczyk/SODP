@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
 using SODP.UI.Infrastructure;
+using SODP.UI.Pages.Shared.Extensions;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System.Threading.Tasks;
@@ -29,6 +30,6 @@ public sealed class IndexModel : ProjectsPageModel
 
 	public async Task<IActionResult> OnGetProjectPartialAsync(int id)
 	{
-        return await GetProjectPartialAsync<ProjectDTO>(id);
+		return await GetProjectPartialAsync(id);
 	}
 }

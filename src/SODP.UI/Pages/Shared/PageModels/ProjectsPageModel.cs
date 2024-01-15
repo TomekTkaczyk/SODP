@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SODP.Shared.DTO;
@@ -6,8 +7,9 @@ using SODP.Shared.Enums;
 using SODP.Shared.JSON;
 using SODP.Shared.Response;
 using SODP.UI.Api;
-using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
+using SODP.UI.Pages.Shared.Extensions;
+using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,24 +38,21 @@ public abstract class ProjectsPageModel : CollectionPageModel
 	protected async Task<IActionResult> GetAsync(ProjectStatus status, string searchString, int pageNumber, int pageSize)
 	{
 		var endpoint = GetPageUrl(status, searchString, pageNumber, pageSize);
-		var apiResponse = await _apiProvider.GetAsync(endpoint);
+		var apiResponse = await GetApiResponseAsync<Page<ProjectDTO>>(endpoint);
 
-		var jsonSettings = new JsonSerializerSettings();
-		jsonSettings.Converters.Add(new CustomDateOnlyConverter());
-		var httpClientSerializer = JsonSerializer.Create(jsonSettings);
-		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<Page<ProjectDTO>>>(new[] { new JsonMediaTypeFormatter { SerializerSettings = jsonSettings } });
-
-		Projects = result.Value.Collection.Select(x => x.ToProjectVM()).ToList();
-		PageInfo = GetPageInfo(result, searchString);
+		Projects = apiResponse.Value.Collection.Select(x => x.ToProjectVM()).ToList();
+		PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();
 	}
 
-	protected async Task<IActionResult> GetProjectPartialAsync<TDetail>(int id)
+	protected async Task<IActionResult> GetProjectPartialAsync(int id)
 	{
-		var apiResponse = await GetApiResponseAsync<TDetail>($"{_endpoint}/{id}/details");
+		var apiResponse = await GetApiResponseAsync<ProjectDTO>($"{_endpoint}/{id}/details");
 
-		return GetPartialView(apiResponse.Value, _projectDetailsPartialViewName);
+		var viewModel = apiResponse.Value.ToProjectDetailsVM();
+
+		return GetPartialView(viewModel, _projectDetailsPartialViewName);
 	}
 
 	protected string GetPageUrl(ProjectStatus status, string searchString, int pageNumber, int pageSize)

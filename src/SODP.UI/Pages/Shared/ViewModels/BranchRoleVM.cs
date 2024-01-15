@@ -9,5 +9,8 @@
         public string Designer { get; set; }
 
         public string Content { get; set; }
-    }
+
+		public LicenseVM License { get; set; }
+
+	}
 }

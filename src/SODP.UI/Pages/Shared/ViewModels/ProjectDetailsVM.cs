@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace SODP.UI.Pages.ActiveProjects.ViewModels;
+namespace SODP.UI.Pages.Shared.ViewModels;
 
 public class ProjectDetailsVM
 {
@@ -29,7 +29,7 @@ public class ProjectDetailsVM
 	public string Description { get; set; }
 
 	[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
-	public DateTime? DevelopmentDate { get; set; }
+	public DateOnly? DevelopmentDate { get; set; }
 
 	public ICollection<ProjectPartVM> Parts { get; set; }
 }

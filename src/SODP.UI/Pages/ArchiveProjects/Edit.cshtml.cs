@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.ArchiveProjects.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
+using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Threading.Tasks;
 

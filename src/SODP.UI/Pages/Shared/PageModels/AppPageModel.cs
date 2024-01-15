@@ -2,10 +2,14 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using SODP.Shared.DTO;
+using SODP.Shared.JSON;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Shared.PageModels;
@@ -61,7 +65,10 @@ public abstract class AppPageModel : PageModel
 	protected async Task<ApiResponse<TValue>> GetApiResponseAsync<TValue>(string url)
 	{
 		var apiResponse = await _apiProvider.GetAsync(url);
-		var result =  await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>();
+		var jsonSettings = new JsonSerializerSettings();
+		jsonSettings.Converters.Add(new CustomDateOnlyConverter());
+		// var httpClientSerializer = JsonSerializer.Create(jsonSettings);
+		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>(new[] { new JsonMediaTypeFormatter { SerializerSettings = jsonSettings } });
 
 		return result;
 	}
