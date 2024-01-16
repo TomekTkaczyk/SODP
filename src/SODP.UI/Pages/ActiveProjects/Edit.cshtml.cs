@@ -50,7 +50,7 @@ public class EditModel : AppPageModel
 	public async Task<IActionResult> OnGetAsync(int id)
 	{
 		var apiResponse = await GetApiResponseAsync<ProjectDTO>($"{_endpoint}/{id}/details");
-		if (apiResponse.IsSuccess) 
+		if (!apiResponse.IsSuccess) 
 		{
 			return Redirect("/Errors/404");
 		}

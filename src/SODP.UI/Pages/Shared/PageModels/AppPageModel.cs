@@ -67,7 +67,6 @@ public abstract class AppPageModel : PageModel
 		var apiResponse = await _apiProvider.GetAsync(url);
 		var jsonSettings = new JsonSerializerSettings();
 		jsonSettings.Converters.Add(new CustomDateOnlyConverter());
-		// var httpClientSerializer = JsonSerializer.Create(jsonSettings);
 		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>(new[] { new JsonMediaTypeFormatter { SerializerSettings = jsonSettings } });
 
 		return result;
