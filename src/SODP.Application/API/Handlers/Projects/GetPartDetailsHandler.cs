@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Projects;
 
-public class GetPartWithDetailsHandler : IRequestHandler<GetPartWithDetailsRequest, ApiResponse<ProjectPartDTO>>
+public class GetPartDetailsHandler : IRequestHandler<GetPartDetailsRequest, ApiResponse<ProjectPartDTO>>
 {
 	private readonly IProjectPartRepository _projectPartRepository;
     private readonly IBranchRepository _branchRepository;
     private readonly IMapper _mapper;
 
-	public GetPartWithDetailsHandler(
+	public GetPartDetailsHandler(
         IProjectPartRepository projectPartRepository,
 		IBranchRepository branchRepository,
 		IMapper mapper)
@@ -31,14 +31,17 @@ public class GetPartWithDetailsHandler : IRequestHandler<GetPartWithDetailsReque
 	}
 
 	[IgnoreMethodAsyncNameConvention]
-	public async Task<ApiResponse<ProjectPartDTO>> Handle(GetPartWithDetailsRequest request, CancellationToken cancellationToken)
+	public async Task<ApiResponse<ProjectPartDTO>> Handle(GetPartDetailsRequest request, CancellationToken cancellationToken)
 	{
 		var projectPart = await _projectPartRepository.GetWithDetailsAsync(request.ProjectPartId, cancellationToken)
 			?? throw new PartNotFoundException();
         
 		var specification = new BranchesCollectionSpecification(true);
 
-        var availableBranches = await _branchRepository.Get(specification).ToListAsync(cancellationToken: cancellationToken);
+        var availableBranches = await _branchRepository
+			.Get(specification)
+			.ToListAsync(cancellationToken);
+		
 		foreach(var item in projectPart.Branches)
 		{
 			availableBranches.Remove(item.Branch);

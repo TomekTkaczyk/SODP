@@ -116,8 +116,8 @@ public class DesignerController : ActiveStatusController<Designer>
 		int id,
 		CancellationToken cancellationToken = default)
 	{
-		var request = new GetDesignerWithDetailsRequest(id);
+		var request = new GetDesignerDetailsRequest(id);
 
-		return await HandleRequestAsync<GetDesignerWithDetailsRequest, ApiResponse<DesignerLicensesDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetDesignerDetailsRequest, ApiResponse<DesignerLicensesDTO>>(request, cancellationToken);
 	}
 }

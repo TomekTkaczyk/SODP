@@ -2,8 +2,10 @@
 
 namespace SODP.Shared.DTO;
 
-public class ProjectPartDTO : BaseDTO
+public class ProjectPartDTO
 {
+	public int Id { get; set; }
+
 	public string Sign { get; set; }
 
 	public string Title { get; set; }

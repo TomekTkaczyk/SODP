@@ -49,7 +49,7 @@ public class ProjectEntityConfiguration : IEntityTypeConfiguration<Project>
             .HasDefaultValue("")
             .HasColumnType("longtext");
 
-			builder.HasIndex(p => new { p.Number, p.StageId })
+		builder.HasIndex(p => new { p.Number, p.StageId })
             .IsUnique()
             .HasName("ProjectsIX_NumberStage");
 

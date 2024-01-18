@@ -133,8 +133,8 @@ public class BranchController : ActiveStatusController<Branch>
 		int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new GetBranchWithLicensesRequest(id);
+		var request = new GetBranchDetailsRequest(id);
 
-		return await HandleRequestAsync<GetBranchWithLicensesRequest, ApiResponse<BranchDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetBranchDetailsRequest, ApiResponse<BranchDTO>>(request, cancellationToken);
 	}
 }

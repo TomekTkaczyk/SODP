@@ -1,21 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace SODP.UI.Pages.Shared.ViewModels
+namespace SODP.UI.Pages.Shared.ViewModels;
+
+public class PartVM
 {
-    public class PartVM
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public int ProjectId { get; set; }
+    [Required(ErrorMessage = "Symbol jest wymagany")]
+    public string Sign { get; set; }
 
-        [Required]
-        public string Sign { get; set; }
+    public string Title { get; set; }
 
-        [Required]
-        public string Title { get; set; }
-
-        public IList<SelectListItem> Items { get; set; }
-    }
+    public bool ActiveStatus { get; set; }
 }

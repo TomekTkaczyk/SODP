@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SODP.UI.Pages.Users.ViewModels;
+namespace SODP.UI.Pages.Shared.ViewModels;
 
 public class UserVM
 {

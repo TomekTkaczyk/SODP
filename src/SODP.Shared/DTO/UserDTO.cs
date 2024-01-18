@@ -9,9 +9,4 @@ public class UserDTO : BaseDTO
 	public string Lastname { get; set; }
 	public bool ActiveStatus { get; set; }
 	public IList<string> Roles { get; set; }
-
-	public override string ToString()
-	{
-		return $"{(Firstname ?? "").Trim()} {(Lastname ?? "").Trim()}";
-	}
 }

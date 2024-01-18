@@ -1,14 +1,16 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.Parts.ViewModels;
+using SODP.UI.Pages.Shared.Extensions;
 using SODP.UI.Pages.Shared.PageModels;
+using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Parts;
@@ -32,14 +34,14 @@ public sealed class IndexModel : CollectionPageModel
     public async Task<IActionResult> OnGetAsync(string searchString, int pageNumber = 1, int pageSize = 0)
     {
         var endpoint = GetPageUrl(searchString, pageNumber, pageSize);
-        var apiResponse = await GetApiResponseAsync<Page<PartVM>>(endpoint);
+        var apiResponse = await GetApiResponseAsync<Page<PartDTO>>(endpoint);
 
         if (!apiResponse.IsSuccess)
         {
             RedirectToPage($"Errors/{apiResponse.HttpCode}");
         }
 
-        Parts = apiResponse.Value.Collection;
+        Parts = apiResponse.Value.Collection.Select(x => x.ToPartVM()).ToList();
         PageInfo = GetPageInfo(apiResponse, searchString);
 
         return Page();
@@ -52,14 +54,14 @@ public sealed class IndexModel : CollectionPageModel
             return GetPartialView(new PartVM(), _editPartModalViewName);
         }
 
-        var apiResponse = await GetApiResponseAsync<PartVM>($"{_endpoint}/{id}");
+        var apiResponse = await GetApiResponseAsync<PartDTO>($"{_endpoint}/{id}");
 
         if (!apiResponse.IsSuccess)
         {
             RedirectToPage($"Errors/{apiResponse.HttpCode}");
         }
 
-        return GetPartialView(apiResponse.Value, _editPartModalViewName);
+        return GetPartialView(apiResponse.Value.ToPartVM(), _editPartModalViewName);
     }
 
     public async Task<IActionResult> OnPostEditPartAsync(PartVM model)

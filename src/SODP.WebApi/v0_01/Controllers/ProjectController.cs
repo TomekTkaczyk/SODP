@@ -144,7 +144,7 @@ public class ProjectController : ApiBaseController
 	{
 		if ((id < 1) || (id != request.Id) || string.IsNullOrWhiteSpace(request.Name))
 		{
-			return BadRequest(ApiResponse.Failure("asasas",HttpStatusCode.BadRequest));
+			return BadRequest(ApiResponse.Failure("Bad request",HttpStatusCode.BadRequest));
 		}
 
 		return await HandleRequestAsync(request, cancellationToken);
@@ -227,8 +227,8 @@ public class ProjectController : ApiBaseController
 		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		return await HandleRequestAsync<GetProjectPartRequest, ApiResponse<ProjectPartDTO>>(
-			new GetProjectPartRequest(id), 
+		return await HandleRequestAsync<GetPartRequest, ApiResponse<ProjectPartDTO>>(
+			new GetPartRequest(id), 
 			cancellationToken);
 	}
 
@@ -241,8 +241,8 @@ public class ProjectController : ApiBaseController
 		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var aaa = await HandleRequestAsync<GetPartWithDetailsRequest, ApiResponse<ProjectPartDTO>>(
-			new GetPartWithDetailsRequest(id),
+		var aaa = await HandleRequestAsync<GetPartDetailsRequest, ApiResponse<ProjectPartDTO>>(
+			new GetPartDetailsRequest(id),
 			cancellationToken);
 
 		return aaa;

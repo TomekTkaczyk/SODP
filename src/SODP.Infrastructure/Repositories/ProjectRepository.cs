@@ -10,14 +10,7 @@ public class ProjectRepository : PagedRepository<Project>, IProjectRepository
 {
 	public ProjectRepository(SODPDBContext dbContext, ILogger<Project> logger) : base(dbContext, logger) { }
 
-	public async Task<ProjectPart> GetPartAsync(int id, CancellationToken cancellationToken)
-	{
-		return await _dbContext.Set<ProjectPart>()
-			.Include(x => x.Branches)
-			.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
-	}
-
-	public async Task<Project> GetWithDetailsAsync(	int id,	CancellationToken cancellationToken)
+	public async Task<Project> GetDetailsAsync(	int id,	CancellationToken cancellationToken)
 	{
 		var project = await _dbContext.Set<Project>()
 			.Include(s => s.Stage)
@@ -27,40 +20,4 @@ public class ProjectRepository : PagedRepository<Project>, IProjectRepository
 
 		return project;
 	}
-
-	//public async Task<Project> GetBySymbolAsync(
-	//	string number,
-	//	string stageSign,
-	//	CancellationToken cancellationToken)
-	//{
-	//	return await _dbContext.Set<Project>()
-	//		.Include(x => x.Stage)
-	//		.Where(x => x.Number.Equals(number) && x.Stage.Sign.Equals(stageSign))
-	//		.SingleOrDefaultAsync(cancellationToken);
-	//}
-
-	//public async Task<Page<Project>> GetPageAsync(
-	//	ProjectStatus status,
-	//	string searchString,
-	//	int pageNumber,
-	//	int pageSize,
-	//	CancellationToken cancellationToken)
-	//{
-	//	var queryable = ApplySpecification(new ProjectByNameSpecification(status, searchString));
-		
-	//	var totalItems = await queryable.CountAsync(cancellationToken);
-
-	//	if (pageSize > 0)
-	//	{
-	//		queryable = GetPageQuery(queryable, pageNumber, pageSize);
-	//	}
-
-	//	var collection = await queryable.ToListAsync(cancellationToken);
-
-	//	return Page<Project>.Create(
-	//		collection,
-	//		pageNumber,
-	//		pageSize,
-	//		totalItems);
-	//}
 }

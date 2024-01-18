@@ -82,7 +82,7 @@
 		<div class="row font-weight-bold ml-2">
 			@if (Model.DevelopmentDate.HasValue)
 			{
-				<span class="text-primary" style="white-space: pre-line">@Model.DevelopmentDate</span>
+				<span class="text-primary" style="white-space: pre-line" typeof="Date">@Model.DevelopmentDate.GetValueOrDefault().ToString("dd.MM.yyyy")</span>
 			}
 			else
 			{

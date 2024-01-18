@@ -31,7 +31,7 @@ public class GetProjectWithDetailsHandler : IRequestHandler<GetProjectWithDetail
         CancellationToken cancellationToken)
     {
         var project = await _projectRepository
-            .GetWithDetailsAsync(request.Id, cancellationToken)
+            .GetDetailsAsync(request.Id, cancellationToken)
 			?? throw new ProjectNotFoundException();
 
         var result = _mapper.Map<ProjectDTO>(project);

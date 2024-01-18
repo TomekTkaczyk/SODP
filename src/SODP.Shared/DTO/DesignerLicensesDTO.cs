@@ -3,7 +3,6 @@
 namespace SODP.Shared.DTO;
 
 public record DesignerLicensesDTO(
-	DesignerDTO designer, 
-	ICollection<LicenseDTO> licenses)
-{
-}
+	DesignerDTO Designer,
+	ICollection<LicenseDTO> Licenses)
+{ }

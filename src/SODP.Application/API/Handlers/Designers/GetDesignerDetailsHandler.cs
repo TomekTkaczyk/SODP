@@ -15,12 +15,12 @@ using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Designers;
 
-public class GetDesignerWithDetailsHandler : IRequestHandler<GetDesignerWithDetailsRequest, ApiResponse<DesignerLicensesDTO>>
+public class GetDesignerDetailsHandler : IRequestHandler<GetDesignerDetailsRequest, ApiResponse<DesignerLicensesDTO>>
 {
     private readonly IDesignerRepository _designerRepository;
     private readonly IMapper _mapper;
 
-    public GetDesignerWithDetailsHandler(
+    public GetDesignerDetailsHandler(
         IDesignerRepository designerRepository,
         IMapper mapper)
     {
@@ -28,7 +28,7 @@ public class GetDesignerWithDetailsHandler : IRequestHandler<GetDesignerWithDeta
         _mapper = mapper;
     }
 	[IgnoreMethodAsyncNameConvention]
-	public async Task<ApiResponse<DesignerLicensesDTO>> Handle(GetDesignerWithDetailsRequest request, CancellationToken cancellationToken)
+	public async Task<ApiResponse<DesignerLicensesDTO>> Handle(GetDesignerDetailsRequest request, CancellationToken cancellationToken)
     {
         var designer = await _designerRepository
             .Get(new DesignerLicensesSpecification(request.DesignerId))

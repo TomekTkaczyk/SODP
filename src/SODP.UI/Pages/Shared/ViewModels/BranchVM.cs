@@ -1,17 +1,19 @@
-﻿namespace SODP.UI.Pages.Shared.ViewModels
+﻿namespace SODP.UI.Pages.Shared.ViewModels;
+
+public class BranchVM
 {
-    public class BranchVM
+    public int Id { get; set; }
+
+    public string Sign { get; set; }
+
+    public string Title { get; set; }
+
+    public int Order { get; set; }
+
+    public bool ActiveStatus { get; set; }
+
+    public override string ToString()
     {
-        public int Id { get; set; }
-
-        public string Sign { get; set; }
-
-        public string Title { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Title.ToUpper()}";
-        }
+        return $"{Sign.Trim()}-{Title.Trim()}";
     }
-
 }

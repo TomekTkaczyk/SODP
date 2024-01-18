@@ -43,7 +43,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
-    <PackageReference Include="System.Text.Json" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

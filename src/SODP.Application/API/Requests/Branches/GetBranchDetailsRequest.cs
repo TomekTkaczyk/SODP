@@ -4,4 +4,4 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Branches;
 
-public sealed record GetBranchWithLicensesRequest(int Id) : IRequest<ApiResponse<BranchDTO>>;
+public sealed record GetBranchDetailsRequest(int Id) : IRequest<ApiResponse<BranchDTO>>;

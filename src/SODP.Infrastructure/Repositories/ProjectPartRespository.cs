@@ -14,7 +14,11 @@ public class ProjectPartRespository : Repository<ProjectPart>, IProjectPartRepos
 	{
 		return await _dbContext.Set<ProjectPart>()
 			.Include(x => x.Branches)
-			.ThenInclude(y => y.Branch)
+			.ThenInclude(x => x.Branch)
+			.Include(x => x.Branches)
+			.ThenInclude(x => x.Roles)
+			.ThenInclude(x => x.License)
+			.ThenInclude(x => x.Designer)
 			.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
 	}
 }

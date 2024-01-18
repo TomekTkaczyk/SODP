@@ -29,7 +29,7 @@ public class ProjectDetailsVM
 	public string Description { get; set; }
 
 	[DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}")]
-	public DateOnly? DevelopmentDate { get; set; }
+	public DateTime? DevelopmentDate { get; set; }
 
 	public ICollection<ProjectPartVM> Parts { get; set; }
 }

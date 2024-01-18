@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace SODP.Shared.DTO;
 
-namespace SODP.Shared.DTO
+public record AddressDTO
 {
-    public class AddressDTO
-    {
-        public string Street { get; set; }
-    }
+    public string Street { get; set; }
 }

@@ -5,4 +5,4 @@ using System.Collections.Generic;
 
 namespace SODP.Application.API.Requests.Projects;
 
-public sealed record GetPartWithDetailsRequest(int ProjectPartId) : IRequest<ApiResponse<ProjectPartDTO>>;
+public sealed record GetPartDetailsRequest(int ProjectPartId) : IRequest<ApiResponse<ProjectPartDTO>>;

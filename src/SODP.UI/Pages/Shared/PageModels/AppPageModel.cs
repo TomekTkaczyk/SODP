@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SODP.Shared.DTO;
-using SODP.Shared.JSON;
 using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Services;
@@ -66,7 +64,6 @@ public abstract class AppPageModel : PageModel
 	{
 		var apiResponse = await _apiProvider.GetAsync(url);
 		var jsonSettings = new JsonSerializerSettings();
-		jsonSettings.Converters.Add(new CustomDateOnlyConverter());
 		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>(new[] { new JsonMediaTypeFormatter { SerializerSettings = jsonSettings } });
 
 		return result;

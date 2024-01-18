@@ -1,14 +1,15 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using SODP.UI.Api;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.Investors.ViewModels;
+using SODP.UI.Pages.Shared.Extensions;
 using SODP.UI.Pages.Shared.PageModels;
+using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -27,17 +28,17 @@ public sealed class IndexModel : CollectionPageModel
 		_endpoint = "investors";
 	}
 
-
 	public ICollection<InvestorVM> Investors { get; private set; }
-
 
 	public async Task<IActionResult> OnGetAsync(string searchString, int pageNumber = 1, int pageSize = 0)
 	{
 		var endpoint = GetPageUrl(searchString, pageNumber, pageSize);
-		var apiResponse = await GetApiResponseAsync<Page<InvestorVM>>(endpoint);
+		var apiResponse = await GetApiResponseAsync<Page<InvestorDTO>>(endpoint);
 
-		Investors = GetCollection(apiResponse);
-		PageInfo = GetPageInfo(apiResponse, searchString);
+		Investors = apiResponse.Value.Collection
+			.Select(x => x.ToInvestorVM())
+			.ToList();
+        PageInfo = GetPageInfo(apiResponse, searchString);
 
 		return Page();
 	}
@@ -50,17 +51,16 @@ public sealed class IndexModel : CollectionPageModel
 			return GetPartialView(new InvestorVM(), _editInvestorModalViewName);
 		}
 
-		var endpoint = $"{_endpoint}/{id}";
-		var apiResponse = await _apiProvider.GetAsync(endpoint);
+		var apiResponse = await _apiProvider.GetAsync($"{_endpoint}/{id}");
 
 		if (!apiResponse.IsSuccessStatusCode)
 		{
 			RedirectToPage($"Errors/{apiResponse.StatusCode}");
 		}
 
-		var response = await apiResponse.Content.ReadAsAsync<ApiResponse<InvestorVM>>();
+		var response = await apiResponse.Content.ReadAsAsync<ApiResponse<InvestorDTO>>();
 
-		return GetPartialView(response.Value, _editInvestorModalViewName);
+		return GetPartialView(response.Value.ToInvestorVM(), _editInvestorModalViewName);
 	}
 
 

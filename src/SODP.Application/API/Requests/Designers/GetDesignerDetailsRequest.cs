@@ -4,4 +4,4 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Designers;
 
-public sealed record GetDesignerWithDetailsRequest(int DesignerId) : IRequest<ApiResponse<DesignerLicensesDTO>>;
+public sealed record GetDesignerDetailsRequest(int DesignerId) : IRequest<ApiResponse<DesignerLicensesDTO>>;

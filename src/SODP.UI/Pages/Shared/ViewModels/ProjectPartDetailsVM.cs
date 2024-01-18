@@ -8,7 +8,7 @@ public class ProjectPartDetailsVM
 
 	public string Sign { get; set; }
 
-	public string Name { get; set; }
+	public string Title { get; set; }
 
 	public int Order { get; set; }
 

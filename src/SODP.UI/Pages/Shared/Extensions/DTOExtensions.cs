@@ -64,13 +64,28 @@ public static class DTOExtensions
 		return result;
 	}
 
+	public static ProjectPartDetailsVM ToProjectPartDetailsVM(this ProjectPartDTO projectPart)
+	{
+		ProjectPartDetailsVM result = new()
+		{
+			Id = projectPart.Id,
+			Order = projectPart.Order,
+			Sign = projectPart.Sign,
+			Title = projectPart.Title,
+			Branches = projectPart.Branches.Select(x => x.ToPartBranchVM()).ToList(),
+		};
+
+		return result;
+	}
+
 	public static BranchVM ToBranchVM(this BranchDTO branch)
 	{
 		BranchVM result = new()
 		{
 			Id = branch.Id,
 			Sign = branch.Sign,
-			Title = branch.Title
+			Title = branch.Title,
+			ActiveStatus = branch.ActiveStatus
 		};
 
 		return result;
@@ -108,9 +123,43 @@ public static class DTOExtensions
 		{
 			Id = license.Id,
 			Content = license.Content,
-			Designer = license.Designer.ToString(),
+			Designer = license.Designer.ToString()
 		};
 
 		return result;
+	}
+
+	public static PartVM ToPartVM(this PartDTO part)
+	{
+		return new PartVM()
+		{
+			Id = part.Id,
+			Sign = part.Sign,
+			Title = part.Title,
+			ActiveStatus = part.ActiveStatus
+		};
+	}
+
+	public static InvestorVM ToInvestorVM(this InvestorDTO investor)
+	{
+		return new InvestorVM()
+		{
+			Id = investor.Id,
+			Name = investor.Name,
+			ActiveStatus = investor.ActiveStatus
+		};
+	}
+
+	public static UserVM ToUserVM(this UserDTO user)
+	{
+		return new UserVM()
+		{
+			Id = user.Id,
+			Firstname = user.Firstname,
+			Lastname = user.Lastname,
+			Username = user.Username,
+			ActiveStatus = user.ActiveStatus,
+			Roles = user.Roles
+		};
 	}
 }

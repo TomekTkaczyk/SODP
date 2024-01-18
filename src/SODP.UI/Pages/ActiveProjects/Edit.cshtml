@@ -46,6 +46,7 @@
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
 				<br />
+
 				<div class="form-group row">
 					<div class="col-lg-7">
 						<label>Nazwa projektu:</label>
@@ -137,8 +138,24 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="tab-pane fade active" id="parts" role="tabpanel" aria-labelledby="parts-tab">
 				<div class="col-lg-7" style="padding:30px">
+					<div class="row align-end">
+						<div class="col p-0">
+							<button type="button"
+									class="btn btn-info form-control text-white float-right h-100"
+									title="Nowa część"
+									data-toggle="ajax-modal"
+									@*onclick="EditPart(@Model.Project.Id)">*@
+									data-url="@Url.Page("Edit", "EditProjectPart")&projectId=@Model.Project.Id">
+								<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa część
+							</button>
+						</div>
+					</div>
+
+					<br />
+
 					@if (Model.Project.Parts.Count > 0)
 					{
 						<div id="projectPartAccordion" class="accordion">
@@ -162,15 +179,6 @@
 										<div class="colgroup justify-content-end mr-2">
 											@if (User.IsInRole("ProjectManager"))
 											{
-												<a	name="additionalBtn"
-													id="newBranch-@item.Id"
-													onclick="AddBranch(@item.Id)"
-													class="btn btn-lg m-1 p-1"
-													data-toggle="tooltip"
-													data-placement="top"
-													title="Dodaj branżę do części">
-													<i class="fas fa-plus fa-lg text-success"></i>
-												</a>
 												<a name="additionalBtn"
 													id="editProject-@item.Id"
 													onclick='EditPart(@Model.Project.Id,@item.Id)'
@@ -203,21 +211,6 @@
 							}
 						</div>
 					}
-
-					<br />
-
-					<div class="row align-end">
-						<div class="col p-0">
-							<button type="button"
-									class="btn btn-info form-control text-white float-right h-100"
-									title="Nowa część"
-									data-toggle="ajax-modal"
-									@*onclick="EditPart(@Model.Project.Id)">*@
-									data-url="@Url.Page("Edit","EditProjectPart")&projectId=@Model.Project.Id">
-								<i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Nowa część
-							</button>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
