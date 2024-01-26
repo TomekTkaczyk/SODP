@@ -1,4 +1,6 @@
-﻿using SODP.Shared.DTO;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using SODP.Domain.ValueObjects;
+using SODP.Shared.DTO;
 using SODP.UI.Pages.Shared.ViewModels;
 using System.Linq;
 
@@ -109,7 +111,7 @@ public static class DTOExtensions
 		{
 			Id = branchRole.Id,
 			Role = branchRole.Role,
-			Designer = branchRole.License.Designer.ToString(),
+			Designer = branchRole.License.Designer.ToDesignerVM().Name,
 			Content = branchRole.License.Content,
 			License = branchRole.License.ToLicenseVM()
 		};
@@ -119,12 +121,14 @@ public static class DTOExtensions
 
 	public static LicenseVM ToLicenseVM(this LicenseDTO license)
 	{
-		LicenseVM result = new()
-		{
-			Id = license.Id,
-			Content = license.Content,
-			Designer = license.Designer.ToString()
-		};
+		var branches = license.Branches.Select(x => x.ToBranchVM());
+
+		LicenseVM result = new(
+			license.Id,
+			license.Designer.ToString(),
+			license.Content,
+			branches
+		);
 
 		return result;
 	}
@@ -161,5 +165,19 @@ public static class DTOExtensions
 			ActiveStatus = user.ActiveStatus,
 			Roles = user.Roles
 		};
+	}
+
+	public static DesignerVM ToDesignerVM(this DesignerDTO designer)
+	{
+		var licenses = designer.Licenses.Select(x => x.ToLicenseVM());
+
+        DesignerVM result = new(
+			designer.Id,
+			designer.Title + " " + designer.Firstname + " " +designer.Lastname,
+			designer.ActiveStatus,
+			licenses
+			);
+
+		return result;
 	}
 }

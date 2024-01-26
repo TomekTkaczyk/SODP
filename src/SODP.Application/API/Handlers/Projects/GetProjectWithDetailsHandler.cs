@@ -2,7 +2,6 @@
 using MediatR;
 using SODP.Application.API.Requests.Projects;
 using SODP.Domain.Attributes;
-using SODP.Domain.Exceptions;
 using SODP.Domain.Exceptions.ProjectExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
@@ -34,11 +33,6 @@ public class GetProjectWithDetailsHandler : IRequestHandler<GetProjectWithDetail
             .GetDetailsAsync(request.Id, cancellationToken)
 			?? throw new ProjectNotFoundException();
 
-        var result = _mapper.Map<ProjectDTO>(project);
-
-
-		var response =  ApiResponse.Success(result);
-
-        return response;
+		return ApiResponse.Success(_mapper.Map<ProjectDTO>(project));
     }
 }

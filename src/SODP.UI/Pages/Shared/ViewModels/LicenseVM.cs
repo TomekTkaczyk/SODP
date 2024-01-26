@@ -1,11 +1,9 @@
-﻿namespace SODP.UI.Pages.Shared.ViewModels
-{
-    public class LicenseVM
-    {
-        public int Id { get; set; }
+﻿using System.Collections.Generic;
 
-        public string Designer { get; set; }
+namespace SODP.UI.Pages.Shared.ViewModels;
 
-        public string Content { get; set; }
-    }
-}
+public record LicenseVM(
+    int Id,
+    string Designer,
+    string Content,
+    IEnumerable<BranchVM> Branches);

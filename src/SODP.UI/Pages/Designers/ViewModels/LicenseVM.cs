@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using SODP.UI.Pages.Shared.ViewModels;
 using System.Collections.Generic;
 
 namespace SODP.UI.Pages.Designers.ViewModels

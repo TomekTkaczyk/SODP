@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SODP.UI.Pages.Designers.ViewModels
 {
-    public class NewDesignerVM
+    public class DesignerEditVM
     {
+        public int Id { get; set; }
+
         [DefaultValue("")]
         public string Title { get; set; }
         

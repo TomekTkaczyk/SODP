@@ -20,37 +20,14 @@ public class MappDesignerTests
             .ForEach(b => fixture.Behaviors.Remove(b));
 
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        DesignerDTO dto = fixture.Create<DesignerDTO>();
         Designer entity = fixture.Create<Designer>();
 
         var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
         var mapper = config.CreateMapper();
-        var projectDTO = mapper.Map<Designer, DesignerDTO>(entity);
+        var designerDTO = mapper.Map<Designer, DesignerDTO>(entity);
 
-        Assert.NotEmpty(projectDTO.Title);
-        Assert.NotEmpty(projectDTO.Firstname);
-        Assert.NotEmpty(projectDTO.Lastname);
-    }
-
-    [Fact]
-    internal void AutoMapper_ConvertFromDesignerDTO_IsValid()
-    {
-        var fixture = new Fixture();
-        fixture.Behaviors
-            .OfType<ThrowingRecursionBehavior>()
-            .ToList()
-            .ForEach(b => fixture.Behaviors.Remove(b));
-
-        fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-        DesignerDTO dto = fixture.Create<DesignerDTO>();
-        Designer entity = fixture.Create<Designer>();
-
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfile>());
-        var mapper = config.CreateMapper();
-        var designer = mapper.Map<DesignerDTO, Designer>(dto);
-
-        Assert.NotEmpty(designer.Title.Value);
-        Assert.NotEmpty(designer.Firstname.Value);
-        Assert.NotEmpty(designer.Lastname.Value);
+        Assert.Equal(entity.Title.Value,designerDTO.Title);
+        Assert.Equal(entity.Firstname.Value, designerDTO.Firstname);
+        Assert.Equal(entity.Lastname.Value, designerDTO.Lastname);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SODP.Domain.Entities;
 using SODP.Domain.ValueObjects;
 using SODP.Shared.DTO;
@@ -145,7 +146,8 @@ public class AutoMapperProfile : Profile
         CreateMap<Branch, BranchDTO>()
             .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.Value))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title.Value))
-            .ForMember(dest => dest.Licenses, opt => opt.MapFrom(x => x.Licenses));
+            .ForMember(dest => dest.Licenses, opt => opt.MapFrom(x => x.Licenses))
+            .PreserveReferences();
 
         CreateMap<BranchDTO, Branch>()
             .ForMember(dest => dest.Licenses, act => act.Ignore())
@@ -154,14 +156,16 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CreatedById, act => act.Ignore())
             .ForMember(dest => dest.ModifyTimeStamp, act => act.Ignore())
             .ForMember(dest => dest.ModifiedBy, act => act.Ignore())
-            .ForMember(dest => dest.ModifiedById, act => act.Ignore());
+            .ForMember(dest => dest.ModifiedById, act => act.Ignore())
+            .PreserveReferences();
 
 
 		CreateMap<BranchLicense, LicenseDTO>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.License.Id))
             .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.License.Designer))
             .ForMember(dest => dest.Content, opt => opt.MapFrom(x => x.License.Content))
-            .ForMember(dest => dest.Branches, act => act.Ignore());
+            .ForMember(dest => dest.Branches, act => act.Ignore())
+            .PreserveReferences();
 
         #endregion
 
@@ -219,13 +223,13 @@ public class AutoMapperProfile : Profile
         #region Designer
 
         CreateMap<Designer, DesignerDTO>()
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title.Value))
-            .ForMember(dest => dest.Firstname, opt => opt.MapFrom(x => x.Firstname.Value))
-            .ForMember(dest => dest.Lastname, opt => opt.MapFrom(x => x.Lastname.Value))
-            .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-            .ReverseMap()
+            .ForCtorParam(ctorParamName:"Id", m => m.MapFrom(dest => dest.Id))
+            .ForCtorParam(ctorParamName:"Title", m => m.MapFrom<string>(dest => dest.Title))
+            .ForCtorParam(ctorParamName: "Firstname", m => m.MapFrom<string>(dest => dest.Firstname))
+            .ForCtorParam(ctorParamName: "Lastname", m => m.MapFrom<string>(dest => dest.Lastname))
+            .ForCtorParam(ctorParamName: "ActiveStatus", m => m.MapFrom(dest => dest.ActiveStatus))
+            .ForCtorParam(ctorParamName: "Licenses", m => m.MapFrom(dest => dest.Licenses))
             .PreserveReferences();
-
         #endregion
 
         #region License
@@ -249,8 +253,9 @@ public class AutoMapperProfile : Profile
                 .PreserveReferences();
 
         CreateMap<License, LicenseDTO>()
-        .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
-        .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
+            .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
+            .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
+            .PreserveReferences()
             .ReverseMap();
 
         #endregion

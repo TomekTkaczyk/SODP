@@ -30,7 +30,7 @@
 
 <partial name="_CollectionSearchString" />
 
-@if (Model.Designers.Count > 0)
+@if (Model.Designers.Count() > 0)
 {
 	<div id="designersAccordion" class="accordion">
 		@foreach (var item in Model.Designers)
@@ -44,7 +44,7 @@
 							data-target="#collapse-@item.Id"
 							aria-expanded="false"
 							aria-controls="collapse-@item.Id">
-						@item.Title @item.Firstname @item.Lastname
+						@item.Name
 					</div>
 					<div class="colgroup justify-content-end mr-2">
 						<a name="additionalBtn"

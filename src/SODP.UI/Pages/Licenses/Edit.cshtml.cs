@@ -7,6 +7,7 @@ using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Licenses.ViewModels;
+using SODP.UI.Pages.Shared.Extensions;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Services;
 using System.Collections.Generic;
@@ -89,7 +90,7 @@ public class EditModel : AppPageModel
 			{
 				Id = response.Value.Id,
 				DesignerId = response.Value.Designer.Id,
-				Designer = response.Value.Designer.ToString(),
+				Designer = response.Value.Designer.ToDesignerVM().Name,
 				Content = response.Value.Content,
 				ApplyBranches = response.Value.Branches
 				.OrderBy(x => x.Order)

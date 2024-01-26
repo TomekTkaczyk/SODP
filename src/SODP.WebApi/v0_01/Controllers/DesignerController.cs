@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SODP.Application.API.Requests.Designers;
 using SODP.Application.API.Requests.Projects;
 using SODP.Domain.Entities;
@@ -48,7 +49,29 @@ public class DesignerController : ActiveStatusController<Designer>
 	}
 
 
-	[HttpPost]
+    [HttpGet("{id:int}/details")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetWithLicensesAsync(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new GetDesignerDetailsRequest(id);
+
+		var result = await HandleRequestAsync<GetDesignerDetailsRequest, ApiResponse<DesignerDTO>>(request, cancellationToken);
+
+		var jsonSerializerSettings = new JsonSerializerSettings()
+		{
+			ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+			PreserveReferencesHandling = PreserveReferencesHandling.All
+        };
+
+        return result;
+    }
+
+
+    [HttpPost]
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -107,17 +130,4 @@ public class DesignerController : ActiveStatusController<Designer>
 		return await HandleRequestAsync(request, cancellationToken);
 	}
 
-
-	[HttpGet("{id:int}/licenses")]
-	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> GetWithLicensesAsync(
-		int id,
-		CancellationToken cancellationToken = default)
-	{
-		var request = new GetDesignerDetailsRequest(id);
-
-		return await HandleRequestAsync<GetDesignerDetailsRequest, ApiResponse<DesignerLicensesDTO>>(request, cancellationToken);
-	}
 }
