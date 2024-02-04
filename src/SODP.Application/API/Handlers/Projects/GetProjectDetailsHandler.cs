@@ -1,38 +1,38 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using SODP.Application.API.Requests.Projects;
+using SODP.Application.Mappers;
 using SODP.Domain.Attributes;
 using SODP.Domain.Exceptions.ProjectExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SODP.Application.API.Handlers.Projects;
 
-public class GetProjectWithDetailsHandler : IRequestHandler<GetProjectWithDetailsRequest, ApiResponse<ProjectDTO>>
+public class GetProjectDetailsHandler : IRequestHandler<GetProjectDetailsRequest, ApiResponse<ProjectDTO>>
 {
     private readonly IProjectRepository _projectRepository;
-	private readonly IMapper _mapper;
 
-	public GetProjectWithDetailsHandler(
-        IProjectRepository projectRepository,
-        IMapper mapper)
+	public GetProjectDetailsHandler(IProjectRepository projectRepository)
     {
         _projectRepository = projectRepository;
-		_mapper = mapper;
 	}
 
 	[IgnoreMethodAsyncNameConvention]
 	public async Task<ApiResponse<ProjectDTO>> Handle(
-        GetProjectWithDetailsRequest request,
+        GetProjectDetailsRequest request,
         CancellationToken cancellationToken)
     {
         var project = await _projectRepository
             .GetDetailsAsync(request.Id, cancellationToken)
 			?? throw new ProjectNotFoundException();
 
-		return ApiResponse.Success(_mapper.Map<ProjectDTO>(project));
+        var projectDTO = project.ToDTO();
+
+        return ApiResponse.Success(projectDTO);
     }
 }

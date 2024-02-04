@@ -9,6 +9,7 @@ using SODP.Domain.Exceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,14 +18,10 @@ namespace SODP.Application.API.Handlers.Licenses;
 public sealed class GetLicenseHandler : IRequestHandler<GetLicenseRequest, ApiResponse<LicenseDTO>>
 {
 	private readonly ILicensesRepository _licenseRepository;
-	private readonly IMapper _mapper;
 
-	public GetLicenseHandler(
-        ILicensesRepository licenseRepository,
-        IMapper mapper)
+	public GetLicenseHandler(ILicensesRepository licenseRepository)
     {
 		_licenseRepository = licenseRepository;
-		_mapper = mapper;
 	}
 
 	[IgnoreMethodAsyncNameConvention]
@@ -38,6 +35,18 @@ public sealed class GetLicenseHandler : IRequestHandler<GetLicenseRequest, ApiRe
 			.SingleOrDefaultAsync(cancellationToken)
 			?? throw new NotFoundException("License");
 
-		return ApiResponse.Success(_mapper.Map<LicenseDTO>(license));
+		LicenseDTO licenseDTO = new(
+			license.Id,
+			new DesignerDTO(
+				license.Designer.Id,
+				license.Designer.Title,
+				license.Designer.Firstname,
+				license.Designer.Lastname,
+				license.Designer.ActiveStatus,
+				new List<LicenseDTO>()),
+			license.Content,
+			new List<BranchDTO>());
+
+		return ApiResponse.Success(licenseDTO);
 	}
 }

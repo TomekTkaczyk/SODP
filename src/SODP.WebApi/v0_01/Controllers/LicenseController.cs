@@ -85,7 +85,7 @@ public class LicenseController : ApiBaseController
 	}
 
 
-	[HttpGet("{id:int}/branches")]
+	[HttpGet("{id:int}/details")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -93,9 +93,9 @@ public class LicenseController : ApiBaseController
 		[FromRoute] int id,
 		CancellationToken cancellationToken)
 	{
-		var request = new GetLicenseWithBranchesRequest(id);
+		var request = new GetLicenseDetailsRequest(id);
 
-		return await HandleRequestAsync<GetLicenseWithBranchesRequest, ApiResponse<LicenseDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetLicenseDetailsRequest, ApiResponse<LicenseDTO>>(request, cancellationToken);
 	}
 
 

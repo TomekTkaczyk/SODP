@@ -104,10 +104,9 @@
     <script>
 
     function RemoveBranch(licenseId, branchId) {
-        let content = document.getElementById("content").value;
         $.ajax({
             type: "Delete",
-                url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${branchId}&content=${content}`,
+                url: `@Url.Page("Edit", "Branch")&id=${licenseId}&branchId=${branchId}`,
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("XSRF-TOKEN",
                     $('input:hidden[name="__RequestVerificationToken"]').val());

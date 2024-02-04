@@ -1,12 +1,13 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using SODP.Application.API.Requests.Stages;
 using SODP.Application.Extensions;
+using SODP.Application.Mappers;
 using SODP.Application.Specifications.Stages;
 using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,14 +16,10 @@ namespace SODP.Application.API.Handlers.Stages;
 public sealed class GetStagesPageHandler : IRequestHandler<GetStagesPageRequest, ApiResponse<Page<StageDTO>>>
 {
     private readonly IStageRepository _stageRepository;
-	private readonly IMapper _mapper;
 
-	public GetStagesPageHandler(
-        IStageRepository stageRepository,
-        IMapper mapper)
+	public GetStagesPageHandler(IStageRepository stageRepository)
     {
         _stageRepository = stageRepository;
-		_mapper = mapper;
 	}
 
 	[IgnoreMethodAsyncNameConvention]
@@ -36,8 +33,9 @@ public sealed class GetStagesPageHandler : IRequestHandler<GetStagesPageRequest,
 
         var page = await _stageRepository
             .Get(specification)
-            .AsPageAsync(request.PageNumber, request.PageSize, cancellationToken);
-        
-        return ApiResponse.Success(_mapper.Map<Page<StageDTO>>(page));
+            .Select(x => x.ToDTO())
+            .AsPageAsync(request.PageNumber,request.PageSize,cancellationToken);
+
+        return ApiResponse.Success(page);
 	}
 }

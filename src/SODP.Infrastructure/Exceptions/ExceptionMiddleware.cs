@@ -16,7 +16,6 @@ namespace SODP.Infrastructure.Exceptions
 			catch (Exception ex)
 			{
 				await HandleExceptionAsync(ex, context);
-				throw;
 			}
 		}
 

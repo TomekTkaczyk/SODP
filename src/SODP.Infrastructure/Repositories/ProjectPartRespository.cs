@@ -8,7 +8,8 @@ namespace SODP.Infrastructure.Repositories;
 
 public class ProjectPartRespository : Repository<ProjectPart>, IProjectPartRepository
 {
-	public ProjectPartRespository(SODPDBContext dbContext, ILogger<ProjectPart> logger) : base(dbContext, logger) { }
+	public ProjectPartRespository(SODPDBContext dbContext, ILogger<ProjectPart> logger) 
+		: base(dbContext, logger) { }
 
 	public async Task<ProjectPart> GetWithDetailsAsync(int id, CancellationToken cancellationToken)
 	{

@@ -122,12 +122,7 @@ public class Startup
         services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
         services.AddControllers()
-                .AddApplicationPart(Application.AssemblyReference.Assembly)
-                .AddNewtonsoftJson(options => 
-                { 
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                    options.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.All;
-                });
+                .AddApplicationPart(Application.AssemblyReference.Assembly);
 
         services.AddRazorPages()
             .AddRazorRuntimeCompilation();

@@ -2,10 +2,7 @@
 
 namespace SODP.Shared.DTO;
 
-public class PartBranchDTO : BaseDTO
-{
-	public BranchDTO Branch { get; set; }
-
-	public ICollection<BranchRoleDTO> Roles { get; set; }
-
-}
+public record PartBranchDTO(
+    int Id,
+    BranchDTO Branch,
+    IEnumerable<BranchRoleDTO> Roles);

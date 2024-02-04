@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Projects;
+using SODP.Application.Mappers;
 using SODP.Application.Specifications.Common;
 using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
@@ -31,8 +32,12 @@ public class GetPartHandler : IRequestHandler<GetPartRequest, ApiResponse<Projec
 	public async Task<ApiResponse<ProjectPartDTO>> Handle(GetPartRequest request, CancellationToken cancellationToken)
 	{
 		var specification = new ByIdSpecification<ProjectPart>(request.ProjectPartId);
-		var projectPart = await _projectPartRepository.Get(specification).SingleOrDefaultAsync(cancellationToken);
+		
+		var projectPart = await _projectPartRepository
+			.Get(specification)
+			.SingleOrDefaultAsync(cancellationToken);
 
-		return ApiResponse.Success(_mapper.Map<ProjectPartDTO>(projectPart));
+
+        return ApiResponse.Success(projectPart.ToDTO());
 	}
 }

@@ -80,11 +80,11 @@ public sealed class IndexModel : ProjectsPageModel
 		return GetPartialView(project, _newProjectModalViewName);
 	}
 
-	public IActionResult OnPostDelete(string item)
-	{
-		var itemToRemove = Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectVM>(item);
-		return RedirectToPage();
-	}
+	//public IActionResult OnPostDelete(string item)
+	//{
+	//	var itemToRemove = Newtonsoft.Json.JsonConvert.DeserializeObject<ProjectVM>(item);
+	//	return RedirectToPage();
+	//}
 
 	private async Task<IActionResult> GetNewProjectPartialViewAsync()
 	{

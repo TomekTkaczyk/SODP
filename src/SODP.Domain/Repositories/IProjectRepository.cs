@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SODP.Domain.Repositories;
 
-public interface IProjectRepository	: IPageRepository<Project>
+public interface IProjectRepository	: IRepository<Project>
 {
 	Task<Project> GetDetailsAsync(int id, CancellationToken cancellationToken);
 }

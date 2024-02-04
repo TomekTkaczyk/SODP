@@ -8,11 +8,10 @@ namespace SODP.Infrastructure.Repositories;
 
 internal class BranchRepository : PagedRepository<Branch>, IBranchRepository
 {
-	public BranchRepository(SODPDBContext dbContext, ILogger<Branch> logger) : base(dbContext, logger) { }
+	public BranchRepository(SODPDBContext dbContext, ILogger<Branch> logger) : 
+		base(dbContext, logger) { }
 
-	public async Task<Branch> GetByIdWithDetailsAsync(
-		int id, 
-		CancellationToken cancellationToken)
+	public async Task<Branch> GetDetailsAsync(int id, CancellationToken cancellationToken)
 	{
 		return await _dbContext.Set<Branch>()
 			.Include(s => s.Licenses)

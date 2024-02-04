@@ -28,7 +28,7 @@ public class RoleRepository : IRoleRepository
 			.OrderBy(x => x.Name);
 		var totalItems = await queryable.CountAsync(cancellationToken);
 
-		var collection = await GetPageQuery(queryable, pageNumber, pageSize).ToListAsync(cancellationToken);
+		var collection = GetPageQuery(queryable, pageNumber, pageSize);
 
 		return new Page<Role>(pageNumber, pageSize, totalItems, collection);
 	}

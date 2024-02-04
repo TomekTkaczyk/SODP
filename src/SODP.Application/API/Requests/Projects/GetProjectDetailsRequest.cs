@@ -4,4 +4,4 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Projects;
 
-public sealed record GetProjectWithDetailsRequest(int Id) : IRequest<ApiResponse<ProjectDTO>>;
+public sealed record GetProjectDetailsRequest(int Id) : IRequest<ApiResponse<ProjectDTO>>;

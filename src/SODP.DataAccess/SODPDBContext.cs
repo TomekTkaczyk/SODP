@@ -2,20 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SODP.Domain.Entities;
-using SODP.Domain.Services;
 
 namespace SODP.DataAccess;
 
 public class SODPDBContext : IdentityDbContext<User, Role, int>, IDbContext
 {
-	private readonly IDateTime _dateTime;
-
 	public SODPDBContext(DbContextOptions<SODPDBContext> options) : base(options) { }
-
-    public SODPDBContext(DbContextOptions<SODPDBContext> options, IDateTime dateTime) : base(options)
-	{
-		_dateTime = dateTime;
-	}
 
 	public virtual DbSet<AppDictionary> AppDictionary { get; set; }
 	public virtual DbSet<Stage> Stages { get; set; }

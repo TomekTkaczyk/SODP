@@ -2,6 +2,4 @@
 
 namespace SODP.Domain.Repositories;
 
-public interface IAppDictionaryRepository : IRepository<AppDictionary>
-{
-}
+public interface IAppDictionaryRepository : IRepository<AppDictionary> { }

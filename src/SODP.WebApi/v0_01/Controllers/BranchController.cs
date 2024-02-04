@@ -125,7 +125,7 @@ public class BranchController : ActiveStatusController<Branch>
 	}
 
 
-	[HttpGet("{id:int}/licenses")]
+	[HttpGet("{id:int}/details")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]

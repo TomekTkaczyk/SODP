@@ -63,8 +63,8 @@ public abstract class AppPageModel : PageModel
 	protected async Task<ApiResponse<TValue>> GetApiResponseAsync<TValue>(string url)
 	{
 		var apiResponse = await _apiProvider.GetAsync(url);
-		var jsonSettings = new JsonSerializerSettings();
-		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>(new[] { new JsonMediaTypeFormatter { SerializerSettings = jsonSettings } });
+		
+		var result = await apiResponse.Content.ReadAsAsync<ApiResponse<TValue>>();
 
 		return result;
 	}

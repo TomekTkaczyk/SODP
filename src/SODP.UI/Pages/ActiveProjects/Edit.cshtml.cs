@@ -119,11 +119,15 @@ public class EditModel : AppPageModel
 			Items = await GetAvailablePartsAsync(),
 		};
 
-		var apiResponse = await GetApiResponseAsync<ProjectPartDTO>($"projects/parts/{projectPartId}");
-		if (apiResponse.Value is not null)
+		if( projectPartId != 0 )
 		{
-			model.Sign = apiResponse.Value.Sign;
-			model.Title = apiResponse.Value.Title;
+			var apiResponse = await GetApiResponseAsync<ProjectPartDTO>($"projects/parts/{projectPartId}");
+
+			if (apiResponse.Value is not null)
+			{
+				model.Sign = apiResponse.Value.Sign;
+				model.Title = apiResponse.Value.Title;
+			}
 		}
 
 		return GetPartialView(model, _editProjectPartViewName);
@@ -152,20 +156,19 @@ public class EditModel : AppPageModel
 	{
 		var apiResponse = await GetApiResponseAsync<ProjectPartDTO>($"projects/parts/{projectPartId}/details");
 
-        var projectPartDetails = apiResponse.Value.ToProjectPartDetailsVM();
+        var model = apiResponse.Value.ToProjectPartDetailsVM();
 
-
-		//projectPart.BranchesToSelect = new AvailableBranchesVM()
+		//projectPartDetails.BranchesToSelect = new AvailableBranchesVM()
 		//{
 		//	ProjectPartId = projectPartId,
-		//	Items = projectPart.AvailableBranches.Select(x => new SelectListItem
+		//	Items = apiResponse.Value.AvailableBranches.Select(x => new SelectListItem
 		//	{
 		//		Value = x.Id.ToString(),
 		//		Text = x.ToString()
 		//	}).ToList()
 		//};
 
-		var partialView = GetPartialView(projectPartDetails, _projectPartDetailsViewName);
+		var partialView = GetPartialView(model, _projectPartDetailsViewName);
 
 		partialView.ViewData.Add("ProjectPartId", projectPartId);
 
@@ -296,13 +299,13 @@ public class EditModel : AppPageModel
 
 	private async Task<SelectList> GetAvailableDesignersAsync(PartBranchDTO partBranch)
 	{
-		var apiResponse = await GetApiResponseAsync<BranchDTO>($"branches/{partBranch.Branch.Id}/licenses");
+		var apiResponse = await GetApiResponseAsync<BranchDTO>($"branches/{partBranch.Branch.Id}/details");
 		var licenses = apiResponse.Value.Licenses.ToList();
 		licenses.RemoveAll(x => partBranch.Roles.Select(x => x.License).Any());
 		var designers = licenses.Select(x => new SelectListItem
 		{
 			Value = x.Id.ToString(),
-			Text = $"{x.Designer} ({x.Content})"
+			Text = $"{x.Designer.Title} {x.Designer.Firstname} {x.Designer.Lastname} ({x.Content})"
 		}).ToList();
 
 		return new SelectList(designers, "Value", "Text");

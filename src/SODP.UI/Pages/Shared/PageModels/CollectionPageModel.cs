@@ -61,7 +61,7 @@ public abstract class CollectionPageModel : AppPageModel
 
 		return pageInfo;
 	}
-	protected ICollection<T> GetCollection<T>(ApiResponse<Page<T>> response)
+	protected IEnumerable<T> GetCollection<T>(ApiResponse<Page<T>> response)
 	{
 		return response.Value.Collection;
 	}

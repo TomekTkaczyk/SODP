@@ -25,7 +25,7 @@ public class UserRepository : IUserRepository
 			.OrderBy(x => x.UserName);
 		var totalItems = await queryable.CountAsync(cancellationToken);
 
-		var collection = await GetPageQuery(queryable, pageNumber, pageSize).ToListAsync(cancellationToken);
+		var collection = GetPageQuery(queryable, pageNumber, pageSize);
 
 		return new Page<User>(pageNumber, pageSize, totalItems, collection);
 	}

@@ -8,4 +8,4 @@ public record BranchDTO(
 	string Title,
 	int Order,
 	bool ActiveStatus,
-	ICollection<LicenseDTO> Licenses);
+	IEnumerable<LicenseDTO> Licenses);

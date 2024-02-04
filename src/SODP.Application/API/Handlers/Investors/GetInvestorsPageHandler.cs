@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Investors;
+using SODP.Application.Extensions;
 using SODP.Application.Specifications.Investors;
 using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
@@ -37,11 +38,9 @@ public sealed class GetInvestorsPageHandler : IRequestHandler<GetInvestorsPageRe
                 request.ActiveStatus,
                 request.SearchString);
 
-		var page = await _investorRepository.GetPageAsync(
-			specification,
-			request.PageNumber,
-			request.PageSize,
-			cancellationToken);
+		var page = await _investorRepository
+			.Get(specification)
+			.AsPageAsync(request.PageNumber, request.PageSize, cancellationToken);
 
 		return ApiResponse.Success(_mapper.Map<Page<InvestorDTO>>(page));
 

@@ -13,4 +13,6 @@ public class ProjectPartDetailsVM
 	public int Order { get; set; }
 
 	public ICollection<PartBranchVM> Branches { get; set; }
+
+	public AvailableBranchesVM BranchesToSelect {get; set;}
 }

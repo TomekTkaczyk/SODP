@@ -57,17 +57,9 @@ public class DesignerController : ActiveStatusController<Designer>
         int id,
         CancellationToken cancellationToken = default)
     {
-        var request = new GetDesignerDetailsRequest(id);
+		var request = new GetDesignerDetailsRequest(id);
 
-		var result = await HandleRequestAsync<GetDesignerDetailsRequest, ApiResponse<DesignerDTO>>(request, cancellationToken);
-
-		var jsonSerializerSettings = new JsonSerializerSettings()
-		{
-			ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-			PreserveReferencesHandling = PreserveReferencesHandling.All
-        };
-
-        return result;
+		return await HandleRequestAsync<GetDesignerDetailsRequest, ApiResponse<DesignerDTO>>(request, cancellationToken);
     }
 
 

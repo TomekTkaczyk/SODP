@@ -1,14 +1,13 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Projects;
+using SODP.Application.Mappers;
 using SODP.Application.Specifications.Branches;
 using SODP.Domain.Attributes;
 using SODP.Domain.Exceptions.PartExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,16 +17,13 @@ public class GetPartDetailsHandler : IRequestHandler<GetPartDetailsRequest, ApiR
 {
 	private readonly IProjectPartRepository _projectPartRepository;
     private readonly IBranchRepository _branchRepository;
-    private readonly IMapper _mapper;
 
 	public GetPartDetailsHandler(
         IProjectPartRepository projectPartRepository,
-		IBranchRepository branchRepository,
-		IMapper mapper)
+		IBranchRepository branchRepository)
     {
 		_projectPartRepository = projectPartRepository;
         _branchRepository = branchRepository;
-        _mapper = mapper;
 	}
 
 	[IgnoreMethodAsyncNameConvention]
@@ -47,9 +43,6 @@ public class GetPartDetailsHandler : IRequestHandler<GetPartDetailsRequest, ApiR
 			availableBranches.Remove(item.Branch);
 		}
 
-		var projectPartDTO = _mapper.Map<ProjectPartDTO>(projectPart);
-		projectPartDTO.AvailableBranches = _mapper.Map<ICollection<BranchDTO>>(availableBranches);
-
-        return ApiResponse.Success(projectPartDTO);
+        return ApiResponse.Success(projectPart.ToDTO(availableBranches));
 	}
 }

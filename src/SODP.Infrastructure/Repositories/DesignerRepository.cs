@@ -6,9 +6,10 @@ using SODP.Domain.Repositories;
 
 namespace SODP.Infrastructure.Repositories;
 
-internal class DesignerRepository : PagedRepository<Designer>, IDesignerRepository
+internal class DesignerRepository : Repository<Designer>, IDesignerRepository
 {
-	public DesignerRepository(SODPDBContext dbContext, ILogger<Designer> logger ) : base(dbContext, logger) { }
+	public DesignerRepository(SODPDBContext dbContext, ILogger<Designer> logger ) 
+        : base(dbContext, logger) { }
 
     public async Task<Designer> GetDetailsAsync(int id, CancellationToken cancellationToken)
     {

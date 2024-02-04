@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 
-namespace SODP.UI.Pages.ActiveProjects.ViewModels;
+namespace SODP.UI.Pages.Shared.ViewModels;
 
 public class AvailableBranchesVM
 {

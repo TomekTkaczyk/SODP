@@ -7,5 +7,6 @@ namespace SODP.Infrastructure.Repositories;
 
 public sealed class StageRepository : Repository<Stage>, IStageRepository
 {
-	public StageRepository(SODPDBContext dbContext, ILogger<Stage> logger) : base(dbContext, logger) { }
+	public StageRepository(SODPDBContext dbContext, ILogger<Stage> logger) 
+		: base(dbContext, logger) { }
 }

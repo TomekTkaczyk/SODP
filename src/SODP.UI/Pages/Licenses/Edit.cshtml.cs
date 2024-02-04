@@ -57,13 +57,10 @@ public class EditModel : AppPageModel
 		return Redirect("/Designers/index");
 	}
 
-	public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId, string content)
+	public async Task<IActionResult> OnDeleteBranchAsync(int id, int branchId)
 	{
-		var apiResponse = await _apiProvider.DeleteAsync($"licenses/{id}/branches/{branchId}");
-
-		await GetLicenseAsync(id);
-		License.Content = content;
-
+		await _apiProvider.DeleteAsync($"licenses/{id}/branches/{branchId}");
+		
 		return Page();
 	}
 
@@ -82,7 +79,7 @@ public class EditModel : AppPageModel
 
 	private async Task GetLicenseAsync(int id)
 	{
-		var apiResponse = await _apiProvider.GetAsync($"licenses/{id}/branches");
+		var apiResponse = await _apiProvider.GetAsync($"licenses/{id}/details");
 		var response = await _apiProvider.GetContentAsync<ApiResponse<LicenseDTO>>(apiResponse);
 		if (apiResponse.IsSuccessStatusCode)
 		{
@@ -124,22 +121,5 @@ public class EditModel : AppPageModel
 		}
 
 		return result;
-	}
-
-	private StringContent ToHttpContent()
-	{
-		var license = new LicenseVM
-		{
-			Id = License.Id,
-			Content = License.Content
-		};
-		var designer = new DesignerVM
-		{
-			Id = License.DesignerId
-		};
-
-		license.Designer = designer.ToString();
-
-		return license.ToHttpContent();
 	}
 }

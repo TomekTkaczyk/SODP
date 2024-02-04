@@ -8,5 +8,6 @@ namespace SODP.Infrastructure.Repositories;
 internal class LicensesRepository : Repository<License>, ILicensesRepository
 
 {
-	public LicensesRepository(SODPDBContext dbContext, ILogger<License> logger) : base(dbContext, logger) { }
+	public LicensesRepository(SODPDBContext dbContext, ILogger<License> logger) 
+		: base(dbContext, logger) { }
 }

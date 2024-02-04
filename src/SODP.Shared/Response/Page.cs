@@ -6,4 +6,4 @@ public record Page<T>(
 	int PageNumber, 
 	int PageSize, 
 	int TotalCount,
-	ICollection<T> Collection);
+	IEnumerable<T> Collection);

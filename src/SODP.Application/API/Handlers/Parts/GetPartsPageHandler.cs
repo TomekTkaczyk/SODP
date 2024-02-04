@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using MediatR;
 using SODP.Application.API.Requests.Parts;
+using SODP.Application.Extensions;
 using SODP.Application.Specifications.Parts;
 using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,11 +35,9 @@ public sealed class GetPartsPageHandler : IRequestHandler<GetPartsPageRequest, A
 				request.ActiveStatus,
 				request.SearchString);
 
-		var page = await _partRepository.GetPageAsync(
-			specification,
-			request.PageNumber,
-			request.PageSize,
-			cancellationToken);
+		var page = await _partRepository
+			.Get(specification)
+			.AsPageAsync(request.PageNumber, request.PageSize, cancellationToken);
 
 		return ApiResponse.Success(_mapper.Map<Page<PartDTO>>(page));
 	}

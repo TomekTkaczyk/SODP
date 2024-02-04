@@ -5,9 +5,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SODP.Shared.DTO;
 
-public class ProjectDTO : BaseDTO
+public class ProjectDTO
 {
-	public string Number { get; set; }
+    public int Id { get; set; }
+
+    public string Number { get; set; }
 
 	public StageDTO Stage { get; set; }
 
@@ -32,5 +34,5 @@ public class ProjectDTO : BaseDTO
 
 	public ProjectStatus Status { get; set; }
 
-	public ICollection<ProjectPartDTO> Parts { get; set; }
+	public IEnumerable<ProjectPartDTO> Parts { get; set; }
 }

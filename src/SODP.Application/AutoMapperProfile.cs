@@ -29,6 +29,9 @@ public class AutoMapperProfile : Profile
 		CreateMap<Role, RoleDTO>()
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Name));
 
+		CreateMap<Investor, InvestorDTO>()
+            .ReverseMap();
+
 		#region Dictionary
 
 		CreateMap<AppDictionary, DictionaryDTO>()
@@ -45,9 +48,6 @@ public class AutoMapperProfile : Profile
             .ReverseMap();
 
 		#endregion
-
-		CreateMap<Investor, InvestorDTO>()
-            .ReverseMap();
 
         #region Stage
 
@@ -144,9 +144,12 @@ public class AutoMapperProfile : Profile
         #region Branch
 
         CreateMap<Branch, BranchDTO>()
-            .ForMember(dest => dest.Sign, opt => opt.MapFrom(x => x.Sign.Value))
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(x => x.Title.Value))
-            .ForMember(dest => dest.Licenses, opt => opt.MapFrom(x => x.Licenses))
+            .ForCtorParam(ctorParamName: "Id", m => m.MapFrom(dest => dest.Id))
+            .ForCtorParam(ctorParamName: "Sign", m => m.MapFrom(dest => dest.Sign.Value))
+            .ForCtorParam(ctorParamName: "Title", m => m.MapFrom(dest => dest.Title.Value))
+            .ForCtorParam(ctorParamName: "Order", m => m.MapFrom(dest => dest.Order))
+            .ForCtorParam(ctorParamName: "ActiveStatus", m => m.MapFrom(dest => dest.ActiveStatus))
+            .ForCtorParam(ctorParamName: "Licenses", m => m.MapFrom(dest => dest.Licenses))
             .PreserveReferences();
 
         CreateMap<BranchDTO, Branch>()
@@ -224,9 +227,9 @@ public class AutoMapperProfile : Profile
 
         CreateMap<Designer, DesignerDTO>()
             .ForCtorParam(ctorParamName:"Id", m => m.MapFrom(dest => dest.Id))
-            .ForCtorParam(ctorParamName:"Title", m => m.MapFrom<string>(dest => dest.Title))
-            .ForCtorParam(ctorParamName: "Firstname", m => m.MapFrom<string>(dest => dest.Firstname))
-            .ForCtorParam(ctorParamName: "Lastname", m => m.MapFrom<string>(dest => dest.Lastname))
+            .ForCtorParam(ctorParamName:"Title", m => m.MapFrom<string>(dest => dest.Title.Value))
+            .ForCtorParam(ctorParamName: "Firstname", m => m.MapFrom<string>(dest => dest.Firstname.Value))
+            .ForCtorParam(ctorParamName: "Lastname", m => m.MapFrom<string>(dest => dest.Lastname.Value))
             .ForCtorParam(ctorParamName: "ActiveStatus", m => m.MapFrom(dest => dest.ActiveStatus))
             .ForCtorParam(ctorParamName: "Licenses", m => m.MapFrom(dest => dest.Licenses))
             .PreserveReferences();
@@ -247,16 +250,11 @@ public class AutoMapperProfile : Profile
 			.AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
             .PreserveReferences();
 
-        CreateMap<License, LicenseWithBranchesDTO>()
-                .ForMember(dest => dest.Designer, opt => opt.MapFrom(x => x.Designer))
-                .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
-                .PreserveReferences();
-
         CreateMap<License, LicenseDTO>()
-            .ForMember(dest => dest.Branches, opt => opt.MapFrom(x => x.Branches.Select(y => y.Branch)))
-            .AddTransform<string>(s => string.IsNullOrEmpty(s) ? string.Empty : s)
-            .PreserveReferences()
-            .ReverseMap();
+            .ForCtorParam(ctorParamName: "Id", m => m.MapFrom(dest => dest.Id))
+            .ForCtorParam(ctorParamName: "Designer", m => m.MapFrom(dest => dest.Designer))
+            .ForCtorParam(ctorParamName: "Branches", m => m.MapFrom(dest => dest.Branches))
+            .PreserveReferences();
 
         #endregion
     }
@@ -272,7 +270,7 @@ public class AutoMapperProfile : Profile
                 source.PageNumber,
                 source.PageSize,
                 source.TotalCount,
-                context.Mapper.Map<ICollection<TSource>, ICollection<TDestination>>(source.Collection));
+                context.Mapper.Map<IEnumerable<TSource>, IEnumerable<TDestination>>(source.Collection));
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using SODP.Domain.ValueObjects;
-using SODP.Shared.DTO;
+﻿using SODP.Shared.DTO;
 using SODP.UI.Pages.Shared.ViewModels;
 using System.Linq;
 
@@ -32,7 +30,7 @@ public static class DTOExtensions
 
 	public static ProjectDetailsVM ToProjectDetailsVM(this ProjectDTO project)
 	{
-		ProjectDetailsVM result = new()
+		return new()
 		{
 			Id = project.Id,
 			Name = project.Name,
@@ -48,13 +46,11 @@ public static class DTOExtensions
 			Title = project.Title,
 			Parts = project.Parts.Select(x => x.ToProjectPartVM()).ToList()
 		};
-
-		return result;
 	}
 
 	public static ProjectPartVM ToProjectPartVM(this ProjectPartDTO projectPart)
 	{
-		ProjectPartVM result = new()
+		return new()
 		{
 			Id = projectPart.Id,
 			Order = projectPart.Order,
@@ -62,13 +58,11 @@ public static class DTOExtensions
 			Title = projectPart.Title,
 			Branches = projectPart.Branches.Select(x => x.ToPartBranchVM()).ToList()	
 		};
-
-		return result;
 	}
 
 	public static ProjectPartDetailsVM ToProjectPartDetailsVM(this ProjectPartDTO projectPart)
 	{
-		ProjectPartDetailsVM result = new()
+		return new()
 		{
 			Id = projectPart.Id,
 			Order = projectPart.Order,
@@ -76,8 +70,6 @@ public static class DTOExtensions
 			Title = projectPart.Title,
 			Branches = projectPart.Branches.Select(x => x.ToPartBranchVM()).ToList(),
 		};
-
-		return result;
 	}
 
 	public static BranchVM ToBranchVM(this BranchDTO branch)
@@ -125,9 +117,9 @@ public static class DTOExtensions
 
 		LicenseVM result = new(
 			license.Id,
-			license.Designer.ToString(),
+            license.Designer is null ? "" : license.Designer.ToString(),
 			license.Content,
-			branches
+			branches.ToList()
 		);
 
 		return result;
@@ -175,7 +167,7 @@ public static class DTOExtensions
 			designer.Id,
 			designer.Title + " " + designer.Firstname + " " +designer.Lastname,
 			designer.ActiveStatus,
-			licenses
+			licenses.ToList()
 			);
 
 		return result;

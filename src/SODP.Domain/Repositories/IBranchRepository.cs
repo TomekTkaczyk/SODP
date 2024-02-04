@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace SODP.Domain.Repositories;
 
-public interface IBranchRepository : IPageRepository<Branch>
+public interface IBranchRepository : IRepository<Branch>
 {
-    Task<Branch> GetByIdWithDetailsAsync(int id, CancellationToken cancellationToken);
+    Task<Branch> GetDetailsAsync(int id, CancellationToken cancellationToken);
 }

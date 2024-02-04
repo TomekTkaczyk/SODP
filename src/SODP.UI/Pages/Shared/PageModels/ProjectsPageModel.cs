@@ -33,7 +33,7 @@ public abstract class ProjectsPageModel : CollectionPageModel
 	}
 
 	[BindProperty]
-	public ICollection<ProjectVM> Projects { get; set; }
+	public IEnumerable<ProjectVM> Projects { get; set; }
 
 	protected async Task<IActionResult> GetAsync(ProjectStatus status, string searchString, int pageNumber, int pageSize)
 	{

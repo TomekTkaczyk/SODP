@@ -21,6 +21,6 @@ public class SODPDbContextFactory
 				})
 			.Options;
 
-        return new SODPDBContext(options, new DateTimeService());
+        return new SODPDBContext(options);
     }
 }

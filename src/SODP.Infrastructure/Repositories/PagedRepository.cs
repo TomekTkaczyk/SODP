@@ -10,13 +10,14 @@ namespace SODP.Infrastructure.Repositories;
 
 public abstract class PagedRepository<TEntity> : Repository<TEntity>, IPageRepository<TEntity> where TEntity : BaseEntity
 {
-	public PagedRepository(SODPDBContext dbContext, ILogger<TEntity> logger) : base(dbContext, logger) { }
+	public PagedRepository(SODPDBContext dbContext, ILogger<TEntity> logger) 
+		: base(dbContext, logger) { }
 
 	public async Task<Page<TEntity>> GetPageAsync(ISpecification<TEntity> specification, int pageNumber, int pageSize, CancellationToken cancellationToken)
 	{
 		var queryable = Get(specification);
 		var totalItems = await queryable.CountAsync(cancellationToken);
-		var collection = await GetPageQuery(queryable, pageNumber, pageSize).ToListAsync(cancellationToken);
+		var collection = GetPageQuery(queryable, pageNumber, pageSize);
 
 		return new Page<TEntity>(pageNumber, pageSize, totalItems, collection);
 	}

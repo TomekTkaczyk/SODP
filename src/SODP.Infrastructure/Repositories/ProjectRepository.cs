@@ -6,7 +6,7 @@ using SODP.Domain.Repositories;
 
 namespace SODP.Infrastructure.Repositories;
 
-public class ProjectRepository : PagedRepository<Project>, IProjectRepository
+public class ProjectRepository : Repository<Project>, IProjectRepository
 {
 	public ProjectRepository(SODPDBContext dbContext, ILogger<Project> logger) : base(dbContext, logger) { }
 
