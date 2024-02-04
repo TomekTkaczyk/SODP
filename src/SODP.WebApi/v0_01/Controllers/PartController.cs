@@ -1,16 +1,11 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Parts;
-using SODP.Application.API.Requests.Stages;
 using SODP.Domain.Entities;
-using SODP.Domain.Exceptions;
-using SODP.Domain.Exceptions.PartExceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -20,8 +15,7 @@ public class PartController : ActiveStatusController<Part>
 {
 	public PartController(
 		ISender sender,
-		ILogger<PartController> logger,
-		IMapper mapper) : base(sender, logger, mapper) { }
+		ILogger<PartController> logger) : base(sender, logger) { }
 
 
 	[HttpGet]
@@ -50,7 +44,7 @@ public class PartController : ActiveStatusController<Part>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetAsync(
-		int id,
+		[FromRoute] int id,
 		CancellationToken cancellationToken = default)
 	{
 		var request = new GetPartRequest(id);
@@ -68,30 +62,12 @@ public class PartController : ActiveStatusController<Part>
 		[FromBody] CreatePartRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		try
-		{
-			var response = await _sender.Send(request, cancellationToken);
-			return CreatedAtAction(
-				nameof(GetAsync),
-				new { id = response.Value },
-				response);
-		}
-		catch (ConflictException ex)
-		{
-			return Conflict(
-				ApiResponse.Failure(
-					ex.Message, 
-					HttpStatusCode.Conflict, 
-					new List<Error>()));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(
-				ApiResponse.Failure(
-					ex.Message, 
-					HttpStatusCode.InternalServerError, 
-					new List<Error>()));
-		}
+        var response = await _sender.Send(request, cancellationToken);
+        
+		return CreatedAtAction(
+            nameof(GetAsync),
+            new { id = response.Value },
+            response);
 	}
 
 
@@ -99,7 +75,7 @@ public class PartController : ActiveStatusController<Part>
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public virtual async Task<IActionResult> UpdateByIdAsync(
+	public async Task<IActionResult> UpdateByIdAsync(
 		[FromRoute] int id,
 		[FromBody] UpdatePartByIdRequest request,
 		CancellationToken cancellationToken = default)
@@ -127,27 +103,7 @@ public class PartController : ActiveStatusController<Part>
 			return BadRequest();
 		}
 
-		try
-		{
-			return await HandleRequestAsync<UpdatePartBySignRequest, ApiResponse>(request, cancellationToken);
-		}
-		catch (DomainException ex)
-		{
-			return NotFound(
-				ApiResponse.Failure(
-					ex.Message,
-					HttpStatusCode.NotFound,
-					new List<Error>()));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(
-				ApiResponse.Failure(
-					ex.Message,
-					HttpStatusCode.InternalServerError,
-					new List<Error>()));
-		}
-
+        return await HandleRequestAsync<UpdatePartBySignRequest, ApiResponse>(request, cancellationToken);
 	}
 
 
@@ -156,11 +112,9 @@ public class PartController : ActiveStatusController<Part>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> DeleteAsync(
-		[FromRoute] int id,
+		[FromRoute] int id, 
 		CancellationToken cancellationToken = default)
 	{
-		var request = new DeletePartRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(new DeletePartRequest(id), cancellationToken);
 	}
 }

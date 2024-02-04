@@ -18,8 +18,7 @@ public class LicenseController : ApiBaseController
 {
 	public LicenseController(
 		ISender sender,
-		ILogger<LicenseController> logger,
-		IMapper mapper) : base(sender, logger, mapper) { }
+		ILogger<LicenseController> logger) : base(sender, logger) { }
 
 
 	[HttpGet("{id:int}")]

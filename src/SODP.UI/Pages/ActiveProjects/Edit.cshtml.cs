@@ -143,10 +143,12 @@ public class EditModel : AppPageModel
 
 			if (!responseMessage.IsSuccessStatusCode)
 			{
-				SetModelErrors(responseMessage);
+				var message = await responseMessage.Content.ReadAsAsync<ApiResponse>();
+				SetModelErrors(message);
+
 			}
 		}
-
+				
 		part.Items = await GetAvailablePartsAsync();
 
 		return GetPartialView(part, _editProjectPartViewName);

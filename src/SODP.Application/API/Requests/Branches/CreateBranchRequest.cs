@@ -4,7 +4,7 @@ using SODP.Shared.Response;
 
 namespace SODP.Application.API.Requests.Branches;
 
-public sealed record CreateBranchRequest : IRequest<ApiResponse<BranchDTO>>
+public sealed record CreateBranchRequest : IRequest<ApiResponse<int>>
 {
 	private string _sign;
 	private string _title;

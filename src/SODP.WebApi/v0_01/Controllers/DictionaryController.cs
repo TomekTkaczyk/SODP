@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,6 +10,5 @@ public class DictionaryController : ApiBaseController
 {
 	public DictionaryController(
 		ISender sender,
-		ILogger<DictionaryController> logger,
-		IMapper mapper) : base(sender, logger, mapper) { }
+		ILogger<DictionaryController> logger) : base(sender, logger) { }
 }

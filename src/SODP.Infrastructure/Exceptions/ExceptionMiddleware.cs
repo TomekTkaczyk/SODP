@@ -25,7 +25,7 @@ namespace SODP.Infrastructure.Exceptions
 			{
 				DomainException => (StatusCodes.Status400BadRequest, new Error(
 					exception.GetType().Name.Replace("Exception", string.Empty), exception.Message)),
-				_ => (StatusCodes.Status500InternalServerError, new Error("error", "There was an error"))
+				_ => (StatusCodes.Status500InternalServerError, new Error("error", "Unknow server error"))
 			};
 
 			context.Response.StatusCode = statusCode;

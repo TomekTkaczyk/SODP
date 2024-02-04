@@ -1,15 +1,11 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SODP.Application.API.Requests.Parts;
 using SODP.Application.API.Requests.Stages;
 using SODP.Domain.Entities;
-using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -19,8 +15,7 @@ public class StageController : ActiveStatusController<Stage>
 {
 	public StageController(
 		ISender sender,
-		ILogger<StageController> logger,
-		IMapper mapper) : base(sender, logger, mapper) { }
+		ILogger<StageController> logger) : base(sender, logger) { }
 
 
 	[HttpGet]
@@ -40,7 +35,9 @@ public class StageController : ActiveStatusController<Stage>
 			return BadRequest(new Error("pageNumber and/or pageSize is invalid."));
 		}
 
-		return await HandleRequestAsync<GetStagesPageRequest,ApiResponse<Page<StageDTO>>>(request, cancellationToken);
+		return await HandleRequestAsync<GetStagesPageRequest,ApiResponse<Page<StageDTO>>>(
+			request, 
+			cancellationToken);
 	}
 
 
@@ -54,7 +51,9 @@ public class StageController : ActiveStatusController<Stage>
 	{
 		var request = new GetStageRequest(id);
 
-		return await HandleRequestAsync<GetStageRequest,ApiResponse<StageDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetStageRequest,ApiResponse<StageDTO>>(
+			request, 
+			cancellationToken);
 	}
 
 
@@ -67,30 +66,12 @@ public class StageController : ActiveStatusController<Stage>
 		[FromBody] CreateStageRequest request, 
 		CancellationToken cancellationToken = default)
 	{
-		try
-		{
-			var response = await _sender.Send(request, cancellationToken);
-			return CreatedAtAction(
-					nameof(GetAsync),
-					new { id = response.Value },
-					null);
-		}
-		catch (ConflictException ex)
-		{
-			return Conflict(
-				ApiResponse.Failure(
-					ex.Message, 
-					HttpStatusCode.Conflict, 
-					new List<Error>()));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(
-				ApiResponse.Failure(
-					ex.Message,
-					HttpStatusCode.InternalServerError,
-					new List<Error>()));
-		}
+        var response = await _sender.Send(request, cancellationToken);
+
+        return CreatedAtAction(
+                nameof(GetAsync),
+                new { id = response.Value },
+                null); 
 	}
 
 
@@ -109,7 +90,9 @@ public class StageController : ActiveStatusController<Stage>
 			return BadRequest();
 		}
 
-		return await HandleRequestAsync<UpdateStageByIdRequest, ApiResponse>(request, cancellationToken);
+		return await HandleRequestAsync<UpdateStageByIdRequest, ApiResponse>(
+			request, 
+			cancellationToken);
 	}
 
 
@@ -127,27 +110,9 @@ public class StageController : ActiveStatusController<Stage>
 			return BadRequest();
 		}
 
-		try
-		{
-			return await HandleRequestAsync<UpdateStageBySignRequest, ApiResponse>(request, cancellationToken);
-		}
-		catch (DomainException ex)
-		{
-			return NotFound(
-				ApiResponse.Failure(
-					ex.Message,
-					HttpStatusCode.NotFound,
-					new List<Error>()));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(
-				ApiResponse.Failure(
-					ex.Message,
-					HttpStatusCode.InternalServerError,
-					new List<Error>()));
-		}
-
+		return await HandleRequestAsync<UpdateStageBySignRequest, ApiResponse>(
+			request, 
+			cancellationToken);
 	}
 
 
@@ -159,8 +124,8 @@ public class StageController : ActiveStatusController<Stage>
 	[FromRoute] int id,
 	CancellationToken cancellationToken = default)
 	{
-		var request = new DeleteStageRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(
+			new DeleteStageRequest(id), 
+			cancellationToken);
 	}
 }

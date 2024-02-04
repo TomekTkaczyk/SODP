@@ -16,13 +16,11 @@ public abstract class ApiBaseController : ControllerBase
 {
 	protected readonly ISender _sender;
 	protected readonly ILogger<ApiBaseController> _logger;
-	protected readonly IMapper _mapper;
 
-	public ApiBaseController(ISender sender, ILogger<ApiBaseController> logger, IMapper mapper)
+	public ApiBaseController(ISender sender, ILogger<ApiBaseController> logger)
 	{
 		_sender = sender ?? throw new ArgumentNullException(nameof(sender));
 		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
-		_mapper = mapper ?? throw new ArgumentNullException(nameof(logger));
 	}
 
 
@@ -36,23 +34,10 @@ public abstract class ApiBaseController : ControllerBase
 				.Where(x => x.Value.Errors.Any())
 				.Select(x => new { property = x.Key, errors = x.Value.Errors }));
 		}
-		try
-		{
-			var response = await _sender.Send(request, cancellationToken);
-			return NoContent();
-		}
-		catch (NotFoundException ex)
-		{
-			return NotFound(ApiResponse.Failure(ex.Message,HttpStatusCode.NotFound,new List<Error>()));
-		}
-		catch (ConflictException ex)
-		{
-			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
-		}
+
+        await _sender.Send(request, cancellationToken);
+
+        return NoContent();
 	}
 
 	protected async Task<IActionResult> HandleRequestAsync<TRequest, TResponse>(
@@ -65,28 +50,9 @@ public abstract class ApiBaseController : ControllerBase
 				.Where(x => x.Value.Errors.Any())
 				.Select(x => new { property = x.Key, errors = x.Value.Errors}));
 		}
-		try
-		{
-			var response = await _sender.Send(request, cancellationToken);
 
-			return StatusCode((int)response.HttpCode, response);
-		}
-		catch (NotFoundException ex)
-		{
-			return NotFound(ApiResponse.Failure(ex.Message,HttpStatusCode.NotFound,new List<Error>()));
-		}																				  
-		catch (ConflictException ex)
-		{
-			return Conflict(ApiResponse.Failure(ex.Message,HttpStatusCode.Conflict));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ApiResponse.Failure(ex.Message,HttpStatusCode.InternalServerError));
-		}
-	}
+        var response = await _sender.Send(request, cancellationToken);
 
-	protected internal ObjectResult UnknowServerError(object value)
-	{
-		return StatusCode(StatusCodes.Status500InternalServerError, value);
+        return StatusCode((int)response.HttpCode, response);
 	}
 }

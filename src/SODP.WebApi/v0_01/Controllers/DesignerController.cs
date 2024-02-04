@@ -20,8 +20,7 @@ public class DesignerController : ActiveStatusController<Designer>
 {
 	public DesignerController(
 		ISender sender,
-		ILogger<DesignerController> logger,
-		IMapper mapper) : base(sender, logger, mapper) { }
+		ILogger<DesignerController> logger) : base(sender, logger) { }
 
 
 	[HttpGet]
@@ -72,22 +71,12 @@ public class DesignerController : ActiveStatusController<Designer>
 		[FromBody] CreateDesignerRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		try
-		{
-			var response = await _sender.Send(request, cancellationToken);
-			return CreatedAtAction(
-				nameof(GetAsync),
-				new { response.Value.Id },
-				response);
-		}
-		catch (ConflictException ex)
-		{
-			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
-		}
+        var response = await _sender.Send(request, cancellationToken);
+        
+		return CreatedAtAction(
+            nameof(GetAsync),
+            new { response.Value.Id },
+            response);
 	}
 
 
@@ -113,13 +102,9 @@ public class DesignerController : ActiveStatusController<Designer>
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
-	public async Task<IActionResult> DeleteAsync(
-			int id,
-			CancellationToken cancellationToken = default)
+	public async Task<IActionResult> DeleteAsync([FromRoute] int id, CancellationToken cancellationToken = default)
 	{
-		var request = new DeleteDesignerRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(new DeleteDesignerRequest(id), cancellationToken);
 	}
 
 }

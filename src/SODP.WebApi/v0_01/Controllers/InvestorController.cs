@@ -20,8 +20,7 @@ public class InvestorController : ActiveStatusController<Investor>
 {
 	public InvestorController(
 		ISender sender, 
-		ILogger<InvestorController> logger, 
-		IMapper mapper) : base(sender, logger, mapper) { }
+		ILogger<InvestorController> logger) : base(sender, logger) { }
 
 	[HttpGet]
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -59,30 +58,19 @@ public class InvestorController : ActiveStatusController<Investor>
 
 
 	[HttpPost]
-	[ProducesResponseType(typeof(ApiResponse<InvestorDTO>), StatusCodes.Status201Created)]
+	[ProducesResponseType(typeof(ApiResponse<int>), StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> CreateAsync(
 		[FromBody] CreateInvestorRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		try
-		{
-			var response = await _sender.Send(request, cancellationToken);
+        var response = await _sender.Send(request, cancellationToken);
 
-			return CreatedAtAction(
-				   nameof(GetAsync),
-				   new { response.Value.Id },
-				   response);
-		}
-		catch (ConflictException ex)
-		{
-			return Conflict(ApiResponse.Failure(ex.Message, HttpStatusCode.Conflict, new List<Error>()));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(ApiResponse.Failure(ex.Message, HttpStatusCode.InternalServerError, new List<Error>()));
-		}
+        return CreatedAtAction(
+               nameof(GetAsync),
+               new { response.Value },
+               response);
 	}
 
 
@@ -114,6 +102,8 @@ public class InvestorController : ActiveStatusController<Investor>
 	{
 		var request = new DeleteInvestorRequest(id);
 
-		return await HandleRequestAsync(request, cancellationToken);
+		var result =  await HandleRequestAsync(request, cancellationToken);
+
+		return result;
 	}
 }

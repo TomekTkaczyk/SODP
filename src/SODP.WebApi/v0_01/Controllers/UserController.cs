@@ -1,14 +1,10 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Users;
-using SODP.Domain.Entities;
-using SODP.Domain.Exceptions;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
-using System.Net;
 
 namespace SODP.WebApi.v0_01.Controllers;
 
@@ -20,8 +16,7 @@ public class UserController : ApiBaseController
 
 	public UserController(
 		ISender sender,
-		ILogger<UserController> logger,
-		IMapper mapper) : base(sender, logger, mapper) { }
+		ILogger<UserController> logger) : base(sender, logger) { }
 
 
 	[HttpGet]

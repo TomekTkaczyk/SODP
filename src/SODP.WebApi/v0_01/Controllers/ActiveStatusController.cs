@@ -12,8 +12,7 @@ public abstract class ActiveStatusController<TEntity> : ApiBaseController where 
 {
 	public ActiveStatusController(
 		ISender sender,
-		ILogger<ActiveStatusController<TEntity>> logger,
-		IMapper mapper) : base(sender, logger, mapper) { }
+		ILogger<ActiveStatusController<TEntity>> logger) : base(sender, logger) { }
 
 
 	[HttpPatch("{id:int}/status/{status:int}")]

@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Investors;
 using SODP.Application.Specifications.Common;
-using SODP.Application.Specifications.Investors;
 using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Exceptions.InvestorExceptions;
 using SODP.Domain.Repositories;
 using System.Threading;
 using System.Threading.Tasks;

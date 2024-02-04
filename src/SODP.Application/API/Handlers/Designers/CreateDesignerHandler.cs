@@ -6,6 +6,7 @@ using SODP.Application.Specifications.Designers;
 using SODP.Domain.Attributes;
 using SODP.Domain.Entities;
 using SODP.Domain.Exceptions;
+using SODP.Domain.Exceptions.DesignerExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;

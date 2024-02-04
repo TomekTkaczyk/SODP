@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,8 +15,7 @@ public class RoleController : ApiBaseController
 {
 	public RoleController(
 		ISender sender,
-		ILogger<RoleController> logger,
-		IMapper mapper) : base(sender, logger, mapper) { }
+		ILogger<RoleController> logger) : base(sender, logger) { }
 
 
 	[HttpGet]

@@ -18,9 +18,7 @@ public class BranchController : ActiveStatusController<Branch>
 {
 	public BranchController(
 		ISender sender,
-		ILogger<BranchController> logger,
-		IMapper mapper)
-		: base(sender, logger, mapper) { }
+		ILogger<BranchController> logger) : base(sender, logger) { }
 
 
 	[HttpGet]
@@ -40,7 +38,9 @@ public class BranchController : ActiveStatusController<Branch>
 			return BadRequest(new Error("pageNumber and/or pageSize is invalid."));
 		}
 
-		return await HandleRequestAsync<GetBranchesPageRequest, ApiResponse<Page<BranchDTO>>>(request, cancellationToken);
+		return await HandleRequestAsync<GetBranchesPageRequest, ApiResponse<Page<BranchDTO>>>(
+			request, 
+			cancellationToken);
 	}
 
 
@@ -49,12 +49,12 @@ public class BranchController : ActiveStatusController<Branch>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetAsync(
-		int id,
-		CancellationToken cancellationToken)
+		[FromRoute] int id,
+		CancellationToken cancellationToken = default)
 	{
-		var request = new GetBranchRequest(id);
-
-		return await HandleRequestAsync<GetBranchRequest, ApiResponse<BranchDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetBranchRequest, ApiResponse<BranchDTO>>(
+			new GetBranchRequest(id), 
+			cancellationToken);
 	}
 
 
@@ -66,30 +66,12 @@ public class BranchController : ActiveStatusController<Branch>
 		[FromBody] CreateBranchRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		try
-		{
-			var response = await _sender.Send(request, cancellationToken);
-			return CreatedAtAction(
-				nameof(GetAsync),
-				new { response.Value.Id },
-				response);
-		}
-		catch (ConflictException ex)
-		{
-			return Conflict(
-				ApiResponse.Failure(
-					ex.Message, 
-					HttpStatusCode.Conflict, 
-					new List<Error>()));
-		}
-		catch (Exception ex)
-		{
-			return UnknowServerError(
-				ApiResponse.Failure(
-					ex.Message, 
-					HttpStatusCode.InternalServerError, 
-					new List<Error>()));
-		}
+		var response = await _sender.Send(request, cancellationToken);
+
+		return CreatedAtAction(
+			nameof(GetAsync),
+			new { response.Value },
+			response);
 	}
 
 
@@ -100,7 +82,7 @@ public class BranchController : ActiveStatusController<Branch>
 	public virtual async Task<IActionResult> UpdateAsync(
 		int id,
 		[FromBody] UpdateBranchRequest request,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken = default)
 	{
 		if (id != request.Id)
 		{
@@ -116,12 +98,10 @@ public class BranchController : ActiveStatusController<Branch>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> DeleteAsync(
-		int id,
-		CancellationToken cancellationToken)
+		[FromRoute] int id, 
+		CancellationToken cancellationToken = default)
 	{
-		var request = new DeleteBranchRequest(id);
-
-		return await HandleRequestAsync(request, cancellationToken);
+		return await HandleRequestAsync(new DeleteBranchRequest(id), cancellationToken);
 	}
 
 
@@ -130,11 +110,11 @@ public class BranchController : ActiveStatusController<Branch>
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> GetLicensesAsync(
-		int id,
-		CancellationToken cancellationToken)
+		[FromRoute] int id, 
+		CancellationToken cancellationToken = default)
 	{
-		var request = new GetBranchDetailsRequest(id);
-
-		return await HandleRequestAsync<GetBranchDetailsRequest, ApiResponse<BranchDTO>>(request, cancellationToken);
+		return await HandleRequestAsync<GetBranchDetailsRequest, ApiResponse<BranchDTO>>(
+			new GetBranchDetailsRequest(id), 
+			cancellationToken);
 	}
 }

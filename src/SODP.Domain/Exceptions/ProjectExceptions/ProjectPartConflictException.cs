@@ -2,5 +2,5 @@
 
 public class ProjectPartConflictException : ConflictException
 {
-    public ProjectPartConflictException() : base("Project part already exist.") { }
+    public ProjectPartConflictException() : base("Project part already exist") { }
 }
