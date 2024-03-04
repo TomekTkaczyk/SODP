@@ -8,6 +8,7 @@ using SODP.Domain.Attributes;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,9 +33,11 @@ public sealed class GetBranchesPageHandler : IRequestHandler<GetBranchesPageRequ
                 request.ActiveStatus,
                 request.SearchString);
 
+        var memCache = new List<object>();
+
         var page = await _branchRepository
             .Get(specification)
-            .Select(x => x.ToDTO())
+            .Select(x => x.ToDTO(memCache))
             .AsPageAsync(request.PageNumber, request.PageSize, cancellationToken);
 
         return ApiResponse.Success(page);

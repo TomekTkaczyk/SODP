@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Application.API.Requests.Projects;
 using SODP.Shared.DTO;
+using SODP.Shared.Enums;
 using SODP.Shared.Response;
 using System.Net;
 
@@ -211,12 +212,10 @@ public class ProjectController : ApiBaseController
 		[FromRoute] int id,
 		CancellationToken cancellationToken = default)
 	{
-		var aaa = await HandleRequestAsync<GetPartDetailsRequest, ApiResponse<ProjectPartDTO>>(
-			new GetPartDetailsRequest(id),
-			cancellationToken);
-
-		return aaa;
-	}
+        return await HandleRequestAsync<GetPartDetailsRequest, ApiResponse<ProjectPartDTO>>(
+            new GetPartDetailsRequest(id),
+            cancellationToken);
+    }
 
 
 	[HttpPut("parts/{id:int}")]
@@ -307,17 +306,21 @@ public class ProjectController : ApiBaseController
 	}
 
 
-	[HttpDelete("parts/branches/roles/{id:int}")]
+	[HttpDelete("parts/branches/{id:int}/roles")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	[ProducesResponseType(StatusCodes.Status403Forbidden)]
 	public async Task<IActionResult> DeleteRoleFromPartBranchAsync(
 		[FromRoute] int id,
+		[FromQuery] string role,
 		CancellationToken cancellationToken = default)
 	{
-		return await HandleRequestAsync(
-			new DeleteRoleFromPartBranchRequest(id), 
-			cancellationToken);
+		if(Enum.IsDefined(typeof(TechnicalRole), role)) {
+			var request = new DeleteRoleFromPartBranchRequest(id, (TechnicalRole)Enum.Parse(typeof(TechnicalRole), role));
+			return await HandleRequestAsync(request, cancellationToken);
+		}
+
+		return BadRequest();
 	}
 
 	#endregion

@@ -4,6 +4,6 @@ using SODP.Shared.Enums;
 namespace SODP.Application.API.Requests.Projects;
 
 public sealed record AddRoleToPartBranchRequest(
-	int PartBranchId, 
-	TechnicalRole Role, 
-	int LicenseId) : IRequest;
+	int PartBranchId,
+    int LicenseId,
+    TechnicalRole Role) : IRequest;

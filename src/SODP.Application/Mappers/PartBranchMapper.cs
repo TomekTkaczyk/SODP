@@ -8,15 +8,28 @@ namespace SODP.Application.Mappers;
 
 public static class PartBranchMapper
 {
-    public static PartBranchDTO ToDTO(this PartBranch partBranch)
+    public static PartBranchDTO ToDTO(this PartBranch partBranch, List<object> mapCache = null)
     {
-        if (partBranch == null) throw new ArgumentNullException(nameof(partBranch));
+        if (partBranch == null) return null;
 
-        return new PartBranchDTO(
+        mapCache ??= new List<object>();
+
+        if(mapCache.Contains(partBranch)) {
+            return new PartBranchDTO(
+                partBranch.Id,
+                default,
+                default);
+        }
+
+        var partBranchDTO = new PartBranchDTO(
             partBranch.Id,
             partBranch.Branch.ToDTO(),
-            (partBranch.Roles is null)
+            (partBranch.Roles is not null)
                 ? partBranch.Roles.Select(x => x.ToDTO())
-                : new List<BranchRoleDTO>());
+                : default);
+
+        mapCache.Add(partBranch);
+
+        return partBranchDTO;
     }
 }

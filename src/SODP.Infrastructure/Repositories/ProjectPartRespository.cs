@@ -11,7 +11,7 @@ public class ProjectPartRespository : Repository<ProjectPart>, IProjectPartRepos
 	public ProjectPartRespository(SODPDBContext dbContext, ILogger<ProjectPart> logger) 
 		: base(dbContext, logger) { }
 
-	public async Task<ProjectPart> GetWithDetailsAsync(int id, CancellationToken cancellationToken)
+	public async Task<ProjectPart> GetDetailsAsync(int id, CancellationToken cancellationToken)
 	{
 		return await _dbContext.Set<ProjectPart>()
 			.Include(x => x.Branches)

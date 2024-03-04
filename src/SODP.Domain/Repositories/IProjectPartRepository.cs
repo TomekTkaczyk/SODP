@@ -6,5 +6,5 @@ namespace SODP.Domain.Repositories;
 
 public interface IProjectPartRepository : IRepository<ProjectPart> 
 {
-	Task<ProjectPart> GetWithDetailsAsync(int id, CancellationToken cancellationToken);
+	Task<ProjectPart> GetDetailsAsync(int id, CancellationToken cancellationToken);
 }

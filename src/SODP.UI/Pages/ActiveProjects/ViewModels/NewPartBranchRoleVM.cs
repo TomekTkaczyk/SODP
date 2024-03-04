@@ -4,7 +4,7 @@ namespace SODP.UI.Pages.ActiveProjects.ViewModels;
 
 public class NewPartBranchRoleVM
 {
-    public int partBranchId { get; set; }
+    public int PartBranchId { get; set; }
 
     public TechnicalRole Role { get; set; }
 

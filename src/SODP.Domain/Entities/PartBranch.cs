@@ -46,4 +46,9 @@ public class PartBranch : BaseEntity
 
         Roles.Add(BranchRole.Create(Role, license));
     }
+
+    public bool RemoveRole(TechnicalRole role) 
+    {
+        return Roles.Remove(Roles.FirstOrDefault(x => x.Role == role));
+    }
 }

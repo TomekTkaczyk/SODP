@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SODP.Shared.Enums;
-using SODP.UI.Pages.Shared.ViewModels;
 using System.Collections.Generic;
 
 namespace SODP.UI.Pages.ActiveProjects.ViewModels

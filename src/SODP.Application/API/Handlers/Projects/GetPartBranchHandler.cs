@@ -2,16 +2,15 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SODP.Application.API.Requests.Projects;
+using SODP.Application.Mappers;
 using SODP.Application.Specifications.Common;
-using SODP.Application.Specifications.Projects;
 using SODP.Domain.Entities;
+using SODP.Domain.Exceptions.PartBranchExceptions;
 using SODP.Domain.Repositories;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,16 +31,22 @@ public sealed class GetPartBranchHandler : IRequestHandler<GetPartBranchRequest,
 
     public async Task<ApiResponse<PartBranchDTO>> Handle(GetPartBranchRequest request, CancellationToken cancellationToken)
 	{
+		var mapCache = new List<object>();
+
 		var specification = new ByIdSpecification<PartBranch>(request.PartBranchId);
 		var partBranch = await _partBranchRepository.Get(specification)
 			.Include(b => b.Branch)
 			.Include(x => x.Roles)
 			.ThenInclude(x => x.License)
 			.ThenInclude(x => x.Designer)
-			.SingleOrDefaultAsync(cancellationToken);
+			.SingleOrDefaultAsync(cancellationToken)
+			?? throw new PartBranchNotFoundException();
 
-		var dto = _mapper.Map<PartBranchDTO>(partBranch);
 
-		return ApiResponse.Success(_mapper.Map<PartBranchDTO>(partBranch));
+		var partBranchDto = partBranch.ToDTO(mapCache);
+
+		var result = ApiResponse.Success(partBranchDto);
+
+		return result;
 	}
 }

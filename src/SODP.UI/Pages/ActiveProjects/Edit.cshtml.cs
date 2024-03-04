@@ -44,10 +44,6 @@ public class EditModel : AppPageModel
 
 	public ProjectDetailsVM Project { get; set; }
 
-	//public InvestorsVM Investors { get; set; }
-
-	//public TechnicalRoleVM TechnicalRoles { get; set; }
-
 	public async Task<IActionResult> OnGetAsync(int id)
 	{
 		var apiResponse = await GetApiResponseAsync<ProjectDTO>($"{_endpoint}/{id}/details");
@@ -229,6 +225,17 @@ public class EditModel : AppPageModel
 		return GetPartialView(model, _addPartBranchViewName);
 	}
 
+	public async Task<PartialViewResult> OnPostRemoveTechnicalRoleAsync(DeleteRoleVM model) 
+	{
+		var apiResponse = await _apiProvider.DeleteAsync($"projects/parts/branches/{model.PartBranchId}/roles?role={model.Role}");
+		if(apiResponse.StatusCode == HttpStatusCode.NoContent) {
+
+		}
+		
+		return await OnGetPartDetailsPartialAsync(model.ProjectPartId);
+		// return GetPartialView(model, _addTechnicalRoleViewName);
+	}
+
 	public async Task<PartialViewResult> OnGetAddTechnicalRoleAsync(int partBranchId)
 	{
 		var apiResponse = await GetApiResponseAsync<PartBranchDTO>($"projects/parts/branches/{partBranchId}");
@@ -254,7 +261,7 @@ public class EditModel : AppPageModel
 		{
 			var role = new NewPartBranchRoleVM
 			{
-				partBranchId = model.PartBranchId,
+				PartBranchId = model.PartBranchId,
 				Role = (TechnicalRole)Enum.Parse(typeof(TechnicalRole), model.SelectedRoleId.ToString()),
 				LicenseId = (int)model.SelectedLicenseId
 			};
@@ -303,7 +310,7 @@ public class EditModel : AppPageModel
 	{
 		var apiResponse = await GetApiResponseAsync<BranchDTO>($"branches/{partBranch.Branch.Id}/details");
 		var licenses = apiResponse.Value.Licenses.ToList();
-		licenses.RemoveAll(x => partBranch.Roles.Select(x => x.License).Any());
+		licenses.RemoveAll(x => partBranch.Roles.Where(y => y.License.Designer.Id == x.Designer.Id).Any());
 		var designers = licenses.Select(x => new SelectListItem
 		{
 			Value = x.Id.ToString(),

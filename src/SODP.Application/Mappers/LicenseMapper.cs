@@ -8,24 +8,30 @@ namespace SODP.Application.Mappers;
 
 public static class LicenseMapper
 {
-    public static LicenseDTO ToDTO(this License license)
+    public static LicenseDTO ToDTO(this License license, List<object> mapCache = null)
     {
-        if (license == null) throw new ArgumentNullException(nameof(license));
-
-        IEnumerable<BranchDTO> branchesDTO;
-        if (license.Branches is null)
-        {
-            branchesDTO = new List<BranchDTO>();
-        }
-        else
-        {
-            branchesDTO = license.Branches.Select(x => x.Branch.ToDTO());
+        if(license == null) {
+            return null;
         }
 
-        return new LicenseDTO(
+        mapCache ??= new List<object>();
+
+        if(mapCache.Contains(license)) {
+            return new LicenseDTO(
+                license.Id,
+                default,
+                license.Content,
+				default);
+        }
+
+        mapCache.Add(license);
+
+		return new LicenseDTO(
             license.Id,
-            license.Designer.ToDTO(),
+            license.Designer.ToDTO(mapCache),
             license.Content,
-            branchesDTO);
+			(license.Branches is not null) 
+                ? license.Branches.Select(x => x.Branch.ToDTO(mapCache)) 
+                : default);
     }
 }

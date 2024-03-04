@@ -172,25 +172,25 @@
 											 data-target="#collapse-@item.Id"
 											 aria-expanded="false"
 											 aria-controls="collapse-@item.Id"
-											 order="@item.Order"
-										>
+											 order="@item.Order">
 											 (@item.Sign) @item.Title
 										</div>
 										<div class="colgroup justify-content-end mr-2">
 											@if (User.IsInRole("ProjectManager"))
 											{
-												<a name="additionalBtn"
+												<a 
 													id="editProject-@item.Id"
-													onclick='EditPart(@Model.Project.Id,@item.Id)'
+													name="additionalBtn"
 													class="btn btn-lg mb-1 mt-1 ml-1 mr-1 p-1"
+													onclick='EditPart(@Model.Project.Id,@item.Id)'
 													data-toggle="tooltip"
 													data-placement="top"
 													title="Edycja części projektu">
 													<i class="fas fa-edit fa-lg text-success"></i>
 												</a>
 												<a 
-													onclick='Delete("/api/v0_01/projects/parts/@item.Id","Usunięcie części nie może być cofnięte")'
 													class="btn"
+													onclick='Delete("/api/v0_01/projects/parts/@item.Id","Usunięcie części nie może być cofnięte")'
 													data-toggle="tooltip"
 													data-placement="top"
 													title="Usuń część projektu">
@@ -222,8 +222,8 @@
 
 
 @section Scripts{
-	<script src="~/js/delete.js"></script>
-	<script src="~/js/ModalPlaceholder.js"></script>
+	@* <script src="~/js/delete.js"></script> *@
+	@* <script src="~/js/ModalPlaceholder.js"></script> *@
 	<partial name="/Pages/Shared/_ValidationScriptsPartial.cshtml" />
 
 	<script>
@@ -265,7 +265,7 @@
 
 		function AddBranch(part) {
 			$.ajax({
-				type: "Get",
+				type: "GET",
 				url: `@Url.Page("Edit","AddPartBranch")&projectPartId=${part}`,
 				success: function (data) {
 					$('#modal-placeholder').html(data);
@@ -274,16 +274,42 @@
 			})
 		}
 
-		function RemoveBranch(project, branch) {
-			$.ajax({
-				type: "Delete",
-				url: `@Url.Page("Edit", "Branch")&projectId=${project}&branchId=${branch}`,
-				beforeSend: function (xhr) {
-					xhr.setRequestHeader("XSRF-TOKEN",
-						$('input:hidden[name="__RequestVerificationToken"]').val());
-				},
-				success: function (data) {
-					window.location.reload(true);
+		// function RemoveBranch(project, branch) {
+		// 	$.ajax({
+		// 		type: "Delete",
+		// 		url: `@Url.Page("Edit", "Branch")&projectId=${project}&branchId=${branch}`,
+		// 		beforeSend: function (xhr) {
+		// 			xhr.setRequestHeader("XSRF-TOKEN",
+		// 				$('input:hidden[name="__RequestVerificationToken"]').val());
+		// 		},
+		// 		success: function (data) {
+		// 			window.location.reload(true);
+		// 		}
+		// 	})
+		// }
+
+		function RemoveBranch(projectPartId,branchId) {
+			swal({
+				title: "Czy jesteś pewien?",
+				text: "Usunięcie branży z projektu. Operacja nie może być cofnięta.",
+				icon: "error",
+				buttons: ["Anuluj", "Tak"],
+				dangerMode: true
+			}).then((willDelete) => {
+				if (willDelete) {
+					$.ajax({
+						type: "DELETE",
+						url: `/api/v0_01/projects/parts/branches/${branchId}`,
+						success: function () {
+							toastr.options.onHidden = function () {
+								$(`#project-${projectPartId}`).load(`/ActiveProjects/Edit?handler=PartDetailsPartial&projectPartId=${projectPartId}`)
+							};
+							toastr.success("Operacja usuniecia powiodła się.");
+						},
+						error: function (jqXHR, exception) {
+							toastr.error(jqXHR.responseJSON.message);
+						}
+					})
 				}
 			})
 		}
@@ -291,7 +317,7 @@
 		function AddTechnicalRole(partBranch) {
 			$.ajax({
 				type: "Get",
-				url: `@Url.Page("Edit","AddTechnicalRole")&partBranchId=${partBranch}`,
+				url: `@Url.Page("Edit", "AddTechnicalRole")&partBranchId=${partBranch}`,
 				success: function (data) {
 					$('#modal-placeholder').html(data);
 					$('#addTechnicalRole').modal('show');
@@ -299,9 +325,34 @@
 			})
 		}
 
+		function RemoveTechnicalRole(projectPartId, partBranchId, role) {
+			swal({
+				title: "Czy jesteś pewien?",
+				text: "Usunięcie roli z projektu. Operacja nie może być cofnięta.",
+				icon: "error",
+				buttons: ["Anuluj", "Tak"],
+				dangerMode: true
+			}).then((willDelete) => {
+				if (willDelete) {
+					$.ajax({
+						type: "POST",
+						url: `@Url.Page("Edit", "RemoveTechnicalRole")`,
+						data: { projectPartId: projectPartId, partBranchId: partBranchId, role: role },
+						contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+						beforeSend: function (xhr) {
+							xhr.setRequestHeader("XSRF-TOKEN", $('input:hidden[name="__RequestVerificationToken"]').val());
+						},
+						success: function (data) {
+							$(`#project-${projectPartId}`).load(`/ActiveProjects/Edit?handler=PartDetailsPartial&projectPartId=${projectPartId}`)
+						},
+					})
+				}
+			})
+		}
+
 		function EditRoles(project, branch) {
 			$.ajax({
-				type: "Get",
+				type: "GET",
 				url: `@Url.Page("Edit","TechnicalRoles")&projectId=${project}&branchId=${branch}`,
 				success: function (data) {
 					$('#modal-placeholder').html(data);
@@ -310,9 +361,9 @@
 			})
 		}
 
-		function accordionCollapse(part) {
-			if (document.getElementById(`card-head-${part}`).ariaExpanded !== "true") {
-				$(`#project-${part}`).load(`/ActiveProjects/Edit?handler=PartDetailsPartial&projectPartId=${part}`);
+		function accordionCollapse(projectPartId) {
+			if (document.getElementById(`card-head-${projectPartId}`).ariaExpanded !== "true") {
+				$(`#project-${projectPartId}`).load(`/ActiveProjects/Edit?handler=PartDetailsPartial&projectPartId=${projectPartId}`);
 			}
 		}
 
@@ -324,9 +375,10 @@
 
 	</script>
 
-	<script>
+@* 	<script>
 		$(document).ready(function () {
 			modalPlaceHolder(window.location.href);
 		});
 	</script>
+ *@
 }

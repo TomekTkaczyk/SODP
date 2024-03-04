@@ -8,14 +8,20 @@
     var _projectPartId = ViewData["ProjectPartId"];
 }
 
-<div class="row">
-    <button type="button"
-            class="btn btn-info form-control text-white float-right h-100"
-            title="Nowa branża"
-            data-toggle="ajax-modal"
-            onclick="AddBranch(@Model.Id)">
-        <i class="fas fa-plus"></i>&nbsp;&nbsp;&nbsp;Dodaj nową branżę
-    </button>
+<div class="row clickable" onclick="AddBranch(@Model.Id)">
+    <div class="col-1">
+        <a class="btn btn-lg m-0 p-0 text-danger"
+           data-toggle="tooltip"
+           data-placement="top"
+           title="Dodaj branżę do części projektu">
+            <i class="fas fa-plus text-success"></i>
+        </a>
+    </div>
+    <div class="col">
+        <div class="font-weight-bold">
+            Dodaj branżę do części projektu
+        </div>
+    </div>
 </div>
 
 <br />
@@ -26,7 +32,7 @@
     {
         <div class="row">
             <div class="col-2">
-                <a onclick='Delete("/api/v0_01/projects/parts/branches/@item.Id")'
+                <a onclick='RemoveBranch(@Model.Id,@item.Id)'
                    class="btn btn-lg m-0 p-0 text-danger clickable"
                    data-toggle="tooltip"
                    data-placement="top"
@@ -46,7 +52,7 @@
         @foreach (var role in item.Roles)
         {
             <div class="row">
-                <a onclick='Delete("/api/v0_01/projects/parts/branches/roles/@role.Id")'
+                <a onclick="RemoveTechnicalRole(@Model.Id,@item.Id,'@role.Role')"
                    class="col-2 btn btn-lg m-0 p-0 text-danger clickable"
                    data-toggle="tooltip"
                    data-placement="top"
@@ -61,7 +67,7 @@
 }
 else
 {
-    <p>Brak branży w ramach części</p>
+    <p>Brak branż w ramach części</p>
 }
 
 @section Scripts{
