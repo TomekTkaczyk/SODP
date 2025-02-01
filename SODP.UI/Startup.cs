@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using SODP.Application.Services;
 using SODP.DataAccess;
 using SODP.Infrastructure;
@@ -19,7 +19,7 @@ using System.Linq;
 
 namespace SODP.UI
 {
-    public class Startup
+	public class Startup
     {
         private readonly string _appPrefix;
         
@@ -41,13 +41,9 @@ namespace SODP.UI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSwagger(Configuration);
-
             services.AddCors(options => options.AddPolicy(name: "SODPOriginsSpecification", builder => builder.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}")));
 
-            services.AddDataAccessDI(Configuration);
-
-            services.AddInfrastructureDI(Configuration);
+            services.AddInfrastructure(Configuration);
 
             var app = AppDomain.CurrentDomain
                     .GetAssemblies()
@@ -116,41 +112,10 @@ namespace SODP.UI
                 .AddRazorRuntimeCompilation();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseMySwagger();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Errors");
-                app.UseHsts();
-            }
 
-            app.UseHttpLogging();
-
-            app.UseStatusCodePagesWithRedirects("/Errors/{0}");
-
-            app.UseHttpsRedirection();
-
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseCors(options => options.WithOrigins($"{Configuration.GetSection($"AppSettings:Origin").Value}"));
-
-            app.UseAuthentication();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapRazorPages();
-
-            });
+            app.UseInfrastructure(configuration, env);
         }
     }
 }

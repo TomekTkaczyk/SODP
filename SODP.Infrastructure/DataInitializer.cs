@@ -4,27 +4,24 @@ using SODP.Domain.Managers;
 using SODP.Model;
 using SODP.Model.Enums;
 using SODP.Shared.Enums;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.Json;
 
 namespace SODP.Infrastructure
 {
-    public class DataInitializer
+	public class DataInitializer
     {
         private readonly IConfiguration _configuration;
         private readonly SODPDBContext _context;
         private readonly IFolderCommandCreator _folderCommandCreator;
-        private readonly IFolderManager _folderManager;
 
-        public DataInitializer(IConfiguration configuration, SODPDBContext context, IFolderCommandCreator folderCommandCreator, IFolderManager folderManager)
+        public DataInitializer(
+            IConfiguration configuration, 
+            SODPDBContext context, 
+            IFolderCommandCreator folderCommandCreator)
         {
             _configuration = configuration;
             _context = context;
             _folderCommandCreator = folderCommandCreator;
-            _folderManager = folderManager;
         }
 
         public void LoadData()

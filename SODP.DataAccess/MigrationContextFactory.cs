@@ -8,15 +8,16 @@ using System.IO;
 
 namespace SODP.DataAccess
 {
-    public class MigrationContextFactory : IDesignTimeDbContextFactory<SODPDBContext>
-    {
-        public SODPDBContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<SODPDBContext>();
-            optionsBuilder.UseMySql("Server=localhost;Database=SODP;Uid=root;Pwd=gonia68;", 
-                builder => builder.ServerVersion(new ServerVersion(new Version(10,4,6),ServerType.MariaDb)));
+	public class MigrationContextFactory : IDesignTimeDbContextFactory<SODPDBContext>
+	{
+		public SODPDBContext CreateDbContext(string[] args)
+		{
+			var optionsBuilder = new DbContextOptionsBuilder<SODPDBContext>();
+			optionsBuilder.UseMySql("Server=localhost;Database=SODP;Uid=root;Pwd=gonia68;",
+									new MySqlServerVersion(new Version(10, 4, 6)),
+									b => b.SchemaBehavior(MySqlSchemaBehavior.Ignore));
 
-            return new SODPDBContext(optionsBuilder.Options, new DateTimeService());
-        }
-    }
+			return new SODPDBContext(optionsBuilder.Options, new DateTimeService());
+		}
+	}
 }

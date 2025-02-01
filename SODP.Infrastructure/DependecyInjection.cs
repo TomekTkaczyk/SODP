@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,25 +17,36 @@ using SODP.Shared.Services;
 
 namespace SODP.Infrastructure
 {
-    public static class DependecyInjection
-    {
-		public static void AddDataAccessDI(this IServiceCollection services, IConfiguration configuration)
+	public static class DependecyInjection
+	{
+
+		private const string _docsVersion = "v0.01";
+		private const string _titleApi = "SODP";
+
+
+		public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
 		{
 			services.AddDbContext<SODPDBContext>(options =>
 			{
 				options.EnableDetailedErrors();
-                var aaa = services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment();
-                if (services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment())
-                {
-                    options.EnableSensitiveDataLogging();
-                }
-                options.UseMySql(
+				if(services.BuildServiceProvider().GetService<IHostEnvironment>().IsDevelopment()) {
+					options.EnableSensitiveDataLogging();
+				}
+				options.UseMySql(
 					configuration.GetConnectionString("DefaultDbConnection"),
-					b =>
+					new MySqlServerVersion(new Version(10, 4, 6)),
+					b => b.SchemaBehavior(MySqlSchemaBehavior.Ignore));
+
+			});
+
+			services.AddSwaggerGen(swagger =>
+			{
+				swagger.CustomSchemaIds(x => x.FullName!.Replace("+", "-"));
+				swagger.SwaggerDoc("v1",
+					new OpenApiInfo
 					{
-                        b.SchemaBehavior(MySqlSchemaBehavior.Ignore);
-						b.CharSetBehavior(CharSetBehavior.NeverAppend);
-						b.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MariaDb));
+						Title = "SODP API",
+						Version = "v1"
 					});
 			});
 
@@ -44,92 +56,61 @@ namespace SODP.Infrastructure
 
 			services.AddScoped<DataInitializer>();
 
-            services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
+			services.AddTransient(typeof(IActiveStatusService<>), typeof(ActiveStatusService<>));
+
+			services.AddSingleton<IDateTime, DateTimeService>();
+
+			services.AddSingleton<IFolderCommandCreator, FolderCommandCreator>();
+
+			services.AddSingleton<IFolderConfigurator, FolderConfigurator>();
+
+			services.AddSingleton<IFolderManager, FolderManager>();
 		}
 
-		public static void UseMySwagger(this IApplicationBuilder app)
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SODP.API"));
-        }
+		// Other methods remain unchanged
 
-        public static void AddSwagger(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "SODP.API",
-                    Version = "v1",
-                    Description = "Aplikacja do zarządzania projektami SODP",
-                    TermsOfService = new Uri(configuration.GetSection($"AppSettings:termsOfService").Value),
-                    Contact = new OpenApiContact
-                    {
-                        Name = configuration.GetSection($"AppSettings:contactName").Value,
-                        Email = configuration.GetSection($"AppSettings:contactEmail").Value,
-                        Url = new Uri(configuration.GetSection($"AppSettings:contactUrl").Value)
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Used License",
-                        Url = new Uri(configuration.GetSection($"AppSettings:licenseUrl").Value)
-                    }
-                });
+		public static IApplicationBuilder UseInfrastructure(
+			this IApplicationBuilder app,
+			IConfiguration configuration,
+			IWebHostEnvironment env)
+		{
+			if(env.IsDevelopment()) {
+				app.UseDeveloperExceptionPage();
+				app.UseSwagger();
+				app.UseSwaggerUI(x =>
+				{
+					x.RoutePrefix = "docs/swagger";
+					x.SwaggerEndpoint($"/swagger/{_docsVersion}/swagger.json", _titleApi);
+				});
+			}
+			else {
+				app.UseExceptionHandler("/Errors");
+				app.UseHsts();
+			}
 
-                //var filePath = Path.Combine(AppContext.BaseDirectory, "SODP.UI.xml");
-                //c.IncludeXmlComments(filePath);
+			app.UseHttpLogging();
+			app.UseStatusCodePagesWithRedirects("/Errors/{0}");
 
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Description = "Please insert JWT with Bearer into field",
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
+			app.UseHttpsRedirection();
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-            });
-        }
+			app.UseStaticFiles();
 
-        public static IServiceCollection AddInfrastructureDI(this IServiceCollection services, IConfiguration configuration)
-        {
-            AddScopedInfrastructureServices(services);
-            AddTransientInfrastructureServices(services);
-            AddSingletonInfrastructureServices(services);
+			app.UseRouting();
 
-            return services;
-        }
+			app.UseCors(options => options.WithOrigins($"{configuration.GetSection($"AppSettings:Origin").Value}"));
 
-        private static void AddTransientInfrastructureServices(this IServiceCollection services)
-        {
-            services.AddTransient<IDateTime, DateTimeService>();
-        }
+			app.UseAuthentication();
 
-        private static void AddScopedInfrastructureServices(this IServiceCollection services)
-        {
+			app.UseAuthorization();
 
-            services.AddScoped<FolderConfigurator>();
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+				endpoints.MapRazorPages();
 
-            services.AddScoped<IFolderCommandCreator, FolderCommandCreator>();
+			});
 
-            services.AddScoped<IFolderManager, FolderManager>();
-
-        }
-
-        private static void AddSingletonInfrastructureServices(this IServiceCollection services)
-        {
-        }
-    }
+			return app;
+		}
+	}
 }

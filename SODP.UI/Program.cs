@@ -6,37 +6,35 @@ using Microsoft.Extensions.Hosting;
 using SODP.DataAccess;
 using SODP.Infrastructure;
 
-namespace SODP.UI
+namespace SODP.UI;
+
+public class Program
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var configuration = new ConfigurationBuilder()
-                .AddEnvironmentVariables()
-                .AddCommandLine(args)
-                .AddJsonFile("appsettings.json")
-                .Build();
+	public static void Main(string[] args)
+	{
+		var configuration = new ConfigurationBuilder()
+			.AddEnvironmentVariables()
+			.AddCommandLine(args)
+			.AddJsonFile("appsettings.json")
+			.Build();
 
-            var hostBuilder = Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls(configuration.GetSection("AppSettings:applicationUrl").Value);
-                });
+		var hostBuilder = Host.CreateDefaultBuilder(args)
+			.ConfigureWebHostDefaults(webBuilder =>
+			{
+				webBuilder.UseStartup<Startup>();
+				webBuilder.UseUrls(configuration.GetSection("AppSettings:applicationUrl").Value);
+			});
 
-            var host = hostBuilder.Build();
+		var host = hostBuilder.Build();
 
-            using (var scope = host.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<SODPDBContext>();
-                db.Database.Migrate();
-                db.Database.EnsureCreated();
-                scope.ServiceProvider.GetRequiredService<UserInitializer>().UserInit();
-                scope.ServiceProvider.GetRequiredService<DataInitializer>().LoadData();
-            }
+		using(var scope = host.Services.CreateScope()) {
+			var db = scope.ServiceProvider.GetRequiredService<SODPDBContext>();
+			db.Database.Migrate();
+			db.Database.EnsureCreated();
+			scope.ServiceProvider.GetRequiredService<UserInitializer>().UserInit();
+			scope.ServiceProvider.GetRequiredService<DataInitializer>().LoadData();
+		}
 
-            host.Run();
-        }
-    }
+		host.Run();
+	}
 }
