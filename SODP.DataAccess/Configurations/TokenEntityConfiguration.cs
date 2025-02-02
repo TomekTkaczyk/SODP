@@ -17,7 +17,7 @@ namespace SODP.DataAccess.Configurations
                 .HasColumnType("nvarchar(256)");
 
             builder.HasIndex(s => s.UserId)
-                .HasName("TokensIX_User");
+                .HasDatabaseName("TokensIX_User");
 
             builder.ToTable("Tokens");
         }

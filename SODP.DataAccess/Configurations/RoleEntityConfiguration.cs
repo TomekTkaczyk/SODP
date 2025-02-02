@@ -23,11 +23,11 @@ namespace SODP.DataAccess.Configurations
 
             // Index for "normalized" role name to allow efficient lookups
             builder.HasIndex(r => r.Name)
-                .HasName("RolesIX_Name")
+                .HasDatabaseName("RolesIX_Name")
                 .IsUnique();
 
             builder.HasIndex(r => r.NormalizedName)
-                .HasName("RolesIX_NormalizedName")
+                .HasDatabaseName("RolesIX_NormalizedName")
                 .IsUnique();
 
             builder.ToTable("Roles");

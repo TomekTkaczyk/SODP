@@ -12,7 +12,7 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
 			builder.HasIndex(x => new { x.ProjectPartId })
-            	.HasName("PartBranchesIX_ProjectPartId");
+            	.HasDatabaseName("PartBranchesIX_ProjectPartId");
 
 
 			builder.ToTable("PartBranches");

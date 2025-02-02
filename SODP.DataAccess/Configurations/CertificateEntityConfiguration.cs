@@ -16,7 +16,7 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.HasIndex(x => x.DesignerId)
-                .HasName("CertificatesIX_Designer");
+                .HasDatabaseName("CertificatesIX_Designer");
 
             builder.ToTable("Certificates");
         }

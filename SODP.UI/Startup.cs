@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -104,11 +105,23 @@ namespace SODP.UI
                 client.DefaultRequestHeaders.Clear();
             });
 
-            services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
+            services.AddHttpLogging(logging =>
+            {
+                logging.LoggingFields = HttpLoggingFields.All;
+				logging.RequestHeaders.Add("Authorization");
+				logging.ResponseHeaders.Add("Authorization");
+				logging.MediaTypeOptions.AddText("application/json");
+				logging.MediaTypeOptions.AddText("application/xml");
+				logging.MediaTypeOptions.AddText("text/plain");
+				logging.RequestBodyLogLimit = 4096;
+				logging.ResponseBodyLogLimit = 4096;
+			});
+
+			services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");
 
 			services.AddControllers();
 
-            services.AddRazorPages()
+			services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
         }
 

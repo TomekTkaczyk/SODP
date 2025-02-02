@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SODP.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace SODP.UI.Areas.Identity.Pages.Account.Manage
 {
-    public class DownloadPersonalDataModel : PageModel
+	public class DownloadPersonalDataModel : PageModel
     {
         private readonly UserManager<User> _userManager;
         private readonly ILogger<DownloadPersonalDataModel> _logger;
@@ -50,7 +50,7 @@ namespace SODP.UI.Areas.Identity.Pages.Account.Manage
                 personalData.Add($"{l.LoginProvider} Klucz zewnętrznego operatora dostawcy logowania", l.ProviderKey);
             }
 
-            Response.Headers.Add("Content-Disposition", "attachment; filename=PersonalData.json");
+			Response.Headers.Append("Content-Disposition", "attachment; filename=PersonalData.json");
             return new FileContentResult(JsonSerializer.SerializeToUtf8Bytes(personalData), "application/json");
         }
     }

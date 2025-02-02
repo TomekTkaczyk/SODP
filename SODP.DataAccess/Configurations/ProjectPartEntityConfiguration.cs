@@ -28,7 +28,7 @@ namespace SODP.DataAccess.Configurations
 			   .IsRequired();
 
 			builder.HasIndex(x => x.ProjectId)
-                .HasName("ProjectPartsIX_Project");
+                .HasDatabaseName("ProjectPartsIX_Project");
 
             builder.ToTable("ProjectParts");
 

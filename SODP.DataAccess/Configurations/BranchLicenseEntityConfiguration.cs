@@ -15,10 +15,10 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.HasIndex(x => x.BranchId)
-                .HasName("BranchLicensesIX_Branch");
+                .HasDatabaseName("BranchLicensesIX_Branch");
 
             builder.HasIndex(x => x.LicenseId)
-                .HasName("BranchLicensesIX_License");
+                .HasDatabaseName("BranchLicensesIX_License");
 
             builder.ToTable("BranchLicenses");
 

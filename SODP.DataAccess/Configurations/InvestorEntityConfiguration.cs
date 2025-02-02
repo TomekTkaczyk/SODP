@@ -20,7 +20,7 @@ namespace SODP.DataAccess.Configurations
 			builder.HasKey(u => u.Id);
 
 			builder.HasIndex(x => new { x.Name })
-				.HasName("InvestorsIX_Name");
+				.HasDatabaseName("InvestorsIX_Name");
 
 			builder.ToTable("Investors");
 		}

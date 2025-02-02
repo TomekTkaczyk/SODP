@@ -46,12 +46,12 @@ namespace SODP.DataAccess.Configurations
                 .HasDefaultValue("")
                 .HasColumnType("longtext");
 
-			builder.HasIndex(p => new { p.Number, p.StageId })
-                .IsUnique()
-                .HasName("ProjectsIX_NumberStage");
+            builder.HasIndex(p => new { p.Number, p.StageId })
+                .HasDatabaseName("ProjectsIX_NumberStage")
+                .IsUnique();
 
             builder.HasIndex(p => p.StageId)
-                .HasName("ProjectsIX_Stage");
+                .HasDatabaseName("ProjectsIX_Stage");
 
             builder.ToTable("Projects");
 

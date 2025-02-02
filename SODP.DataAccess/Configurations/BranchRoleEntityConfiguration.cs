@@ -18,7 +18,7 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.HasIndex(x => x.LicenseId)
-                .HasName("BranchRolesIX_License");
+                .HasDatabaseName("BranchRolesIX_License");
 
             builder.ToTable("BranchRoles");
 

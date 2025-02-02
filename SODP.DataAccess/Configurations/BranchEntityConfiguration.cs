@@ -27,9 +27,8 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
 			builder.HasKey(u => u.Id);
-
 			builder.HasIndex(x => new { x.Order })
-                .HasName("BranchesIX_Order");
+				.HasDatabaseName("BranchesIX_Order");
 
             builder.ToTable("Branches");
         }

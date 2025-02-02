@@ -13,7 +13,7 @@ namespace SODP.DataAccess.Configurations
                 .IsRequired();
 
             builder.HasIndex(x => x.DesignerId)
-                .HasName("LicensesIX_Designer");
+                .HasDatabaseName("LicensesIX_Designer");
 
             builder.ToTable("Licenses");
         }

@@ -19,7 +19,7 @@ namespace SODP.DataAccess.Configurations
 			builder.HasKey(u => u.Id);
 
 			builder.HasIndex(x => new { x.ParentId })
-				.HasName("DictioanryIX_ParentId");
+				.HasDatabaseName("DictioanryIX_ParentId");
 
 			builder.HasMany(x => x.Children)
 				.WithOne(y => y.Parent)
