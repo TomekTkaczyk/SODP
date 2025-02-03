@@ -1,6 +1,6 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Response;
@@ -17,7 +17,8 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Parts
 {
-    public class IndexModel : ListPageModel<PartDTO>
+	[Authorize(Roles = "ProjectManager")]
+	public class IndexModel : ListPageModel<PartDTO>
     {
 		const string _editPartModalViewName = "ModalView/_EditPartModalView";
 

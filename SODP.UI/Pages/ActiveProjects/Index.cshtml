@@ -67,7 +67,7 @@
 							   title="Przenieś projekt do archiwum">
 								<i class="fas fa-archive fa-lg text-success"></i>
 							</a>
-							<a onclick='Delete("/api/v0_01/projects/@item.Id","Usunięcie projektu nie może być cofnięte")'
+							<a onclick='DeleteProject(@item.Id)'
 							   class="btn"
 							   data-toggle="tooltip"
 							   data-placement="top"
@@ -135,8 +135,10 @@ else
 					if (data.success && data.status === 0) {
 						window.location = `/ActiveProjects/Edit?Id=${id}#details`;
 					} else {
-						toastr.warning("Projekt nie jest już aktywny i nie można go edytować.");
-						window.location.reload();
+						setMessageAndReload({
+							type: "error",
+							message: "Projekt jest procesowany i nie można go edytować."
+						});
 					}
 				},
 				error: function (jqXHR, exception) {
@@ -144,6 +146,74 @@ else
 					toastr.error("Nie udało się sprawdzić statusu projektu.");
 				}
 			});
+		}
+
+		function DeleteProject(id) {
+			$.ajax({
+				type: "GET",
+				url: `/ActiveProjects/Index?handler=Project&id=${id}`,
+				success: function (data) {
+					if (data.success && data.status === 0) {
+						Delete(`/api/v0_01/projects/${id}`,"Usunięcie projektu nie może być cofnięte");
+					} else {
+						setMessageAndReload({
+							type: "error",
+							message: "Projekt jest procesowany i nie można go skasować."
+						});
+					}
+				},
+				error: function (jqXHR, exception) {
+					console.error("Błąd podczas sprawdzania statusu projektu:", jqXHR, exception);
+					toastr.error("Nie udało się sprawdzić statusu projektu.");
+				}
+			});
+		}
+
+		function Archive(id) {
+            $.ajax({
+                type: "GET",
+                url: `/ActiveProjects/Index?handler=Project&id=${id}`,
+                success: function (data) {
+                    if (data.success && data.status !== 0) {
+						localStorage.setItem("toastrMessage",
+							{
+								type: "error",
+								message: "Projekt jest procesowany i nie można go zarchiwizować.",
+							});
+						window.location.reload();
+					} else {
+						swal({
+							title: "Czy jesteś pewien?",
+							text: "Przesunięcie projektu do archiwum.",
+							icon: "warning",
+							buttons: true,
+							dangerMode: true
+						}).then((willArchive) => {
+							if (willArchive) {
+								$.ajax({
+									type: "PATCH",
+									url: `/api/v0_01/projects/${id}/archive`,
+									success: function (data) {
+										if (data.success) {
+											setMessageAndReload({
+												type: "success",
+												message: data.message
+											});
+										}
+										else {
+											toastr.error(data.message);
+										}
+									}
+								})
+							}
+						})
+					}
+                },
+                error: function (jqXHR, exception) {
+                    console.error("Błąd podczas sprawdzania statusu projektu:", jqXHR, exception);
+                    toastr.error("Nie udało się sprawdzić statusu projektu.");
+                }
+            });
 		}
 
 		function initModalPlaceHolder() {
@@ -164,32 +234,6 @@ else
 					}
 				});
 			});
-		}
-
-		function Archive(id) {
-			swal({
-				title: "Czy jesteś pewien?",
-				text: "Przesunięcie projektu do archiwum.",
-				icon: "warning",
-				buttons: true,
-				dangerMode: true
-			}).then((willArchive) => {
-				if (willArchive) {
-					$.ajax({
-						type: "PATCH",
-						url: `/api/v0_01/projects/${id}/archive`,
-						success: function (data) {
-							if (data.success) {
-								toastr.success(data.message);
-								window.location.reload();
-							}
-							else {
-								toastr.error(data.message);
-							}
-						}
-					})
-				}
-			})
 		}
 
 		function accordionCollapse(id) {

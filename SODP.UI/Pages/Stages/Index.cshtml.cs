@@ -7,7 +7,6 @@ using SODP.Shared.DTO;
 using SODP.Shared.Response;
 using SODP.UI.Extensions;
 using SODP.UI.Infrastructure;
-using SODP.UI.Pages.Parts.ViewModels;
 using SODP.UI.Pages.Shared.PageModels;
 using SODP.UI.Pages.Stages.ViewModels;
 using SODP.UI.Services;
@@ -18,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SODP.UI.Pages.Stages
 {
-    [Authorize(Roles = "ProjectManager")]
+	[Authorize(Roles = "ProjectManager")]
     public class IndexModel : ListPageModel<StageDTO>
     {
         const string _editStageModalViewName = "ModalView/_EditStageModalView";
