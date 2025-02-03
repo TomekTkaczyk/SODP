@@ -92,8 +92,28 @@ else
 
 @section Scripts{
 	<script>
+
 		function Edit(id) {
 			window.location = `/ArchiveProjects/Edit?Id=${id}`;
+		}
+
+		function _Edit_(id) {
+			$.ajax({
+				type: "GET",
+				url: `/ArchiveProjects/Index?handler=Project&id=${id}`,
+				success: function (data) {
+					if (data.success && data.status === 0) {
+						window.location = `/ArchiveProjects/Edit?Id=${id}`;
+					} else {
+						toastr.warning("Projekt nie jest już aktywny i nie można go edytować.");
+						window.location.reload();
+					}
+				},
+				error: function (jqXHR, exception) {
+					console.error("Błąd podczas sprawdzania statusu projektu:", jqXHR, exception);
+					toastr.error("Nie udało się sprawdzić statusu projektu.");
+				}
+			});
 		}
 
 		function Restore(id) {

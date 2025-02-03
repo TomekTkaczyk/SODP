@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SODP.Shared.DTO;
 using SODP.Shared.Enums;
+using SODP.Shared.Response;
 using SODP.UI.Infrastructure;
 using SODP.UI.Pages.Shared.ViewModels;
 using SODP.UI.Services;
@@ -16,10 +17,12 @@ namespace SODP.UI.Pages.Shared.PageModels
 
         public ProjectsVM Projects { get; set; }
 
+
         protected ProjectsPageModel(IWebAPIProvider apiProvider, ILogger<ProjectsPageModel> logger, IMapper mapper, LanguageTranslatorFactory translatorFactory) : base(apiProvider, logger, mapper, translatorFactory)
         {
             _endpoint = "projects";
         }
+
 
         protected async Task<IActionResult> OnGetAsync(ProjectStatus status, int currentPage = 1, int pageSize = 0, string searchString = "")
         {
@@ -36,5 +39,17 @@ namespace SODP.UI.Pages.Shared.PageModels
 
             return Page();
         }
-    }
+
+		public async Task<IActionResult> OnGetProjectAsync(int id)
+		{
+			var apiResponse = await _apiProvider.GetAsync($"projects/{id}");
+			if(!apiResponse.IsSuccessStatusCode) {
+				return BadRequest();
+			}
+
+			var response = await _apiProvider.GetContent<ServiceResponse<ProjectDTO>>(apiResponse);
+			return new JsonResult(new { success = true, status = response.Data.Status });
+		}
+
+	}
 }

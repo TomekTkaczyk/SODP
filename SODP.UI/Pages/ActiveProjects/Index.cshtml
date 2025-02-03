@@ -127,6 +127,25 @@ else
 			})
 		}
 
+		function Edit(id) {
+			$.ajax({
+				type: "GET",
+				url: `/ActiveProjects/Index?handler=Project&id=${id}`,
+				success: function (data) {
+					if (data.success && data.status === 0) {
+						window.location = `/ActiveProjects/Edit?Id=${id}#details`;
+					} else {
+						toastr.warning("Projekt nie jest już aktywny i nie można go edytować.");
+						window.location.reload();
+					}
+				},
+				error: function (jqXHR, exception) {
+					console.error("Błąd podczas sprawdzania statusu projektu:", jqXHR, exception);
+					toastr.error("Nie udało się sprawdzić statusu projektu.");
+				}
+			});
+		}
+
 		function initModalPlaceHolder() {
 			var placeholderElement = $('#modal-placeholder');
 			placeholderElement.on('click', '[data-save="modal"]', function (event) {
@@ -145,10 +164,6 @@ else
 					}
 				});
 			});
-		}
-
-		function Edit(id) {
-			window.location = `/ActiveProjects/Edit?Id=${id}#details`;
 		}
 
 		function Archive(id) {

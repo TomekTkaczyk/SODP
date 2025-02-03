@@ -40,7 +40,7 @@ namespace SODP.UI.Pages.ActiveProjects
         }
 
 
-        public async Task<IActionResult> OnGetNewProjectAsync()
+		public async Task<IActionResult> OnGetNewProjectAsync()
         {
             return await GetNewProjectPartialViewAsync(new NewProjectVM());
         }
